@@ -21,7 +21,13 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSM() {
-		fail("Not yet implemented");
+		LabRecruitsEFSMFactory efsmFactory = new LabRecruitsEFSMFactory();
+		assertNotNull(efsmFactory);
+		String scenarioId = "buttons_doors_1";
+		EFSM efsm = efsmFactory.getEFSM(scenarioId);
+		assertNotNull (efsm);
+		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
+		assertNotNull (testFactory);
 	}
 
 	/**
@@ -29,7 +35,16 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSMInt() {
-		fail("Not yet implemented");
+		LabRecruitsEFSMFactory efsmFactory = new LabRecruitsEFSMFactory();
+		assertNotNull(efsmFactory);
+		String scenarioId = "buttons_doors_1";
+		EFSM efsm = efsmFactory.getEFSM(scenarioId);
+		assertNotNull (efsm);
+		int maxLength = 20;
+		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm, maxLength);
+		assertNotNull (testFactory);
+		Testcase t = testFactory.getTestcase();
+		assertTrue (t.getLength() <= maxLength);
 	}
 
 	/**
@@ -46,6 +61,7 @@ public class RandomLengthTestFactoryTest {
 		assertNotNull(testFactory);
 		Testcase testcase = testFactory.getTestcase();
 		assertNotNull(testcase);
+		System.out.println(((AbstractTestSequence) testcase).toDot());
 		
 	}
 

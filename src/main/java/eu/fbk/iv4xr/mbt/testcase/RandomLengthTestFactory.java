@@ -46,7 +46,9 @@ public class RandomLengthTestFactory implements TestFactory {
 		
 		Collection<Transition> transitions = new HashSet<Transition>();
 		int len = 0;
-		while (len < randomLength) {
+		
+		// loop until random length reached or current state has not outgoing transitions (final?)
+		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
 			Set<Transition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
