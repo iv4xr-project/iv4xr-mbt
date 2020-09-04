@@ -2,11 +2,8 @@ package eu.fbk.iv4xr.mbt.model;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.BFSShortestPath;
-import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.Pseudograph;
 import org.jgrapht.io.*;
 
@@ -16,14 +13,12 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 import java.util.function.Function;
 
@@ -273,10 +268,7 @@ public class LabRecruitsRandomEFSM {
 		// create the EFSM builder
 		EFSMBuilder	labRecruitsBuilder = new EFSMBuilder(EFSM.class);
 		
-		// out EFSM
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-			Transition<LabRecruitsState, String, LabRecruitsContext>> efsm;
-		
+	
 		// iterate over vertex (rooms) of the door graph and create complete subgraphs
 		Iterator<Vector<LabRecruitsState>> vertexIterator = doorsGraph.vertexSet().iterator();
 		while(vertexIterator.hasNext()) {
