@@ -40,7 +40,7 @@ public class RandomLengthTestFactory implements TestFactory {
 	@Override
 	public Testcase getTestcase() {
 		Testcase testcase = new AbstractTestSequence();
-		int randomLength = Randomness.nextInt(maxLength);
+		int randomLength = Randomness.nextInt(maxLength) + 1;
 		Configuration initialConfiguration = model.getInitialConfiguration();
 		LabRecruitsState currentState = (LabRecruitsState) initialConfiguration.getState();
 		

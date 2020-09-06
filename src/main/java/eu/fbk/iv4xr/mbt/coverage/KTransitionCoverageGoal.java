@@ -3,17 +3,20 @@
  */
 package eu.fbk.iv4xr.mbt.coverage;
 
-import java.util.List;
-
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.FitnessFunction;
 
 /**
  * @author kifetew
  *
  * Represents a sequence of K transitions, where K >= 2
  */
-public class KTransitionCoverageGoal implements CoverageGoal {
+public class KTransitionCoverageGoal extends FitnessFunction<Chromosome> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6341416548064403719L;
 	private int k = 2;
 	
 	/**
@@ -28,17 +31,6 @@ public class KTransitionCoverageGoal implements CoverageGoal {
 		this.k = k;
 	}
 	
-	@Override
-	public boolean isCovered(Testcase testcase) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCovered(List<Testcase> testSuite) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 	/**
@@ -54,6 +46,20 @@ public class KTransitionCoverageGoal implements CoverageGoal {
 	 */
 	public void setK(int k) {
 		this.k = k;
+	}
+
+
+	@Override
+	public double getFitness(Chromosome individual) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public boolean isMaximizationFunction() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

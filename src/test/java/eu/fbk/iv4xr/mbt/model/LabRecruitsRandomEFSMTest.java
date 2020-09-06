@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import de.upb.testify.efsm.Configuration;
 import de.upb.testify.efsm.EFSM;
+import de.upb.testify.efsm.Transition;
 import eu.fbk.se.labrecruits.LabRecruitsContext;
 import eu.fbk.se.labrecruits.LabRecruitsState;
 
@@ -41,7 +42,8 @@ public class LabRecruitsRandomEFSMTest {
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
 		
 		// generate and EFSM
-		EFSM testEFSM = labRecruitsRandomEFSM.generateLevel();
+		EFSM<LabRecruitsState, String, LabRecruitsContext, 
+		Transition<LabRecruitsState, String, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.generateLevel();
 		String levelId = "data/level1";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
@@ -74,7 +76,7 @@ public class LabRecruitsRandomEFSMTest {
 		assertNotNull(testEFSM.transition("d0+"));
 		assertNotNull(testEFSM.transition("d0-"));
 		// check if door1 and door3 are also open, while door2 is still closed
-		context = (LabRecruitsContext) testEFSM.getConfiguration().getContext();
+		context = testEFSM.getConfiguration().getContext();
 		assertTrue(context.getDoorStatus("door1"));
 		assertTrue(context.getDoorStatus("door3"));
 		assertFalse(context.getDoorStatus("door2"));
@@ -82,7 +84,7 @@ public class LabRecruitsRandomEFSMTest {
 		assertNotNull(testEFSM.transition("b2"));
 		assertNotNull(testEFSM.transition(""));
 		// check if door2 is open
-		context = (LabRecruitsContext) testEFSM.getConfiguration().getContext();
+		context = testEFSM.getConfiguration().getContext();
 		assertTrue(context.getDoorStatus("door2"));
 
 	}
@@ -97,7 +99,8 @@ public class LabRecruitsRandomEFSMTest {
 		
 		
 		// generate and EFSM
-		EFSM testEFSM = labRecruitsRandomEFSM.generateLevel();
+		EFSM<LabRecruitsState, String, LabRecruitsContext, 
+		Transition<LabRecruitsState, String, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.generateLevel();
 		String levelId = "data/level2";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
@@ -123,7 +126,7 @@ public class LabRecruitsRandomEFSMTest {
 		assertNotNull(testEFSM.transition("d1+"));
 		assertNotNull(testEFSM.transition("d1-"));
 		// all doors in the room  (door0, door1, door3, and door4) should be open
-		context = (LabRecruitsContext) testEFSM.getConfiguration().getContext();
+		context = testEFSM.getConfiguration().getContext();
 		assertTrue(context.getDoorStatus("door0"));
 		assertTrue(context.getDoorStatus("door1"));
 		assertTrue(context.getDoorStatus("door3"));
@@ -132,7 +135,7 @@ public class LabRecruitsRandomEFSMTest {
 		assertNotNull(testEFSM.transition("b11"));
 		assertNotNull(testEFSM.transition(""));
 		// doors door0 and door4 are now closed
-		context = (LabRecruitsContext) testEFSM.getConfiguration().getContext();
+		context = testEFSM.getConfiguration().getContext();
 		assertFalse(context.getDoorStatus("door0"));
 		assertTrue(context.getDoorStatus("door1"));
 		assertTrue(context.getDoorStatus("door3"));
@@ -146,16 +149,16 @@ public class LabRecruitsRandomEFSMTest {
 		assertNotNull(testEFSM.transition("d6-"));
 		assertNotNull(testEFSM.transition("d6+"));
 		// buttons b8 and b9 are dummy
-		context = (LabRecruitsContext) testEFSM.getConfiguration().getContext();
+		context = testEFSM.getConfiguration().getContext();
 		assertNotNull(testEFSM.transition("b8"));
 		assertNotNull(testEFSM.transition(""));
-		LabRecruitsContext context2 =  (LabRecruitsContext) testEFSM.getConfiguration().getContext(); 
+		LabRecruitsContext context2 =  testEFSM.getConfiguration().getContext(); 
 		for(String door: context.keySet()) {
 			assertTrue(context.get(door).getStatus().equals(context2.get(door).getStatus()));
 		}
 		assertNotNull(testEFSM.transition("b9"));
 		assertNotNull(testEFSM.transition(""));
-		context2 =  (LabRecruitsContext) testEFSM.getConfiguration().getContext(); 
+		context2 =  testEFSM.getConfiguration().getContext(); 
 		for(String door: context.keySet()) {
 			assertTrue(context.get(door).getStatus().equals(context2.get(door).getStatus()));
 		}
@@ -170,7 +173,8 @@ public class LabRecruitsRandomEFSMTest {
 		labRecruitsRandomEFSM.set_nDoors(10);
 
 		// generate and EFSM
-		EFSM testEFSM = labRecruitsRandomEFSM.generateLevel();
+		EFSM<LabRecruitsState, String, LabRecruitsContext, 
+		Transition<LabRecruitsState, String, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.generateLevel();
 		String levelId = "data/level3";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
@@ -201,7 +205,8 @@ public class LabRecruitsRandomEFSMTest {
 		labRecruitsRandomEFSM.set_meanButtonsPerRoom(4);
 
 		// generate and EFSM
-		EFSM testEFSM = labRecruitsRandomEFSM.generateLevel();
+		EFSM<LabRecruitsState, String, LabRecruitsContext, 
+		Transition<LabRecruitsState, String, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.generateLevel();
 		String levelId = "data/level4";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);

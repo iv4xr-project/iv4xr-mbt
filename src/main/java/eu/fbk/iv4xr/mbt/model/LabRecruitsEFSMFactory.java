@@ -8,6 +8,7 @@ import java.util.HashSet;
 import de.upb.testify.efsm.EFSM;
 import de.upb.testify.efsm.EFSMBuilder;
 import de.upb.testify.efsm.Transition;
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.se.labrecruits.LabRecruitsContext;
 import eu.fbk.se.labrecruits.LabRecruitsDoor;
 import eu.fbk.se.labrecruits.LabRecruitsDoorTravelTransition;
@@ -19,29 +20,45 @@ import eu.fbk.se.labrecruits.LabRecruitsToggleTransition;
  * @author kifetew
  *
  */
-public class LabRecruitsEFSMFactory implements EFSMFactory {
+public class LabRecruitsEFSMFactory {
 
+	
+	private static LabRecruitsEFSMFactory instance;
+	protected EFSM<LabRecruitsState, String, LabRecruitsContext, 
+		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm;
+	
+	
 	/**
 	 * 
 	 */
-	public LabRecruitsEFSMFactory() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public EFSM getEFSM(String scenarioId) {
-		EFSM model = null;
-		switch (scenarioId) {
+	private LabRecruitsEFSMFactory() {
+		switch (MBTProperties.SUT_EFSM) {
 		case "buttons_doors_1" :
-			model = getRoomReachabilityModel ();
+			efsm = getRoomReachabilityModel ();
+			break;
+		case "random_default" :
+			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
+			efsm = randomGenerator.generateLevel();
 			break;
 		default:
-			throw new RuntimeException("Unrecognized scenarioID: " + scenarioId);
+			throw new RuntimeException("Unrecognized scenarioID: " + MBTProperties.SUT_EFSM);
 		}
-		
-		return model;
 	}
 
-	private EFSM getRoomReachabilityModel() {
+	public static LabRecruitsEFSMFactory getInstance() {
+		if (instance == null) {
+			instance = new LabRecruitsEFSMFactory();
+		}
+		return instance;
+	}
+
+	public EFSM<LabRecruitsState, String, LabRecruitsContext, 
+	Transition<LabRecruitsState, String, LabRecruitsContext>> getEFSM() {
+		return efsm;
+	}
+	
+	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
+	Transition<LabRecruitsState, String, LabRecruitsContext>> getRoomReachabilityModel() {
 		/**
 		 * Doors
 		 * 	Define set of buttons that act on the door

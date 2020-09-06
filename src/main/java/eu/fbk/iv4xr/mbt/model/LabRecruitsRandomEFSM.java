@@ -66,7 +66,8 @@ public class LabRecruitsRandomEFSM {
 	private Pseudograph<Vector<LabRecruitsState>,Integer>  doorsGraph = new Pseudograph<>(Integer.class);
 	
 	// final efsm
-	private EFSM efsm = null; // to fix
+	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
+	Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = null; // to fix
 	
 	// Default parameters
 	public LabRecruitsRandomEFSM() {
@@ -109,7 +110,8 @@ public class LabRecruitsRandomEFSM {
 	 * Generate a random level 
 	 * @return and EFSM
 	 */
-	public EFSM generateLevel()  {	
+	public EFSM<LabRecruitsState, String, LabRecruitsContext, 
+	Transition<LabRecruitsState, String, LabRecruitsContext>> generateLevel()  {	
 	    // generate a list of rooms
 		// each room is a vector of buttons
 		List<Vector<LabRecruitsState>> roomSet = generateRoomSet();	
@@ -263,7 +265,8 @@ public class LabRecruitsRandomEFSM {
 	 * of a door, and has to be totally connected with the buttons in the respective room.
 	 * @return an EFSM
 	 */
-	private EFSM doorsGraphToEFSM() {
+	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
+	Transition<LabRecruitsState, String, LabRecruitsContext>> doorsGraphToEFSM() {
 		
 		// create the EFSM builder
 		EFSMBuilder	labRecruitsBuilder = new EFSMBuilder(EFSM.class);

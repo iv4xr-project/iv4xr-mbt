@@ -3,15 +3,19 @@
  */
 package eu.fbk.iv4xr.mbt.coverage;
 
-import java.util.List;
-
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.FitnessFunction;
 
 /**
  * @author kifetew
  *
  */
-public class PathCoverageGoal implements CoverageGoal {
+public class PathCoverageGoal extends FitnessFunction<Chromosome> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8117932676170582125L;
 
 	/**
 	 * 
@@ -21,15 +25,17 @@ public class PathCoverageGoal implements CoverageGoal {
 	}
 
 	@Override
-	public boolean isCovered(Testcase testcase) {
+	public double getFitness(Chromosome individual) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean isMaximizationFunction() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isCovered(List<Testcase> testSuite) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

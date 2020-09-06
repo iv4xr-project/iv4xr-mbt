@@ -3,15 +3,13 @@
  */
 package eu.fbk.iv4xr.mbt.algorithm;
 
-import java.util.List;
-
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import org.evosuite.ga.metaheuristics.SearchAlgorithm;
 
 /**
  * @author kifetew
  *
  */
-public class ModelCheckingBasedAlgorithm implements Algorithm {
+public class ModelCheckingBasedAlgorithm implements SearchAlgorithm {
 
 	/**
 	 * 
@@ -21,9 +19,8 @@ public class ModelCheckingBasedAlgorithm implements Algorithm {
 	}
 
 	@Override
-	public List<Testcase> generateSolution() {
+	public void generateSolution() {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

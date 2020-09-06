@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import de.upb.testify.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory;
 
 /**
@@ -21,10 +22,10 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSM() {
-		LabRecruitsEFSMFactory efsmFactory = new LabRecruitsEFSMFactory();
+		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
-		String scenarioId = "buttons_doors_1";
-		EFSM efsm = efsmFactory.getEFSM(scenarioId);
+		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
 		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
 		assertNotNull (testFactory);
@@ -35,10 +36,10 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSMInt() {
-		LabRecruitsEFSMFactory efsmFactory = new LabRecruitsEFSMFactory();
+		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
-		String scenarioId = "buttons_doors_1";
-		EFSM efsm = efsmFactory.getEFSM(scenarioId);
+		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
 		int maxLength = 20;
 		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm, maxLength);
@@ -52,10 +53,10 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testGetTestcase() {
-		LabRecruitsEFSMFactory factory = new LabRecruitsEFSMFactory();
-		assertNotNull(factory);
-		String scenarioId = "buttons_doors_1";
-		EFSM efsm = factory.getEFSM(scenarioId);
+		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		assertNotNull(efsmFactory);
+		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
 		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
 		assertNotNull(testFactory);
@@ -65,4 +66,22 @@ public class RandomLengthTestFactoryTest {
 		
 	}
 
+	/**
+	 * Test method for {@link eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory#getTestcase()}.
+	 */
+	@Test
+	public void testGetTestcaseFromRandomModel() {
+		MBTProperties.SUT_EFSM = "random_default";
+		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		assertNotNull(efsmFactory);
+		EFSM efsm = efsmFactory.getEFSM();
+		assertNotNull (efsm);
+		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
+		assertNotNull(testFactory);
+		Testcase testcase = testFactory.getTestcase();
+		assertNotNull(testcase);
+		System.out.println(((AbstractTestSequence) testcase).toDot());
+		
+	}
+	
 }
