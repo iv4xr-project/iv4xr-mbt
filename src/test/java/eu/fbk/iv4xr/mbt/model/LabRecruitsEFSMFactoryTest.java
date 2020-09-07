@@ -57,7 +57,7 @@ public class LabRecruitsEFSMFactoryTest {
 	@Test
 	public void testGetRandomEFSM1() {
 		MBTProperties.SUT_EFSM = "random_default";
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance();
+		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(factory);
 		EFSM<LabRecruitsState, String, LabRecruitsContext, 
 		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = factory.getEFSM();

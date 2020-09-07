@@ -52,6 +52,13 @@ public class LabRecruitsEFSMFactory {
 		return instance;
 	}
 
+	public static LabRecruitsEFSMFactory getInstance(boolean reset) {
+		if (reset || instance == null) {
+			instance = new LabRecruitsEFSMFactory();
+		}
+		return instance;
+	}
+	
 	public EFSM<LabRecruitsState, String, LabRecruitsContext, 
 	Transition<LabRecruitsState, String, LabRecruitsContext>> getEFSM() {
 		return efsm;
