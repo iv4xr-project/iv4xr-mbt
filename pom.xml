@@ -66,9 +66,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.evosuite</groupId>
-			<artifactId>evosuite-client</artifactId>
-			<version>1.0.7-SNAPSHOT</version>
+			<groupId>com.github.EvoSuite</groupId>
+			<artifactId>evosuite</artifactId>
+			<version>master-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
