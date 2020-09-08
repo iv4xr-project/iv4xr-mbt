@@ -3,13 +3,12 @@
  */
 package eu.fbk.iv4xr.mbt;
 
-import java.util.List;
-
+import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
-import org.evosuite.testsuite.TestSuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
+import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
@@ -25,13 +24,13 @@ public class Main {
 	 * 
 	 */
 	public Main() {
-		generationStrategy = new SearchBasedStrategy();
+		generationStrategy = new SearchBasedStrategy<Chromosome>();
 	}
 
 	
 	private void run () {
 		SuiteChromosome solution = generationStrategy.generateTests();
-		System.out.println(solution.getFitness());
+		System.out.println(((AbstractTestSequence)solution.getTestChromosome(0).getTestcase()).toDot());
 	}
 	
 	/**
@@ -40,7 +39,7 @@ public class Main {
 	public static void main(String[] args) {
 		Main main = new Main ();
 		main.run();
-
+		System.exit(0);
 	}
 
 }

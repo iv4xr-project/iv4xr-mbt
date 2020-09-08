@@ -9,7 +9,6 @@ import org.evosuite.ga.FitnessFunction;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
 import eu.fbk.se.labrecruits.LabRecruitsState;
 
 /**
@@ -34,18 +33,19 @@ public class StateCoverageGoal extends FitnessFunction<Chromosome> {
 
 	@Override
 	public double getFitness(Chromosome individual) {
-		double f = -1;
+		double fitness = -1;
 		if (individual instanceof MBTChromosome) {
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			Path path = testcase.getPath();
 			if (path.getStates().contains(state)) {
-				f = 0;
+				fitness = 0;
 			}else {
-				f = 1;
+				fitness = 1;
 			}
 		}
-		return f;
+		updateIndividual(individual, fitness);
+		return fitness;
 	}
 
 	@Override

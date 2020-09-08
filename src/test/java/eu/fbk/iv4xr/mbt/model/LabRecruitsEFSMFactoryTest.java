@@ -37,7 +37,7 @@ public class LabRecruitsEFSMFactoryTest {
 	@Test
 	public void testGetEFSM() {
 		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance();
+		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(factory);
 		EFSM<LabRecruitsState, String, LabRecruitsContext, 
 		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = factory.getEFSM();

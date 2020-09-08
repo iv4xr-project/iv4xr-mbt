@@ -96,4 +96,12 @@ public class AbstractTestSequence implements Testcase {
 		}
 	}
 	
+	@Override
+	public Testcase clone() throws CloneNotSupportedException {
+		AbstractTestSequence clone = new AbstractTestSequence();
+		clone.setPath((Path) path.clone());
+		clone.setFitness(fitness);
+		return clone;
+	}
+	
 }

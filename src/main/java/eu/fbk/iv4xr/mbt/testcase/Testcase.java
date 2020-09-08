@@ -17,4 +17,7 @@ public interface Testcase extends Comparable<Testcase> {
 	
 	
 	public double getFitness ();
+
+
+	public Testcase clone() throws CloneNotSupportedException;
 }

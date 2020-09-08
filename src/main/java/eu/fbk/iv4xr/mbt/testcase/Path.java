@@ -26,4 +26,11 @@ public class Path extends EFSMPath {
 	public Path(Transition... transitions) {
 		super(Arrays.asList(transitions));
 	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		//FIXME we need a proper clone implementation, this is just a placeholder!!
+		Path clone = new Path(transitions);
+		return clone;
+	}
 }

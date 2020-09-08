@@ -49,7 +49,7 @@ public class StateCoverageGoalFactory implements CoverageGoalFactory<StateCovera
 
 	@Override
 	public double getFitness(Chromosome suite) {
-		// TODO Auto-generated method stub
+		// compute the overall fitness of the testsuite chromosome
 		return 0;
 	}
 

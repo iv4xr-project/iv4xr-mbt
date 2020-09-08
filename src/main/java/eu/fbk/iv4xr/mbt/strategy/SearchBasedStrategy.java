@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.strategy;
 
 import java.util.List;
 
+import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
@@ -27,8 +28,25 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	/**
+	 * Set some Evosuite global parameters that control properties of the search algorithms
+	 */
+	private static void configureEvosuiteSettings () {
+		// TODO currently Archive supports only TestChromosome/TestSuiteChromosome
+		// we should extend it to include other types of chromosomes, e.g., MBTChromosome
+		// and use it externally, since Evosuite is just a library here
+		Properties.TEST_ARCHIVE = false;
+		
+		
+	}
+	
 	@Override
 	public SuiteChromosome generateTests() {
+		
+		// set some Evosuite properties that control the search algorithms
+		configureEvosuiteSettings();
+		
 		AlgorithmFactory<T> algorithmFactory = new AlgorithmFactory<T>();
 		
 		

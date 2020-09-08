@@ -3,6 +3,8 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
+import javax.management.RuntimeErrorException;
+
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
@@ -43,20 +45,34 @@ public class MBTChromosome extends ExecutableChromosome {
 
 	@Override
 	public Chromosome clone() {
-		// TODO Auto-generated method stub
-		return null;
+		//FIXME implement correctly, this is only a placeholder!
+		MBTChromosome clone = new MBTChromosome();
+		try {
+			clone.setTestcase(testcase.clone());
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getCause());
+		}
+		return clone;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MBTChromosome other = (MBTChromosome) obj;
+		if (testcase == null) {
+			return other.testcase == null;
+		} else return testcase.equals(other.testcase);
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
+		return testcase.hashCode();
 	}
 
 	@Override
@@ -85,8 +101,7 @@ public class MBTChromosome extends ExecutableChromosome {
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return testcase.getLength();
 	}
 
 	/**

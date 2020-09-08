@@ -66,6 +66,8 @@ import org.evosuite.utils.ResourceController;
 
 import de.upb.testify.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
+import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
@@ -225,21 +227,13 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	}
 	
 	protected CrossOverFunction getCrossoverFunction() {
-		switch (Properties.CROSSOVER_FUNCTION) {
+		switch (MBTProperties.CROSSOVER_FUNCTION) {
 		case SINGLEPOINTFIXED:
-			return new SinglePointFixedCrossOver();
+			return new SinglePointPathCrossOver();
 		case SINGLEPOINTRELATIVE:
-			return new SinglePointRelativeCrossOver();
+			return new SinglePointRelativePathCrossOver();
 		case SINGLEPOINT:
-			return new SinglePointCrossOver();
-		case COVERAGE:
-			if (Properties.STRATEGY != Properties.Strategy.EVOSUITE)
-				throw new RuntimeException(
-				        "Coverage crossover function requires test suite mode");
-
-			return new org.evosuite.ga.operators.crossover.CoverageCrossOver();
-		case UNIFORM:
-			return new UniformCrossOver();
+			return new SinglePointPathCrossOver();
 		default:
 			throw new RuntimeException("Unknown crossover function: "
 			        + Properties.CROSSOVER_FUNCTION);
