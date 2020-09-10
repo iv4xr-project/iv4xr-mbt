@@ -33,6 +33,11 @@ class StateCoverageGoalFactoryTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		
+		//FIXME this is a workaround to fix failing tests due to static a static field in model factory
+		// this call (with parameter reset=true) forces the model factory to load the correct model
+		// as indicated by the MBTProperties.SUT_EFSM property
+		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
 	}
 
 	/**

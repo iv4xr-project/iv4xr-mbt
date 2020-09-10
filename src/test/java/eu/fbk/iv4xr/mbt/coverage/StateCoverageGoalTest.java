@@ -53,7 +53,7 @@ class StateCoverageGoalTest {
 	 */
 	@Test
 	void testGetFitnessChromosome() {
-		LabRecruitsEFSMFactory mFactory = LabRecruitsEFSMFactory.getInstance();
+		LabRecruitsEFSMFactory mFactory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(mFactory);
 		EFSM<LabRecruitsState, String, LabRecruitsContext, 
 		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = mFactory.getEFSM();
