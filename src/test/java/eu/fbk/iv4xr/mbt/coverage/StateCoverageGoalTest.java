@@ -67,6 +67,7 @@ class StateCoverageGoalTest {
 		assertNotNull(stateGoal);
 		
 		double fitness = stateGoal.getFitness(chromosome);
+		System.out.println("Fitness: " + fitness);
 		assertTrue (fitness == 0d);
 	}
 
