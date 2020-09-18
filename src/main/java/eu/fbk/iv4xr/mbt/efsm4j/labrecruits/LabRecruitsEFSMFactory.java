@@ -1,20 +1,22 @@
 /**
  * 
  */
-package eu.fbk.iv4xr.mbt.model;
+package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import java.util.HashSet;
 
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.EFSMBuilder;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.EFSMBuilder;
+//import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.se.labrecruits.LabRecruitsContext;
-import eu.fbk.se.labrecruits.LabRecruitsDoor;
-import eu.fbk.se.labrecruits.LabRecruitsDoorTravelTransition;
-import eu.fbk.se.labrecruits.LabRecruitsFreeTravelTransition;
-import eu.fbk.se.labrecruits.LabRecruitsState;
-import eu.fbk.se.labrecruits.LabRecruitsToggleTransition;
+//import eu.fbk.se.labrecruits.LabRecruitsContext;
+//import eu.fbk.se.labrecruits.LabRecruitsDoor;
+//import eu.fbk.se.labrecruits.LabRecruitsDoorTravelTransition;
+//import eu.fbk.se.labrecruits.LabRecruitsFreeTravelTransition;
+//import eu.fbk.se.labrecruits.LabRecruitsState;
+//import eu.fbk.se.labrecruits.LabRecruitsToggleTransition;
+
+import eu.fbk.iv4xr.mbt.efsm4j.*;
 
 /**
  * @author kifetew

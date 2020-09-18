@@ -8,7 +8,9 @@ import org.evosuite.ga.ChromosomeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+
 
 /**
  * @author kifetew

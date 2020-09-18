@@ -6,17 +6,25 @@ package eu.fbk.iv4xr.mbt.coverage;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory;
-import eu.fbk.se.labrecruits.LabRecruitsContext;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+
+
+
+
 
 /**
  * @author kifetew

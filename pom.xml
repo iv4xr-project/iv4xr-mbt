@@ -18,19 +18,17 @@
 		<junit.vintage.version>5.6.0</junit.vintage.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
 	</properties>
-
+ 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
-				<!-- <configuration>
-					<reuseForks>false</reuseForks>
-					<forkCount>1</forkCount>
-				</configuration> -->
+				<configuration> <reuseForks>false</reuseForks> <forkCount>1</forkCount> 
+					</configuration>
 				<dependencies>
-					<!-- let surefire run JUnit 4 but also JUnit 5 tests -->
+					<!--  let surefire run JUnit 4 but also JUnit 5 tests -->
 					<dependency>
 						<groupId>org.junit.platform</groupId>
 						<artifactId>junit-platform-surefire-provider</artifactId>
@@ -42,16 +40,18 @@
 						<artifactId>junit-vintage-engine</artifactId>
 						<version>${junit.vintage.version}</version>
 					</dependency>
-					<!-- let JUnit 5 engine run JUnit 5 tests -->
+					<!--  let JUnit 5 engine run JUnit 5 tests -->
 					<dependency>
 						<groupId>org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-engine</artifactId>
 						<version>${junit.jupiter.version}</version>
 					</dependency>
+
 				</dependencies>
 			</plugin>
 		</plugins>
-	</build>
+	</build> 
+
 
 
 	<repositories>
@@ -64,18 +64,28 @@
 
 
 	<dependencies>
-		<dependency>
-			<!-- iv4xr github repository -->
-			<groupId>com.github.iv4xr-project</groupId>
-			<artifactId>iv4xrdemo-efsm</artifactId>
-			<version>master-SNAPSHOT</version>
-		</dependency>
 
 		<dependency>
-			<groupId>com.github.mbenz89</groupId>
-			<artifactId>EFSM4J</artifactId>
-			<version>master-SNAPSHOT</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
 		</dependency>
+
+		<!-- iv4xr github repository -->
+		<!-- dependency> <groupId>com.github.iv4xr-project</groupId> <artifactId>iv4xrdemo-efsm</artifactId> 
+			<version>master-SNAPSHOT</version> </dependency -->
+
+		<!-- EFSM4J imported in eu.fbk.iv4xr.mbt.efsm4j -->
+		<!-- dependency> <groupId>com.github.mbenz89</groupId> <artifactId>EFSM4J</artifactId> 
+			<version>master-SNAPSHOT</version> </dependency -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
 		<dependency>
@@ -103,6 +113,15 @@
 			<artifactId>evosuite</artifactId>
 			<version>master-SNAPSHOT</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>28.0-jre</version>
+		</dependency>
+
+
 
 	</dependencies>
 </project>

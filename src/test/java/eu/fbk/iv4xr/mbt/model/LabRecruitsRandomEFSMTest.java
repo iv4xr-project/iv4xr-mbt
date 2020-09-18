@@ -14,11 +14,15 @@ import org.jgrapht.io.ExportException;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.upb.testify.efsm.Configuration;
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.Transition;
-import eu.fbk.se.labrecruits.LabRecruitsContext;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+//import de.upb.testify.efsm.Configuration;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.Transition;
+//import eu.fbk.se.labrecruits.LabRecruitsContext;
+//import eu.fbk.se.labrecruits.LabRecruitsState;
+
+import eu.fbk.iv4xr.mbt.efsm4j.*;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
+
 
 /**
  * @author Davide Prandi

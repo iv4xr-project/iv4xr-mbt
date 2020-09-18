@@ -1,4 +1,4 @@
-package eu.fbk.iv4xr.mbt.model;
+package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
@@ -22,8 +22,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.function.Function;
 
-import de.upb.testify.efsm.*;
-import eu.fbk.se.labrecruits.*;
+//import de.upb.testify.efsm.*;
+//import eu.fbk.se.labrecruits.*;
+import eu.fbk.iv4xr.mbt.efsm4j.*;
 
 /**
  * 

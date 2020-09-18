@@ -5,7 +5,8 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Iterator;
 
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 /**
  * @author kifetew

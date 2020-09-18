@@ -64,7 +64,9 @@ import org.evosuite.testsuite.secondaryobjectives.TestSuiteSecondaryObjective;
 import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
 
-import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
@@ -73,7 +75,6 @@ import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoalFactory;
-import eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import sun.misc.Signal;
 

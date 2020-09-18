@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 
 /**
  * @author kifetew

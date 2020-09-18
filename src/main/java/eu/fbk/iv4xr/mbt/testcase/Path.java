@@ -5,10 +5,13 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 
-import de.upb.testify.efsm.EFSMPath;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.EFSMPath;
+//import de.upb.testify.efsm.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+
 
 /**
  * @author kifetew

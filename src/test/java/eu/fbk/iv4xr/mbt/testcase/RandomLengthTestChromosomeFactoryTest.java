@@ -7,9 +7,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory;
 
 /**
  * @author kifetew

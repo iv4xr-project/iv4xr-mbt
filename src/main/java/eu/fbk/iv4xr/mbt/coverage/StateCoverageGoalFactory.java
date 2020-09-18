@@ -10,12 +10,21 @@ import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
 
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
-import eu.fbk.se.labrecruits.LabRecruitsContext;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+
+
+
+
+//import eu.fbk.se.labrecruits.LabRecruitsContext;
+//import eu.fbk.se.labrecruits.LabRecruitsState;
 
 /**
  * @author kifetew

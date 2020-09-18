@@ -10,11 +10,13 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.*;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.se.labrecruits.LabRecruitsContext;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+//import eu.fbk.se.labrecruits.LabRecruitsContext;
+//import eu.fbk.se.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
 
 /**
  * @author kifetew
@@ -23,7 +25,7 @@ import eu.fbk.se.labrecruits.LabRecruitsState;
 public class LabRecruitsEFSMFactoryTest {
 
 	/**
-	 * Test method for {@link eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory#LabRecruitsEFSMFactory()}.
+	 * Test method for {@link eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory#LabRecruitsEFSMFactory()}.
 	 */
 	@Test
 	public void testLabRecruitsEFSMFactory() {
@@ -32,7 +34,7 @@ public class LabRecruitsEFSMFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link eu.fbk.iv4xr.mbt.model.LabRecruitsEFSMFactory#getEFSM(java.lang.String)}.
+	 * Test method for {@link eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory#getEFSM(java.lang.String)}.
 	 */
 	@Test
 	public void testGetEFSM() {

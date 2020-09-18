@@ -8,11 +8,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.upb.testify.efsm.Configuration;
-import de.upb.testify.efsm.EFSM;
-import de.upb.testify.efsm.Transition;
+//import de.upb.testify.efsm.Configuration;
+//import de.upb.testify.efsm.EFSM;
+//import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.utils.Randomness;
-import eu.fbk.se.labrecruits.LabRecruitsState;
+//import eu.fbk.se.labrecruits.LabRecruitsState;
+
+import eu.fbk.iv4xr.mbt.efsm4j.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+
 
 /**
  * @author kifetew
@@ -42,7 +46,9 @@ public class RandomLengthTestFactory implements TestFactory {
 		Testcase testcase = new AbstractTestSequence();
 		int randomLength = Randomness.nextInt(maxLength) + 1;
 		Configuration initialConfiguration = model.getInitialConfiguration();
-		LabRecruitsState currentState = (LabRecruitsState) initialConfiguration.getState();
+		//LabRecruitsState currentState = (LabRecruitsState) initialConfiguration.getState();
+		EFSMState currentState = (EFSMState) initialConfiguration.getState();
+		
 		
 		Collection<Transition> transitions = new HashSet<Transition>();
 		int len = 0;
@@ -56,8 +62,9 @@ public class RandomLengthTestFactory implements TestFactory {
 			transitions.add(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
-			currentState = (LabRecruitsState) transition.getTgt();
-			// until maxLength is reached or final state is reached
+			//currentState = (LabRecruitsState) transition.getTgt();
+			currentState = (EFSMState) transition.getTgt();
+			//// until maxLength is reached or final state is reached
 			len++;
 		}
 		
