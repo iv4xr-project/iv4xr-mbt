@@ -9,7 +9,10 @@ import org.junit.Test;
 
 //import de.upb.testify.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFPAlgo;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 
 /**
@@ -85,4 +88,25 @@ public class RandomLengthTestFactoryTest {
 		
 	}
 	
+	
+	/**
+	 * Test method for {@link eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory#getTestcase()}.
+	 */
+	@Test
+	public void testGetFeasibleTestcase() {
+		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		assertNotNull(efsmFactory);
+		EFSM efsm = efsmFactory.getEFSM();
+		assertNotNull (efsm);
+		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
+		assertNotNull(testFactory);
+		Testcase testcase = testFactory.getTestcase();
+		assertNotNull(testcase);
+		System.out.println(((AbstractTestSequence) testcase).toDot());
+		LabRecruitsFPAlgo fpAlgo = new LabRecruitsFPAlgo(efsm);
+		LabRecruitsState tgt = new LabRecruitsState("TR");
+		EFSMPath path = fpAlgo.getShortestPath(efsm.getConfiguration(), tgt);
+		System.out.println(new Path(path.getTransitions()).toDot());
+	}
 }

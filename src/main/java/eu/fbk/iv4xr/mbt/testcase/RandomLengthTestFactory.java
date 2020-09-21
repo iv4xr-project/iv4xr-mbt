@@ -6,6 +6,7 @@ package eu.fbk.iv4xr.mbt.testcase;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 //import de.upb.testify.efsm.Configuration;
@@ -22,13 +23,13 @@ import eu.fbk.iv4xr.mbt.efsm4j.*;
  * @author kifetew
  *
  */
-public class RandomLengthTestFactory implements TestFactory {
+public class RandomLengthTestFactory<State, Parameter, Context extends IEFSMContext<Context>, Trans extends Transition<State, Parameter, Context>> implements TestFactory {
 	private int maxLength = 100;
-	EFSM model = null;
+	EFSM<State, Parameter, Context, Trans> model = null;
 	/**
 	 * 
 	 */
-	public RandomLengthTestFactory(EFSM efsm) {
+	public RandomLengthTestFactory(EFSM<State, Parameter, Context, Trans> efsm) {
 		model = efsm;
 	}
 
@@ -36,7 +37,7 @@ public class RandomLengthTestFactory implements TestFactory {
 	/**
 	 * 
 	 */
-	public RandomLengthTestFactory(EFSM efsm, int max) {
+	public RandomLengthTestFactory(EFSM<State, Parameter, Context, Trans> efsm, int max) {
 		model = efsm;
 		maxLength = max;
 	}
@@ -47,28 +48,36 @@ public class RandomLengthTestFactory implements TestFactory {
 		int randomLength = Randomness.nextInt(maxLength) + 1;
 		Configuration initialConfiguration = model.getInitialConfiguration();
 		//LabRecruitsState currentState = (LabRecruitsState) initialConfiguration.getState();
-		EFSMState currentState = (EFSMState) initialConfiguration.getState();
+		State currentState = (State)initialConfiguration.getState();
 		
 		
-		Collection<Transition> transitions = new HashSet<Transition>();
+		Collection<Trans> transitions = new LinkedList<Trans>();
+		Collection<Parameter> parameters = new LinkedList<Parameter>();
 		int len = 0;
 		
 		// loop until random length reached or current state has not outgoing transitions (final?)
 		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
-			Set<Transition> outgoingTransitions = model.transitionsOutOf(currentState);
+			Set<Trans> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
-			Transition transition = Randomness.choice(outgoingTransitions);
+			Trans transition = Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
+			
+			// pick random parameter values for the transition
+//			if (Randomness.nextBoolean()) {
+//				parameters.add((Parameter) "");
+//			}else {
+				parameters.add((Parameter) ((EFSMState)transition.getTgt()).getId());
+//			}
 			
 			// take the state at the end of the chosen transition, and repeat
 			//currentState = (LabRecruitsState) transition.getTgt();
-			currentState = (EFSMState) transition.getTgt();
+			currentState = transition.getTgt();
 			//// until maxLength is reached or final state is reached
 			len++;
 		}
 		
-		Path path = new Path (transitions);
+		Path path = new Path (transitions, parameters);
 		((AbstractTestSequence)testcase).setPath(path);
 		return testcase;
 	}

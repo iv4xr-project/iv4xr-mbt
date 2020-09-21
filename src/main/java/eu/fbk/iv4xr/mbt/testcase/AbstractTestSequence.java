@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Iterator;
 
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
@@ -12,9 +13,13 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
  * @author kifetew
  *
  */
-public class AbstractTestSequence implements Testcase {
+public class AbstractTestSequence<
+State,
+Parameter,
+Context extends IEFSMContext<Context>,
+Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements Testcase {
 
-	private Path path;
+	private Path<State, Parameter, Context, Trans> path;
 	
 	private double fitness = 0d;
 	
@@ -28,14 +33,14 @@ public class AbstractTestSequence implements Testcase {
 	/**
 	 * @return the path
 	 */
-	public Path getPath() {
+	public Path<State, Parameter, Context, Trans> getPath() {
 		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path path) {
+	public void setPath(Path<State, Parameter, Context, Trans> path) {
 		this.path = path;
 	}
 	
@@ -44,18 +49,7 @@ public class AbstractTestSequence implements Testcase {
 	 * @return path in DOT format
 	 */
 	public String toDot() {
-		String string = "";
-		if (path != null) {
-			int i = 1;
-			string += "digraph g {\n";
-			Iterator iterator = path.iterator();
-			while (iterator.hasNext()) {
-				Transition t = (Transition) iterator.next();
-				string += "'" + t.getSrc() + "' -> '" + t.getTgt() + "' [label = \"" + i++ + "\"];\n";
-			}
-			string += "}";
-		} 
-		return string;
+		return path.toDot();
 	}
 
 	public int getLength() {

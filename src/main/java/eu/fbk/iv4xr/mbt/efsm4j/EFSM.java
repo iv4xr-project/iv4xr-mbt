@@ -2,6 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
@@ -17,12 +18,12 @@ public class EFSM<
     Context extends IEFSMContext<Context>,
     Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
   public static final String PROP_CONFIGURATION = "PROP_CONFIGURATION";
-  private final Context initialContext;
-  private final State initialState;
-  private final PropertyChangeSupport pcs;
+  protected final Context initialContext;
+  protected final State initialState;
+  protected final PropertyChangeSupport pcs;
   protected State curState;
   protected Context curContext;
-  private ListenableGraph<State, Transition> baseGraph;
+  protected ListenableGraph<State, Transition> baseGraph;
 
   protected EFSM(Graph<State, Transition> baseGraph, State initialState, Context initalContext) {
     this.curState = this.initialState = initialState;
@@ -159,7 +160,7 @@ public class EFSM<
     forceConfiguration(new Configuration<>(initialState, initialContext));
   }
 
-  protected ListenableGraph<State, Transition> getBaseGraph() {
+  public ListenableGraph<State, Transition> getBaseGraph() {
     return baseGraph;
   }
 
@@ -207,4 +208,48 @@ public class EFSM<
           PROP_CONFIGURATION, prefConfig, Pair.of(getConfiguration(), null));
     }
   }
+  
+  
+  /**
+   * below are methods added for "executing" test cases on the model
+   */
+  /**
+	 * Checks if the given input leads to a new configuration, returns the output
+	 * for the transition taken.
+	 *
+	 * @param input, transition
+	 * @return The output for the taken transition or null if the input is not
+	 *         accepted in the current configuration
+	 */
+	public Set<Parameter> transition(Parameter input, Transition transition) {
+		if (transition.isFeasible(input, curContext)) {
+			Configuration<State, Context> prevConfig = null;
+			if (pcs != null) {
+				prevConfig = getConfiguration();
+			}
+			curState = transition.getTgt();
+			Set<Parameter> output = transition.take(input, curContext);
+			if (pcs != null) {
+				pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
+			}
+			return output;
+		}
+
+		return null;
+	}
+
+	public boolean applyTransitions(List<Transition> transitions, List<Parameter> parameters) {
+		boolean success = true;
+		for (int i = 0; i < transitions.size(); i++) {
+			Transition t = transitions.get(i);
+			Parameter p = parameters.get(i);
+			Set<Parameter> output = transition(p, t);
+			if (output == null) {
+				success = false;
+				break;
+			}
+		}
+		return success;
+	}
+  
 }

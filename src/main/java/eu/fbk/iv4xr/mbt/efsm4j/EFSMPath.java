@@ -30,7 +30,7 @@ public class EFSMPath<
     this.transitions = new LinkedList<>(basePath.transitions);
   }
 
-  protected EFSMPath(GraphPath<State, Transition> basePath) {
+  public EFSMPath(GraphPath<State, Transition> basePath) {
 
     transitions = new LinkedList<>(basePath.getEdgeList());
   }

@@ -9,11 +9,27 @@ package eu.fbk.iv4xr.mbt.execution;
  */
 public class ExecutionResult {
 
+	private boolean success;
+	
 	/**
 	 * 
 	 */
 	public ExecutionResult() {
-		// TODO Auto-generated constructor stub
+		success = false;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public boolean isSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 
 }

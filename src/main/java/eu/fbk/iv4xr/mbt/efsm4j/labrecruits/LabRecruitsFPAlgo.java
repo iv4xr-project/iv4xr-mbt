@@ -10,6 +10,12 @@ package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import java.util.List;
 
+import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.BellmanFordShortestPath;
+import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.ListenableUndirectedGraph;
+
 import eu.fbk.iv4xr.mbt.efsm4j.Configuration;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
@@ -45,4 +51,13 @@ public class LabRecruitsFPAlgo extends
 		return false;
 	}
 
+	public EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> getShortestPath (Configuration<LabRecruitsState, LabRecruitsContext> config, LabRecruitsState tgt){
+		
+		BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>> algorithm = new BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>>(efsm.getBaseGraph() );
+		GraphPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>> path = algorithm.getPath(config.getState(), tgt);
+		
+		EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> 
+		shortestPath = new EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState,String,LabRecruitsContext>>(path);
+		return shortestPath;
+	}
 }
