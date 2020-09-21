@@ -64,11 +64,11 @@ public class RandomLengthTestFactory<State, Parameter, Context extends IEFSMCont
 			transitions.add(transition);
 			
 			// pick random parameter values for the transition
-//			if (Randomness.nextBoolean()) {
-//				parameters.add((Parameter) "");
-//			}else {
+			if (Randomness.nextDouble() < 0.1) {
+				parameters.add((Parameter) "");
+			}else {
 				parameters.add((Parameter) ((EFSMState)transition.getTgt()).getId());
-//			}
+			}
 			
 			// take the state at the end of the chosen transition, and repeat
 			//currentState = (LabRecruitsState) transition.getTgt();
