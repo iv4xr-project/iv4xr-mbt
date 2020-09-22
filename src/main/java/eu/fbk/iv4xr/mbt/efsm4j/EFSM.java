@@ -238,18 +238,18 @@ public class EFSM<
 		return null;
 	}
 
-	public boolean applyTransitions(List<Transition> transitions, List<Parameter> parameters) {
-		boolean success = true;
-		for (int i = 0; i < transitions.size(); i++) {
-			Transition t = transitions.get(i);
-			Parameter p = parameters.get(i);
-			Set<Parameter> output = transition(p, t);
-			if (output == null) {
-				success = false;
-				break;
-			}
-		}
-		return success;
-	}
+//	public boolean applyTransitions(List<Transition> transitions, List<Parameter> parameters) {
+//		boolean success = true;
+//		for (int i = 0; i < transitions.size(); i++) {
+//			Transition t = transitions.get(i);
+//			Parameter p = parameters.get(i);
+//			Set<Parameter> output = transition(p, t);
+//			if (output == null) {
+//				success = false;
+//				break;
+//			}
+//		}
+//		return success;
+//	}
   
 }

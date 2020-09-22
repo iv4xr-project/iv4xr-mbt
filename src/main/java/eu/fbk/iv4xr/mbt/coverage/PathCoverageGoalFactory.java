@@ -5,13 +5,17 @@ package eu.fbk.iv4xr.mbt.coverage;
 
 import java.util.List;
 
-import org.evosuite.ga.Chromosome;
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 
 /**
  * @author kifetew
  *
  */
-public class PathCoverageGoalFactory implements CoverageGoalFactory<PathCoverageGoal> {
+public class PathCoverageGoalFactory<
+State,
+Parameter,
+Context extends IEFSMContext<Context>,
+Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements CoverageGoalFactory<PathCoverageGoal<State, Parameter, Context, Trans>> {
 
 	/**
 	 * 
@@ -21,15 +25,17 @@ public class PathCoverageGoalFactory implements CoverageGoalFactory<PathCoverage
 	}
 
 	@Override
-	public List<PathCoverageGoal> getCoverageGoals() {
+	public List<PathCoverageGoal<State, Parameter, Context, Trans>> getCoverageGoals() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public double getFitness(Chromosome test) {
+	public boolean isMaximizationFunction() {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
+
+
 
 }

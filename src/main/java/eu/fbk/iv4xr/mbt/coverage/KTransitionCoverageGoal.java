@@ -6,12 +6,18 @@ package eu.fbk.iv4xr.mbt.coverage;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+
 /**
  * @author kifetew
  *
  * Represents a sequence of K transitions, where K >= 2
  */
-public class KTransitionCoverageGoal extends FitnessFunction<Chromosome> {
+public class KTransitionCoverageGoal<
+State,
+Parameter,
+Context extends IEFSMContext<Context>,
+Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
 
 	/**
 	 * 

@@ -11,6 +11,8 @@ public class ExecutionResult {
 
 	private boolean success;
 	
+	private ExecutionTrace exectionTrace;
+	
 	/**
 	 * 
 	 */
@@ -30,6 +32,20 @@ public class ExecutionResult {
 	 */
 	public void setSuccess(boolean success) {
 		this.success = success;
+	}
+
+	/**
+	 * @return the exectionTrace
+	 */
+	public ExecutionTrace getExectionTrace() {
+		return exectionTrace;
+	}
+
+	/**
+	 * @param exectionTrace the exectionTrace to set
+	 */
+	public void setExectionTrace(ExecutionTrace exectionTrace) {
+		this.exectionTrace = exectionTrace;
 	}
 
 }

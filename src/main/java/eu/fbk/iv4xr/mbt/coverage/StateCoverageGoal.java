@@ -15,13 +15,23 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.ExecutionListener;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
 
 /**
  * @author kifetew
  *
  */
-public class StateCoverageGoal extends FitnessFunction<Chromosome> {
+public class StateCoverageGoal<
+State,
+Parameter,
+Context extends IEFSMContext<Context>,
+Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
 
 	/**
 	 * 
@@ -38,6 +48,7 @@ public class StateCoverageGoal extends FitnessFunction<Chromosome> {
 	 */
 	public StateCoverageGoal(LabRecruitsState s) {
 		state = s;
+		testExecutor = new EFSMTestExecutor<State, Parameter, Context, Trans>();
 	}
 
 	@Override
@@ -46,11 +57,22 @@ public class StateCoverageGoal extends FitnessFunction<Chromosome> {
 		if (individual instanceof MBTChromosome) {
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
+			
+			ExecutionListener<State, Parameter, Context, Trans> executionListner = new EFSMTestExecutionListener<State, Parameter, Context, Trans>();
+			testExecutor.addListner(executionListner);
+			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
+			// get trace from the listner
+			ExecutionTrace trace = executionListner.getExecutionTrace();
+			
 			Path path = testcase.getPath();
-			if (path.getStates().contains(state)) {
-				fitness = 0;
+			if (executionResult.isSuccess()) {
+				if (path.getStates().contains(state)) {
+					fitness = 0;
+				}else {
+					fitness = 1;
+				}
 			}else {
-				fitness = 1;
+				fitness = -100; //infeasible path
 			}
 		}
 		updateIndividual(individual, fitness);

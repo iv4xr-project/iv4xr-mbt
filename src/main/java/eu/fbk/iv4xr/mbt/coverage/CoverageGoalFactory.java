@@ -12,8 +12,10 @@ import org.evosuite.ga.FitnessFunction;
  * @author kifetew
  *
  */
-public interface CoverageGoalFactory<T extends FitnessFunction<Chromosome>> {
+public interface CoverageGoalFactory<T extends CoverageGoal> {
 	List<T> getCoverageGoals ();
 	
-	public double getFitness(Chromosome test);
+	//public double getFitness(Chromosome test);
+	
+	public boolean isMaximizationFunction();
 }

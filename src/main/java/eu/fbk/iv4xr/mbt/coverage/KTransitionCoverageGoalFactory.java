@@ -7,11 +7,17 @@ import java.util.List;
 
 import org.evosuite.ga.Chromosome;
 
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+
 /**
  * @author kifetew
  *
  */
-public class KTransitionCoverageGoalFactory implements CoverageGoalFactory<KTransitionCoverageGoal> {
+public class KTransitionCoverageGoalFactory<
+State,
+Parameter,
+Context extends IEFSMContext<Context>,
+Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements CoverageGoalFactory<KTransitionCoverageGoal<State, Parameter, Context, Trans>> {
 
 	/**
 	 * 
@@ -21,16 +27,17 @@ public class KTransitionCoverageGoalFactory implements CoverageGoalFactory<KTran
 	}
 
 	@Override
-	public List<KTransitionCoverageGoal> getCoverageGoals() {
+	public List<KTransitionCoverageGoal<State, Parameter, Context, Trans>> getCoverageGoals() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public double getFitness(Chromosome test) {
+	public boolean isMaximizationFunction() {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
+
 
 
 
