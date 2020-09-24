@@ -5,6 +5,8 @@ package eu.fbk.iv4xr.mbt.coverage;
 
 import java.util.List;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 
 /**
@@ -12,8 +14,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
  *
  */
 public class PathCoverageGoalFactory<
-State,
-Parameter,
+State extends EFSMState,
+Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements CoverageGoalFactory<PathCoverageGoal<State, Parameter, Context, Trans>> {
 

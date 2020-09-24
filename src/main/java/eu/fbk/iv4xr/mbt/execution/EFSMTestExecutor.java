@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -18,8 +20,8 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  *
  */
 public class EFSMTestExecutor<
-State,
-Parameter,
+State extends EFSMState,
+Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends TestExecutor<State, Parameter, Context, Trans> {
 	

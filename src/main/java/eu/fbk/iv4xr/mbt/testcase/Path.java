@@ -9,10 +9,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 //import de.upb.testify.efsm.EFSMPath;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 
@@ -21,13 +24,14 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
  *
  */
 public class Path<
-State,
-Parameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends 
-	EFSMPath<State, Parameter, Context, Trans> {
-	LinkedList<Parameter> parameterValues = new LinkedList<Parameter>();
+	State extends EFSMState,
+	Parameter extends EFSMParameter,
+	Context extends IEFSMContext<Context>,
+	Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends 
+		EFSMPath<State, Parameter, Context, Trans> {
 	
+	LinkedList<Parameter> parameterValues = new LinkedList<Parameter>();
+		
 	public Path() {
 		super();
 		initializeParameterValues();
@@ -48,9 +52,27 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 		initializeParameterValues();
 	}
 	
+	/**
+	 * We would like to have a random init? 
+	 * Not sure about this init version
+	 */
 	private void initializeParameterValues () {
 		for (int i = 0; i < transitions.size(); i++) {
-			parameterValues.add((Parameter) "");
+			//parameterValues.add((Parameter) "");		#
+			parameterValues.add((Parameter) new EFSMParameter() {
+
+				@Override
+				public boolean equals(Object obj) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public EFSMParameter clone() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
 		}
 	}
 	
@@ -72,7 +94,7 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 			for (int i = 0; i < transitions.size(); i++) {
 				Trans t = transitions.get(i);
 				Parameter p = parameterValues.get(i);
-				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + p.toString() + "\"];\n";
+				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + p.toString() + "\"];\n";				
 			}
 			string += "}";
 		} 

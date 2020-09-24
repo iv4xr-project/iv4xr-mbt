@@ -21,6 +21,7 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 
 
 
@@ -32,8 +33,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
  */
 class StateCoverageGoalFactoryTest {
 
-	EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> efsm;
+	EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm;
 	
 	/**
 	 * @throws java.lang.Exception

@@ -6,7 +6,10 @@ package eu.fbk.iv4xr.mbt.efsm4j;
  *
  * @author Manuel Benz created on 20.02.18
  */
-public abstract class PGDGTransition<State, Parameter, Context>
+public abstract class PGDGTransition<
+		State extends EFSMState, 
+		Parameter extends EFSMParameter, 
+		Context extends IEFSMContext<Context>>
     extends Transition<State, Parameter, Context> {
 
   @Override

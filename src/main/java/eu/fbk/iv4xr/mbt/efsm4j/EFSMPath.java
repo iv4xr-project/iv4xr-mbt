@@ -14,8 +14,8 @@ import org.jgrapht.GraphPath;
 
 /** @author Manuel Benz created on 02.03.18 */
 public class EFSMPath<
-        State,
-        Parameter,
+        State extends EFSMState,
+        Parameter extends EFSMParameter,
         Context extends IEFSMContext<Context>,
         Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>>
     implements Iterable<Transition> {

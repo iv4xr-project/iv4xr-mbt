@@ -4,7 +4,10 @@ import java.util.Collections;
 import java.util.Set;
 
 /** @author Manuel Benz created on 20.02.18 */
-public abstract class Transition<State, Parameter, Context> {
+public abstract class Transition<
+	State extends EFSMState, 
+	Parameter extends EFSMParameter, 
+	Context extends IEFSMContext<Context>> {
 
   private State src;
   private State tgt;

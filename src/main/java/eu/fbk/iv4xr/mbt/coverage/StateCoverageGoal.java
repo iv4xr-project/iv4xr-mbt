@@ -3,20 +3,24 @@
  */
 package eu.fbk.iv4xr.mbt.coverage;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.FitnessFunction;
+//import org.evosuite.ga.FitnessFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionListener;
@@ -28,10 +32,10 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
  *
  */
 public class StateCoverageGoal<
-State,
-Parameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
+	State extends EFSMState,
+	Parameter extends EFSMParameter,
+	Context extends IEFSMContext<Context>,
+	Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
 
 	/**
 	 * 
@@ -41,12 +45,12 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(StateCoverageGoal.class);
 	
-	private LabRecruitsState state;
+	private EFSMState state;
 	
 	/**
 	 * 
 	 */
-	public StateCoverageGoal(LabRecruitsState s) {
+	public StateCoverageGoal(State s) {
 		state = s;
 		testExecutor = new EFSMTestExecutor<State, Parameter, Context, Trans>();
 	}

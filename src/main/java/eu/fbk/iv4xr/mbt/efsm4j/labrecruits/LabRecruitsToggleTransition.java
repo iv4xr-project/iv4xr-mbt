@@ -26,25 +26,28 @@ import java.util.Map;
 
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.PGTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
-public class LabRecruitsToggleTransition extends Transition<LabRecruitsState, String, LabRecruitsContext>{
+public class LabRecruitsToggleTransition extends 
+	PGTransition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>{
 
 	@Override
-	protected boolean inputGuard(String input) {
-		if (input.equals("") && this.getSrc().equals(this.getTgt())  ) {
-			return true;
-		}
-		return false;
+	protected boolean inputGuard(LabRecruitsParameter input) {
+		if (input == null) {
+			return(false);
+		}else {
+			return(input.getValue() == LabRecruitsAction.TOGGLE);	
+		}		
 	}
-
+	
 	@Override
 	protected boolean domainGuard(LabRecruitsContext context) {
 		return true;
 	}
 
 	@Override
-	protected Set<String> operation(String input, LabRecruitsContext context) {
+	protected Set<LabRecruitsParameter> operation(LabRecruitsParameter input, LabRecruitsContext context) {
 	    // iterate over doors in text context
 		for(LabRecruitsDoor door : context.values()) {
 			 if (door.getButtons().contains(this.getSrc().getId())) { 
@@ -62,15 +65,6 @@ public class LabRecruitsToggleTransition extends Transition<LabRecruitsState, St
 		return true;
 	}
 
-	@Override
-	public boolean hasDomainGuard() {
-		return false;
-	}
-
-	@Override
-	public boolean hasParameterGuard() {
-		return true;
-	}
 
 	
 

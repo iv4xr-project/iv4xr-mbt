@@ -58,8 +58,8 @@ class StateCoverageGoalTest {
 	void testGetFitnessChromosome() {
 		LabRecruitsEFSMFactory mFactory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(mFactory);
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = mFactory.getEFSM();
+		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
 		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(efsm);
 		assertNotNull(cFactory);

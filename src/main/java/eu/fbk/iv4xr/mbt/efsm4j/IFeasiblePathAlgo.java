@@ -4,8 +4,8 @@ import java.util.List;
 
 /** @author Manuel Benz created on 02.03.18 */
 public interface IFeasiblePathAlgo<
-    State,
-    Parameter,
+    State extends EFSMState,
+    Parameter extends EFSMParameter,
     Context extends IEFSMContext<Context>,
     Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
   /**
@@ -73,8 +73,8 @@ public interface IFeasiblePathAlgo<
   boolean pathExists(Configuration<State, Context> config, State tgt);
 
   interface SingleSourceShortestPath<
-      State,
-      Parameter,
+      State extends EFSMState,
+      Parameter extends EFSMParameter,
       Context extends IEFSMContext<Context>,
       Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
 

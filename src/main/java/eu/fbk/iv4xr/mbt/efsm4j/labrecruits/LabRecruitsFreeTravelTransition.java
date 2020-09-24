@@ -12,31 +12,30 @@ package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.PGTransition;
 
-public class LabRecruitsFreeTravelTransition  extends Transition<LabRecruitsState, String, LabRecruitsContext>{
+public class LabRecruitsFreeTravelTransition  extends 
+	PGTransition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>{
 
 	/**
 	 * Check if the input is equal to the next state
 	 */
 	@Override
-	protected boolean inputGuard(String input) {		
-		if (this.getTgt().getId().equals(input)) {
-			return true;
+	protected boolean inputGuard(LabRecruitsParameter input) {
+		if (input == null) {
+			return(false);
 		}else {
-			return false;
-		}		
+			return(input.getValue() == LabRecruitsAction.EXPLORE);	
+		}	
 	}
 
 	@Override
 	protected boolean domainGuard(LabRecruitsContext context) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	protected Set<String> operation(String input, LabRecruitsContext context) {
-		// TODO Auto-generated method stub
+	protected Set<LabRecruitsParameter> operation(LabRecruitsParameter input, LabRecruitsContext context) {
 		return null;
 	}
 
@@ -45,14 +44,5 @@ public class LabRecruitsFreeTravelTransition  extends Transition<LabRecruitsStat
 		return false;
 	}
 
-	@Override
-	public boolean hasDomainGuard() {
-		return false;
-	}
-
-	@Override
-	public boolean hasParameterGuard() {
-		return true;
-	}
 
 }

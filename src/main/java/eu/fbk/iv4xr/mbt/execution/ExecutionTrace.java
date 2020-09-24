@@ -6,6 +6,7 @@ package eu.fbk.iv4xr.mbt.execution;
 import java.util.Collection;
 import java.util.HashSet;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
@@ -15,8 +16,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
  *
  */
 public class ExecutionTrace<
-State,
-Parameter,
+State extends EFSMState,
+Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
 	private Collection<State> coveredStates = new HashSet<State>();

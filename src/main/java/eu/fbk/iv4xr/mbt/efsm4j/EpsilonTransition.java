@@ -8,7 +8,10 @@ import java.util.Set;
  *
  * @author Manuel Benz created on 20.02.18
  */
-public class EpsilonTransition<State, Parameter, Context>
+public class EpsilonTransition<
+		State extends EFSMState, 
+		Parameter extends EFSMParameter, 
+		Context extends IEFSMContext<Context>>
     extends SimpleTransition<State, Parameter, Context> {
   @Override
   protected Set<Parameter> operation(Parameter input, Context context) {

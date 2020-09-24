@@ -26,8 +26,8 @@ public class LabRecruitsEFSMFactory {
 
 	
 	private static LabRecruitsEFSMFactory instance;
-	protected EFSM<LabRecruitsState, String, LabRecruitsContext, 
-		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm;
+	protected EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm;
 	
 	
 	/**
@@ -61,13 +61,13 @@ public class LabRecruitsEFSMFactory {
 		return instance;
 	}
 	
-	public EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> getEFSM() {
+	public EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getEFSM() {
 		return efsm;
 	}
 	
-	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> getRoomReachabilityModel() {
+	private EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getRoomReachabilityModel() {
 		/**
 		 * Doors
 		 * 	Define set of buttons that act on the door
@@ -77,8 +77,7 @@ public class LabRecruitsEFSMFactory {
 		LabRecruitsDoor door2 = new LabRecruitsDoor("door2", new HashSet<String>());
 		LabRecruitsDoor doorT = new LabRecruitsDoor("doorT", new HashSet<String>());
 		
-		
-		
+			
 		/**
 		 * States
 		 */
@@ -156,17 +155,17 @@ public class LabRecruitsEFSMFactory {
 		LabRecruitsFreeTravelTransition t_30 = new LabRecruitsFreeTravelTransition();
 		
 		// EFSM and associated builder
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-			Transition<LabRecruitsState, String, LabRecruitsContext>> buttonDoors1EFSM;
+		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> buttonDoors1EFSM;
 		
 		
 		
 		EFSMBuilder<LabRecruitsState, 
-					String, 
+		LabRecruitsParameter, 
 					LabRecruitsContext, 
-					Transition<LabRecruitsState, String, LabRecruitsContext>, 
-					EFSM<LabRecruitsState, String, LabRecruitsContext, 
-					Transition<LabRecruitsState, String, LabRecruitsContext>>> 
+					Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>, 
+					EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+					Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>>> 
 				labRecruitsBuilder = new EFSMBuilder(EFSM.class);
 		
 		// associate doors to buttons
@@ -178,7 +177,15 @@ public class LabRecruitsEFSMFactory {
 		
 		// the context is made by the doors status
 		LabRecruitsContext buttonDoors1Context = new LabRecruitsContext(door1, door2, doorT);
-				
+		
+		// the input paramter generator
+		LabRecruitsParameterGenerator parameterGenerator = new LabRecruitsParameterGenerator();
+		/*
+		 * for (int i = 0; i < 10; i++) {
+		 * System.out.println(parameterGenerator.getRandom().getValue().toString()); }
+		 */
+		
+		
 		buttonDoors1EFSM = labRecruitsBuilder
 				.withTransition(b_0, b_1, t_0)
 				.withTransition(b_0, d_1_m, t_1)
@@ -221,7 +228,7 @@ public class LabRecruitsEFSMFactory {
 				.withTransition(d_T_p, d_T_m, t_29)
 				.withTransition(d_T_p, TR, t_30)
 						
-				.build(b_0, buttonDoors1Context);
+				.build(b_0, buttonDoors1Context, parameterGenerator);
 		return buttonDoors1EFSM;
 
 	}

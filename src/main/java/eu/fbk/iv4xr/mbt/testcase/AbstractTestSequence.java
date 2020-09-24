@@ -5,6 +5,8 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Iterator;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
@@ -14,8 +16,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
  *
  */
 public class AbstractTestSequence<
-State,
-Parameter,
+State extends EFSMState,
+Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements Testcase {
 

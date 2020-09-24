@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -13,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 /** @author Manuel Benz created on 20.02.18 */
 public class EFSMBuilder<
-    State,
-    Parameter,
+    State extends EFSMState,
+    Parameter extends EFSMParameter,
     Context extends IEFSMContext<Context>,
     Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>,
     EFSM extends eu.fbk.iv4xr.mbt.efsm4j.EFSM<State, Parameter, Context, Transition>> {
@@ -22,7 +23,8 @@ public class EFSMBuilder<
   private static final Logger LOGGER = LoggerFactory.getLogger(EFSMBuilder.class);
   protected final Graph<State, Transition> base;
   private final Class<EFSM> efsmTypeClass;
-
+   
+  
   public EFSMBuilder(Class<EFSM> efsmTypeClass) {
     this(efsmTypeClass, new DirectedPseudograph<>(null));
   }
@@ -89,26 +91,26 @@ public class EFSMBuilder<
     return this;
   }
 
-  public EFSM build(State initialState, Context initialContext) {
+  public EFSM build(State initialState, Context initialContext, ParameterGenerator<Parameter> parameterGenerator) {
     Preconditions.checkNotNull(initialState);
     Preconditions.checkNotNull(initialContext);
 
     try {
-      Constructor<EFSM> constructor = getConstructor(initialState, initialContext);
+      Constructor<EFSM> constructor = getConstructor(initialState, initialContext, parameterGenerator);
       if (constructor == null) {
         throw new RuntimeException("No constructor found");
       }
       constructor.setAccessible(true);
-      return constructor.newInstance(base, initialState, initialContext);
+      return constructor.newInstance(base, initialState, initialContext, parameterGenerator);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private Constructor<EFSM> getConstructor(State initialState, Context initialContext) {
+  private Constructor<EFSM> getConstructor(State initialState, Context initialContext, ParameterGenerator<Parameter> parameterGenerator) {
     for (Constructor<?> constructor : efsmTypeClass.getDeclaredConstructors()) {
       Class<?>[] parameterTypes = constructor.getParameterTypes();
-      if (parameterTypes.length != 3) {
+      if (parameterTypes.length != 4) {
         continue;
       }
 
@@ -116,7 +118,8 @@ public class EFSMBuilder<
 
       if (parameterTypes[0].isAssignableFrom(base.getClass())
           && parameterTypes[1].isAssignableFrom(initialState.getClass())
-          && parameterTypes[2].isAssignableFrom(initialContext.getClass())) {
+          && parameterTypes[2].isAssignableFrom(initialContext.getClass())
+          && parameterTypes[3].isAssignableFrom(parameterGenerator.getClass())) {
         return (Constructor<EFSM>) constructor;
       }
     }

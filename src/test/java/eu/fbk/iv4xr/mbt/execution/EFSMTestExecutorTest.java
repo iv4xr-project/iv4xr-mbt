@@ -60,6 +60,7 @@ class EFSMTestExecutorTest {
 			executor.reset();
 			assertNotNull (result);
 			if (result.isSuccess()) {
+				System.out.println("******** Feasible path found");
 				System.out.println(((AbstractTestSequence)testcase).toDot());
 			}
 		}

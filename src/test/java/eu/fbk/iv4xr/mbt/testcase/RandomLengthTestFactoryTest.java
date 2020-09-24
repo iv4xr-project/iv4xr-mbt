@@ -10,6 +10,7 @@ import org.junit.Test;
 //import de.upb.testify.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFPAlgo;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;

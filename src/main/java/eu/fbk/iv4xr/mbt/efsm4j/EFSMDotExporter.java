@@ -12,17 +12,20 @@ import org.jgrapht.io.DOTExporter;
 import org.jgrapht.io.IntegerComponentNameProvider;
 
 /** @author Manuel Benz created on 24.02.18 */
-public class EFSMDotExporter<State, Transition> {
-  private final EFSM<State, Transition, ?, ?> efsm;
+public class EFSMDotExporter<
+	State extends EFSMState, 
+	Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, ?, ?>> {
+	
+  private final EFSM<State, ?, ?, Transition> efsm;
   private final Function<State, String> stateLabeler;
   private final Function<Transition, String> edgeLabeler;
 
-  public EFSMDotExporter(EFSM<State, Transition, ?, ?> efsm) {
+  public EFSMDotExporter(EFSM<State, ?, ?, Transition> efsm) {
     this(efsm, Object::toString, Object::toString);
   }
 
   public EFSMDotExporter(
-      EFSM<State, Transition, ?, ?> efsm,
+      EFSM<State, ?, ?,Transition> efsm,
       Function<State, String> stateLabeler,
       Function<Transition, String> edgeLabeler) {
     this.efsm = efsm;

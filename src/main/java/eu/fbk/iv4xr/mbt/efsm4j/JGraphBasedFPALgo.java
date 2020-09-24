@@ -5,8 +5,8 @@ import org.jgrapht.ListenableGraph;
 
 /** @author Manuel Benz created on 02.03.18 */
 public abstract class JGraphBasedFPALgo<
-        State,
-        Parameter,
+        State extends EFSMState,
+        Parameter extends EFSMParameter,
         Context extends IEFSMContext<Context>,
         Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>>
     implements IFeasiblePathAlgo<State, Parameter, Context, Transition> {

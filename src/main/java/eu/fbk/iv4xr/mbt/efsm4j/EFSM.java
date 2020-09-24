@@ -13,8 +13,8 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 /** @author Manuel Benz created on 20.02.18 */
 public class EFSM<
-    State,
-    Parameter,
+    State extends EFSMState,
+    Parameter extends EFSMParameter,
     Context extends IEFSMContext<Context>,
     Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
   public static final String PROP_CONFIGURATION = "PROP_CONFIGURATION";
@@ -24,12 +24,15 @@ public class EFSM<
   protected State curState;
   protected Context curContext;
   protected ListenableGraph<State, Transition> baseGraph;
-
-  protected EFSM(Graph<State, Transition> baseGraph, State initialState, Context initalContext) {
+  protected ParameterGenerator<Parameter> parameterSet;
+  
+  protected EFSM(Graph<State, Transition> baseGraph, State initialState, Context initalContext, 
+		  ParameterGenerator<Parameter> parameterSet) {
     this.curState = this.initialState = initialState;
     this.curContext = initalContext.snapshot();
     this.initialContext = initalContext.snapshot();
-
+    this.parameterSet = parameterSet;
+    
     final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(null);
 
     Graphs.addGraph(tmp, baseGraph);
@@ -210,10 +213,11 @@ public class EFSM<
   }
   
   
-  /**
-   * below are methods added for "executing" test cases on the model
-   */
-  /**
+	/**
+	 * below are methods added for "executing" test cases on the model
+	 */
+  
+	/**
 	 * Checks if the given input leads to a new configuration, returns the output
 	 * for the transition taken.
 	 *
@@ -221,6 +225,9 @@ public class EFSM<
 	 * @return The output for the taken transition or null if the input is not
 	 *         accepted in the current configuration
 	 */
+  	/*
+  	 * NOTE: do we need to check that curState == transition.getSrc()?
+  	 */
 	public Set<Parameter> transition(Parameter input, Transition transition) {
 		if (transition.isFeasible(input, curContext)) {
 			Configuration<State, Context> prevConfig = null;
@@ -233,6 +240,28 @@ public class EFSM<
 				pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
 			}
 			return output;
+		}
+
+		return null;
+	}
+
+	/**
+	 * transition to a given state for testing
+	 */
+	public Set<Parameter> transition(Parameter input, State state) {
+		for (Transition transition : baseGraph.outgoingEdgesOf(curState)) {
+			if (transition.isFeasible(input, curContext) & transition.getTgt().equals(state)) {
+				Configuration<State, Context> prevConfig = null;
+				if (pcs != null) {
+					prevConfig = getConfiguration();
+				}
+				curState = transition.getTgt();
+				Set<Parameter> output = transition.take(input, curContext);
+				if (pcs != null) {
+					pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
+				}
+				return output;
+			}
 		}
 
 		return null;
@@ -251,5 +280,9 @@ public class EFSM<
 //		}
 //		return success;
 //	}
-  
+	
+	public Parameter getRandom() {
+		return parameterSet.getRandom();
+	}
+
 }

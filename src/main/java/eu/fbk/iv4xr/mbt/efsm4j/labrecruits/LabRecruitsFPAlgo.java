@@ -23,23 +23,27 @@ import eu.fbk.iv4xr.mbt.efsm4j.JGraphBasedFPALgo;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 public class LabRecruitsFPAlgo extends 
-	JGraphBasedFPALgo<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState,String,LabRecruitsContext>>{
+	JGraphBasedFPALgo<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+	Transition<LabRecruitsState,LabRecruitsParameter,LabRecruitsContext>>{
 
 	public LabRecruitsFPAlgo(
-			EFSM<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> efsm) {
+			EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm) {
 		super(efsm);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> getPath(
+	public EFSMPath<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getPath(
 			Configuration<LabRecruitsState, LabRecruitsContext> config, LabRecruitsState tgt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<? extends EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>>> getPaths(
+	public List<? extends EFSMPath<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>>> getPaths(
 			Configuration<LabRecruitsState, LabRecruitsContext> config, LabRecruitsState tgt) {
 		// TODO Auto-generated method stub
 		return null;
@@ -51,13 +55,13 @@ public class LabRecruitsFPAlgo extends
 		return false;
 	}
 
-	public EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> getShortestPath (Configuration<LabRecruitsState, LabRecruitsContext> config, LabRecruitsState tgt){
+	public EFSMPath<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getShortestPath (Configuration<LabRecruitsState, LabRecruitsContext> config, LabRecruitsState tgt){
 		
-		BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>> algorithm = new BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>>(efsm.getBaseGraph() );
-		GraphPath<LabRecruitsState, Transition<LabRecruitsState, String, LabRecruitsContext>> path = algorithm.getPath(config.getState(), tgt);
+		BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> algorithm = new BellmanFordShortestPath<LabRecruitsState, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>>(efsm.getBaseGraph() );
+		GraphPath<LabRecruitsState, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> path = algorithm.getPath(config.getState(), tgt);
 		
-		EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState, String, LabRecruitsContext>> 
-		shortestPath = new EFSMPath<LabRecruitsState, String, LabRecruitsContext, Transition<LabRecruitsState,String,LabRecruitsContext>>(path);
+		EFSMPath<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> 
+		shortestPath = new EFSMPath<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, Transition<LabRecruitsState,LabRecruitsParameter,LabRecruitsContext>>(path);
 		return shortestPath;
 	}
 }

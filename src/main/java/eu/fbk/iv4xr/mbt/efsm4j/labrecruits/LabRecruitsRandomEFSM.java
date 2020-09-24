@@ -67,8 +67,11 @@ public class LabRecruitsRandomEFSM {
 	private Pseudograph<Vector<LabRecruitsState>,Integer>  doorsGraph = new Pseudograph<>(Integer.class);
 	
 	// final efsm
-	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = null; // to fix
+	private EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = null; // to fix
+	
+	// parameters generator
+	LabRecruitsParameterGenerator parameterGenerator = new LabRecruitsParameterGenerator();
 	
 	// Default parameters
 	public LabRecruitsRandomEFSM() {
@@ -111,8 +114,8 @@ public class LabRecruitsRandomEFSM {
 	 * Generate a random level 
 	 * @return and EFSM
 	 */
-	public EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> generateLevel()  {	
+	public EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> generateLevel()  {	
 	    // generate a list of rooms
 		// each room is a vector of buttons
 		List<Vector<LabRecruitsState>> roomSet = generateRoomSet();	
@@ -266,8 +269,8 @@ public class LabRecruitsRandomEFSM {
 	 * of a door, and has to be totally connected with the buttons in the respective room.
 	 * @return an EFSM
 	 */
-	private EFSM<LabRecruitsState, String, LabRecruitsContext, 
-	Transition<LabRecruitsState, String, LabRecruitsContext>> doorsGraphToEFSM() {
+	private EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> doorsGraphToEFSM() {
 		
 		// create the EFSM builder
 		EFSMBuilder	labRecruitsBuilder = new EFSMBuilder(EFSM.class);
@@ -438,7 +441,7 @@ public class LabRecruitsRandomEFSM {
 			LabRecruitsContext initialContext = new LabRecruitsContext(doorsList);
 			
 		
-			return (labRecruitsBuilder.build(initialState, initialContext));
+			return (labRecruitsBuilder.build(initialState, initialContext, this.parameterGenerator));
 		}
 		
 		return(null);

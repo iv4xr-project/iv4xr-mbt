@@ -6,7 +6,10 @@ package eu.fbk.iv4xr.mbt.efsm4j;
  *
  * @author Manuel Benz created on 20.02.18
  */
-public abstract class SimpleTransition<State, Parameter, Context>
+public abstract class SimpleTransition<
+		State extends EFSMState, 
+		Parameter extends EFSMParameter, 
+		Context extends IEFSMContext<Context>>
     extends Transition<State, Parameter, Context> {
 
   @Override

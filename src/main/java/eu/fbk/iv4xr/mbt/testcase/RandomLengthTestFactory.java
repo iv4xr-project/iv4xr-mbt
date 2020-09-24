@@ -23,7 +23,12 @@ import eu.fbk.iv4xr.mbt.efsm4j.*;
  * @author kifetew
  *
  */
-public class RandomLengthTestFactory<State, Parameter, Context extends IEFSMContext<Context>, Trans extends Transition<State, Parameter, Context>> implements TestFactory {
+public class RandomLengthTestFactory<
+	State extends EFSMState, 
+	Parameter extends EFSMParameter, 
+	Context extends IEFSMContext<Context>, 
+	Trans extends Transition<State, Parameter, Context>> implements TestFactory {
+	
 	private int maxLength = 100;
 	EFSM<State, Parameter, Context, Trans> model = null;
 	/**
@@ -64,12 +69,12 @@ public class RandomLengthTestFactory<State, Parameter, Context extends IEFSMCont
 			transitions.add(transition);
 			
 			// pick random parameter values for the transition
-			if (Randomness.nextDouble() < 0.1) {
-				parameters.add((Parameter) "");
-			}else {
-				parameters.add((Parameter) ((EFSMState)transition.getTgt()).getId());
-			}
-			
+			/*
+			 * if (Randomness.nextDouble() < 0.1) { parameters.add((Parameter) ""); }else {
+			 * parameters.add((Parameter) ((EFSMState)transition.getTgt()).getId()); }
+			 */
+			parameters.add(model.getRandom());
+						
 			// take the state at the end of the chosen transition, and repeat
 			//currentState = (LabRecruitsState) transition.getTgt();
 			currentState = transition.getTgt();

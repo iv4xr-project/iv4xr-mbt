@@ -4,11 +4,11 @@
 package eu.fbk.iv4xr.mbt.coverage;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.evosuite.ga.Chromosome;
+//import org.evosuite.ga.Chromosome;
 
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
@@ -16,10 +16,12 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 
 
 
@@ -32,8 +34,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
  *
  */
 public class StateCoverageGoalFactory<
-State,
-Parameter,
+State extends EFSMState,
+Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements CoverageGoalFactory<StateCoverageGoal<State, Parameter, Context, Trans>> {
 
@@ -44,13 +46,13 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> imp
 	 */
 	public StateCoverageGoalFactory() {
 		// build the list of coverage goals
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-		Transition<LabRecruitsState, String, LabRecruitsContext>> model = AlgorithmFactory.getModel();
-		Set<LabRecruitsState> states = model.getStates();
+		EFSM<State, Parameter, Context, 
+		Transition<State, Parameter, Context>> model = AlgorithmFactory.getModel();
+		Set<State> states = model.getStates();
 		if (states == null || states.isEmpty()) {
 			throw new RuntimeException("Something wrong with the model: " + MBTProperties.SUT_EFSM + ". No states.");
 		}
-		for (LabRecruitsState state : states) {
+		for (State state : states) {
 			StateCoverageGoal goal = new StateCoverageGoal(state);
 			coverageGoals.add(goal);
 		}

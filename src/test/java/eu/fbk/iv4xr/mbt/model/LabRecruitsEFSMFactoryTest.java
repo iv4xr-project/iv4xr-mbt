@@ -41,8 +41,8 @@ public class LabRecruitsEFSMFactoryTest {
 		MBTProperties.SUT_EFSM = "buttons_doors_1";
 		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(factory);
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = factory.getEFSM();
+		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();
 		assertNotNull (efsm);
 		
 		Set<LabRecruitsState> states = efsm.getStates();
@@ -50,7 +50,7 @@ public class LabRecruitsEFSMFactoryTest {
 		assertTrue (!states.isEmpty());
 		assertTrue(11 == states.size());
 		
-		Set<Transition<LabRecruitsState, String, LabRecruitsContext>> transitions = efsm.getTransitons();
+		Set<Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> transitions = efsm.getTransitons();
 		assertNotNull (transitions);
 		assertTrue (!transitions.isEmpty());
 		assertTrue(31 == transitions.size());
@@ -61,8 +61,8 @@ public class LabRecruitsEFSMFactoryTest {
 		MBTProperties.SUT_EFSM = "random_default";
 		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
 		assertNotNull(factory);
-		EFSM<LabRecruitsState, String, LabRecruitsContext, 
-		Transition<LabRecruitsState, String, LabRecruitsContext>> efsm = factory.getEFSM();
+		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();
 		assertNotNull (efsm);
 		
 		Set<LabRecruitsState> states = efsm.getStates();
@@ -70,7 +70,7 @@ public class LabRecruitsEFSMFactoryTest {
 		assertTrue (!states.isEmpty());
 		assertTrue(13 == states.size());
 		
-		Set<Transition<LabRecruitsState, String, LabRecruitsContext>> transitions = efsm.getTransitons();
+		Set<Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> transitions = efsm.getTransitons();
 		assertNotNull (transitions);
 		assertTrue (!transitions.isEmpty());
 		assertTrue(61 == transitions.size());

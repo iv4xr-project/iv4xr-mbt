@@ -14,18 +14,21 @@ package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.PGDGTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
-public class LabRecruitsDoorTravelTransition  extends Transition<LabRecruitsState, String, LabRecruitsContext>{
+public class LabRecruitsDoorTravelTransition  extends 
+		PGDGTransition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>{
 
 	@Override
-	protected boolean inputGuard(String input) {
-		if (this.getTgt().getId().equals(input)) {
-			return true;
+	protected boolean inputGuard(LabRecruitsParameter input) {
+		if (input == null) {
+			return(false);
 		}else {
-			return false;
+			return(input.getValue() == LabRecruitsAction.EXPLORE);	
 		}	
 	}
+
 
 	@Override
 	protected boolean domainGuard(LabRecruitsContext context) {
@@ -33,7 +36,7 @@ public class LabRecruitsDoorTravelTransition  extends Transition<LabRecruitsStat
 	}
 
 	@Override
-	protected Set<String> operation(String input, LabRecruitsContext context) {
+	protected Set<LabRecruitsParameter> operation(LabRecruitsParameter input, LabRecruitsContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -42,18 +45,6 @@ public class LabRecruitsDoorTravelTransition  extends Transition<LabRecruitsStat
 	public boolean hasOperation() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public boolean hasDomainGuard() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean hasParameterGuard() {
-		// TODO Auto-generated method stub
-		return true;
 	}
 	
 }
