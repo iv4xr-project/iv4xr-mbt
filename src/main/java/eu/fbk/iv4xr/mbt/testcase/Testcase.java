@@ -20,4 +20,14 @@ public interface Testcase extends Comparable<Testcase> {
 
 
 	public Testcase clone() throws CloneNotSupportedException;
+	
+	public boolean isValid ();
+	
+	public void setValid (boolean valid);
+
+
+	public void crossOver(Testcase other, int position1, int position2);
+
+
+	public void mutate();
 }

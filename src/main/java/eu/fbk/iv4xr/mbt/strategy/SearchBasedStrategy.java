@@ -8,7 +8,11 @@ import java.util.List;
 import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
+import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
+import org.evosuite.testcase.TestChromosome;
+import org.evosuite.testcase.secondaryobjectives.MinimizeExceptionsSecondaryObjective;
+import org.evosuite.testcase.secondaryobjectives.MinimizeLengthSecondaryObjective;
 import org.evosuite.testsuite.TestSuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
@@ -38,7 +42,13 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// and use it externally, since Evosuite is just a library here
 		Properties.TEST_ARCHIVE = false;
 		
+		// disable bloat control temporarily
+		Properties.CHECK_BEST_LENGTH = true;
 		
+		Properties.LOG_LEVEL = "warn";
+		
+		Properties.MUTATION_RATE = 0.3;
+		Properties.CROSSOVER_RATE = 0.7;
 	}
 	
 	@Override
@@ -57,14 +67,18 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		List<?> goals = fitnessFactory.getCoverageGoals();
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		
+		CoverageTracker coverageTracker = new CoverageTracker(goals);
+		searchAlgorithm.addListener(coverageTracker);
+		searchAlgorithm.addStoppingCondition(coverageTracker);
+		
 		// invoke generate solution on the algorithm
 		searchAlgorithm.generateSolution();
-		List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
+		//List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
 		
-		// return result
+		// return result from coverageTracker (archive)
 		SuiteChromosome solution = new SuiteChromosome();
-		for (T test : bestIndividuals) {
-			solution.addTest((MBTChromosome) test);
+		for (MBTChromosome test : coverageTracker.getTestSuite()) {
+			solution.addTest(test);
 		}
 		return solution;
 	}

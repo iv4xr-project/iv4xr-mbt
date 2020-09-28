@@ -80,7 +80,7 @@ public class MBTProperties {
 	 */
 
 	@Parameter(key = "sut_efsm", group = "Search Algorithm", description = "ID of the EFSM for the current SUT")
-	public static String SUT_EFSM = "random_default";
+	public static String SUT_EFSM = "buttons_doors_1";
 	
 	@Parameter(key = "population", group = "Search Algorithm", description = "Population size of genetic algorithm")
 	@IntValue(min = 1)

@@ -15,6 +15,7 @@ import org.evosuite.coverage.mutation.MutationTimeoutStoppingCondition;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessReplacementFunction;
+import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.metaheuristics.BreederGA;
 import org.evosuite.ga.metaheuristics.CellularGA;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
@@ -34,10 +35,6 @@ import org.evosuite.ga.metaheuristics.mulambda.MuPlusLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusLambdaLambdaGA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusOneEA;
 import org.evosuite.ga.operators.crossover.CrossOverFunction;
-import org.evosuite.ga.operators.crossover.SinglePointCrossOver;
-import org.evosuite.ga.operators.crossover.SinglePointFixedCrossOver;
-import org.evosuite.ga.operators.crossover.SinglePointRelativeCrossOver;
-import org.evosuite.ga.operators.crossover.UniformCrossOver;
 import org.evosuite.ga.operators.ranking.FastNonDominatedSorting;
 import org.evosuite.ga.operators.ranking.RankBasedPreferenceSorting;
 import org.evosuite.ga.operators.ranking.RankingFunction;
@@ -60,13 +57,9 @@ import org.evosuite.strategy.PropertiesSearchAlgorithmFactory;
 import org.evosuite.testcase.localsearch.BranchCoverageMap;
 import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
 import org.evosuite.testsuite.TestSuiteReplacementFunction;
-import org.evosuite.testsuite.secondaryobjectives.TestSuiteSecondaryObjective;
 import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
 
-//import de.upb.testify.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
@@ -75,7 +68,13 @@ import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoalFactory;
+//import de.upb.testify.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeExceptionsSO;
+import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeLengthSO;
 import sun.misc.Signal;
 
 /**
@@ -299,17 +298,18 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		ga.setCrossOverFunction(crossover_function);
 
 		// What to do about bloat
-		// MaxLengthBloatControl bloat_control = new MaxLengthBloatControl();
-		// ga.setBloatControl(bloat_control);
+//		RelativeTestLengthBloatControl bloat_control = new RelativeTestLengthBloatControl();
+//		ga.setBloatControl(bloat_control);
+//		ga.addListener(bloat_control);
 
 		if (Properties.CHECK_BEST_LENGTH) {
-			RelativeSuiteLengthBloatControl bloat_control = new org.evosuite.testsuite.RelativeSuiteLengthBloatControl();
+			RelativeSuiteLengthBloatControl bloat_control = new RelativeSuiteLengthBloatControl();
 			ga.addBloatControl(bloat_control);
 			ga.addListener(bloat_control);
 		}
 		// ga.addBloatControl(new MaxLengthBloatControl());
 
-		TestSuiteSecondaryObjective.setSecondaryObjectives();
+		setSecondaryObjectives();
 
 		// Some statistics
 		//if (Properties.STRATEGY == Strategy.EVOSUITE)
@@ -355,6 +355,31 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 
 		ga.addListener(new ResourceController());
 		return ga;
+	}
+
+
+	private static void setSecondaryObjectives() {
+		for (MBTProperties.SecondaryObjective secondaryObjective : MBTProperties.SECONDARY_OBJECTIVE) {
+		      try {
+		        SecondaryObjective<MBTChromosome> secondaryObjectiveInstance = null;
+		        switch (secondaryObjective) {
+		          case AVG_LENGTH:
+		          case MAX_LENGTH:
+		          case TOTAL_LENGTH:
+		            secondaryObjectiveInstance = new MinimizeLengthSO();
+		            break;
+		          case EXCEPTIONS:
+		            secondaryObjectiveInstance = new MinimizeExceptionsSO();
+		            break;
+		          default:
+		            throw new RuntimeException("ERROR: asked for unknown secondary objective \""
+		                + secondaryObjective.name() + "\"");
+		        }
+		        MBTChromosome.addSecondaryObjective(secondaryObjectiveInstance);
+		      } catch (Throwable t) {
+		      } // Not all objectives make sense for tests
+		    }
+		
 	}
 
 }

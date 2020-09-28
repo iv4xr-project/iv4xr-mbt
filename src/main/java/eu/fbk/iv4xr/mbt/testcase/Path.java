@@ -94,7 +94,7 @@ public class Path<
 			for (int i = 0; i < transitions.size(); i++) {
 				Trans t = transitions.get(i);
 				Parameter p = parameterValues.get(i);
-				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + p.toString() + "\"];\n";				
+				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + (i+1) + "-" + p.toString() + "\"];\n";				
 			}
 			string += "}";
 		} 

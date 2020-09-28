@@ -46,6 +46,7 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 		boolean success = applyTransitions(tc.getPath().getTransitions(), tc.getPath().getParameterValues());
 		//populate the result here...
 		result.setSuccess(success);
+		testcase.setValid(success);
 		notifyExecutionFinished();
 		return result;
 	}

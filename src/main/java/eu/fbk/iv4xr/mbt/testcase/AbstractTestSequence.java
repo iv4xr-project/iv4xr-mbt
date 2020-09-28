@@ -5,11 +5,15 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Iterator;
 
+import org.evosuite.utils.Randomness;
+
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
 
 /**
  * @author kifetew
@@ -22,7 +26,7 @@ Context extends IEFSMContext<Context>,
 Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements Testcase {
 
 	private Path<State, Parameter, Context, Trans> path;
-	
+	private boolean valid = false;
 	private double fitness = 0d;
 	
 	/**
@@ -98,7 +102,39 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> imp
 		AbstractTestSequence clone = new AbstractTestSequence();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
+		clone.setValid(valid);
 		return clone;
+	}
+
+	@Override
+	public boolean isValid() {
+		return valid;
+	}
+
+	@Override
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	@Override
+	public void crossOver(Testcase other, int position1, int position2) {
+		for (int i = position1; i < path.getLength(); i++) {
+			path.getModfiableTransitions().remove(i);
+			path.parameterValues.remove(i);
+		}
+		for (int i = 0; i < position2; i++) {
+			AbstractTestSequence<EFSMState, EFSMParameter, Context, Trans> otherTc = (AbstractTestSequence<EFSMState, EFSMParameter, Context, Trans>)other;
+			path.getModfiableTransitions().add(otherTc.path.getTransitionAt(i));
+			path.parameterValues.add((Parameter) otherTc.path.parameterValues.get(i));
+		}
+		
+	}
+
+	@Override
+	public void mutate() {
+		int index = Randomness.nextInt(getLength());
+		path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
+		
 	}
 	
 }

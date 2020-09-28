@@ -3,10 +3,13 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
-import javax.management.RuntimeErrorException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ConstructionFailedException;
+import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
 import org.evosuite.testcase.ExecutableChromosome;
 import org.evosuite.testcase.execution.ExecutionResult;
@@ -23,6 +26,8 @@ public class MBTChromosome extends ExecutableChromosome {
 	 */
 	private static final long serialVersionUID = -3211675659294418756L;
 	private Testcase testcase;
+	/** Secondary objectives used during ranking */
+	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
 
 	/**
 	 * 
@@ -70,6 +75,22 @@ public class MBTChromosome extends ExecutableChromosome {
 		} else return testcase.equals(other.testcase);
 	}
 
+	
+	@Override
+	public int compareTo(Chromosome o) {
+		int result = super.compareTo(o);
+		if (result != 0) {
+			return result;
+		}
+		// make this deliberately not 0
+		// because then ordering of results will be random
+		// among tests of equal fitness
+		if (o instanceof MBTChromosome) {
+			return ((AbstractTestSequence)testcase).toDot().compareTo( ((AbstractTestSequence)((MBTChromosome) o).testcase).toDot());
+		}
+		return result;
+	}
+	
 	@Override
 	public int hashCode() {
 		return testcase.hashCode();
@@ -77,20 +98,29 @@ public class MBTChromosome extends ExecutableChromosome {
 
 	@Override
 	public <T extends Chromosome> int compareSecondaryObjective(T o) {
-		// TODO Auto-generated method stub
-		return 0;
+		int objective = 0;
+		int c = 0;
+
+		while (c == 0 && objective < secondaryObjectives.size()) {
+
+			SecondaryObjective<T> so = (SecondaryObjective<T>) secondaryObjectives.get(objective++);
+			if (so == null)
+				break;
+			c = so.compareChromosomes((T) this, o);
+		}
+		return c;
 	}
 
 	@Override
 	public void mutate() {
-		// TODO Auto-generated method stub
-
+		testcase.mutate();
+		setChanged(true);
 	}
 
 	@Override
 	public void crossOver(Chromosome other, int position1, int position2) throws ConstructionFailedException {
-		// TODO Auto-generated method stub
-
+		testcase.crossOver (((MBTChromosome)other).getTestcase(), position1, position2); 
+		setChanged(true);
 	}
 
 	@Override
@@ -116,6 +146,46 @@ public class MBTChromosome extends ExecutableChromosome {
 	 */
 	public void setTestcase(Testcase testcase) {
 		this.testcase = testcase;
+	}
+	
+	/**
+	 * Add an additional secondary objective to the end of the list of
+	 * objectives
+	 *
+	 * @param objective
+	 *            a {@link org.evosuite.ga.SecondaryObjective} object.
+	 */
+	public static void addSecondaryObjective(SecondaryObjective<MBTChromosome> objective) {
+		secondaryObjectives.add(objective);
+	}
+
+	public static void ShuffleSecondaryObjective() {
+		Collections.shuffle(secondaryObjectives);
+	}
+
+	public static void reverseSecondaryObjective() {
+		Collections.reverse(secondaryObjectives);
+	}
+
+	/**
+	 * Remove secondary objective from list, if it is there
+	 *
+	 * @param objective
+	 *            a {@link org.evosuite.ga.SecondaryObjective} object.
+	 */
+	public static void removeSecondaryObjective(SecondaryObjective<?> objective) {
+		secondaryObjectives.remove(objective);
+	}
+
+	/**
+	 * <p>
+	 * Getter for the field <code>secondaryObjectives</code>.
+	 * </p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
+	public static List<SecondaryObjective<MBTChromosome>> getSecondaryObjectives() {
+		return secondaryObjectives;
 	}
 
 }

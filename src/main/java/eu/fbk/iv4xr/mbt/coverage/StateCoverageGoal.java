@@ -76,16 +76,16 @@ public class StateCoverageGoal<
 					fitness = 1;
 				}
 			}else {
-				fitness = -100; //infeasible path
+				fitness = 100; //infeasible path
 			}
 		}
+		individual.setChanged(false);
 		updateIndividual(individual, fitness);
 		return fitness;
 	}
 
 	@Override
 	public boolean isMaximizationFunction() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

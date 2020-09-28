@@ -3,7 +3,6 @@
  */
 package eu.fbk.iv4xr.mbt;
 
-import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
@@ -30,7 +29,11 @@ public class Main {
 	
 	private void run () {
 		SuiteChromosome solution = generationStrategy.generateTests();
-		System.out.println(((AbstractTestSequence)solution.getTestChromosome(0).getTestcase()).toDot());
+		for (int i = 0; i < solution.size(); i++) {
+			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
+			System.out.println("Valid: " + testcase.isValid());
+			System.out.println(testcase.toDot());
+		}
 	}
 	
 	/**
