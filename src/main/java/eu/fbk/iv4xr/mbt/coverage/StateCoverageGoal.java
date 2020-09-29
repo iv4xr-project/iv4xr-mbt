@@ -80,7 +80,7 @@ public class StateCoverageGoal<
 			}
 		}
 		individual.setChanged(false);
-		updateIndividual(individual, fitness);
+		updateIndividual(this, individual, fitness);
 		return fitness;
 	}
 

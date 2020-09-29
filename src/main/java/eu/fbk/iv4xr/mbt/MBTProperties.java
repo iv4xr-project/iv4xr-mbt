@@ -152,15 +152,24 @@ public class MBTProperties {
     @Parameter(key = "max_length", group = "Test Creation", description = "Maximum length of test suites (0 = no check)")
 	public static int MAX_LENGTH = 0;
     
+    // evosuite 1.0.7
     public enum Strategy {
 	    DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
 	}
 
+ // evosuite 1.0.6
+    /*
+    public enum Strategy {
+	    GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
+	}
+    */
+    
 	@Parameter(key = "strategy", group = "Runtime", description = "Which mode to use")
 	public static Strategy STRATEGY = Strategy.GA;
 	
 	
-	// Search algorithm
+	// Search algorithm evosuite 1.0.7
+	/*
 	public enum Algorithm {
 		// random
 		RANDOM_SEARCH,
@@ -170,6 +179,19 @@ public class MBTProperties {
 		ONE_PLUS_LAMBDA_LAMBDA_GA, ONE_PLUS_ONE_EA, MU_PLUS_LAMBDA_EA, MU_LAMBDA_EA,
 		// many-objective algorithms
 		MOSA, DYNAMOSA, LIPS, MIO,
+		// multiple-objective optimisation algorithms
+		NSGAII, SPEA2
+	}
+	*/
+	public enum Algorithm {
+		// random
+		RANDOM_SEARCH,
+		// GAs
+		STANDARD_GA, MONOTONIC_GA, STEADY_STATE_GA, BREEDER_GA, CELLULAR_GA, STANDARD_CHEMICAL_REACTION, MAP_ELITES,
+		// mu-lambda
+		ONE_PLUS_LAMBDA_LAMBDA_GA, ONE_PLUS_ONE_EA, MU_PLUS_LAMBDA_EA, MU_LAMBDA_EA,
+		// many-objective algorithms
+		MOSA, MIO,
 		// multiple-objective optimisation algorithms
 		NSGAII, SPEA2
 	}

@@ -19,7 +19,7 @@ import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.metaheuristics.BreederGA;
 import org.evosuite.ga.metaheuristics.CellularGA;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
-import org.evosuite.ga.metaheuristics.LIPS;
+//import org.evosuite.ga.metaheuristics.LIPS;
 import org.evosuite.ga.metaheuristics.MIO;
 import org.evosuite.ga.metaheuristics.MonotonicGA;
 import org.evosuite.ga.metaheuristics.NSGAII;
@@ -28,24 +28,24 @@ import org.evosuite.ga.metaheuristics.SPEA2;
 import org.evosuite.ga.metaheuristics.StandardChemicalReaction;
 import org.evosuite.ga.metaheuristics.StandardGA;
 import org.evosuite.ga.metaheuristics.SteadyStateGA;
-import org.evosuite.ga.metaheuristics.mosa.DynaMOSA;
+//import org.evosuite.ga.metaheuristics.mosa.DynaMOSA;
 import org.evosuite.ga.metaheuristics.mosa.MOSA;
 import org.evosuite.ga.metaheuristics.mulambda.MuLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.MuPlusLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusLambdaLambdaGA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusOneEA;
 import org.evosuite.ga.operators.crossover.CrossOverFunction;
-import org.evosuite.ga.operators.ranking.FastNonDominatedSorting;
-import org.evosuite.ga.operators.ranking.RankBasedPreferenceSorting;
-import org.evosuite.ga.operators.ranking.RankingFunction;
-import org.evosuite.ga.operators.selection.BestKSelection;
+//import org.evosuite.ga.operators.ranking.FastNonDominatedSorting;
+//import org.evosuite.ga.operators.ranking.RankBasedPreferenceSorting;
+//import org.evosuite.ga.operators.ranking.RankingFunction;
+//import org.evosuite.ga.operators.selection.BestKSelection;
 import org.evosuite.ga.operators.selection.BinaryTournamentSelectionCrowdedComparison;
 import org.evosuite.ga.operators.selection.FitnessProportionateSelection;
-import org.evosuite.ga.operators.selection.RandomKSelection;
+//import org.evosuite.ga.operators.selection.RandomKSelection;
 import org.evosuite.ga.operators.selection.RankSelection;
 import org.evosuite.ga.operators.selection.SelectionFunction;
 import org.evosuite.ga.operators.selection.TournamentSelection;
-import org.evosuite.ga.operators.selection.TournamentSelectionRankAndCrowdingDistanceComparator;
+//import org.evosuite.ga.operators.selection.TournamentSelectionRankAndCrowdingDistanceComparator;
 import org.evosuite.ga.stoppingconditions.GlobalTimeStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxTimeStoppingCondition;
 import org.evosuite.ga.stoppingconditions.RMIStoppingCondition;
@@ -183,9 +183,12 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			case MOSA:
 				logger.info("Chosen search algorithm: MOSA");
 				return new MOSA<>(factory);
+			// evosuite 1.0.7
+			/*
 			case DYNAMOSA:
 				logger.info("Chosen search algorithm: DynaMOSA");
 				return new DynaMOSA<>(factory);
+			*/				
 			case ONE_PLUS_LAMBDA_LAMBDA_GA:
 				logger.info("Chosen search algorithm: 1 + (lambda, lambda)GA");
 				return new OnePlusLambdaLambdaGA<>(factory, Properties.LAMBDA);
@@ -198,9 +201,12 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			case MAP_ELITES:
 				logger.info("Chosen search algorithm: MAP-Elites");
 				throw new RuntimeException("MAPElites only works on TestChromosome, not on TestSuiteChromosome");
+			// evosuite 1.0.7
+			/*
 			case LIPS:
 				logger.info("Chosen search algorithm: LIPS");
 				return new LIPS<>(factory);
+			*/
 			default:
 				logger.info("Chosen search algorithm: StandardGA");
 				return new StandardGA<>(factory);
@@ -215,12 +221,15 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new TournamentSelection<>();
 		case BINARY_TOURNAMENT:
 		    return new BinaryTournamentSelectionCrowdedComparison<>();
+		// evosuite 1.0.7
+		/*
 		case RANK_CROWD_DISTANCE_TOURNAMENT:
 		    return new TournamentSelectionRankAndCrowdingDistanceComparator<>();
 		case BESTK:
 			return new BestKSelection<>();
 		case RANDOMK:
 			return new RandomKSelection<>();
+		*/
 		default:
 			return new RankSelection<>();
 		}
@@ -239,7 +248,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			        + Properties.CROSSOVER_FUNCTION);
 		}
 	}
-
+	
+	// evosuite 1.0.7
+	/*
 	private RankingFunction<T> getRankingFunction() {
 	  switch (Properties.RANKING_TYPE) {
 	    case FAST_NON_DOMINATED_SORTING:
@@ -249,7 +260,8 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	      return new RankBasedPreferenceSorting<>();
 	  }
 	}
-
+	*/
+	
 	@Override
 	public GeneticAlgorithm<T> getSearchAlgorithm() {
 		ChromosomeFactory<T> factory = getChromosomeFactory();
@@ -265,8 +277,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		selectionFunction.setMaximize(false);
 		ga.setSelectionFunction(selectionFunction);
 
-		RankingFunction<T> ranking_function = getRankingFunction();
-		ga.setRankingFunction(ranking_function);
+		// evosuite 1.0.7
+		//RankingFunction<T> ranking_function = getRankingFunction();
+		//ga.setRankingFunction(ranking_function);
 
 		// When to stop the search
 		StoppingCondition stopping_condition = getStoppingCondition();
