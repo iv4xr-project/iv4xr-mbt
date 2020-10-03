@@ -3,14 +3,11 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
-import java.util.Iterator;
-
 import org.evosuite.utils.Randomness;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
@@ -23,7 +20,7 @@ public class AbstractTestSequence<
 State extends EFSMState,
 Parameter extends EFSMParameter,
 Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> implements Testcase {
+Trans extends Transition<State, Parameter, Context>> implements Testcase {
 
 	private Path<State, Parameter, Context, Trans> path;
 	private boolean valid = false;
@@ -123,7 +120,7 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> imp
 			path.parameterValues.remove(i);
 		}
 		for (int i = 0; i < position2; i++) {
-			AbstractTestSequence<EFSMState, EFSMParameter, Context, Trans> otherTc = (AbstractTestSequence<EFSMState, EFSMParameter, Context, Trans>)other;
+			AbstractTestSequence<State, Parameter, Context, Trans> otherTc = (AbstractTestSequence<State, Parameter, Context, Trans>)other;
 			path.getModfiableTransitions().add(otherTc.path.getTransitionAt(i));
 			path.parameterValues.add((Parameter) otherTc.path.parameterValues.get(i));
 		}
