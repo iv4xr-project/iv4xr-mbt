@@ -28,17 +28,12 @@ import org.evosuite.ga.metaheuristics.SPEA2;
 import org.evosuite.ga.metaheuristics.StandardChemicalReaction;
 import org.evosuite.ga.metaheuristics.StandardGA;
 import org.evosuite.ga.metaheuristics.SteadyStateGA;
-//import org.evosuite.ga.metaheuristics.mosa.DynaMOSA;
 import org.evosuite.ga.metaheuristics.mosa.MOSA;
 import org.evosuite.ga.metaheuristics.mulambda.MuLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.MuPlusLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusLambdaLambdaGA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusOneEA;
 import org.evosuite.ga.operators.crossover.CrossOverFunction;
-//import org.evosuite.ga.operators.ranking.FastNonDominatedSorting;
-//import org.evosuite.ga.operators.ranking.RankBasedPreferenceSorting;
-//import org.evosuite.ga.operators.ranking.RankingFunction;
-//import org.evosuite.ga.operators.selection.BestKSelection;
 import org.evosuite.ga.operators.selection.BinaryTournamentSelectionCrowdedComparison;
 import org.evosuite.ga.operators.selection.FitnessProportionateSelection;
 //import org.evosuite.ga.operators.selection.RandomKSelection;
@@ -59,7 +54,6 @@ import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
 import org.evosuite.testsuite.TestSuiteReplacementFunction;
 import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
-
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
@@ -251,6 +245,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	
 	// evosuite 1.0.7
 	/*
+=======
+
+>>>>>>> 5daf1208b83a9f1383f58cb75b00743e90fd859e
 	private RankingFunction<T> getRankingFunction() {
 	  switch (Properties.RANKING_TYPE) {
 	    case FAST_NON_DOMINATED_SORTING:
@@ -260,6 +257,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	      return new RankBasedPreferenceSorting<>();
 	  }
 	}
+<<<<<<< HEAD
 	*/
 	
 	@Override
@@ -369,7 +367,6 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		ga.addListener(new ResourceController());
 		return ga;
 	}
-
 
 	private static void setSecondaryObjectives() {
 		for (MBTProperties.SecondaryObjective secondaryObjective : MBTProperties.SECONDARY_OBJECTIVE) {

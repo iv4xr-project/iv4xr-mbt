@@ -4,6 +4,7 @@
 package eu.fbk.iv4xr.mbt.testcase;
 
 import org.evosuite.utils.Randomness;
+import java.util.Iterator;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
@@ -133,5 +134,4 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 		path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
 		
 	}
-	
 }

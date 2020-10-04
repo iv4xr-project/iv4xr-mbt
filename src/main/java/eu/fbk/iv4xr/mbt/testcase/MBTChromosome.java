@@ -10,6 +10,10 @@ import java.util.List;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.SecondaryObjective;
+import javax.management.RuntimeErrorException;
+
+import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
 import org.evosuite.testcase.ExecutableChromosome;
 import org.evosuite.testcase.execution.ExecutionResult;
@@ -75,7 +79,6 @@ public class MBTChromosome extends ExecutableChromosome {
 		} else return testcase.equals(other.testcase);
 	}
 
-	
 	@Override
 	public int compareTo(Chromosome o) {
 		int result = super.compareTo(o);
@@ -187,5 +190,4 @@ public class MBTChromosome extends ExecutableChromosome {
 	public static List<SecondaryObjective<MBTChromosome>> getSecondaryObjectives() {
 		return secondaryObjectives;
 	}
-
 }

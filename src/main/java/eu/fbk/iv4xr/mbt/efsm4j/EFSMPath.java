@@ -126,7 +126,6 @@ public class EFSMPath<
     return Collections.unmodifiableList(transitions);
   }
 
-  
   public List<Transition> getModfiableTransitions() {
 	    if (transitions.isEmpty()) {
 	      return Collections.EMPTY_LIST;
