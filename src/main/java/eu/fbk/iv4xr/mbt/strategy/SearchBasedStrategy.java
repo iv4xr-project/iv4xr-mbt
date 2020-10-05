@@ -43,12 +43,13 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		Properties.TEST_ARCHIVE = false;
 		
 		// disable bloat control temporarily
-		Properties.CHECK_BEST_LENGTH = true;
+		Properties.CHECK_BEST_LENGTH = false;
 		
 		Properties.LOG_LEVEL = "warn";
 		
 		Properties.MUTATION_RATE = 0.3;
 		Properties.CROSSOVER_RATE = 0.7;
+		Properties.SEARCH_BUDGET = 240;
 	}
 	
 	@Override

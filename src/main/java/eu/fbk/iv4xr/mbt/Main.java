@@ -3,7 +3,6 @@
  */
 package eu.fbk.iv4xr.mbt;
 
-import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;

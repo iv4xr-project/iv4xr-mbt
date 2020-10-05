@@ -54,6 +54,7 @@ import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
 import org.evosuite.testsuite.TestSuiteReplacementFunction;
 import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
+
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
@@ -67,6 +68,9 @@ import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
+import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
+import eu.fbk.iv4xr.mbt.testcase.TestFactory;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeExceptionsSO;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeLengthSO;
 import sun.misc.Signal;
@@ -101,19 +105,32 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	}
 	
 	protected ChromosomeFactory<T> getChromosomeFactory() {
+		TestFactory testFactory = getTestFactory ();
+		
 		switch (MBTProperties.STRATEGY) {
 		
 		case GA:
 		case DYNAMOSA:
-			return new RandomLengthTestChromosomeFactory<T>(getModel());
+			return new RandomLengthTestChromosomeFactory<T>(testFactory);
 		case MODEL_CHECKING:
-			return new RandomLengthTestChromosomeFactory<T>(getModel());
+			return new RandomLengthTestChromosomeFactory<T>(testFactory);
 		default:
-			throw new RuntimeException("Unsupported test factory: "
-					+ Properties.TEST_FACTORY);
+			throw new RuntimeException("Unsupported generation strategy: " + MBTProperties.STRATEGY);
 		}
 	}
 	
+	protected TestFactory getTestFactory() {
+		switch (MBTProperties.TEST_FACTORY) {
+		case RANDOM_LENGTH:
+			return new RandomLengthTestFactory(getModel());
+		case RANDOM_LENGTH_PARAMETER:
+			return new RandomParameterLengthTestFactory(getModel());
+		default:
+			throw new RuntimeException("Unsupported test factory: " + MBTProperties.TEST_FACTORY);
+		}
+	}
+
+
 	protected GeneticAlgorithm<T> getGeneticAlgorithm(ChromosomeFactory<T> factory) {
 		switch (MBTProperties.ALGORITHM) {
 			case ONE_PLUS_ONE_EA:

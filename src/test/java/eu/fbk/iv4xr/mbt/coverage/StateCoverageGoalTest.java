@@ -4,10 +4,6 @@
 package eu.fbk.iv4xr.mbt.coverage;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.HashSet;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,15 +11,16 @@ import org.junit.jupiter.api.Test;
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
-//import eu.fbk.se.labrecruits.LabRecruitsContext;
-//import eu.fbk.se.labrecruits.LabRecruitsDoor;
-//import eu.fbk.se.labrecruits.LabRecruitsState;
-
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
+import eu.fbk.iv4xr.mbt.testcase.TestFactory;
 
 /**
  * @author kifetew
@@ -61,7 +58,8 @@ class StateCoverageGoalTest {
 		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(efsm);
+		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
+		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
 		assertNotNull (chromosome);

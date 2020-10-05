@@ -133,7 +133,7 @@ public class LabRecruitsEFSMFactory {
 		LabRecruitsFreeTravelTransition t_18 = new LabRecruitsFreeTravelTransition();
 		
 		// from b_2
-		LabRecruitsDoorTravelTransition t_19 = new LabRecruitsDoorTravelTransition();
+		LabRecruitsFreeTravelTransition t_19 = new LabRecruitsFreeTravelTransition();
 		LabRecruitsToggleTransition t_20 = new LabRecruitsToggleTransition();	
 		LabRecruitsFreeTravelTransition t_21 = new LabRecruitsFreeTravelTransition();
 		
@@ -208,8 +208,8 @@ public class LabRecruitsEFSMFactory {
 				.withTransition(d_T_m, b_0, t_15)
 				
 				.withTransition(d_1_p, d_1_m, t_16)
-				.withTransition(d_1_p, b_1, t_17)
-				.withTransition(d_1_p, d_T_p, t_18)
+				.withTransition(d_1_p, b_2, t_17)
+				.withTransition(d_1_p, d_2_m, t_18)
 				
 				.withTransition(b_2, d_1_p, t_19)
 				.withTransition(b_2, b_2, t_20)

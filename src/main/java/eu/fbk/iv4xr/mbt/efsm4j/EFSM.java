@@ -2,6 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
@@ -16,24 +17,24 @@ public class EFSM<
     State extends EFSMState,
     Parameter extends EFSMParameter,
     Context extends IEFSMContext<Context>,
-    Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
+    Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
   public static final String PROP_CONFIGURATION = "PROP_CONFIGURATION";
   protected final Context initialContext;
   protected final State initialState;
   protected final PropertyChangeSupport pcs;
   protected State curState;
   protected Context curContext;
-  protected ListenableGraph<State, Transition> baseGraph;
+  protected ListenableGraph<State, Trans> baseGraph;
   protected ParameterGenerator<Parameter> parameterSet;
   
-  protected EFSM(Graph<State, Transition> baseGraph, State initialState, Context initalContext, 
+  protected EFSM(Graph<State, Trans> baseGraph, State initialState, Context initalContext, 
 		  ParameterGenerator<Parameter> parameterSet) {
     this.curState = this.initialState = initialState;
     this.curContext = initalContext.snapshot();
     this.initialContext = initalContext.snapshot();
     this.parameterSet = parameterSet;
     
-    final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(null);
+    final DirectedPseudograph<State, Trans> tmp = new DirectedPseudograph<>(null);
 
     Graphs.addGraph(tmp, baseGraph);
 
@@ -42,7 +43,7 @@ public class EFSM<
   }
 
   private EFSM(
-      EFSM<State, Parameter, Context, Transition> base,
+      EFSM<State, Parameter, Context, Trans> base,
       State initialState,
       Context initialContext) {
     this.initialContext = initialContext.snapshot();
@@ -54,7 +55,7 @@ public class EFSM<
   }
 
   public boolean canTransition(Parameter input) {
-    for (Transition transition : baseGraph.outgoingEdgesOf(curState)) {
+    for (Trans transition : baseGraph.outgoingEdgesOf(curState)) {
       if (transition.isFeasible(input, curContext)) {
         return true;
       }
@@ -76,7 +77,7 @@ public class EFSM<
    *     configuration
    */
   public Set<Parameter> transition(Parameter input) {
-    for (Transition transition : baseGraph.outgoingEdgesOf(curState)) {
+    for (Trans transition : baseGraph.outgoingEdgesOf(curState)) {
       if (transition.isFeasible(input, curContext)) {
         Configuration<State, Context> prevConfig = null;
         if (pcs != null) {
@@ -147,15 +148,31 @@ public class EFSM<
     return baseGraph.vertexSet();
   }
 
-  public Set<Transition> getTransitons() {
+  public Set<Trans> getTransitons() {
     return baseGraph.edgeSet();
   }
 
-  public Set<Transition> transitionsOutOf(State state) {
+  public Set<Trans> transitionsOutOf(State state) {
     return baseGraph.outgoingEdgesOf(state);
   }
 
-  public Set<Transition> transitionsInTo(State state) {
+  /**
+   * Transitions out of the given state, but only feasible for the given input
+   * @param state
+   * @param input
+   * @return set of transitions possible from the current state, given the specific input parameter
+   */
+  public Set<Trans> transitionsOutOf(State state, Parameter input) {
+	    Set<Trans> transitions = new HashSet<Trans>(); 
+	    for (Trans transition : baseGraph.outgoingEdgesOf(state)) {
+	    	if (transition.isFeasible(input, curContext)) {
+	    		transitions.add(transition);
+	    	}
+	    }
+		return transitions;
+  }
+  
+  public Set<Trans> transitionsInTo(State state) {
     return baseGraph.incomingEdgesOf(state);
   }
 
@@ -163,7 +180,7 @@ public class EFSM<
     forceConfiguration(new Configuration<>(initialState, initialContext));
   }
 
-  public ListenableGraph<State, Transition> getBaseGraph() {
+  public ListenableGraph<State, Trans> getBaseGraph() {
     return baseGraph;
   }
 
@@ -182,7 +199,7 @@ public class EFSM<
    *
    * @return
    */
-  protected EFSM<State, Parameter, Context, Transition> snapshot(
+  protected EFSM<State, Parameter, Context, Trans> snapshot(
       State initialState, Context initialContext) {
     return new EFSM<>(this, initialState, initialContext);
   }
@@ -194,7 +211,7 @@ public class EFSM<
    *
    * @return
    */
-  protected EFSM<State, Parameter, Context, Transition> snapshot() {
+  protected EFSM<State, Parameter, Context, Trans> snapshot() {
     return snapshot(this.curState, this.curContext);
   }
 
@@ -228,7 +245,7 @@ public class EFSM<
   	/*
   	 * NOTE: do we need to check that curState == transition.getSrc()?
   	 */
-	public Set<Parameter> transition(Parameter input, Transition transition) {
+	public Set<Parameter> transition(Parameter input, Trans transition) {
 		if (transition.isFeasible(input, curContext)) {
 			Configuration<State, Context> prevConfig = null;
 			if (pcs != null) {
@@ -249,7 +266,7 @@ public class EFSM<
 	 * transition to a given state for testing
 	 */
 	public Set<Parameter> transition(Parameter input, State state) {
-		for (Transition transition : baseGraph.outgoingEdgesOf(curState)) {
+		for (Trans transition : baseGraph.outgoingEdgesOf(curState)) {
 			if (transition.isFeasible(input, curContext) & transition.getTgt().equals(state)) {
 				Configuration<State, Context> prevConfig = null;
 				if (pcs != null) {

@@ -3,7 +3,6 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,23 +30,28 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	 */
 	public EFSMTestExecutor(EFSM<State, Parameter, Context, Trans> efsm) {
 		this.efsm = efsm;
-		efsm.reset();
+		reset();
 	}
 
 	public EFSMTestExecutor() {
 		this.efsm = AlgorithmFactory.getModel();
+		reset();
 	}
 
 	@Override
 	public ExecutionResult executeTestcase(Testcase testcase) {
 		notifyExecutionStarted();
+		reset();
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
+		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		boolean success = applyTransitions(tc.getPath().getTransitions(), tc.getPath().getParameterValues());
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
 		notifyExecutionFinished();
+		reset();
+		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		return result;
 	}
 

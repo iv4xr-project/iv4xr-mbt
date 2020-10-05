@@ -16,7 +16,7 @@ public class LabRecruitsParameterGenerator extends ParameterGenerator {
 
 	@Override
 	public LabRecruitsParameter getRandom() {
-		if (Randomness.nextDouble() < 0.1) {
+		if (Randomness.nextDouble() < 0.4) {
 			return new LabRecruitsParameter(LabRecruitsAction.TOGGLE);
 		}else {
 			return new LabRecruitsParameter(LabRecruitsAction.EXPLORE);

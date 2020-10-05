@@ -86,6 +86,17 @@ public class MBTProperties {
 	@IntValue(min = 1)
 	public static int POPULATION = 50;
 
+	@Parameter(key = "max_path_length", group = "Search Algorithm", description = "Maximum length of a path derived from EFSM")
+	@IntValue(min = 1)
+	public static int MAX_PATH_LENGTH = 100;
+	
+	public enum TestFactory{
+		RANDOM_LENGTH, RANDOM_LENGTH_PARAMETER;
+	}
+	
+	@Parameter(key = "test_factory", group = "Search Algorithm", description = "Test factory")
+	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH_PARAMETER;
+	
 	public enum PopulationLimit {
 		INDIVIDUALS, TESTS, STATEMENTS;
 	}

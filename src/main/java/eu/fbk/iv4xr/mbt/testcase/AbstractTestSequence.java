@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import org.evosuite.utils.Randomness;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
@@ -116,16 +117,18 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 
 	@Override
 	public void crossOver(Testcase other, int position1, int position2) {
-		for (int i = position1; i < path.getLength(); i++) {
-			path.getModfiableTransitions().remove(i);
-			path.parameterValues.remove(i);
+		LinkedList<Trans> newTransitions = new LinkedList<Trans>();
+		LinkedList<Parameter> newParameters = new LinkedList<Parameter>();
+		for (int i = 0; i <= position1; i++) {
+			newTransitions.add(path.getTransitionAt(i));
+			newParameters.add(path.parameterValues.get(i));
 		}
-		for (int i = 0; i < position2; i++) {
+		for (int i = position2+1; i < other.getLength(); i++) {
 			AbstractTestSequence<State, Parameter, Context, Trans> otherTc = (AbstractTestSequence<State, Parameter, Context, Trans>)other;
-			path.getModfiableTransitions().add(otherTc.path.getTransitionAt(i));
-			path.parameterValues.add((Parameter) otherTc.path.parameterValues.get(i));
+			newTransitions.add(otherTc.path.getTransitionAt(i));
+			newParameters.add((Parameter) otherTc.path.parameterValues.get(i));
 		}
-		
+		path = new Path(newTransitions, newParameters);
 	}
 
 	@Override

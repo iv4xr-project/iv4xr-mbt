@@ -28,15 +28,13 @@ public class RandomLengthTestChromosomeFactory<T extends Chromosome> implements 
 
 	
 	
-	private EFSM efsm = null;
-	private RandomLengthTestFactory testFactory = null;
+	private TestFactory testFactory = null;
 	
 	/**
 	 * 
 	 */
-	public RandomLengthTestChromosomeFactory(EFSM efsm) {
-		this.efsm = efsm;
-		testFactory = new RandomLengthTestFactory(this.efsm);
+	public RandomLengthTestChromosomeFactory(TestFactory testFactory) {
+		this.testFactory = testFactory;
 	}
 
 	@Override
