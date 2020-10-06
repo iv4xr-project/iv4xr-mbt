@@ -237,6 +237,22 @@ public class MBTProperties {
 	@Parameter(key = "PROJECT_DIR", group = "Runtime", description = "Directory name of target package")
 	public static String PROJECT_DIR = null;
 	
+	
+	/**
+	 * Random Lab Recruits level generation parameters
+	 */
+	@Parameter(key = "LR_seed", group = "Lab Recruits", description = "Seed for Lab Recruits random level generation")
+	public static long LR_seed = 123;
+	
+	@Parameter(key = "LR_n_buttons", group = "Lab Recruits", description = "Total number of buttons in the level")
+	public static int LR_n_buttons = 5;
+	
+	@Parameter(key = "LR_n_doors", group = "Lab Recruits", description = "Total number of doors in the level")
+	public static int LR_n_doors = 4;
+	
+	@Parameter(key = "LR_mean_buttons", group = "Lab Recruits", description = "Expected number of buttons in a room")
+	public static double LR_mean_buttons = 1;
+	
 	/**
 	 * Get all parameters that are available
 	 *

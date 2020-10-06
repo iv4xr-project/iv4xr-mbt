@@ -40,7 +40,7 @@ public class LabRecruitsEFSMFactory {
 			break;
 		case "random_default" :
 			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
-			efsm = randomGenerator.generateLevel();
+			efsm = randomGenerator.getEFMS();
 			break;
 		default:
 			throw new RuntimeException("Unrecognized scenarioID: " + MBTProperties.SUT_EFSM);
