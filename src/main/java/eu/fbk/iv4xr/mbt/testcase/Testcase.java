@@ -3,6 +3,12 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
+import java.util.Set;
+
+import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.FitnessFunction;
+import org.evosuite.testcase.TestFitnessFunction;
+
 /**
  * @author kifetew
  *
@@ -30,4 +36,22 @@ public interface Testcase extends Comparable<Testcase> {
 
 
 	public void mutate();
+	
+	/**
+	 * Remove all covered goals
+	 */
+	public void clearCoveredGoals();
+	
+	
+	/**
+	 * Retrieve all coverage goals covered by this test
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
+	public Set<FitnessFunction<?>> getCoveredGoals();
+	
+	
+	public void addCoveredGoal(FitnessFunction<?> goal);
+	
+	public boolean isGoalCovered(FitnessFunction<?> goal);
 }

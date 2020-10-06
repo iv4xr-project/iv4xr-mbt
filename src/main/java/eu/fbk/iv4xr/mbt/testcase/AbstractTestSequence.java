@@ -3,9 +3,14 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
-import org.evosuite.utils.Randomness;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Set;
+
+import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.FitnessFunction;
+import org.evosuite.testcase.TestFitnessFunction;
+import org.evosuite.utils.Randomness;
 
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
@@ -27,6 +32,9 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 	private Path<State, Parameter, Context, Trans> path;
 	private boolean valid = false;
 	private double fitness = 0d;
+	
+	/** Coverage goals this test covers */
+	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
 	/**
 	 * 
@@ -136,5 +144,25 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 		int index = Randomness.nextInt(getLength());
 		path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
 		
+	}
+
+	@Override
+	public void clearCoveredGoals() {
+		coveredGoals.clear();
+	}
+
+	@Override
+	public Set<FitnessFunction<?>> getCoveredGoals() {
+		return coveredGoals;
+	}
+
+	@Override
+	public void addCoveredGoal(FitnessFunction goal) {
+		coveredGoals.add(goal);
+	}
+
+	@Override
+	public boolean isGoalCovered(FitnessFunction goal) {
+		return coveredGoals.contains(goal);
 	}
 }

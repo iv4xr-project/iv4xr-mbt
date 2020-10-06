@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.Properties.Criterion;
+//import org.evosuite.Properties.Criterion;
 import org.evosuite.Properties.Parameter;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
@@ -208,7 +208,7 @@ public class MBTProperties {
 	}
 	
 	@Parameter(key = "algorithm", group = "Search Algorithm", description = "Search algorithm")
-	public static Algorithm ALGORITHM = Algorithm.MONOTONIC_GA;
+	public static Algorithm ALGORITHM = Algorithm.MOSA; // .MONOTONIC_GA;
 	
 	
 	public enum ModelCriterion {
@@ -216,19 +216,21 @@ public class MBTProperties {
 	}
 	
 	@Parameter(key = "modelcriterion", group = "Search Algorithm", description = "Model coverage criterion")
-	public static ModelCriterion MODELCRITERION = ModelCriterion.STATE;
+	public static ModelCriterion[] MODELCRITERION = new ModelCriterion[] {
+		ModelCriterion.STATE, ModelCriterion.TRANSITION
+	};
 	
-	public enum Criterion {
-		EXCEPTION, DEFUSE, ALLDEFS, BRANCH, CBRANCH, STRONGMUTATION, WEAKMUTATION,
-		MUTATION, STATEMENT, RHO, AMBIGUITY, IBRANCH, READABILITY,
-        ONLYBRANCH, ONLYMUTATION, METHODTRACE, METHOD, METHODNOEXCEPTION, LINE, ONLYLINE, OUTPUT, INPUT,
-        REGRESSION,	REGRESSIONTESTS, TRYCATCH
-	}
+//	public enum Criterion {
+//		EXCEPTION, DEFUSE, ALLDEFS, BRANCH, CBRANCH, STRONGMUTATION, WEAKMUTATION,
+//		MUTATION, STATEMENT, RHO, AMBIGUITY, IBRANCH, READABILITY,
+//        ONLYBRANCH, ONLYMUTATION, METHODTRACE, METHOD, METHODNOEXCEPTION, LINE, ONLYLINE, OUTPUT, INPUT,
+//        REGRESSION,	REGRESSIONTESTS, TRYCATCH
+//	}
 
-    @Parameter(key = "criterion", group = "Runtime", description = "Coverage criterion. Can define more than one criterion by using a ':' separated list")
-    public static Criterion[] CRITERION = new Criterion[] {
-            //these are basic criteria that should be always on by default
-            Criterion.LINE, Criterion.BRANCH, Criterion.EXCEPTION, Criterion.WEAKMUTATION, Criterion.OUTPUT, Criterion.METHOD, Criterion.METHODNOEXCEPTION, Criterion.CBRANCH  };
+//    @Parameter(key = "criterion", group = "Runtime", description = "Coverage criterion. Can define more than one criterion by using a ':' separated list")
+//    public static Criterion[] CRITERION = new Criterion[] {
+//            //these are basic criteria that should be always on by default
+//            Criterion.LINE, Criterion.BRANCH, Criterion.EXCEPTION, Criterion.WEAKMUTATION, Criterion.OUTPUT, Criterion.METHOD, Criterion.METHODNOEXCEPTION, Criterion.CBRANCH  };
 
 	
     @Parameter(key = "PROJECT_PREFIX", group = "Runtime", description = "Package name of target package")
@@ -784,13 +786,13 @@ public class MBTProperties {
 		else if (f.getType().isArray()) {
 			if (f.getType().isAssignableFrom(String[].class)) {
 				setValue(key, value.split(":"));
-			} else if (f.getType().getComponentType().equals(Criterion.class)) {
+			} else if (f.getType().getComponentType().equals(ModelCriterion.class)) {
 				String[] values = value.split(":");
-				Criterion[] criteria = new Criterion[values.length];
+				ModelCriterion[] criteria = new ModelCriterion[values.length];
 
 				int pos = 0;
 				for (String stringValue : values) {
-					criteria[pos++] = Enum.valueOf(Criterion.class,
+					criteria[pos++] = Enum.valueOf(ModelCriterion.class,
 							stringValue.toUpperCase());
 				}
 

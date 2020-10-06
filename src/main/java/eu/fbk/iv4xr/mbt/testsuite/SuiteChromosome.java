@@ -3,8 +3,14 @@
  */
 package eu.fbk.iv4xr.mbt.testsuite;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
+import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
 import org.evosuite.testsuite.AbstractTestSuiteChromosome;
 
@@ -21,6 +27,9 @@ public class SuiteChromosome extends AbstractTestSuiteChromosome<MBTChromosome> 
 	 */
 	private static final long serialVersionUID = -4537439043463765626L;
 
+	/** Coverage goals this test covers */
+	private transient List<FitnessFunction<?>> coveredGoals = new ArrayList<FitnessFunction<?>>();
+	
 	/**
 	 * 
 	 */
@@ -61,6 +70,10 @@ public class SuiteChromosome extends AbstractTestSuiteChromosome<MBTChromosome> 
 	public boolean localSearch(LocalSearchObjective<? extends Chromosome> objective) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public List<FitnessFunction<?>> getCoveredGoals() {
+		return coveredGoals;
 	}
 
 }

@@ -27,4 +27,8 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	
 	public abstract double getFitness(Chromosome test);
 	
+	public boolean isMaximizationFunction() {
+		return false;
+	}
+	
 }

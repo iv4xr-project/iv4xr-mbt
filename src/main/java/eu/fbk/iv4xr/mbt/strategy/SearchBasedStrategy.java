@@ -14,9 +14,12 @@ import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testcase.secondaryobjectives.MinimizeExceptionsSecondaryObjective;
 import org.evosuite.testcase.secondaryobjectives.MinimizeLengthSecondaryObjective;
 import org.evosuite.testsuite.TestSuiteChromosome;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
@@ -25,6 +28,8 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  */
 public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrategy {
 
+	private static Logger logger = LoggerFactory.getLogger(SearchBasedStrategy.class);
+	
 	/**
 	 * 
 	 */
@@ -43,9 +48,9 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		Properties.TEST_ARCHIVE = false;
 		
 		// disable bloat control temporarily
-		Properties.CHECK_BEST_LENGTH = false;
+		Properties.CHECK_BEST_LENGTH = true;
 		
-		Properties.LOG_LEVEL = "warn";
+		Properties.LOG_LEVEL = "WARN";
 		
 		Properties.MUTATION_RATE = 0.3;
 		Properties.CROSSOVER_RATE = 0.7;
@@ -64,9 +69,10 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// setup the search algorithm
 		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
 		
-		CoverageGoalFactory<?> fitnessFactory = algorithmFactory.getFitnessFactory();
-		List<?> goals = fitnessFactory.getCoverageGoals();
+//		CoverageGoalFactory<?> fitnessFactory = algorithmFactory.getFitnessFactory();
+		List<?> goals = algorithmFactory.getCoverageGoals(); //fitnessFactory.getCoverageGoals();
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
+		logger.debug("Total goals: {}", goals.size());
 		
 		CoverageTracker coverageTracker = new CoverageTracker(goals);
 		searchAlgorithm.addListener(coverageTracker);
@@ -74,12 +80,13 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		
 		// invoke generate solution on the algorithm
 		searchAlgorithm.generateSolution();
-		//List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
+		List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
 		
 		// return result from coverageTracker (archive)
-		SuiteChromosome solution = new SuiteChromosome();
-		for (MBTChromosome test : coverageTracker.getTestSuite()) {
-			solution.addTest(test);
+		SuiteChromosome solution = new MBTSuiteChromosome();
+//		for (MBTChromosome test : coverageTracker.getTestSuite()) {
+		for (T test : bestIndividuals) {
+			solution.addTest((MBTChromosome) test);
 		}
 		return solution;
 	}

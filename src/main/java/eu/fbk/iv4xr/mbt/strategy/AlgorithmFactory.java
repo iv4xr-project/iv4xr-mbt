@@ -3,8 +3,12 @@
  */
 package eu.fbk.iv4xr.mbt.strategy;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.evosuite.Properties;
-import org.evosuite.Properties.Criterion;
+//import org.evosuite.Properties.Criterion;
 import org.evosuite.Properties.Strategy;
 import org.evosuite.Properties.TheReplacementFunction;
 import org.evosuite.ShutdownTestWriter;
@@ -14,6 +18,7 @@ import org.evosuite.coverage.mutation.MutationTestPool;
 import org.evosuite.coverage.mutation.MutationTimeoutStoppingCondition;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
+import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.FitnessReplacementFunction;
 import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.metaheuristics.BreederGA;
@@ -28,7 +33,6 @@ import org.evosuite.ga.metaheuristics.SPEA2;
 import org.evosuite.ga.metaheuristics.StandardChemicalReaction;
 import org.evosuite.ga.metaheuristics.StandardGA;
 import org.evosuite.ga.metaheuristics.SteadyStateGA;
-import org.evosuite.ga.metaheuristics.mosa.MOSA;
 import org.evosuite.ga.metaheuristics.mulambda.MuLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.MuPlusLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusLambdaLambdaGA;
@@ -56,8 +60,10 @@ import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSA;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
+import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
@@ -90,7 +96,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	
 	
 	protected CoverageGoalFactory<?> getFitnessFactory(){
-		switch (MBTProperties.MODELCRITERION){
+		switch (MBTProperties.MODELCRITERION[0]){
 		case STATE:
 			return new StateCoverageGoalFactory();
 		case TRANSITION:
@@ -102,6 +108,13 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		default:
 			throw new RuntimeException("Unsupported model coverage criterion: " + MBTProperties.MODELCRITERION);	
 		}
+	}
+	
+	protected List<CoverageGoal> getCoverageGoals(){
+		List<CoverageGoal> goals = new ArrayList<CoverageGoal>();
+		goals.addAll(new StateCoverageGoalFactory().getCoverageGoals());
+		goals.addAll(new TransitionCoverageGoalFactory().getCoverageGoals());
+		return goals;
 	}
 	
 	protected ChromosomeFactory<T> getChromosomeFactory() {
@@ -308,16 +321,16 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			ga.addStoppingCondition(new GlobalTimeStoppingCondition());
 		}
 
-		if (ArrayUtil.contains(Properties.CRITERION, Criterion.MUTATION)
-		        || ArrayUtil.contains(Properties.CRITERION, Criterion.STRONGMUTATION)) {
-			if (Properties.STRATEGY == Strategy.ONEBRANCH)
-				ga.addStoppingCondition(new MutationTimeoutStoppingCondition());
-			else
-				ga.addListener(new MutationTestPool());
-			// } else if (Properties.CRITERION == Criterion.DEFUSE) {
-			// if (Properties.STRATEGY == Strategy.EVOSUITE)
-			// ga.addListener(new DefUseTestPool());
-		}
+//		if (ArrayUtil.contains(Properties.CRITERION, Criterion.MUTATION)
+//		        || ArrayUtil.contains(Properties.CRITERION, Criterion.STRONGMUTATION)) {
+//			if (Properties.STRATEGY == Strategy.ONEBRANCH)
+//				ga.addStoppingCondition(new MutationTimeoutStoppingCondition());
+//			else
+//				ga.addListener(new MutationTestPool());
+//			// } else if (Properties.CRITERION == Criterion.DEFUSE) {
+//			// if (Properties.STRATEGY == Strategy.EVOSUITE)
+//			// ga.addListener(new DefUseTestPool());
+//		}
 		ga.resetStoppingConditions();
 		ga.setPopulationLimit(getPopulationLimit());
 
@@ -407,6 +420,27 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		      } // Not all objectives make sense for tests
 		    }
 		
+	}
+
+
+	public Collection<? extends FitnessFunction> getCoverageGoals(MBTProperties.ModelCriterion criterion) {
+		List<CoverageGoal> goals = new ArrayList<CoverageGoal>();
+		switch (criterion) {
+		case STATE:
+			goals.addAll(new StateCoverageGoalFactory().getCoverageGoals());
+			break;
+		case TRANSITION:
+			goals.addAll(new TransitionCoverageGoalFactory().getCoverageGoals());
+			break;
+		case KTRANSITION:
+			goals.addAll(new KTransitionCoverageGoalFactory().getCoverageGoals());
+			break;
+		case PATH:
+			goals.addAll(new PathCoverageGoalFactory().getCoverageGoals());
+		default:
+			throw new RuntimeException("Unsupported model coverage criterion: " + criterion);
+		}
+		return goals;
 	}
 
 }
