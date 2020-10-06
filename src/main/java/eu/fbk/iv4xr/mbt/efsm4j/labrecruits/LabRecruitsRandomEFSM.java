@@ -4,9 +4,11 @@ import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.BFSShortestPath;
+import org.jgrapht.generate.CompleteGraphGenerator;
 import org.jgrapht.graph.Pseudograph;
 import org.jgrapht.io.*;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -17,18 +19,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 import java.util.function.Function;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
 //import de.upb.testify.efsm.*;
 //import eu.fbk.se.labrecruits.*;
 import eu.fbk.iv4xr.mbt.efsm4j.*;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Button;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Corridor;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Door;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Room;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.RendererToLRLevelDef;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Layout;
+
 
 /**
  * 
- *  Generate a random EFSM that could be mapped into one or more Lab Recruits level.
+ * Generate a random EFSM that could be mapped into one or more Lab Recruits level.
  * A level is defined by the number of its buttons and doors, but we also need a way to
  * specify the number of rooms. In the current abstraction, a room has not a direct representation
  * but it constitutes a strongly connected graph, where each node is button. Two rooms can
@@ -39,6 +51,8 @@ import eu.fbk.iv4xr.mbt.efsm4j.*;
  * the number of buttons in each room. In this way the number of rooms is not predefined but
  * depends on the random assignment of buttons to a room.  
  * 
+ * NOTES: need to define a class for generating doors and button names
+ * 
  * @author Davide Prandi
  *
  * Aug 19, 2020
@@ -48,17 +62,17 @@ public class LabRecruitsRandomEFSM {
 	
 	
 	// Random seed to generate level layout
-	private long seed = 1234;
+	private long seed = MBTProperties.LR_seed;
 	
 	// Total number of buttons
-	private int nButtons = 5;
+	private int nButtons = MBTProperties.LR_n_buttons;
 	
 	// Total number of doors
-	private int nDoors = 4;
+	private int nDoors = MBTProperties.LR_n_doors;
 	
 	// Expected number of buttons per room
 	// Buttons per room are selected following a Poisson
-	private double meanButtonsPerRoom = 1;
+	private double meanButtonsPerRoom = MBTProperties.LR_mean_buttons;
 	
 	// random number generator (using Mersenne Twister rng) 
 	private RandomDataGenerator rndGenerator = new RandomDataGenerator(new MersenneTwister(seed));
@@ -70,16 +84,45 @@ public class LabRecruitsRandomEFSM {
 	private EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = null; // to fix
 	
+	// csv version to feed Lab Recruits
+	private String csvLevel = "";
+	
 	// parameters generator
 	LabRecruitsParameterGenerator parameterGenerator = new LabRecruitsParameterGenerator();
-	
+		
 	// Default parameters
-	public LabRecruitsRandomEFSM() {
 
+	public LabRecruitsRandomEFSM() {
+		
+		int nTry = 5;
+		while(this.csvLevel == "" & nTry > 0) {
+			// generate a list of rooms
+			// each room is a vector of buttons
+			List<Vector<LabRecruitsState>> roomSet = generateRoomSet();	
+
+			// the number of rooms are not predefined
+			// int nRooms = roomSet.size(); // not needed?
+			// connect rooms with doors
+			// the problem is equivalent to the creation of a connected graph
+			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
+			// DEBUG saveDoorGraph("data/level_"+nTry+".xml");
+			// test if doorsGraph is effectively planar
+			// need to update JGraphT
+			
+			// expand the doors graph to the corresponding EFSM
+			// and add button-doors map
+			this.efsm = doorsGraphToEFSM();
+			
+			// create the csv version that can be played
+			this.csvLevel = generateCSV();
+			nTry = nTry - 1;
+		}
 	}
 
 	
-	// get and set parameters
+	// NOTE: parameters are in MBTProperties and we could avoid changing them,
+	//       but we keep for testing purposes
+	// get and set parameters 	
 	public int get_nButtons() {
 		return(nButtons);
 	}
@@ -107,25 +150,17 @@ public class LabRecruitsRandomEFSM {
 		seed = newSeed;
 		rndGenerator.reSeed(newSeed);
 	}
-	
+	public String get_csv() {
+		return csvLevel;
+	}
 	
 
 	/**
-	 * Generate a random level 
+	 * Return the random level 
 	 * @return and EFSM
 	 */
 	public EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> generateLevel()  {	
-	    // generate a list of rooms
-		// each room is a vector of buttons
-		List<Vector<LabRecruitsState>> roomSet = generateRoomSet();	
-		// the number of rooms are not predefined
-		// int nRooms = roomSet.size(); // not needed?
-		// connect rooms with doors
-		// the problem is equivalent to the creation of a connected graph
-		doorsGraph = generateDoorsGraph(roomSet);
-		
-		efsm = doorsGraphToEFSM();
+		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getEFMS()  {	
 		return efsm;
 	}
 	
@@ -251,7 +286,7 @@ public class LabRecruitsRandomEFSM {
 		for (Vector<LabRecruitsState> room : availableRooms) {
 			doorsGraph.removeVertex(room);
 		}
-		// add unsed buttons to already connected rooms
+		// add unused buttons to already connected rooms
 		/*
 		 * for(Vector<LabRecruitsState> room : availableRooms) { int toMergeId =
 		 * rndGenerator.nextInt(0, doorsGraph.vertexSet().size() - 1);
@@ -261,7 +296,150 @@ public class LabRecruitsRandomEFSM {
 		// all rooms and doors are used: exit
 		return(doorsGraph);
 	}
+	
+	/*
+	 * Generate the door graph trying to make it planar
+	 * - no self loop
+	 * - no multi-edges
+	 * - at most 3 edges per node
+	 * @param roomSet
+	 * @return doors graph
+	 */
+	private Pseudograph<Vector<LabRecruitsState>,Integer> generatePlanarDoorsGraph(List<Vector<LabRecruitsState>> roomSet){
 		
+		Pseudograph<Vector<LabRecruitsState>,Integer>  doorsGraph = new Pseudograph<>(Integer.class);
+		Pseudograph<Vector<LabRecruitsState>,Integer>  completeGraph = new Pseudograph<>(Integer.class);
+		
+		// add vertex, i.e., set of labrecruits states
+		for (Vector<LabRecruitsState> vector : roomSet) {
+			doorsGraph.addVertex(vector);
+		}
+		
+		
+		
+		// tmp values to store used and remaining rooms that need to be connected
+		Set<Vector<LabRecruitsState>> usedRooms =  new LinkedHashSet<>();
+		// need to clone because vertexSet returns a view
+		Set<Vector<LabRecruitsState>> availableRooms = new LinkedHashSet<>(doorsGraph.vertexSet());
+		
+		// rooms and initial doors to make the graph connected is the same as generateDoorsGraph
+		// need to reconcile 
+		
+		// pick first node and update used and available rooms
+		//Vector<?> firstNode = (Vector<?>) availableRooms.toArray()[rndGenerator.nextInt(0, availableRooms.size()-1)];
+		int firstNodeId = rndGenerator.nextInt(0, availableRooms.size()-1);
+		Vector<LabRecruitsState> firstNode = availableRooms.stream().skip(firstNodeId).iterator().next();
+		availableRooms.remove(firstNode);
+		usedRooms.add(firstNode);
+		
+		HashMap<Vector<LabRecruitsState>, Integer> roomsDoorsCount = new HashMap<Vector<LabRecruitsState>, Integer>();
+		roomsDoorsCount.put(firstNode,0);
+		
+		// iterate over nDoors and add an edge each time selecting
+		// one node from the used and from the available
+		for (int i = 0; i < nDoors; i++) {
+			// random pick an available and a used node
+			int nextAvailableId = rndGenerator.nextInt(0, availableRooms.size()-1);
+			Vector<LabRecruitsState> unconnectedNode =  availableRooms.stream().skip(nextAvailableId).iterator().next();
+			int nextUsedId = rndGenerator.nextInt(0, usedRooms.size()-1);
+			Vector<LabRecruitsState> connectedNode =  usedRooms.stream().skip(nextUsedId).iterator().next();
+			// add a new edge to the graph
+			doorsGraph.addEdge(connectedNode, unconnectedNode,i);
+			roomsDoorsCount.put(connectedNode, roomsDoorsCount.get(connectedNode)+1);
+			roomsDoorsCount.put(unconnectedNode, 1);
+			
+			if (roomsDoorsCount.get(connectedNode) >= 3) {
+				usedRooms.remove(connectedNode);
+			}
+			
+			// update available and used rooms
+			availableRooms.remove(unconnectedNode);
+			usedRooms.add(unconnectedNode);
+			// no more rooms but still some door to create
+			if (availableRooms.size() == 0 | usedRooms.size() == 0) {
+				break;
+			}
+		}
+		
+		// compute degree of each node
+		// we would like to have at most 3 out nodes per vertex (i.e., 3 doors for a room)
+		/**
+		 * need to check that while creating the connected graph we respect the 3 doors limit. Move above
+		 */
+		/**
+		HashMap<Vector<LabRecruitsState>, Integer> roomsDoorsCount = new HashMap<Vector<LabRecruitsState>, Integer>();
+		Iterator<Vector<LabRecruitsState>> iteratorUsedRoom =  usedRooms.iterator();
+		while(iteratorUsedRoom.hasNext()) {
+			Vector<LabRecruitsState> nextRoom = iteratorUsedRoom.next(); 
+			roomsDoorsCount.put(nextRoom, doorsGraph.inDegreeOf(nextRoom));			
+		}
+		*/
+		
+		// create a set with all the possible transitions not yet used
+		int unusedDoorId = 0;
+		for(Vector<LabRecruitsState> src :  usedRooms) {
+			for(Vector<LabRecruitsState> tgt :  usedRooms) {
+				if (!src.equals(tgt)) {
+					if (!completeGraph.containsEdge(src, tgt) & !doorsGraph.containsEdge(src, tgt) ) {
+						if (!completeGraph.containsVertex(src)) {
+							completeGraph.addVertex(src);
+						}
+						if (!completeGraph.containsVertex(tgt)) {
+							completeGraph.addVertex(tgt);
+						}					
+						completeGraph.addEdge(src, tgt,unusedDoorId);
+						unusedDoorId = unusedDoorId + 1;
+					}					
+				}
+			}
+		}
+				
+		// all rooms are used but there are still some available door: random add doors between random rooms
+		while (doorsGraph.edgeSet().size() < nDoors & completeGraph.edgeSet().size() > 0) {
+			// pick an edge from complete graph
+			int nextTransition = rndGenerator.nextInt(0, completeGraph.edgeSet().size()-1);
+			Integer newEdge = completeGraph.edgeSet().stream().skip(nextTransition).iterator().next();
+			// add to door graph
+			doorsGraph.addEdge(completeGraph.getEdgeSource(newEdge), completeGraph.getEdgeTarget(newEdge), doorsGraph.edgeSet().size());
+			
+			// update number of doors per room count
+			roomsDoorsCount.put(completeGraph.getEdgeSource(newEdge) , roomsDoorsCount.get(completeGraph.getEdgeSource(newEdge))+1);
+			roomsDoorsCount.put(completeGraph.getEdgeTarget(newEdge) , roomsDoorsCount.get(completeGraph.getEdgeTarget(newEdge))+1);
+			// if the new edge makes some room R having 3 doors, remove from complete graph all edges with R 
+			Set<Integer> edgesToRemove = new HashSet<Integer>();
+			if (roomsDoorsCount.get(completeGraph.getEdgeSource(newEdge)) >= 3) {
+				edgesToRemove.addAll(completeGraph.edgesOf(completeGraph.getEdgeSource(newEdge)));		
+			}
+			if (roomsDoorsCount.get(completeGraph.getEdgeTarget(newEdge)) >= 3) {
+				edgesToRemove.addAll(completeGraph.edgesOf(completeGraph.getEdgeTarget(newEdge)));
+			}	
+			Iterator<Integer> edgesToRemoveIterator = edgesToRemove.iterator(); 
+			while(edgesToRemoveIterator.hasNext()) {
+				Integer nextToRemove = edgesToRemoveIterator.next();
+				completeGraph.removeEdge(nextToRemove);
+			}
+			// remove from complete graph
+			completeGraph.removeEdge(newEdge);
+
+		}
+	
+		// all doors are used but there are still some room: merge remaining rooms with used rooms
+		// remove unused rooms
+		for (Vector<LabRecruitsState> room : availableRooms) {
+			doorsGraph.removeVertex(room);
+		}
+		// add unused buttons to already connected rooms
+		/*
+		 * for(Vector<LabRecruitsState> room : availableRooms) { int toMergeId =
+		 * rndGenerator.nextInt(0, doorsGraph.vertexSet().size() - 1);
+		 * doorsGraph.vertexSet().stream().skip(toMergeId).iterator().next().addAll(room
+		 * ); }
+		 */
+		// all rooms and doors are used: exit
+		return(doorsGraph);
+	}
+
+
 	/**
 	 * Convert a doors graph to an EFSM. 
 	 * For each node of the doors graph create a totally connected graph of buttons. For each edge of
@@ -448,6 +626,82 @@ public class LabRecruitsRandomEFSM {
 		
 	}	
 	
+	/**
+	 * Generate the level as a text file using Wishnu code
+	 * @throws IOException 
+	 */
+	private String generateCSV() {
+		
+		
+		List<Room> csvRooms = new LinkedList<>() ;			
+		List<Button> buttonList = new LinkedList<>();		
+		List<Door> doorList = new LinkedList<>();
+		
+		HashMap< Vector<LabRecruitsState> , Integer> GraphRoomToCsvRoom = new HashMap<Vector<LabRecruitsState>, Integer>();
+		
+		LabRecruitsContext doorButtonMap = efsm.getConfiguration().getContext();
+		LabRecruitsState efsmInitialState = efsm.getInitialConfiguration().getState();
+		
+		HashMap<String, Button> buttonDoorMap = new HashMap<String,Button>();
+				
+				
+		//HashMap<Integer, String> buttonList = new  HashMap<Integer, String>();
+		//HashMap<Integer, Integer> doorList = new  HashMap<Integer, Integer>();
+		
+		int roomId = 0;
+		
+		// iterate over doors graph vertex 
+		Iterator<Vector<LabRecruitsState>> vertexIterator = doorsGraph.vertexSet().iterator();
+		while (vertexIterator.hasNext()) {
+			Vector<LabRecruitsState> doorsGraphState = vertexIterator.next();
+			Room room = new Room(roomId);
+			// add buttons
+			for(LabRecruitsState s : doorsGraphState ) {
+				if (s.equals(efsmInitialState)) {
+					room.placeAgent("Agent1");
+				}
+				Button b = room.addButton(s.getId());
+				buttonList.add(b);
+				buttonDoorMap.put(s.getId(),b);
+			}
+			csvRooms.add(room);
+			GraphRoomToCsvRoom.put(doorsGraphState, roomId);
+			roomId = roomId + 1;
+			
+		}
+		
+		// iterate over door graph edges
+		Iterator<Integer> edgeIterator = doorsGraph.edgeSet().iterator();
+		while (edgeIterator.hasNext()) {
+			
+			Integer doorsGraphEdge = edgeIterator.next();
+			LabRecruitsDoor doorsGraphDoor = doorButtonMap.getDoor("door"+doorsGraphEdge.toString());
+			HashSet<String> doorsGraphButtons = doorsGraphDoor.getButtons();
+			
+			Vector<LabRecruitsState> source = doorsGraph.getEdgeSource(doorsGraphEdge);
+			Vector<LabRecruitsState> dest = doorsGraph.getEdgeTarget(doorsGraphEdge);
+			
+			Corridor corridor = Corridor.connect( csvRooms.get(GraphRoomToCsvRoom.get(source)) , csvRooms.get(GraphRoomToCsvRoom.get(dest)) );
+			Door door = corridor.guard("door"+doorsGraphEdge.toString());
+						
+			Iterator<String> doorsGraphButtonsIterator = doorsGraphButtons.iterator();
+			while(doorsGraphButtonsIterator.hasNext()) {			
+				door.operatedBy(buttonDoorMap.get(doorsGraphButtonsIterator.next()));
+			}						
+			doorList.add(door);
+		}
+		
+		// build the planar graph
+		Layout layout = Layout.drawLayoutWithRetries(csvRooms);
+		if (layout != null) {
+			RendererToLRLevelDef renderer = new RendererToLRLevelDef();
+			String stringLayout = renderer.renderLayout(Room.collectButtons(csvRooms), layout);
+			return stringLayout;
+		}else {
+			return("");
+		}
+	}
+		
 	/** 
 	 * Export door graph to graphml
 	 * @param scenarioId
@@ -501,6 +755,16 @@ public class LabRecruitsRandomEFSM {
 			Path outFile = Paths.get(scenarioID+"_efsm.dot");
 			dotExporter.writeOut(outFile);
 		}
+	}
+	
+	/*
+	 * Save the csv playable with Lab Recruits
+	 */
+	public void saveLabRecruitsLevel(String scenarioID) throws IOException{
+		Path outFile = Paths.get(scenarioID+"_LR.csv");
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.toString()));
+		writer.write(this.csvLevel);
+        writer.close();
 	}
 	
 }
