@@ -142,9 +142,9 @@ public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 		//logger.error("N. fronts = "+ranking.getNumberOfSubfronts());
 		//logger.debug("1* front size = "+ranking.getSubfront(0).size());
 		//logger.debug("2* front size = "+ranking.getSubfront(1).size());
-		//logger.error("Covered goals = "+this.archive.size());
-		//logger.error("Uncovered goals = "+uncoveredGoals.size());
-		//logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
+		logger.error("Covered goals = "+this.archive.size());
+		logger.error("Uncovered goals = "+uncoveredGoals.size());
+		logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
 	}
 
 
@@ -208,6 +208,11 @@ public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 			notifyIteration();
 		}
 
+		// print uncovered goals
+		for (FitnessFunction<?> goal : uncoveredGoals) {
+			logger.debug("Uncovered: {}", goal.toString());
+		}
+		
 		// storing the time needed to reach the maximum coverage
 //		ClientServices.getInstance().getClientNode().trackOutputVariable(RuntimeVariable.Time2MaxCoverage, this.budgetMonitor.getTime2MaxCoverage());		
 		notifySearchFinished();

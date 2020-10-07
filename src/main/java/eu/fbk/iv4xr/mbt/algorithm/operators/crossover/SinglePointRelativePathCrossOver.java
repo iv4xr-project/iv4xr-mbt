@@ -70,11 +70,11 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 			points[1] = -1;
 		}else {
 			Transition intersection = Randomness.choice(commonTransitions);
-			logger.debug("INTERSECTION POINT: " + intersection.getSrc().getId() + "---" + intersection.getTgt().getId());
+//			logger.debug("INTERSECTION POINT: " + intersection.getSrc().getId() + "---" + intersection.getTgt().getId());
 			points[0] = tc1.getPath().getTransitions().indexOf(intersection);
 			points[1] = tc2.getPath().getTransitions().indexOf(intersection);
 		} 
-		logger.debug("Point1: " + points[0] + " & " + points[1]);
+//		logger.debug("Point1: " + points[0] + " & " + points[1]);
 		return points;
 	}
 

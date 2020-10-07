@@ -154,18 +154,22 @@ public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorith
 			//removeUnusedVariables(offspring2);
 
 			// apply mutation on offspring1
-			mutate(offspring1, parent1);
+			offspring1.mutate();
+			notifyMutation(offspring1);
+//			mutate(offspring1, parent1);
 			if (offspring1.isChanged()) {
-				clearCachedResults(offspring1);
+//				clearCachedResults(offspring1);
 				offspring1.updateAge(currentIteration);
 				calculateFitness(offspring1); 
 				offspringPopulation.add(offspring1);
 			}
 
 			// apply mutation on offspring2
-			mutate(offspring2, parent2);
+			offspring2.mutate();
+			notifyMutation(offspring2);
+//			mutate(offspring2, parent2);
 			if (offspring2.isChanged()) {
-				clearCachedResults(offspring2);
+//				clearCachedResults(offspring2);
 				offspring2.updateAge(currentIteration);
 				calculateFitness(offspring2);
 				offspringPopulation.add(offspring2);
@@ -179,7 +183,7 @@ public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorith
 				tch.setChanged(true);
 			} else {
 				tch = (T) Randomness.choice(getArchive()).clone();
-				tch.mutate(); tch.mutate();
+				tch.mutate(); //tch.mutate();
 			}
 			if (tch.isChanged()) {
 				tch.updateAge(currentIteration);
@@ -187,7 +191,7 @@ public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorith
 				offspringPopulation.add(tch);
 			}
 		}
-		logger.info("Number of offsprings = {}", offspringPopulation.size());
+//		logger.info("Number of offsprings = {}", offspringPopulation.size());
 		return offspringPopulation;
 	}
 

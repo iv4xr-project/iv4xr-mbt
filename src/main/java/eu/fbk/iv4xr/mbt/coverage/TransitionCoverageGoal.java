@@ -76,5 +76,10 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 		updateIndividual(this, individual, fitness);
 		return fitness;
 	}
+	
+	@Override
+	public String toString() {
+		return transition == null? "" : (transition.getSrc() + " --> " + transition.getTgt());
+	}
 
 }

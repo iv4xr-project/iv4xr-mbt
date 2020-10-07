@@ -17,6 +17,8 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
@@ -74,9 +76,12 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		logger.debug("Total goals: {}", goals.size());
 		
-		CoverageTracker coverageTracker = new CoverageTracker(goals);
-		searchAlgorithm.addListener(coverageTracker);
-		searchAlgorithm.addStoppingCondition(coverageTracker);
+		// MOSA has ots 
+		if (MBTProperties.ALGORITHM != Algorithm.MOSA) {
+			CoverageTracker coverageTracker = new CoverageTracker(goals);
+			searchAlgorithm.addListener(coverageTracker);
+			searchAlgorithm.addStoppingCondition(coverageTracker);
+		}
 		
 		// invoke generate solution on the algorithm
 		searchAlgorithm.generateSolution();

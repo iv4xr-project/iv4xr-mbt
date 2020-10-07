@@ -89,6 +89,10 @@ public class StateCoverageGoal<
 		return false;
 	}
 
-	
+
+	@Override
+	public String toString() {
+		return state == null?"":state.toString();
+	}
 
 }
