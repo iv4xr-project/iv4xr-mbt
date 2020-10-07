@@ -105,7 +105,7 @@ public class LabRecruitsRandomEFSM {
 			// connect rooms with doors
 			// the problem is equivalent to the creation of a connected graph
 			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
-			// DEBUG saveDoorGraph("data/level_"+nTry+".xml");
+			// DEBUG saveDoorGraph("data/test_"+nTry+".xml");
 			// test if doorsGraph is effectively planar
 			// need to update JGraphT
 			

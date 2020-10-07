@@ -171,7 +171,7 @@ public class Room extends WalledStructure {
 		if (allowSelfLoop)
 			throw new UnsupportedOperationException("Corridor connecting a room to itself is disabled.") ;
 		
-		Random rnd = new Random() ;
+		Random rnd = new Random(7498) ;
 		
 		List<Room> rooms = new LinkedList<>() ;
 		for (int r=0; r<numberOfRooms; r++)  {

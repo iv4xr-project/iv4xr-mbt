@@ -46,8 +46,7 @@ public class LabRecruitsRandomEFSMTest {
 	public void generateHugeLevel() throws IOException, ExportException  {
 		MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_buttons = 50;
-		MBTProperties.LR_n_doors = 19;
-		
+		MBTProperties.LR_n_doors = 40;
 		
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();

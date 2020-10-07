@@ -558,7 +558,7 @@ public class Layout {
 		List<Pair<Integer,Integer>> zz = new LinkedList<>() ;
 		zz.addAll(z) ;
 		z.clear() ;
-		Random rnd = new Random() ;
+		Random rnd = new Random(998217) ;
 		for(int i=0; i<N; i++) {
 			//var P = zz.get(rnd.nextInt(zz.size())) ;
 			Pair<Integer,Integer> P = zz.get(rnd.nextInt(zz.size())) ;
