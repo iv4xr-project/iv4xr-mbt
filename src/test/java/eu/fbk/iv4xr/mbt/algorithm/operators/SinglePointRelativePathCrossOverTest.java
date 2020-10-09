@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -37,10 +38,11 @@ class SinglePointRelativePathCrossOverTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		LabRecruitsEFSMFactory modelFactory = LabRecruitsEFSMFactory.getInstance();
+		//LabRecruitsEFSMFactory modelFactory = LabRecruitsEFSMFactory.getInstance();
+		EFSMFactory modelFactory = EFSMFactory.getInstance();
 		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = modelFactory.getEFSM();
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> chromosomeFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
+		RandomLengthTestChromosomeFactory<MBTChromosome> chromosomeFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory,efsm);
 		chromosome1 = chromosomeFactory.getChromosome();
 		chromosome2 = chromosomeFactory.getChromosome();
 	}

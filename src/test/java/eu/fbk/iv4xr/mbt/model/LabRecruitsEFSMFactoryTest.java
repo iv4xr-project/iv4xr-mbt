@@ -29,7 +29,7 @@ public class LabRecruitsEFSMFactoryTest {
 	 */
 	@Test
 	public void testLabRecruitsEFSMFactory() {
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance();
+		EFSMFactory factory = EFSMFactory.getInstance();
 		assertNotNull(factory);
 	}
 
@@ -38,8 +38,8 @@ public class LabRecruitsEFSMFactoryTest {
 	 */
 	@Test
 	public void testGetEFSM() {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
 		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();
@@ -58,8 +58,8 @@ public class LabRecruitsEFSMFactoryTest {
 
 	@Test
 	public void testGetRandomEFSM1() {
-		MBTProperties.SUT_EFSM = "random_default";
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
+		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
 		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();

@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
@@ -35,8 +36,8 @@ class EFSMTestExecutorTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
 		efsm = factory.getEFSM();
 		assertNotNull (efsm);

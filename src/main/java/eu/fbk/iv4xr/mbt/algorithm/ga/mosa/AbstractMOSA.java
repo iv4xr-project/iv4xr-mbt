@@ -70,6 +70,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
@@ -83,7 +87,12 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  * @param <T>
  */
-public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorithm<T> {
+public abstract class AbstractMOSA<
+	T extends Chromosome,
+	State extends EFSMState, 
+	Parameter extends EFSMParameter, 
+	Context extends IEFSMContext<Context>, 
+	Trans extends Transition<State, Parameter, Context>> extends GeneticAlgorithm<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 

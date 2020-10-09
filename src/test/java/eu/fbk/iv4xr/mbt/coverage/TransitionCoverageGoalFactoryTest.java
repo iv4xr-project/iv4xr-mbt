@@ -14,11 +14,12 @@ import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 
 
@@ -39,12 +40,12 @@ class TransitionCoverageGoalFactoryTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
 		
 		//FIXME this is a workaround to fix failing tests due to static a static field in model factory
 		// this call (with parameter reset=true) forces the model factory to load the correct model
 		// as indicated by the MBTProperties.SUT_EFSM property
-		LabRecruitsEFSMFactory factory = LabRecruitsEFSMFactory.getInstance(true);
+		EFSMFactory factory = EFSMFactory.getInstance(true);
 	}
 
 	/**

@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 
 //import de.upb.testify.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 
 /**
@@ -27,19 +31,21 @@ public class RandomLengthTestChromosomeFactory<T extends Chromosome> implements 
 	protected static final Logger logger = LoggerFactory.getLogger(RandomLengthTestChromosomeFactory.class);
 
 	
-	
 	private TestFactory testFactory = null;
+	
+	private EFSM efsm = null;
 	
 	/**
 	 * 
 	 */
-	public RandomLengthTestChromosomeFactory(TestFactory testFactory) {
+	public RandomLengthTestChromosomeFactory(TestFactory testFactory, EFSM efsm) {
+		this.efsm = efsm;
 		this.testFactory = testFactory;
 	}
 
 	@Override
 	public T getChromosome() {
-		T chromosome = (T) new MBTChromosome();
+		T chromosome = (T) new MBTChromosome(efsm);
 		Testcase testcase = testFactory.getTestcase();
 		((MBTChromosome)chromosome).setTestcase(testcase);
 		return chromosome;

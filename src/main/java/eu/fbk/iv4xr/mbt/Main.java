@@ -5,6 +5,11 @@ package eu.fbk.iv4xr.mbt;
 
 import org.evosuite.ga.Chromosome;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -23,7 +28,8 @@ public class Main {
 	 * 
 	 */
 	public Main() {
-		generationStrategy = new SearchBasedStrategy<Chromosome>();
+		generationStrategy = new 
+				SearchBasedStrategy<Chromosome>();
 	}
 
 	

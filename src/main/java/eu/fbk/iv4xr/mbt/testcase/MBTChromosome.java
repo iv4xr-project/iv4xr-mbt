@@ -19,11 +19,21 @@ import org.evosuite.testcase.ExecutableChromosome;
 import org.evosuite.testcase.execution.ExecutionResult;
 import org.evosuite.testsuite.TestSuiteFitnessFunction;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+
 /**
  * @author kifetew
  *
  */
-public class MBTChromosome extends ExecutableChromosome {
+public class MBTChromosome<
+State extends EFSMState,
+Parameter extends EFSMParameter,
+Context extends IEFSMContext<Context>,
+Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosome {
 	
 	/**
 	 * 
@@ -32,12 +42,16 @@ public class MBTChromosome extends ExecutableChromosome {
 	private Testcase testcase;
 	/** Secondary objectives used during ranking */
 	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
-
+	
+	/** Local EFSM copy to generate parameters **/
+	private EFSM<State, Parameter, Context, Trans> efsm;
+	
 	/**
 	 * 
 	 */
-	public MBTChromosome() {
-		testcase = new AbstractTestSequence();
+	public MBTChromosome(EFSM<State, Parameter, Context, Trans> model) {
+		this.efsm = model;
+		testcase = new AbstractTestSequence(efsm);
 	}
 
 	@Override
@@ -55,7 +69,8 @@ public class MBTChromosome extends ExecutableChromosome {
 	@Override
 	public Chromosome clone() {
 		//FIXME implement correctly, this is only a placeholder!
-		MBTChromosome clone = new MBTChromosome();
+		EFSM efsmClone = efsm.clone();
+		MBTChromosome clone = new MBTChromosome(efsmClone);
 		try {
 			clone.setTestcase(testcase.clone());
 		} catch (CloneNotSupportedException e) {

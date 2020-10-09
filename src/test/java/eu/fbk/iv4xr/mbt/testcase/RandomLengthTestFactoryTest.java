@@ -9,9 +9,10 @@ import org.junit.Test;
 
 //import de.upb.testify.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFPAlgo;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.MBTProperties;
@@ -27,8 +28,8 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSM() {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
@@ -41,8 +42,8 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testRandomLengthTestFactoryEFSMInt() {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
@@ -58,8 +59,8 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testGetTestcase() {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
@@ -76,8 +77,8 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testGetTestcaseFromRandomModel() {
-		MBTProperties.SUT_EFSM = "random_default";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);
@@ -95,8 +96,8 @@ public class RandomLengthTestFactoryTest {
 	 */
 	@Test
 	public void testGetFeasibleTestcase() {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);

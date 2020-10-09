@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 
 /**
  * @author kifetew
@@ -27,8 +28,8 @@ class AbstractTestSequenceTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";
-		LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
+		EFSMFactory efsmFactory = EFSMFactory.getInstance();
 		assertNotNull(efsmFactory);
 		EFSM efsm = efsmFactory.getEFSM();
 		assertNotNull (efsm);

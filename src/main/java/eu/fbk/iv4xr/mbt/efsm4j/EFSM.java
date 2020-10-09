@@ -301,5 +301,11 @@ public class EFSM<
 	public Parameter getRandom() {
 		return parameterSet.getRandom();
 	}
+	
+	public EFSM clone() {
+		return snapshot();
+	}
+	
+	
 
 }

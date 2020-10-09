@@ -5,68 +5,21 @@ package eu.fbk.iv4xr.mbt.efsm4j.labrecruits;
 
 import java.util.HashSet;
 
-//import de.upb.testify.efsm.EFSM;
-//import de.upb.testify.efsm.EFSMBuilder;
-//import de.upb.testify.efsm.Transition;
-import eu.fbk.iv4xr.mbt.MBTProperties;
-//import eu.fbk.se.labrecruits.LabRecruitsContext;
-//import eu.fbk.se.labrecruits.LabRecruitsDoor;
-//import eu.fbk.se.labrecruits.LabRecruitsDoorTravelTransition;
-//import eu.fbk.se.labrecruits.LabRecruitsFreeTravelTransition;
-//import eu.fbk.se.labrecruits.LabRecruitsState;
-//import eu.fbk.se.labrecruits.LabRecruitsToggleTransition;
-
-import eu.fbk.iv4xr.mbt.efsm4j.*;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMBuilder;
+import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 /**
- * @author kifetew
+ * @author Davide Prandi
  *
+ * Oct 9, 2020
  */
-public class LabRecruitsEFSMFactory {
+public class ButtonDoors1 {
 
-	
-	private static LabRecruitsEFSMFactory instance;
-	protected EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm;
-	
-	
-	/**
-	 * 
-	 */
-	private LabRecruitsEFSMFactory() {
-		switch (MBTProperties.SUT_EFSM) {
-		case "buttons_doors_1" :
-			efsm = getRoomReachabilityModel ();
-			break;
-		case "random_default" :
-			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
-			efsm = randomGenerator.getEFMS();
-			break;
-		default:
-			throw new RuntimeException("Unrecognized scenarioID: " + MBTProperties.SUT_EFSM);
-		}
+	public ButtonDoors1(){
 	}
 
-	public static LabRecruitsEFSMFactory getInstance() {
-		if (instance == null) {
-			instance = new LabRecruitsEFSMFactory();
-		}
-		return instance;
-	}
-
-	public static LabRecruitsEFSMFactory getInstance(boolean reset) {
-		if (reset || instance == null) {
-			instance = new LabRecruitsEFSMFactory();
-		}
-		return instance;
-	}
-	
 	public EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getEFSM() {
-		return efsm;
-	}
-	
-	private EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getRoomReachabilityModel() {
 		/**
 		 * Doors

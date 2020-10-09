@@ -103,7 +103,7 @@ public class RandomParameterLengthTestFactory<
 		model.reset();
 		
 		// build the test case
-		Testcase testcase = new AbstractTestSequence<EFSMState, EFSMParameter, Context, Transition<EFSMState, EFSMParameter, Context>>();
+		Testcase testcase = new AbstractTestSequence<State, Parameter, Context, Trans>(model);
 		Path path = new Path (transitions, parameters);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.getTransitionAt(0).getSrc().getId().equalsIgnoreCase(model.getInitialConfiguration().getState().getId());

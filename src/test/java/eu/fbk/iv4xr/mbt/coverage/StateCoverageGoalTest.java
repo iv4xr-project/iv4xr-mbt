@@ -12,9 +12,10 @@ import org.junit.jupiter.api.Test;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
@@ -35,7 +36,7 @@ class StateCoverageGoalTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		MBTProperties.SUT_EFSM = "buttons_doors_1";		
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
 		state = new LabRecruitsState("b_0");
 	}
 
@@ -53,13 +54,13 @@ class StateCoverageGoalTest {
 	 */
 	@Test
 	void testGetFitnessChromosome() {
-		LabRecruitsEFSMFactory mFactory = LabRecruitsEFSMFactory.getInstance(true);
+		EFSMFactory mFactory = EFSMFactory.getInstance(true);
 		assertNotNull(mFactory);
 		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
 		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
+		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory, efsm);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
 		assertNotNull (chromosome);

@@ -12,12 +12,13 @@ import org.evosuite.ga.FitnessFunction;
 import org.evosuite.testcase.TestFitnessFunction;
 import org.evosuite.utils.Randomness;
 
+import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
 
 /**
  * @author kifetew
@@ -36,11 +37,14 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
+	/** Local EFSM copy to generate parameters **/
+	private EFSM<State, Parameter, Context, Trans> efsm;
+	
 	/**
 	 * 
 	 */
-	public AbstractTestSequence() {
-		
+	public AbstractTestSequence(EFSM<State, Parameter, Context, Trans> model) {
+		this.efsm = model;
 	}
 
 	/**
@@ -106,7 +110,8 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 	
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		AbstractTestSequence clone = new AbstractTestSequence();
+		EFSM efsmClone = efsm.clone();
+		AbstractTestSequence clone = new AbstractTestSequence(efsmClone);
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
@@ -142,7 +147,7 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 	@Override
 	public void mutate() {
 		int index = Randomness.nextInt(getLength());
-		path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
+		//path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
 		
 	}
 
