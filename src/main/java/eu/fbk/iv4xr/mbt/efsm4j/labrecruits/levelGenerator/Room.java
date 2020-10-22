@@ -83,7 +83,7 @@ public class Room extends WalledStructure {
 	
 	/**
 	 * Check if the given direction is still unconnected. If so, return a connection with still
-	 * unassigned direction, if one can be foun.
+	 * unassigned direction, if one can be found.
 	 * Else we get a null.
 	 */
 	public Pair<Corridor,Direction> getFreeConnection(Direction dir) {
@@ -101,6 +101,12 @@ public class Room extends WalledStructure {
 		return null ;
 	}
 	
+	
+	public void clearConnectionsDirections() {
+		for (Pair<Corridor,Direction> con : connections) {
+			con.snd = Direction.UNKNOWN ;
+		}
+	}
 	
 	@Override
 	public String toString() {
