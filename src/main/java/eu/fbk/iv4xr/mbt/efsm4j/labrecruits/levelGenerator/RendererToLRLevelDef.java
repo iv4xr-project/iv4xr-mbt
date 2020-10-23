@@ -117,9 +117,9 @@ public class RendererToLRLevelDef {
 		return tb ;
 	}
 	
+	
 	TextBlock renderRoom(Room R, int layerNr) {
 		String[][] map = emptyMap() ;
-		
 		// walls and floor:
 		for(int x=0;x<scale; x++) {
 			for(int y=0; y<scale; y++) {
@@ -214,6 +214,18 @@ public class RendererToLRLevelDef {
 		return mapToTextBlock(emptyMap()) ;
 	}
 	
+	/**
+	 * Making a floor area of scale x scale.
+	 * @return
+	 */
+	TextBlock mkFloor() {
+		String[][] map = emptyMap() ;
+		for (int x=0; x<scale; x++) {
+			for (int y=0; y<scale; y++) map[x][y] = floorCode ;
+		}
+		return mapToTextBlock(map) ;
+	}
+	
 	private String[][] buildHorizontalCorridor(String[][] map, int startx, int endx, int layerNr) {
 		int y = scale/2 ;
     	for(int x=startx; x < endx ; x++) {
@@ -287,6 +299,13 @@ public class RendererToLRLevelDef {
 		if (!(corridor.structure instanceof Corridor)) throw new IllegalArgumentException() ;
 		//var map = emptyMap() ;
 		String[][] map = emptyMap() ;
+		// when level is 0, put a floor as foundation:
+		if (layerNr==0) {
+			for (int x=0; x<scale; x++) {
+				for (int y=0; y<scale; y++) map[x][y] = floorCode ;
+			}
+		}
+		
 		switch(corridor.bending) {
 		   case WEST_EAST :
 			    map = buildHorizontalCorridor(map,0,scale,layerNr) ;
@@ -370,7 +389,12 @@ public class RendererToLRLevelDef {
 	}
 	
 	TextBlock renderLayoutItem(LayoutItem loItem, int layerNr) {
-		if(loItem==null) return renderEmpty() ;
+		if(loItem==null) {
+			if (layerNr==0)
+				return mkFloor() ;
+			else
+				return renderEmpty() ;
+		}
 		if(loItem.structure instanceof Room) return renderRoom((Room) loItem.structure,layerNr) ;
 		return renderCorridor(loItem,layerNr) ;
 	}

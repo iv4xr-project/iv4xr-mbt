@@ -13,6 +13,10 @@ import java.util.List;
 //import eu.iv4xr.lrtools.levgen.Room.Direction;
 import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator.Room.Direction;
 
+/** 
+ * A corridor connecting two rooms. It is bi-directional. The fields "from"
+ * and "to" does not indicate direction.
+ */
 public class Corridor extends WalledStructure {
 	
 	public Room from ;
@@ -36,6 +40,11 @@ public class Corridor extends WalledStructure {
 		src.connections.add(new Pair(c,Direction.UNKNOWN)) ;
 		dest.connections.add(new Pair(c,Direction.UNKNOWN)) ;
 		return c ;
+	}
+	
+	@Override
+	public String toString() {
+		return "Corridor " + from.ID + "---" + to.ID ;
 	}
 
 }

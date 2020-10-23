@@ -10,6 +10,7 @@ package eu.fbk.iv4xr.mbt.efsm4j.labrecruits.levelGenerator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -395,7 +396,7 @@ public class Layout {
 			
 			if (route != null) return route ;
 			
-			// ok.. so those didn't work. Let's try N/S - N/S route, or E/W - E/W route:
+			// ok.. so those didn't work. Let's try N-N or S-S or E-E or W-W route:
 			if (x_delta == 0) {			
 				route = findRoute_worker(from,to,Direction.EAST,Direction.EAST) ;			
 				if (route != null) return route ;
@@ -436,15 +437,15 @@ public class Layout {
 			if (route != null) return route ;
 			
 		}
-	
+		
+		
 		// none of the above work :|
 		// we fall back to the greedy approach of just quantifying over all possible combinations
 		// of directions, and see what works:
 		Direction[] allDirs = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST } ;
 		for(Direction R1dir : allDirs) {
 			for(Direction R2dir : allDirs) {
-				//var route = findRoute_worker(from,to,R1_connector,R2_connector) ;
-				List<Pair<Integer,Integer>> route = findRoute_worker(from,to,R1_connector,R2_connector) ;
+				List<Pair<Integer,Integer>> route = findRoute_worker(from,to,R1dir,R2dir) ;
 				if (route != null) return route ;
 			}
 		}
@@ -454,6 +455,14 @@ public class Layout {
 	private List<Pair<Integer,Integer>> findRoute_worker(Room R1, Room R2, Direction connectorR1, Direction connectorR2) {
 		//var R1_connection = R1.getFreeConnection(connectorR1) ;
 		//var R2_connection = R2.getFreeConnection(connectorR2) ;
+		
+		/*
+		System.out.println("       ## findRoute_worker("
+				+ R1.ID + "," + connectorR1 + " to " 
+			    + R2.ID + "," + connectorR2
+				) ;
+		*/
+		
 		Pair<Corridor,Direction> R1_connection = R1.getFreeConnection(connectorR1) ;
 		Pair<Corridor,Direction> R2_connection = R2.getFreeConnection(connectorR2) ;
 		if (R1_connection == null || R2_connection == null) return null ;
@@ -474,6 +483,7 @@ public class Layout {
 		}
 		if (layout[x][y] != null) {
 			// if that place is occupied, that no route in that direction is possible anyway
+			//System.out.println("want to put a corridor at " + connectorR1 + ", but occupied!") ;
 			return null ;
 		}
 		
@@ -492,20 +502,53 @@ public class Layout {
 		}
 		
 		
-		// will only search for a path op to this length...
-		//var maxPathLength = width + height ;
+		// will only search for a path up to this length...
+		// var maxPathLength = width + height ;
 		int maxPathLength = width + height ;
 		
 		List<Pair<Integer,Integer>> route = new LinkedList<>() ;
 		route.add(new Pair(x,y)) ;
-		boolean found = findRoute_worker2(route,x,y,goal_x,goal_y,maxPathLength) ;
+		boolean found = findRoute_worker2(emptyXYset(),route,x,y,goal_x,goal_y,maxPathLength) ;
 		if(!found) return null ;
 		return route ;		
 	}
 	
-	private boolean findRoute_worker2(List<Pair<Integer,Integer>> pathSofar, int x, int y, int goal_x, int goal_y, int maxLength) {
+	// just a pair (x,y) with equals and hash defined so that we can store such things in
+	// a set and check membership
+	private static class XY {
+		int kx ; 
+		int ky ;
+		XY(int x, int y) { this.kx = x ; this.ky = y ; }
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof XY) {
+				XY k = (XY) o ;
+				return kx == k.kx && ky == k.ky ;
+ 			}
+			return false ;
+		}
+		@Override
+		public int hashCode() {
+			return Objects.hash(kx,ky) ;
+		}
+	}
+	
+	static Set<XY> emptyXYset() {
+		return new HashSet<XY>() ;
+	}
+	
+	private boolean findRoute_worker2(Set<XY> visited, List<Pair<Integer,Integer>> pathSofar, int x, int y, int goal_x, int goal_y, int maxLength) {
 		if (x==goal_x && y==goal_y)       return true ;
 		if (pathSofar.size() > maxLength) return false ;
+		
+		if (visited.contains(new XY(x,y))) {
+			// we have checked this x,y
+			return false ;
+		}
+		visited.add(new XY(x,y)) ;
+		
+		//System.out.println("   ## findRoute_worker2, from " + x + "," + y + " to " + goal_x + "," + goal_y
+		//		           + ", #so-far=" + pathSofar.size()) ;
 		
 		// get neigbors which are free and not yet in the path
 		
@@ -529,7 +572,7 @@ public class Layout {
 		for(Pair<Integer,Integer> p : neighbors) {
 			pathSofar.add(p) ;
 			//var found = findRoute_worker2(pathSofar,p.fst,p.snd,goal_x,goal_y,maxLength) ;
-			boolean found = findRoute_worker2(pathSofar,p.fst,p.snd,goal_x,goal_y,maxLength) ;
+			boolean found = findRoute_worker2(visited,pathSofar,p.fst,p.snd,goal_x,goal_y,maxLength) ;
 			if (found) {
 				return true ;
 			}
@@ -553,12 +596,13 @@ public class Layout {
 		return false ;
 	}
 	
+	static Random rnd = new Random(998217) ;
+	
 	static List<Pair<Integer,Integer>> shuffle(List<Pair<Integer,Integer>> z) {
 		int N = z.size() ;
 		List<Pair<Integer,Integer>> zz = new LinkedList<>() ;
 		zz.addAll(z) ;
 		z.clear() ;
-		Random rnd = new Random(998217) ;
 		for(int i=0; i<N; i++) {
 			//var P = zz.get(rnd.nextInt(zz.size())) ;
 			Pair<Integer,Integer> P = zz.get(rnd.nextInt(zz.size())) ;
@@ -684,11 +728,22 @@ public class Layout {
 	
 	
 	public static Layout drawLayoutWithRetries(List<Room> rooms) {
-		int maxNumberOfRetries = 10 ;
+		int maxNumberOfRetries = 30 ;
 		for (int k=0; k<maxNumberOfRetries; k++) {
+			System.err.println("## drawLayoutWithRetries " + k) ;
+			// clearing the rooms' connection (side effect from prev. iteration :|
+			for (Room R : rooms) {
+				R.clearConnectionsDirections();
+			}
 			Layout layout = drawLayout(rooms) ;
 			if (layout != null) return layout ;
 		}
+		System.err.println("## drawLayoutWithRetries fails to produce a plannar graph..." ) ;
+		/*
+		for (Room R : rooms) {
+			System.out.println("   " + R) ;
+		}
+		*/
 		return null ;
 	}
 	
@@ -726,6 +781,7 @@ public class Layout {
 		layout.place(R,centerX,centerY) ;
 		placedRooms.add(R) ;
 		while (!worklist.isEmpty()) {
+			// System.out.println("     ## worklist size : " + worklist.size()) ;
 		    R = worklist.remove(0) ;
 		    // Cover first the case when R is not placed yet. This can only be the case
 		    // when R forms its own "island", disconnected from other islands placed
@@ -734,35 +790,39 @@ public class Layout {
 		    if (!placedRooms.contains(R)) {
 		    	//var location = layout.findASpot() ;
 		    	Pair<Integer,Integer> location = layout.findASpot() ;
-		    	if (location == null) return null ;
+		    	if (location == null) {
+		    		System.err.println("   ## cannot find a spot to place " + R.ID) ; 
+		    		return null ;
+		    	}
 		    	layout.place(R,location.fst,location.snd) ;
 		    }
 		    
 		    
-		    //var location0 = layout.find(R) ;
 		    Pair<Integer,Integer> location0 = layout.find(R) ;
 		    int x0 = location0.fst ;
 		    int y0 = location0.snd ;
 		    
+
+			
 		    // Heuristic: place all neighbors of R, when they are not placed yet.
 		    // Then place the corridors leading to them.
 		    // Then, we move them to the top of the working list.
-			//for(var connection : R.connections) {
 		    for(Pair<Corridor,Room.Direction> connection : R.connections) {
+		    	
 				if (placedCorridors.contains(connection.fst)) continue ;
 				
 				Room R2 = R.getConnectedRoom(connection.fst) ;
 				
 				// case-1 R2 is already placed:
 				if (placedRooms.contains(R2)) {
+					
 					// try to connect R1 to R2:
-					//var route = layout.findRoute(R,R2) ;
-					
 					List<Pair<Integer,Integer>> route = layout.findRoute(R,R2) ;
-					
+
 					if (route != null) {
 						layout.placeCorridor(R,connection.fst,route) ;
 						placedCorridors.add(connection.fst) ;
+						// System.out.println("    ##  " + connection.fst + " placed.") ;
 						// move R2 to the head of worklist
 						worklist.remove(R2) ;
 						worklist.add(0,R2);
@@ -770,6 +830,7 @@ public class Layout {
 					}
 					else {
 						// we fail:
+						System.err.println("   ## cannot find a route from " + R.ID + " to " + R2.ID) ;
 						return null ;
 					}
 				}
@@ -784,10 +845,16 @@ public class Layout {
 				if (y0-2>=0)     neighbors.add(new Pair(x0,y0-2)) ;
 				
 				shuffle(neighbors) ;
-				
+
 				//for (var nn : neighbors) {
 				for (Pair<Integer,Integer> nn : neighbors) {
 					if (layout.layout[nn.fst][nn.snd] != null) continue ;
+					/*
+					System.out.println("   ## trying to place " 
+					     + R2.ID + "@" + nn.fst + "," + nn.snd  
+					     + " next to " 
+					     + R.ID + "@" + layout.find(R).fst + "," + layout.find(R).snd) ;
+					 */
 					layout.place(R2,nn.fst,nn.snd) ;
 					//var route = layout.findRoute(R,R2) ;
 					List<Pair<Integer,Integer>> route = layout.findRoute(R,R2) ;
@@ -795,6 +862,7 @@ public class Layout {
 						layout.placeCorridor(R,connection.fst,route) ;
 						placedRooms.add(R2) ;
 						placedCorridors.add(connection.fst) ;
+						//System.out.println("    ##  " + connection.fst + " placed.") ;
 						placingR2sucessful = true ;
 						break ;
 					}
@@ -802,6 +870,15 @@ public class Layout {
 				}
 				if(!placingR2sucessful) {
 					// fail to place R2. We then simply fail:
+					System.err.println("   ## cannot place " + R2.ID) ;
+					//int x = layout.find(R).fst ;
+					//int y = layout.find(R).snd ;
+					//System.out.println("      R@" + x + "," + y) ;
+					//System.out.println("      N: " + layout.layout[x][y+1]) ;
+					//System.out.println("      E: " + layout.layout[x+1][y]) ;
+					//System.out.println("      S: " + layout.layout[x][y-1]) ;
+					//System.out.println("      W: " + layout.layout[x-1][y]) ;
+					
 					return null ;
 				}
 				// move R2 to the head of worklist
