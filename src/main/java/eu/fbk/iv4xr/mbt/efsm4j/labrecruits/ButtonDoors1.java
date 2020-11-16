@@ -169,7 +169,7 @@ public class ButtonDoors1 {
 				.withTransition(b_2, d_2_m, t_21)
 				
 				.withTransition(d_2_m, b_2, t_22)
-				.withTransition(d_2_m, d_1_m, t_23)
+				.withTransition(d_2_m, d_1_p, t_23)
 				.withTransition(d_2_m, d_2_p, t_24)
 				
 				.withTransition(d_2_p, d_2_m, t_25)

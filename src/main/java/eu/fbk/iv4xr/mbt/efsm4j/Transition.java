@@ -103,4 +103,9 @@ public abstract class Transition<
   public boolean isSimpleTransition() {
     return !hasDomainGuard() && !hasParameterGuard();
   }
+  
+  @Override
+  public int hashCode (){
+	  return (src.toString() + tgt.toString()).hashCode();
+  }
 }

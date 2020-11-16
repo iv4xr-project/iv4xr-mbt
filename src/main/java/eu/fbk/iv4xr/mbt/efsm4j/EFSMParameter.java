@@ -53,5 +53,9 @@ public abstract class EFSMParameter<T> implements Cloneable {
 	
 	//public abstract T getRandom();
 	
+	@Override
+	public int hashCode () {
+		return toString().hashCode();
+	}
 	
 }
