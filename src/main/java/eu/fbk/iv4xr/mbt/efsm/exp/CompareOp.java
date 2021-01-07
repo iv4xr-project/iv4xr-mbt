@@ -1,0 +1,47 @@
+package eu.fbk.iv4xr.mbt.efsm.exp;
+
+public abstract class CompareOp extends BinaryOp<Boolean> {//implements Exp<Boolean> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4398535954682092951L;
+
+	
+	public CompareOp(Exp<?> parameter1, Exp<?> parameter2) {
+		super(parameter1, parameter2);
+		// TODO Auto-generated constructor stub
+	}
+	
+	/*
+	private Exp<?> parameter1;
+	private Exp<?> parameter2;
+	
+	public CompareOp(Exp<?> parameter1, Exp<?> parameter2){
+		this.parameter1 = parameter1;
+		this.parameter2 = parameter2;
+	}
+	
+	public Exp<?> getParameter1() {
+		return parameter1;
+	}
+
+	public Exp<?> getParameter2() {
+		return parameter2;
+	}
+	
+	@Override
+	public VarSet<?> getVariables(){			
+		VarSet out = new VarSet();
+		out.add(parameter1.getVariables());
+		out.add(parameter2.getVariables());
+		return(out);
+	}
+	
+	@Override
+	public void update(VarSet<?> varSet) {
+		this.parameter1.update(varSet);
+		this.parameter2.update(varSet);
+	}
+	*/
+}
