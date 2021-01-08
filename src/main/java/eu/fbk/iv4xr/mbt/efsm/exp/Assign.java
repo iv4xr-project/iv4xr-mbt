@@ -10,7 +10,6 @@ public class Assign<T extends Object> {
 	public Assign(Var<T> variable, Exp<T> expression ){
 		this.variable = variable;
 		this.expression = expression;
-		variable.setValue(expression.eval().getVal());
 	}
 	
 	public void update() {		

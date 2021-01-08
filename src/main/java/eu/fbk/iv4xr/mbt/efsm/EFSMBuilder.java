@@ -44,7 +44,10 @@ public class EFSMBuilder<
 	
 	public EFSMBuilder(Class<EFSM> efsmTypeClass) {
 		
-		this(efsmTypeClass, new DirectedPseudograph<>(EFSMTransition.class));
+		
+		this(efsmTypeClass, new DirectedPseudograph<State, Transition>((Class<Transition>) EFSMTransition.class));
+		
+	    //this(efsmTypeClass, new DirectedPseudograph<>(EFSMTransition.class));
 		//this(efsmTypeClass, new DirectedPseudograph<>(null));
 	}
 

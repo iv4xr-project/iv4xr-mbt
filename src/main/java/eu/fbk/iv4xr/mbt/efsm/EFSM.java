@@ -63,8 +63,9 @@ public  class EFSM<
 		this.curContext = (Context) initalContext.clone();
 		this.initialContext = (Context) initalContext.clone();
 		this.inParameterSet = parameterSet;
-
-		final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(EFSMTransition.class);
+		
+		final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<State, Transition>((Class<Transition>) EFSMTransition.class);
+		//final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(EFSMTransition.class);
 		// final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(null);
 
 		Graphs.addGraph(tmp, baseGraph);
