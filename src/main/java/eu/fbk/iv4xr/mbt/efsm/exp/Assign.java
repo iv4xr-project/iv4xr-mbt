@@ -1,7 +1,13 @@
 package eu.fbk.iv4xr.mbt.efsm.exp;
 
+import java.io.Serializable;
 
-public class Assign<T extends Object> {
+public class Assign<T extends Object> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2925157913689406695L;
 
 	Var<T> variable;
 	

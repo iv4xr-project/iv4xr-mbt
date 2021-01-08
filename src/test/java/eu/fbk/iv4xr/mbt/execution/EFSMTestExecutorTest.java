@@ -56,7 +56,7 @@ class EFSMTestExecutorTest {
 	void testExecuteTestcase() {
 		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
 		assertNotNull(testFactory);
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10; i++) {
 			Testcase testcase = testFactory.getTestcase();
 			assertNotNull(testcase);
 			

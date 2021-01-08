@@ -68,7 +68,7 @@ class TransitionCoverageGoalFactoryTest {
 		List<TransitionCoverageGoal> coverageGoals = goalFactory.getCoverageGoals();
 		assertFalse(coverageGoals.isEmpty());
 		System.out.println("Num goals: " + coverageGoals.size());
-		assertTrue(coverageGoals.size() == 31);
+		assertTrue(coverageGoals.size() == 30);
 	}
 
 }

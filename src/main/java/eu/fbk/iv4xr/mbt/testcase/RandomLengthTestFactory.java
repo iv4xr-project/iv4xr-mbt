@@ -72,7 +72,6 @@ public class RandomLengthTestFactory<
 		
 		
 		Collection<Transition> transitions = new LinkedList<Transition>();
-		Collection<InParameter> parameters = new LinkedList<InParameter>();
 		int len = 0;
 		
 		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)
@@ -83,9 +82,6 @@ public class RandomLengthTestFactory<
 			Transition transition = Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
 			
-			// pick random parameter values for the transition
-			parameters.add(model.getRandomInput());
-						
 			// take the state at the end of the chosen transition, and repeat
 			currentState = transition.getTgt();
 			
@@ -96,7 +92,7 @@ public class RandomLengthTestFactory<
 		
 		// build the test case
 		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(model);
-		Path path = new Path (transitions, parameters);
+		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.getTransitionAt(0).getSrc().getId().equalsIgnoreCase(model.getInitialConfiguration().getState().getId());
 		return testcase;
