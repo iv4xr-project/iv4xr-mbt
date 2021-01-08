@@ -69,14 +69,10 @@ import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoalFactory;
-//import de.upb.testify.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;

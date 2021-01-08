@@ -11,13 +11,18 @@ import org.junit.jupiter.api.Test;
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
@@ -29,7 +34,7 @@ import eu.fbk.iv4xr.mbt.testcase.TestFactory;
  */
 class StateCoverageGoalTest {
 
-	LabRecruitsState state;
+	EFSMState state;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -37,7 +42,7 @@ class StateCoverageGoalTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
-		state = new LabRecruitsState("b_0");
+		state = new EFSMState("b_0");
 	}
 
 	/**
@@ -56,8 +61,7 @@ class StateCoverageGoalTest {
 	void testGetFitnessChromosome() {
 		EFSMFactory mFactory = EFSMFactory.getInstance(true);
 		assertNotNull(mFactory);
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = mFactory.getEFSM();
+		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
 		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory, efsm);

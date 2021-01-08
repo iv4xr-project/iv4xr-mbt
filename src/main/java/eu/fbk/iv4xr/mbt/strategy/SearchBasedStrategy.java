@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
+
 
 /**
  * @author kifetew

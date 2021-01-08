@@ -1,13 +1,16 @@
-package eu.fbk.iv4xr.mbt.efsm4j;
+package eu.fbk.iv4xr.mbt.efsm;
 
 import java.util.List;
 
 /** @author Manuel Benz created on 02.03.18 */
 public interface IFeasiblePathAlgo<
-    State extends EFSMState,
-    Parameter extends EFSMParameter,
-    Context extends IEFSMContext<Context>,
-    Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
+		State extends EFSMState,
+		InParameter extends EFSMParameter,
+		OutParameter extends EFSMParameter,
+		Context extends EFSMContext,
+		Operation extends EFSMOperation,
+		Guard extends EFSMGuard,
+		Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
   /**
    * Returns a feasible path between the current state of the efsm and the given target state, or
    * null if no path exists. If a path is feasible depends on the semantics of the underlying efsm
@@ -20,7 +23,7 @@ public interface IFeasiblePathAlgo<
    * @param tgt
    * @return A feasible path or null if non exists
    */
-  EFSMPath<State, Parameter, Context, Transition> getPath(State tgt);
+	EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath(State tgt);
 
   /**
    * Returns a feasible path between the given state of the efsm and the given target state, or null
@@ -35,8 +38,8 @@ public interface IFeasiblePathAlgo<
    * @return A feasible path or null if non exists
    * @config The configuration from which a path should be calculated
    */
-  EFSMPath<State, Parameter, Context, Transition> getPath(
-      Configuration<State, Context> config, State tgt);
+  EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath(
+      EFSMConfiguration<State, Context> config, State tgt);
 
   /**
    * Returns a set feasible path between the given state of the efsm and the given target state, or
@@ -50,7 +53,7 @@ public interface IFeasiblePathAlgo<
    * @param tgt
    * @return A set of feasible path (not necessarily all) or null if non exists
    */
-  List<? extends EFSMPath<State, Parameter, Context, Transition>> getPaths(State tgt);
+  List<? extends EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getPaths(State tgt);
 
   /**
    * Returns a set feasible path between the given state of the efsm and the given target state, or
@@ -65,18 +68,21 @@ public interface IFeasiblePathAlgo<
    * @return A set of feasible path (not necessarily all) or null if non exists
    * @config The configuration from which a path should be calculated
    */
-  List<? extends EFSMPath<State, Parameter, Context, Transition>> getPaths(
-      Configuration<State, Context> config, State tgt);
+  List<? extends EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getPaths(
+      EFSMConfiguration<State, Context> config, State tgt);
 
   boolean pathExists(State tgt);
 
-  boolean pathExists(Configuration<State, Context> config, State tgt);
+  boolean pathExists(EFSMConfiguration<State, Context> config, State tgt);
 
   interface SingleSourceShortestPath<
-      State extends EFSMState,
-      Parameter extends EFSMParameter,
-      Context extends IEFSMContext<Context>,
-      Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
+  	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
 
     /**
      * Returns a set feasible path between the source state of this {@link SingleSourceShortestPath}
@@ -89,7 +95,7 @@ public interface IFeasiblePathAlgo<
      * @param tgt
      * @return A set of feasible path (not necessarily all) or null if non exists
      */
-    List<? extends EFSMPath<State, Parameter, Context, Transition>> getPaths(State tgt);
+    List<? extends EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getPaths(State tgt);
 
     /**
      * Returns a feasible path between the source state of this {@link SingleSourceShortestPath}
@@ -106,7 +112,7 @@ public interface IFeasiblePathAlgo<
      * @param tgt
      * @return A feasible path or null if non exists
      */
-    EFSMPath<State, Parameter, Context, Transition> getPath(State tgt);
+     EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath(State tgt);
 
     /**
      * Returns the length of a feasible path between the source state of this {@link
@@ -126,6 +132,6 @@ public interface IFeasiblePathAlgo<
     int getLength(State tgt);
 
     /** @return The source configuration of this {@link SingleSourceShortestPath} instance */
-    Configuration<State, Context> getSource();
+    EFSMConfiguration<State, Context> getSource();
   }
 }

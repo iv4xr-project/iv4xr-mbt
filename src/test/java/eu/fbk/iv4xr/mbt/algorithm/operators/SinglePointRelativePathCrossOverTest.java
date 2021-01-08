@@ -10,15 +10,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
@@ -40,7 +43,7 @@ class SinglePointRelativePathCrossOverTest {
 	void setUp() throws Exception {
 		//LabRecruitsEFSMFactory modelFactory = LabRecruitsEFSMFactory.getInstance();
 		EFSMFactory modelFactory = EFSMFactory.getInstance();
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = modelFactory.getEFSM();
+		EFSM efsm = modelFactory.getEFSM();
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
 		RandomLengthTestChromosomeFactory<MBTChromosome> chromosomeFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory,efsm);
 		chromosome1 = chromosomeFactory.getChromosome();
@@ -52,9 +55,9 @@ class SinglePointRelativePathCrossOverTest {
 	 */
 	@Test
 	void testCrossOverChromosomeChromosome() {
-		AbstractTestSequence<EFSMState, EFSMParameter<String>, LabRecruitsContext, Transition<EFSMState,EFSMParameter<String>,LabRecruitsContext>> tc1 = (AbstractTestSequence)chromosome1.getTestcase();
-		AbstractTestSequence<EFSMState, EFSMParameter<String>, LabRecruitsContext, Transition<EFSMState,EFSMParameter<String>,LabRecruitsContext>> tc2 = (AbstractTestSequence)chromosome2.getTestcase();
-		assertTrue (tc1.getPath().getStates().get(0).getId().equalsIgnoreCase(tc2.getPath().getStates().get(0).getId()));
+		AbstractTestSequence tc1 = (AbstractTestSequence)chromosome1.getTestcase();
+		AbstractTestSequence tc2 = (AbstractTestSequence)chromosome2.getTestcase();
+		assertTrue (((EFSMState) tc1.getPath().getStates().get(0)).getId().equalsIgnoreCase(((EFSMState) tc2.getPath().getStates().get(0)).getId()));
 		System.out.println("TC1: " + tc1.getPath().toDot());
 		System.out.println("TC2: " + tc2.getPath().toDot());
 		SinglePointRelativePathCrossOver crossoverFunction = new SinglePointRelativePathCrossOver();

@@ -1,6 +1,5 @@
-package eu.fbk.iv4xr.mbt.efsm4j;
+package eu.fbk.iv4xr.mbt.efsm;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,14 +9,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+
 import org.jgrapht.GraphPath;
 
-/** @author Manuel Benz created on 02.03.18 */
+import com.google.common.collect.Lists;
+
+
+/** @author Davide Prandi */
 public class EFSMPath<
-        State extends EFSMState,
-        Parameter extends EFSMParameter,
-        Context extends IEFSMContext<Context>,
-        Transition extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>>
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
     implements Iterable<Transition> {
 
   protected final LinkedList<Transition> transitions;
@@ -26,7 +32,7 @@ public class EFSMPath<
     transitions = new LinkedList<>();
   }
 
-  protected EFSMPath(EFSMPath<State, Parameter, Context, Transition> basePath) {
+  protected EFSMPath(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> basePath) {
     this.transitions = new LinkedList<>(basePath.transitions);
   }
 
@@ -43,7 +49,7 @@ public class EFSMPath<
     this.transitions = new LinkedList<>(Arrays.asList(transitions));
   }
 
-  public EFSMPath(EFSMPath<State, Parameter, Context, Transition> basePath, Transition t) {
+  public EFSMPath(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> basePath, Transition t) {
     this(basePath);
     transitions.add(t);
   }
@@ -60,7 +66,7 @@ public class EFSMPath<
     transitions.addLast(t);
   }
 
-  protected void append(EFSMPath<State, Parameter, Context, Transition> other) {
+  protected void append(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
     append(other.transitions);
   }
 
@@ -90,7 +96,7 @@ public class EFSMPath<
     transitions.addFirst(t);
   }
 
-  protected void prepend(EFSMPath<State, Parameter, Context, Transition> other) {
+  protected void prepend(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
     prepend(other.transitions);
   }
 
@@ -179,7 +185,7 @@ public class EFSMPath<
     return transitions.size();
   }
 
-  public EFSMPath<State, Parameter, Context, Transition> subPath(int src, int tgt) {
+  public EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition>  subPath(int src, int tgt) {
     int size = transitions.size();
     if (src < 0 || src >= size || tgt < src || tgt > size) {
       throw new IndexOutOfBoundsException();

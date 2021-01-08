@@ -6,17 +6,25 @@ package eu.fbk.iv4xr.mbt.testcase;
 import java.util.Arrays;
 import java.util.Collection;
 //import java.util.LinkedList;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.LinkedList;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 //import de.upb.testify.efsm.EFSMPath;
 //import de.upb.testify.efsm.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 
 /**
@@ -25,29 +33,32 @@ import eu.fbk.iv4xr.mbt.efsm4j.Transition;
  */
 public class Path<
 	State extends EFSMState,
-	Parameter extends EFSMParameter,
-	Context extends IEFSMContext<Context>,
-	Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends 
-		EFSMPath<State, Parameter, Context, Trans> {
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
+		EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 	
-	LinkedList<Parameter> parameterValues = new LinkedList<Parameter>();
+	LinkedList<InParameter> parameterValues = new LinkedList<InParameter>();
 		
 	public Path() {
 		super();
 		initializeParameterValues();
 	}
 
-	public Path(Collection<Trans> transitions) {
+	public Path(Collection<Transition> transitions) {
 		super(transitions);
 		initializeParameterValues();
 	}
 
-	public Path(Collection<Trans> transitions, Collection<Parameter> parameters) {
+	public Path(Collection<Transition> transitions, Collection<InParameter> parameters) {
 		super(transitions);
 		parameterValues.addAll(parameters);
 	}
 	
-	public Path(Trans... transitions) {
+	public Path(Transition... transitions) {
 		super(Arrays.asList(transitions));
 		initializeParameterValues();
 	}
@@ -59,7 +70,7 @@ public class Path<
 	private void initializeParameterValues () {
 		for (int i = 0; i < transitions.size(); i++) {
 			//parameterValues.add((Parameter) "");		#
-			parameterValues.add((Parameter) new EFSMParameter() {
+			parameterValues.add((InParameter) new EFSMParameter() {
 
 				@Override
 				public boolean equals(Object obj) {
@@ -92,8 +103,8 @@ public class Path<
 		if (transitions != null && parameterValues != null) {
 			string += "digraph g {\n";
 			for (int i = 0; i < transitions.size(); i++) {
-				Trans t = transitions.get(i);
-				Parameter p = parameterValues.get(i);
+				Transition t = transitions.get(i);
+				InParameter p = parameterValues.get(i);
 				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + (i+1) + "-" + p.toString() + "\"];\n";				
 			}
 			string += "}";
@@ -104,7 +115,7 @@ public class Path<
 	/**
 	 * @return the parameterValues
 	 */
-	public LinkedList<Parameter> getParameterValues() {
+	public LinkedList<InParameter> getParameterValues() {
 		return parameterValues;
 	}
 }

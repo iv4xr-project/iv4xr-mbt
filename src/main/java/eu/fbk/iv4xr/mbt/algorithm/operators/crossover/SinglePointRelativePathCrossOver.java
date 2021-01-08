@@ -13,7 +13,8 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 
@@ -59,17 +60,17 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 		int[] points = new int[2];
 		AbstractTestSequence tc1 = (AbstractTestSequence) parent1.getTestcase();
 		AbstractTestSequence tc2 = (AbstractTestSequence) parent2.getTestcase();
-		Set<Transition> commonTransitions = new HashSet<Transition>();
+		Set<EFSMTransition> commonTransitions = new HashSet<EFSMTransition>();
 		for (Object o : tc1.getPath().getTransitions()) {
-			if (tc2.getPath().contains(((Transition)o))) {
-				commonTransitions.add((Transition)o);
+			if (tc2.getPath().contains(((EFSMTransition)o))) {
+				commonTransitions.add((EFSMTransition)o);
 			}
 		}
 		if (commonTransitions.isEmpty()) {
 			points[0] = -1;
 			points[1] = -1;
 		}else {
-			Transition intersection = Randomness.choice(commonTransitions);
+			EFSMTransition intersection = Randomness.choice(commonTransitions);
 //			logger.debug("INTERSECTION POINT: " + intersection.getSrc().getId() + "---" + intersection.getTgt().getId());
 			points[0] = tc1.getPath().getTransitions().indexOf(intersection);
 			points[1] = tc2.getPath().getTransitions().indexOf(intersection);

@@ -8,14 +8,19 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 //import de.upb.testify.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFPAlgo;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFPAlgo;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRFPAlgo;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 
 /**
  * @author kifetew
@@ -106,8 +111,8 @@ public class RandomLengthTestFactoryTest {
 		Testcase testcase = testFactory.getTestcase();
 		assertNotNull(testcase);
 		System.out.println(((AbstractTestSequence) testcase).toDot());
-		LabRecruitsFPAlgo fpAlgo = new LabRecruitsFPAlgo(efsm);
-		LabRecruitsState tgt = new LabRecruitsState("TR");
+		LRFPAlgo fpAlgo = new LRFPAlgo(efsm);
+		EFSMState tgt = new EFSMState("TR");
 		EFSMPath path = fpAlgo.getShortestPath(efsm.getConfiguration(), tgt);
 		System.out.println(new Path(path.getTransitions()).toDot());
 	}

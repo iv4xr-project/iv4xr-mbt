@@ -76,8 +76,7 @@ public class LabRecruitsButtonDoors1 {
 		assertTrue(m.curState.equals(bd1.d_T_p));
 		m.transition(null, bd1.TR);
 		assertTrue(m.curState.equals(bd1.TR));
-		
-		
+	
 		
 	}
 }

@@ -15,10 +15,16 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
 
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
@@ -33,9 +39,13 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
  */
 public class StateCoverageGoal<
 	State extends EFSMState,
-	Parameter extends EFSMParameter,
-	Context extends IEFSMContext<Context>,
-	Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
+		CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 
 	/**
 	 * 
@@ -52,7 +62,7 @@ public class StateCoverageGoal<
 	 */
 	public StateCoverageGoal(State s) {
 		state = s;
-		testExecutor = new EFSMTestExecutor<State, Parameter, Context, Trans>();
+		testExecutor = new EFSMTestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 	}
 
 	@Override
@@ -62,7 +72,8 @@ public class StateCoverageGoal<
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener<State, Parameter, Context, Trans> executionListner = new EFSMTestExecutionListener<State, Parameter, Context, Trans>();
+			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
+					new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 			testExecutor.addListner(executionListner);
 			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
 			// get trace from the listner

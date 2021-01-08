@@ -8,12 +8,14 @@ import org.evosuite.ga.ChromosomeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+
 //import de.upb.testify.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 
 /**

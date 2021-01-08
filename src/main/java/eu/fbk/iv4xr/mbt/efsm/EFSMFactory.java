@@ -1,15 +1,8 @@
-/**
- * 
- */
-package eu.fbk.iv4xr.mbt.efsm4j;
+package eu.fbk.iv4xr.mbt.efsm;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.ButtonDoors1;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsRandomEFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
+
 
 /**
  * @author Davide Prandi
@@ -29,12 +22,16 @@ public class EFSMFactory {
 		switch (MBTProperties.SUT_EFSM) {
 		case "labrecruits.buttons_doors_1" :
 			ButtonDoors1 bd1 = new ButtonDoors1();
-			efsm = bd1.getRoomReachabilityModel();
+			efsm = bd1.getModel();
 			break;
 		case "labrecruits.random_default" :
-			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
-			efsm = randomGenerator.getEFMS();
+			ButtonDoors1 tmp = new ButtonDoors1();
+			efsm = tmp.getModel();
 			break;
+		//case "labrecruits.random_default" :
+		//	LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
+		//	efsm = randomGenerator.getEFMS();
+		//	break;
 		default:
 			throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
 		}
@@ -55,8 +52,7 @@ public class EFSMFactory {
 		return instance;
 	}
 	
-	public EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> getEFSM() {
+	public EFSM getEFSM() {
 		return efsm;
 	}
 	

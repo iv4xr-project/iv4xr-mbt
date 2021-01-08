@@ -47,10 +47,13 @@ import org.evosuite.utils.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -62,12 +65,16 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  * @param <T>
  */
-public class MOSA<T extends Chromosome,
-	State extends EFSMState, 
-	Parameter extends EFSMParameter, 
-	Context extends IEFSMContext<Context>, 
-	Trans extends Transition<State, Parameter, Context>> extends 
-		AbstractMOSA<T,State,Parameter,Context,Trans> {
+public class MOSA<
+	T extends Chromosome,
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
+		AbstractMOSA<T,State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 

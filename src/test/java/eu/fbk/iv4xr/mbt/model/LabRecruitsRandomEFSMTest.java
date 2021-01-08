@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import org.jgrapht.io.ExportException;
+//import org.jgrapht.io.ExportException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,8 +23,8 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 //import eu.fbk.se.labrecruits.LabRecruitsContext;
 //import eu.fbk.se.labrecruits.LabRecruitsState;
 
-import eu.fbk.iv4xr.mbt.efsm4j.*;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
 
 
 /**
@@ -33,7 +33,7 @@ import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
  * Aug 19, 2020
  */
 public class LabRecruitsRandomEFSMTest {
-	
+/*	
 	@Before
 	public void createDataFolder() {
 		File dataDirectory = new File("data/");
@@ -43,7 +43,7 @@ public class LabRecruitsRandomEFSMTest {
 	}
 	
 	@Test
-	public void generateHugeLevel() throws IOException, ExportException  {
+	public void generateHugeLevel() throws IOException  {
 		MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_buttons = 50;
 		MBTProperties.LR_n_doors = 21 ;
@@ -56,7 +56,7 @@ public class LabRecruitsRandomEFSMTest {
 			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
 		String levelId = "data/level3";
 		// save door graph in graphml formal
-		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		//labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
@@ -81,7 +81,7 @@ public class LabRecruitsRandomEFSMTest {
 	}
 	
 	@Test
-	public void generateLargeLevel() throws IOException, ExportException  {
+	public void generateLargeLevel() throws IOException  {
 		MBTProperties.LR_seed = 32325439;
 		MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_buttons = 40;
@@ -95,7 +95,7 @@ public class LabRecruitsRandomEFSMTest {
 			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
 		String levelId = "data/level2";
 		// save door graph in graphml formal
-		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		//labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
@@ -123,7 +123,7 @@ public class LabRecruitsRandomEFSMTest {
 	
 	@Test
 	// default parameters: nButtons = 5, nDoors = 4, meanButtonsPerRoom = 1
-	public void generateLevelDefaultParameters() throws IOException, ExportException  {		
+	public void generateLevelDefaultParameters() throws IOException  {		
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
 		
@@ -132,7 +132,7 @@ public class LabRecruitsRandomEFSMTest {
 			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
 		String levelId = "data/level1";
 		// save door graph in graphml formal
-		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		//labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
@@ -177,6 +177,6 @@ public class LabRecruitsRandomEFSMTest {
 				new LabRecruitsState("d2-","door2")));
 		
 	}
-	
+*/
 
 }

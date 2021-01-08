@@ -12,25 +12,39 @@ import org.evosuite.ga.FitnessFunction;
 import org.evosuite.testcase.TestFitnessFunction;
 import org.evosuite.utils.Randomness;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import de.upb.testify.efsm.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
+
+
 
 /**
  * @author kifetew
  *
  */
 public class AbstractTestSequence<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends Transition<State, Parameter, Context>> implements Testcase {
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Testcase {
 
-	private Path<State, Parameter, Context, Trans> path;
+	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
 	private boolean valid = false;
 	private double fitness = 0d;
 	
@@ -38,26 +52,26 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
 	/** Local EFSM copy to generate parameters **/
-	private EFSM<State, Parameter, Context, Trans> efsm;
+	private EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> efsm;
 	
 	/**
 	 * 
 	 */
-	public AbstractTestSequence(EFSM<State, Parameter, Context, Trans> model) {
+	public AbstractTestSequence(EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> model) {
 		this.efsm = model;
 	}
 
 	/**
 	 * @return the path
 	 */
-	public Path<State, Parameter, Context, Trans> getPath() {
+	public Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath() {
 		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path<State, Parameter, Context, Trans> path) {
+	public void setPath(Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path) {
 		this.path = path;
 	}
 	
@@ -130,16 +144,16 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 
 	@Override
 	public void crossOver(Testcase other, int position1, int position2) {
-		LinkedList<Trans> newTransitions = new LinkedList<Trans>();
-		LinkedList<Parameter> newParameters = new LinkedList<Parameter>();
+		LinkedList<Transition> newTransitions = new LinkedList<Transition>();
+		LinkedList<InParameter> newParameters = new LinkedList<InParameter>();
 		for (int i = 0; i <= position1; i++) {
 			newTransitions.add(path.getTransitionAt(i));
 			newParameters.add(path.parameterValues.get(i));
 		}
 		for (int i = position2+1; i < other.getLength(); i++) {
-			AbstractTestSequence<State, Parameter, Context, Trans> otherTc = (AbstractTestSequence<State, Parameter, Context, Trans>)other;
+			AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> otherTc = (AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>)other;
 			newTransitions.add(otherTc.path.getTransitionAt(i));
-			newParameters.add((Parameter) otherTc.path.parameterValues.get(i));
+			newParameters.add((InParameter) otherTc.path.parameterValues.get(i));
 		}
 		path = new Path(newTransitions, newParameters);
 	}

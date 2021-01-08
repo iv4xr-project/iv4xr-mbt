@@ -19,21 +19,33 @@ import org.evosuite.testcase.ExecutableChromosome;
 import org.evosuite.testcase.execution.ExecutionResult;
 import org.evosuite.testsuite.TestSuiteFitnessFunction;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 /**
  * @author kifetew
  *
  */
 public class MBTChromosome<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosome {
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
+		extends ExecutableChromosome {
 	
 	/**
 	 * 
@@ -44,12 +56,12 @@ Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosom
 	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
 	
 	/** Local EFSM copy to generate parameters **/
-	private EFSM<State, Parameter, Context, Trans> efsm;
+	private EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm;
 	
 	/**
 	 * 
 	 */
-	public MBTChromosome(EFSM<State, Parameter, Context, Trans> model) {
+	public MBTChromosome(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model) {
 		this.efsm = model;
 		testcase = new AbstractTestSequence(efsm);
 	}

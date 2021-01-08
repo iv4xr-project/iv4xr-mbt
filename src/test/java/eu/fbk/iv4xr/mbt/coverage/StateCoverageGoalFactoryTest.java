@@ -15,14 +15,16 @@ import org.junit.jupiter.api.Test;
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 
 
 
@@ -34,8 +36,7 @@ import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
  */
 class StateCoverageGoalFactoryTest {
 
-	EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm;
+	EFSM efsm;
 	
 	/**
 	 * @throws java.lang.Exception

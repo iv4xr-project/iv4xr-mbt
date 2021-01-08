@@ -6,10 +6,21 @@ package eu.fbk.iv4xr.mbt.execution;
 import java.util.List;
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+
+
+
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
@@ -19,16 +30,20 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  *
  */
 public class EFSMTestExecutor<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends TestExecutor<State, Parameter, Context, Trans> {
-	
-	
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
+		extends TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+		
+		
 	/**
 	 * 
 	 */
-	public EFSMTestExecutor(EFSM<State, Parameter, Context, Trans> efsm) {
+	public EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
 		this.efsm = efsm;
 		reset();
 	}
@@ -55,13 +70,13 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 		return result;
 	}
 
-	private boolean applyTransitions(List<Trans> transitions, List<Parameter> parameters) {
+	private boolean applyTransitions(List<Transition> transitions, List<InParameter> parameters) {
 		boolean success = true;
 		for (int i = 0; i < transitions.size(); i++) {
-			Trans t = transitions.get(i);
-			Parameter p = parameters.get(i);
+			Transition t = transitions.get(i);
+			InParameter p = parameters.get(i);
 			notifyTransitionStarted(t, p);
-			Set<Parameter> output = efsm.transition(p, t);
+			Set<OutParameter> output = efsm.transition(p, t);
 			if (output == null) {
 				success = false;
 			}	
@@ -74,28 +89,28 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	}
 
 	private void notifyExecutionFinished() {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
 			listner.executionStarted(this);
 		}
 		
 	}
 
 	private void notifyExecutionStarted() {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
 			listner.executionFinished(this);
 		}
 		
 	}
 	
-	private void notifyTransitionStarted(Trans t, Parameter p) {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
+	private void notifyTransitionStarted(Transition t, InParameter p) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
 			listner.transitionStarted(this, t, p);
 		}
 		
 	}
 	
-	private void notifyTransitionFinished(Trans t, Parameter p, Set<Parameter> o, boolean success) {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
+	private void notifyTransitionFinished(Transition t, InParameter p, Set<OutParameter> o, boolean success) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
 			listner.transitionFinished(this, t, p, o, success);
 		}
 		

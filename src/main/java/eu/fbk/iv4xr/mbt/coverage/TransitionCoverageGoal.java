@@ -8,9 +8,22 @@ import org.evosuite.ga.FitnessFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+
+//import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+//import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+//import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+
+
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionListener;
@@ -25,12 +38,16 @@ import eu.fbk.iv4xr.mbt.testcase.Path;
  *
  */
 public class TransitionCoverageGoal<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends CoverageGoal<State, Parameter, Context, Trans> {
-
-	/**
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
+		extends CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+	
+		/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4660857042886223346L;
@@ -38,14 +55,14 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(TransitionCoverageGoal.class);
 
-	private Trans transition;
+	private Transition transition;
 	
 	/**
 	 * 
 	 */
-	public TransitionCoverageGoal(Trans trans) {
+	public TransitionCoverageGoal(Transition trans) {
 		transition = trans;
-		testExecutor = new EFSMTestExecutor<State, Parameter, Context, Trans>();
+		testExecutor = new EFSMTestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 	}
 
 	@Override
@@ -55,7 +72,8 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener<State, Parameter, Context, Trans> executionListner = new EFSMTestExecutionListener<State, Parameter, Context, Trans>();
+			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
+						new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 			testExecutor.addListner(executionListner);
 			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
 			// get trace from the listner

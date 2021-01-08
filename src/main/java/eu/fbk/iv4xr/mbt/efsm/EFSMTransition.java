@@ -50,9 +50,15 @@ public class EFSMTransition<
 	 *  Maybe this could be made safer.
 	 */
 	
-	public EFSMTransition() {
+	public EFSMTransition(Operation op, Guard guard, InParameter inParameter, OutParameter outParameter) {
+		this.op = op;
+		this.guard = guard;
+		this.inParameter = inParameter;
+		this.outParameter = outParameter;
 	}
 	
+	public EFSMTransition() {
+	}
 	
 	/*
 	 * Setter and getter
