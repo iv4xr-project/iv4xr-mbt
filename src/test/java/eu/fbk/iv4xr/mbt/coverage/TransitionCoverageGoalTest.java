@@ -77,7 +77,7 @@ class TransitionCoverageGoalTest {
 		
 		double fitness = goal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 0d);
+		assertTrue(fitness == 100d);
 	}
 
 }

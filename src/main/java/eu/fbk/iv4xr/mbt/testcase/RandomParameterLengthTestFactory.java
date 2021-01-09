@@ -73,37 +73,34 @@ public class RandomParameterLengthTestFactory<
 		
 		
 		Collection<Transition> transitions = new LinkedList<Transition>();
-		Collection<InParameter> parameters = new LinkedList<InParameter>();
+//		Collection<InParameter> parameters = new LinkedList<InParameter>();
 		int len = 0;
 		
 		// loop until random length reached or current state has not outgoing transitions (final?)
 		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
 			
-			// first generate a random input parameter
-			InParameter input = model.getRandomInput();
+			// get set of "valid" transitions from the current state
+			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
-			// get set of "valid" transitions from the current state, with the given input
-			Set<Transition> outgoingTransitions = model.transitionsOutOf(currentState, input);
-			
-			int attempt = 0;
-			while (outgoingTransitions.isEmpty() && attempt < 5) {
-				input = model.getRandomInput();
-				outgoingTransitions = model.transitionsOutOf(currentState, input);
-			}
+//			int attempt = 0;
+//			while (outgoingTransitions.isEmpty() && attempt < 5) {
+//				input = model.getRandomInput();
+//				outgoingTransitions = model.transitionsOutOf(currentState, input);
+//			}
 			
 			// if no transition could be found, end the path here
 			if (outgoingTransitions.isEmpty()) {
-				logger.warn("Could not find outgoing transitions at this point after: " + attempt + " attempts");
+				logger.warn("Could not find outgoing transitions at this point");
 				break;
 			}
 			
 			// pick one transition at random and add it to path
-			Transition transition = Randomness.choice(outgoingTransitions);
+			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
-			parameters.add(input);
+//			parameters.add(input);
 			
 			// apply the current transition/input on the model
-			model.transition(input, transition);
+			model.transition(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
 			currentState = model.getConfiguration().getState(); // transition.getTgt();
@@ -114,8 +111,8 @@ public class RandomParameterLengthTestFactory<
 		model.reset();
 		
 		// build the test case
-		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(model);
-		Path path = new Path (transitions, parameters);
+		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
+		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.getTransitionAt(0).getSrc().getId().equalsIgnoreCase(model.getInitialConfiguration().getState().getId());
 		return testcase;

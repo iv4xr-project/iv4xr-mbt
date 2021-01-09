@@ -9,6 +9,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
+import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 
 /**
  * 
@@ -127,7 +128,7 @@ public class EFSMTransition<
 	 * @param context
 	 * @return
 	 */
-	public boolean isFeasible(InParameter input, Context context) {
+	public boolean isFeasible(Context context) {
 		
 		// if no guard return true
 		if (this.guard == null) {
@@ -144,8 +145,8 @@ public class EFSMTransition<
 		
 		
 		// need to update the variable in the guard with input
-		if (input != null) {
-			this.guard.updateVariables(input.getParameter());	
+		if (this.inParameter != null) {
+			this.guard.updateVariables(this.inParameter.getParameter());	
 		}
 		
 		// evaluate the guard
@@ -163,8 +164,8 @@ public class EFSMTransition<
 	 * @param context
 	 * @return A set of output values
 	 */
-	public Set<OutParameter> take(InParameter input, Context contex) {
-		Set<OutParameter> apply = operation(input, contex, this.op);
+	public Set<OutParameter> take(Context contex) {
+		Set<OutParameter> apply = operation(this.inParameter, contex, this.op);
 
 		if (apply == null) {
 			return Collections.emptySet();
@@ -184,9 +185,9 @@ public class EFSMTransition<
 	 * @return An (potentially empty) set of output values or null if the transition
 	 *         is infeasible.
 	 */
-	public Set<OutParameter> tryTake(InParameter input, Context context) {
-		if (isFeasible(input, context)) {
-			return take(input, context);
+	public Set<OutParameter> tryTake(Context context) {
+		if (isFeasible(context)) {
+			return take(context);
 		} else {
 			return null;
 		}

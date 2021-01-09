@@ -41,56 +41,46 @@ public class Path<
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
 		EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 	
-	LinkedList<InParameter> parameterValues = new LinkedList<InParameter>();
-		
 	public Path() {
 		super();
-		initializeParameterValues();
 	}
 
 	public Path(Collection<Transition> transitions) {
 		super(transitions);
-		initializeParameterValues();
 	}
 
-	public Path(Collection<Transition> transitions, Collection<InParameter> parameters) {
-		super(transitions);
-		parameterValues.addAll(parameters);
-	}
-	
 	public Path(Transition... transitions) {
 		super(Arrays.asList(transitions));
-		initializeParameterValues();
 	}
 	
-	/**
-	 * We would like to have a random init? 
-	 * Not sure about this init version
-	 */
-	private void initializeParameterValues () {
-		for (int i = 0; i < transitions.size(); i++) {
-			//parameterValues.add((Parameter) "");		#
-			parameterValues.add((InParameter) new EFSMParameter() {
-
-				@Override
-				public boolean equals(Object obj) {
-					// TODO Auto-generated method stub
-					return false;
-				}
-
-				@Override
-				public EFSMParameter clone() {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			});
-		}
-	}
+//	/**
+//	 * We would like to have a random init? 
+//	 * Not sure about this init version
+//	 */
+//	private void initializeParameterValues () {
+//		for (int i = 0; i < transitions.size(); i++) {
+//			//parameterValues.add((Parameter) "");		#
+//			parameterValues.add((InParameter) new EFSMParameter() {
+//
+//				@Override
+//				public boolean equals(Object obj) {
+//					// TODO Auto-generated method stub
+//					return false;
+//				}
+//
+//				@Override
+//				public EFSMParameter clone() {
+//					// TODO Auto-generated method stub
+//					return null;
+//				}
+//			});
+//		}
+//	}
 	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		//FIXME we need a proper clone implementation, this is just a placeholder!!
-		Path clone = new Path(transitions, parameterValues);
+		Path clone = new Path(transitions);
 		return clone;
 	}
 	
@@ -100,11 +90,10 @@ public class Path<
 	 */
 	public String toDot() {
 		String string = "";
-		if (transitions != null && parameterValues != null) {
+		if (transitions != null) {
 			string += "digraph g {\n";
 			for (int i = 0; i < transitions.size(); i++) {
 				Transition t = transitions.get(i);
-				InParameter p = parameterValues.get(i);
 				String label = t.getInParameter() + "/" + t.getGuard() + "/" + t.getOp() + "/" + t.getOutParameter();
 				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + (i+1) + "-" + label + "\"];\n";				
 			}
@@ -113,10 +102,4 @@ public class Path<
 		return string;
 	}
 
-	/**
-	 * @return the parameterValues
-	 */
-	public LinkedList<InParameter> getParameterValues() {
-		return parameterValues;
-	}
 }

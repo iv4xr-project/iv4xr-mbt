@@ -14,7 +14,7 @@ public abstract class JGraphBasedFPALgo<
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
     	implements IFeasiblePathAlgo<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 
-  protected final ListenableGraph<State, Transition> baseGraph;
+  protected final ListenableGraph<State, EFSMTransition> baseGraph;
   protected final EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm;
 
   public JGraphBasedFPALgo(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {

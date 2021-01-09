@@ -63,7 +63,7 @@ public class MBTChromosome<
 	 */
 	public MBTChromosome(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model) {
 		this.efsm = model;
-		testcase = new AbstractTestSequence(efsm);
+		testcase = new AbstractTestSequence();
 	}
 
 	@Override

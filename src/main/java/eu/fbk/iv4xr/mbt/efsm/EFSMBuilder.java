@@ -39,13 +39,13 @@ public class EFSMBuilder<
 {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(EFSMBuilder.class);
-	protected final Graph<State, Transition> base;
+	protected final Graph<State, EFSMTransition> base;
 	private final Class<EFSM> efsmTypeClass;
 	
 	public EFSMBuilder(Class<EFSM> efsmTypeClass) {
 		
 		
-		this(efsmTypeClass, new DirectedPseudograph<State, Transition>((Class<Transition>) EFSMTransition.class));
+		this(efsmTypeClass, new DirectedPseudograph<State, EFSMTransition>(EFSMTransition.class));
 		
 	    //this(efsmTypeClass, new DirectedPseudograph<>(EFSMTransition.class));
 		//this(efsmTypeClass, new DirectedPseudograph<>(null));
@@ -62,7 +62,7 @@ public class EFSMBuilder<
 		this(efsmTypeClass, base.getBaseGraph());
 	}
 	
-	private EFSMBuilder(Class<EFSM> efsmTypeClass, Graph<State, Transition> base) {
+	private EFSMBuilder(Class<EFSM> efsmTypeClass, Graph<State, EFSMTransition> base) {
 		this.efsmTypeClass = efsmTypeClass;
 		this.base = base;
 	}
@@ -147,11 +147,11 @@ public class EFSMBuilder<
 		return null;
 	}
 	
-	public Set<Transition> incomingTransitionsOf(State s) {
+	public Set<EFSMTransition> incomingTransitionsOf(State s) {
 		return base.incomingEdgesOf(s);
 	}
 
-	public Set<Transition> outgoingTransitionsOf(State s) {
+	public Set<EFSMTransition> outgoingTransitionsOf(State s) {
 		return base.outgoingEdgesOf(s);
 	}
 	

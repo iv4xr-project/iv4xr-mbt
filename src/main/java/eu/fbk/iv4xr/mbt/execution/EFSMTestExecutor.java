@@ -60,7 +60,7 @@ public class EFSMTestExecutor<
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
-		boolean success = applyTransitions(tc.getPath().getTransitions(), tc.getPath().getParameterValues());
+		boolean success = applyTransitions(tc.getPath().getTransitions());
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
@@ -70,17 +70,16 @@ public class EFSMTestExecutor<
 		return result;
 	}
 
-	private boolean applyTransitions(List<Transition> transitions, List<InParameter> parameters) {
+	private boolean applyTransitions(List<Transition> transitions) {
 		boolean success = true;
 		for (int i = 0; i < transitions.size(); i++) {
 			Transition t = transitions.get(i);
-			InParameter p = parameters.get(i);
-			notifyTransitionStarted(t, p);
-			Set<OutParameter> output = efsm.transition(p, t);
+			notifyTransitionStarted(t);
+			Set<OutParameter> output = efsm.transition(t);
 			if (output == null) {
 				success = false;
 			}	
-			notifyTransitionFinished(t, p, output, success);
+			notifyTransitionFinished(t, success);
 			if (!success) {
 				break;
 			}
@@ -102,16 +101,16 @@ public class EFSMTestExecutor<
 		
 	}
 	
-	private void notifyTransitionStarted(Transition t, InParameter p) {
+	private void notifyTransitionStarted(Transition t) {
 		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
-			listner.transitionStarted(this, t, p);
+			listner.transitionStarted(this, t);
 		}
 		
 	}
 	
-	private void notifyTransitionFinished(Transition t, InParameter p, Set<OutParameter> o, boolean success) {
+	private void notifyTransitionFinished(Transition t, boolean success) {
 		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
-			listner.transitionFinished(this, t, p, o, success);
+			listner.transitionFinished(this, t, success);
 		}
 		
 	}

@@ -31,9 +31,9 @@ public interface ExecutionListener<State extends EFSMState,
 	
 	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor);
 	
-	public void transitionStarted (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, InParameter p);
+	public void transitionStarted (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t);
 	
-	public void transitionFinished (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, InParameter p, Set<OutParameter> o, boolean success);
+	public void transitionFinished (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean success);
 
 	public ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getExecutionTrace();
 }

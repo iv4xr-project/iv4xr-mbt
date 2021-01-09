@@ -44,13 +44,13 @@ public class TransitionCoverageGoalFactory<
 	public TransitionCoverageGoalFactory() {
 		// build the list of coverage goals
 		EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = AlgorithmFactory.getModel();
-		Set<Transition> transitions = model.getTransitons();
+		Set<EFSMTransition> transitions = model.getTransitons();
 		if (transitions == null || transitions.isEmpty()) {
 			throw new RuntimeException("Something wrong with the model: " + MBTProperties.SUT_EFSM + ". No transitions.");
 		}
-		for (Transition transition : transitions) {
+		for (EFSMTransition transition : transitions) {
 			TransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> goal = 
-						new TransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(transition);
+						new TransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>((Transition) transition);
 			coverageGoals.add(goal);
 		}
 	}

@@ -51,15 +51,15 @@ public class AbstractTestSequence<
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
-	/** Local EFSM copy to generate parameters **/
-	private EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> efsm;
+//	/** Local EFSM copy to generate parameters **/
+//	private EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> efsm;
 	
-	/**
-	 * 
-	 */
-	public AbstractTestSequence(EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> model) {
-		this.efsm = model;
-	}
+//	/**
+//	 * 
+//	 */
+//	public AbstractTestSequence(EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> model) {
+//		this.efsm = model;
+//	}
 
 	/**
 	 * @return the path
@@ -124,8 +124,7 @@ public class AbstractTestSequence<
 	
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		EFSM efsmClone = efsm.clone();
-		AbstractTestSequence clone = new AbstractTestSequence(efsmClone);
+		AbstractTestSequence clone = new AbstractTestSequence();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
@@ -145,21 +144,19 @@ public class AbstractTestSequence<
 	@Override
 	public void crossOver(Testcase other, int position1, int position2) {
 		LinkedList<Transition> newTransitions = new LinkedList<Transition>();
-		LinkedList<InParameter> newParameters = new LinkedList<InParameter>();
 		for (int i = 0; i <= position1; i++) {
 			newTransitions.add(path.getTransitionAt(i));
-			newParameters.add(path.parameterValues.get(i));
 		}
 		for (int i = position2+1; i < other.getLength(); i++) {
 			AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> otherTc = (AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>)other;
 			newTransitions.add(otherTc.path.getTransitionAt(i));
-			newParameters.add((InParameter) otherTc.path.parameterValues.get(i));
 		}
-		path = new Path(newTransitions, newParameters);
+		path = new Path(newTransitions);
 	}
 
 	@Override
 	public void mutate() {
+		//TODO define mutation operator
 		int index = Randomness.nextInt(getLength());
 		//path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
 		

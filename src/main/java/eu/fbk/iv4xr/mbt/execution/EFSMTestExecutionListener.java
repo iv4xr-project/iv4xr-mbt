@@ -51,12 +51,12 @@ public class EFSMTestExecutionListener<
 
 
 	@Override
-	public void transitionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, InParameter p) {
+	public void transitionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t) {
 		
 	}
 
 	@Override
-	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, InParameter p, Set<OutParameter> o, boolean success) {
+	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean success) {
 		if (success) {
 			executionTrace.coveredTransitions.add(t);
 		}

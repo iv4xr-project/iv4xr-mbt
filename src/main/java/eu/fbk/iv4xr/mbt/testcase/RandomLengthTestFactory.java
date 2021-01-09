@@ -76,10 +76,10 @@ public class RandomLengthTestFactory<
 		
 		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)
 		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
-			Set<Transition> outgoingTransitions = model.transitionsOutOf(currentState);
+			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
-			Transition transition = Randomness.choice(outgoingTransitions);
+			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
@@ -91,7 +91,7 @@ public class RandomLengthTestFactory<
 		model.reset();
 		
 		// build the test case
-		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(model);
+		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.getTransitionAt(0).getSrc().getId().equalsIgnoreCase(model.getInitialConfiguration().getState().getId());
