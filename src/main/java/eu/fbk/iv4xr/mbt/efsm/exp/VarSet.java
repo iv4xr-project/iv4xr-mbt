@@ -62,4 +62,13 @@ public class VarSet<T> implements Cloneable, Serializable {
 			this.getVariable(id).setValue(val);
 		}
 	}
+	
+	public String toDebugString() {
+		String out = "";
+		for(String key : this.varSet.keySet()) {
+			out = out + this.varSet.get(key).toDebugString()+";"; 
+		}
+		
+		return out;
+	}
 }

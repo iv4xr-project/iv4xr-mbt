@@ -48,5 +48,10 @@ public class Var<T> implements Exp<T> {
 		
 	}
 
+	@Override
+	public String toDebugString() {
+		return id+"["+value.toString()+"]";
+	}
+
 
 }

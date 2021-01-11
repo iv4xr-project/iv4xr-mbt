@@ -2,6 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 
 
 /**
@@ -24,14 +25,14 @@ public class EFSMFactory {
 			ButtonDoors1 bd1 = new ButtonDoors1();
 			efsm = bd1.getModel();
 			break;
-		case "labrecruits.random_default" :
-			ButtonDoors1 tmp = new ButtonDoors1();
-			efsm = tmp.getModel();
-			break;
 		//case "labrecruits.random_default" :
-		//	LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
-		//	efsm = randomGenerator.getEFMS();
+		//	ButtonDoors1 tmp = new ButtonDoors1();
+		//	efsm = tmp.getModel();
 		//	break;
+		case "labrecruits.random_default" :
+			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
+			efsm = randomGenerator.getEFMS();
+			break;
 		default:
 			throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
 		}

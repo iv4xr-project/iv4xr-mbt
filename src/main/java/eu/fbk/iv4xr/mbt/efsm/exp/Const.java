@@ -34,4 +34,9 @@ public class Const<T> implements Exp<T> {
 		
 	}
 
+	@Override
+	public String toDebugString() {
+		return value.toString();
+	}
+
 }

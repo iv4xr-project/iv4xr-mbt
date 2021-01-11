@@ -227,4 +227,22 @@ public class EFSMTransition<
 	public EFSMTransition clone() {	
 		return SerializationUtils.clone(this);
 	}
+	
+	
+	@Override
+	public String toString() {
+		if (src == null) {
+			return "";
+		}
+		if (inParameter != null & guard != null) {
+			return src.toString()+"-{"+inParameter.toString()+"*"+guard.toString()+"}->"+tgt.toString();
+		}
+		if (inParameter != null & guard == null) {
+			return src.toString()+"-{"+inParameter.toString()+"}->"+tgt.toString();
+		}
+		if (inParameter == null & guard != null) {
+			return src.toString()+"-{"+guard.toString()+"}->"+tgt.toString();
+		}
+		return src.toString()+"-{}->"+tgt.toString();
+	}
 }

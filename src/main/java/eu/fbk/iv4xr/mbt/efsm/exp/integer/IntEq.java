@@ -25,4 +25,9 @@ public class IntEq extends CompareOp{
 		}
 	}
 
+	@Override
+	public String toDebugString() {
+		return "("+this.getParameter1().toDebugString()+" = "+this.getParameter2().toDebugString()+")";
+	}
+
 }

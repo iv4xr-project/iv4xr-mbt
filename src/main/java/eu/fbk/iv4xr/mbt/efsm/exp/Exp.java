@@ -13,4 +13,6 @@ public interface Exp<T extends Object> extends Cloneable, Serializable {
 	// update the value of the variables in an expression given a varSet
 	void update(VarSet<?>  varSet);
 	
+	String toDebugString();
+	
 }

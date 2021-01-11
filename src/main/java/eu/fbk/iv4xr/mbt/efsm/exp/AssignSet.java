@@ -59,4 +59,13 @@ public class AssignSet<T> implements Cloneable, Serializable {
 			return false;
 		}
 	}
+	
+	public String toDebugString() {
+		String out = "";
+		for(String key : this.assignSet.keySet()) {
+			out = out + this.assignSet.get(key).toDebugString()+"; "; 
+		}
+		
+		return out;
+	}
 }

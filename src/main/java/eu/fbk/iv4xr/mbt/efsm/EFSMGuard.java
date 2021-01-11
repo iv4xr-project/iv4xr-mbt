@@ -33,4 +33,14 @@ public class EFSMGuard implements  Cloneable, Serializable  {
 		return(this.guard);
 	}
 	
+	public String toDebugStrig() {
+		return guard.toDebugString();
+	}
+	
+	public String toString() {
+		if (guard == null) {
+			return "";
+		}
+		return this.toDebugStrig();
+	}
 }

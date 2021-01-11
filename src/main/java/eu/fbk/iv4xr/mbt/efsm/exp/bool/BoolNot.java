@@ -22,4 +22,9 @@ public class BoolNot extends UnaryOp<Boolean> {
 		Boolean v = (Boolean) this.getParameter().eval().getVal();
 		return ( new Const<Boolean>(! v));
 	}
+
+	@Override
+	public String toDebugString() {
+		return "!("+this.getParameter().toDebugString()+")";
+	}
 }

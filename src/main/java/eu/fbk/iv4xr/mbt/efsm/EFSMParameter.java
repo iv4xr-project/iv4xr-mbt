@@ -35,4 +35,12 @@ public class EFSMParameter implements  Cloneable, Serializable {
 		return this.parameter;
 	}
 	
+	public String toDebugString() {
+		return this.parameter.toDebugString();
+	}
+	
+	@Override
+	public String toString() {
+		return this.toDebugString();
+	}
 }

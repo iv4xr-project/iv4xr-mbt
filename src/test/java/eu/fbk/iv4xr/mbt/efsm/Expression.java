@@ -37,10 +37,12 @@ public class Expression {
 		
 		// try a sum
 		IntSum sum1 = new IntSum(ic1, iv1);
+		System.out.println(sum1.toDebugString());
 		// verify the result is computed correctly
 		assertEquals(sum1.eval().getVal(),17);
 		// use eq operator to check the result
 		IntEq eq1 = new IntEq(sum1, ic2);
+		System.out.println(eq1.toDebugString());
 		assertTrue(eq1.eval().getVal());
 		// mix exp operators and normal operators
 		assertEquals(2 + sum1.eval().getVal(), 19); 
@@ -54,6 +56,17 @@ public class Expression {
 		// check comparison
 		IntGreat cmp1 = new IntGreat(iv1, iv2);
 		assertFalse(cmp1.eval().getVal());
+		System.out.println(cmp1.toDebugString());
+		
+		
+		Assign as1 = new Assign(iv1, sum1 );
+		Assign as2 = new Assign(iv2, new IntSum(sum1,sum1) );
+		AssignSet aset = new AssignSet();
+		aset.put(as1);
+		aset.put(as2);
+		System.out.println(as1.toDebugString());
+		System.out.println(as2.toDebugString());
+		System.out.println(aset.toDebugString());
 		
 	}
 	
@@ -64,24 +77,25 @@ public class Expression {
 		IntGreat cmp1 = new IntGreat(iv1, iv2);
 		BoolOr or1 = new BoolOr(bc2, bv1);
 		assertEquals(or1.eval().getVal(), true);
+		System.out.println(or1.toDebugString());
 		
 		BoolOr or2 = new BoolOr(bv1, cmp1);
 		assertFalse(or2.eval().getVal());
+		System.out.println(or2.toDebugString());
+		
 		
 		BoolNot not1 = new BoolNot(or2);
 		assertTrue(not1.eval().getVal());
+		System.out.println(not1.toDebugString());
+		
 		
 		VarSet vSet1 = or1.getVariables();
 		VarSet vSet2 = or2.getVariables();
 		assertTrue(vSet2.contain("bv1"));
+		System.out.println(vSet1.toDebugString());
+		System.out.println(vSet2.toDebugString());
 
 	}
 	
-	@Test
-	public void testVarSet() {
-		
-		
-		
-	}
 	
 }

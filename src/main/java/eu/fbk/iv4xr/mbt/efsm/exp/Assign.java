@@ -26,4 +26,8 @@ public class Assign<T extends Object> implements Serializable {
 		return this.variable;
 	}
 	
+	public String toDebugString() {
+		return variable.toDebugString()+":="+expression.toDebugString();
+	}
+	
 }

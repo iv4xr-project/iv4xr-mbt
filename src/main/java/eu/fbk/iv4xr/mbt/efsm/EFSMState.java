@@ -46,4 +46,10 @@ public class EFSMState implements Comparable<EFSMState>, Cloneable, Serializable
 	public EFSMState clone() {	
 		return SerializationUtils.clone(this);
 	}
+	
+	@Override
+	public String toString() {
+		return id;
+	}
+	
 }

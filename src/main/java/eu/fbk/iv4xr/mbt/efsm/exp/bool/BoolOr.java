@@ -24,4 +24,9 @@ public class BoolOr extends BinaryOp<Boolean> {
 		return ( new Const<Boolean>(v1 || v2)); 
 	}
 
+	@Override
+	public String toDebugString() {
+		return "("+this.getParameter1().toDebugString()+" | "+this.getParameter2().toDebugString()+")";
+	}
+
 }

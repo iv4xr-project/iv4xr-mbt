@@ -23,5 +23,10 @@ public class IntSum extends BinaryOp<Integer>{
 		return new Const<Integer>(v1+v2);
 	}
 
+	@Override
+	public String toDebugString() {
+		return "("+this.getParameter1().toDebugString()+" + "+this.getParameter2().toDebugString()+")";
+	}
+
 
 }
