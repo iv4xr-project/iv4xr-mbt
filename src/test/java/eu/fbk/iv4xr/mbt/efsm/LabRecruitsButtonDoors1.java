@@ -78,5 +78,10 @@ public class LabRecruitsButtonDoors1 {
 		assertTrue(m.curState.equals(bd1.TR));
 	
 		
+		m.setShortestPathsBetweenStates();
+		System.out.println("Distance between "+bd1.b_0.toString()+" and "+bd1.b_1.toString()+" is "+m.getShortestPathDistance(bd1.b_0, bd1.b_1));
+		System.out.println("Distance between "+bd1.b_0.toString()+" and "+bd1.TR.toString()+" is "+m.getShortestPathDistance(bd1.b_0, bd1.TR));
+		System.out.println("Distance between "+bd1.b_3.toString()+" and "+bd1.TR.toString()+" is "+m.getShortestPathDistance(bd1.b_3, bd1.TR));
+		
 	}
 }

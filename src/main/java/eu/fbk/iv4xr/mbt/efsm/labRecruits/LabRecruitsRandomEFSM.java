@@ -748,10 +748,12 @@ public class LabRecruitsRandomEFSM {
 			// add transition and guards connecting the doors 
 			EFSMTransition explore_d_m_d_p = new EFSMTransition<>();
 			explore_d_m_d_p.setGuard(doorsGuardMap.get(edge));
+			explore_d_m_d_p.setInParameter(inputParExplore);
 			labRecruitsBuilder.withTransition(d_m,d_p,explore_d_m_d_p);
 			
 			EFSMTransition explore_d_p_d_m = new EFSMTransition<>();
 			explore_d_p_d_m.setGuard(doorsGuardMap.get(edge));
+			explore_d_p_d_m.setInParameter(inputParExplore);
 			labRecruitsBuilder.withTransition(d_p,d_m,explore_d_p_d_m);
 	
 			// get the source of the edge, i.e, all the buttons in the room

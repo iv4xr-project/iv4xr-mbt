@@ -24,6 +24,7 @@ public class EFSMFactory {
 		case "labrecruits.buttons_doors_1" :
 			ButtonDoors1 bd1 = new ButtonDoors1();
 			efsm = bd1.getModel();
+			efsm.setShortestPathsBetweenStates();
 			break;
 		//case "labrecruits.random_default" :
 		//	ButtonDoors1 tmp = new ButtonDoors1();
@@ -32,6 +33,7 @@ public class EFSMFactory {
 		case "labrecruits.random_default" :
 			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
 			efsm = randomGenerator.getEFMS();
+			efsm.setShortestPathsBetweenStates();
 			break;
 		default:
 			throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
