@@ -54,6 +54,9 @@ public  class EFSM<
 	// to add
 	protected EFSMParameterGenerator<InParameter> inParameterSet;
 
+	
+	private double[][] shortestPathsBetweenStates;
+	
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
 					State initialState, 
@@ -317,6 +320,33 @@ public  class EFSM<
 	
 	public EFSM clone() {
 		return SerializationUtils.clone(this);
+	}
+
+	/**
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public double getShortestPathDistance (State source, State target) {
+		double d = 0d;
+		
+		return d;
+	}
+	
+	
+	/**
+	 * @return the shortestPathsBetweenStates
+	 */
+	public double[][] getShortestPathsBetweenStates() {
+		return shortestPathsBetweenStates;
+	}
+
+	/**
+	 * @param shortestPathsBetweenStates the shortestPathsBetweenStates to set
+	 */
+	public void setShortestPathsBetweenStates(double[][] shortestPathsBetweenStates) {
+		this.shortestPathsBetweenStates = shortestPathsBetweenStates;
 	}
 	
 }
