@@ -6,11 +6,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.evosuite.Properties;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
@@ -18,9 +16,8 @@ import org.jgrapht.ListenableGraph;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedPseudograph;
-import org.jgrapht.util.VertexToIntegerMapping;
 
-import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.utils.VertexToIntegerMap;
 
 
 
@@ -64,7 +61,7 @@ public  class EFSM<
 
 	// fields used to pre-compute shortest path
 	private double[][] shortestPathsBetweenStates;
-	private VertexToIntegerMapping vertexToIntegerMapping;
+	private VertexToIntegerMap<State> vertexToIntegerMapping;
 	
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
@@ -360,12 +357,12 @@ public  class EFSM<
 	public void setShortestPathsBetweenStates() {
 		if (this.baseGraph != null) {
 		
-			Set<EFSMState> graphStates = (Set<EFSMState>) this.baseGraph.vertexSet();
+			Set<State> graphStates = (Set<State>) this.baseGraph.vertexSet();
 			this.shortestPathsBetweenStates = new double[graphStates.size()][graphStates.size()];
 			
 			// mapping states to integer that can be used to access matrix
-			this.vertexToIntegerMapping = new VertexToIntegerMapping<>(graphStates);
-			Map<EFSMState,Integer> mapStateInteger = vertexToIntegerMapping.getVertexMap(); 
+			this.vertexToIntegerMapping = new VertexToIntegerMap<State>(graphStates);
+			Map<State,Integer> mapStateInteger = vertexToIntegerMapping.getVertexMap(); 
 			
 			// shortest path algorithm 
 			// use FloydWarshallShortestPaths as it computes all possible shortest path in one pass
