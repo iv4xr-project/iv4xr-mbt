@@ -231,18 +231,21 @@ public class EFSMTransition<
 	
 	@Override
 	public String toString() {
-		if (src == null) {
+		if (src == null | tgt == null) {
 			return "";
 		}
-		if (inParameter != null & guard != null) {
-			return src.toString()+"-{"+inParameter.toString()+"*"+guard.toString()+"}->"+tgt.toString();
+		
+		String inParStr = new String("");
+		String guardString = new String("");
+		
+		if (inParameter != null) {
+			inParStr = inParameter.toString();
 		}
-		if (inParameter != null & guard == null) {
-			return src.toString()+"-{"+inParameter.toString()+"}->"+tgt.toString();
+		
+		if (guard != null) {
+			guardString = guard.toString();
 		}
-		if (inParameter == null & guard != null) {
-			return src.toString()+"-{"+guard.toString()+"}->"+tgt.toString();
-		}
-		return src.toString()+"-{}->"+tgt.toString();
+		
+		return src.toString()+"-{"+inParStr+"}->"+tgt.toString();
 	}
 }

@@ -52,4 +52,13 @@ public class EFSMContext implements Cloneable, Serializable  {
 		}		
 	}
 	
+	// to string for debugging
+	public String toDebugString() {
+		return context.toDebugString();
+	}
+	
+	public String toString() {
+		return this.toDebugString();
+	}
+	
 }
