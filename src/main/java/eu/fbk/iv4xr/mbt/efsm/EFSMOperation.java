@@ -38,4 +38,12 @@ public class EFSMOperation implements Cloneable, Serializable {
 	}
 	
 
+	@Override
+	public String toString() {
+		if (operations != null) {
+			return operations.toDebugString();
+		} else {
+			return "NOP";
+		}
+	}
 }

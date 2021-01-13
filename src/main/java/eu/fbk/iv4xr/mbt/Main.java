@@ -42,6 +42,7 @@ public class Main {
 			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
 			System.out.println("Valid: " + testcase.isValid());
 			System.out.println(testcase.toDot());
+			System.out.println(testcase.toString());
 		}
 	}
 	

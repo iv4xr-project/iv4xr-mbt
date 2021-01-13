@@ -37,6 +37,15 @@ public class Randomness implements Serializable {
 		random = new MersenneTwister(seed);
 	}
 
+	
+	private Randomness(long s) {
+		seed = s;
+		logger.info("No seed given. Using {}.", seed);
+		
+		random = new MersenneTwister(seed);
+	}
+	
+	
 	/**
 	 * <p>
 	 * Getter for the field <code>instance</code>.
@@ -51,6 +60,19 @@ public class Randomness implements Serializable {
 		return instance;
 	}
 
+	
+	/**
+	 * <p>
+	 * Getter for the field <code>instance</code>.
+	 * </p>
+	 * 
+	 * @return a {@link org.evosuite.utils.Randomness} object.
+	 */
+	public static Randomness getInstance(long dummySeed) {
+		instance = new Randomness(dummySeed);
+		return instance;
+	}
+	
 	/**
 	 * <p>
 	 * nextBoolean

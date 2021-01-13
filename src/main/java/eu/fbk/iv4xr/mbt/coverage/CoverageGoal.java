@@ -18,6 +18,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.execution.TestExecutor;
+import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
+import eu.fbk.iv4xr.mbt.testcase.Path;
 
 /**
  * @author kifetew
@@ -41,4 +43,15 @@ public abstract class CoverageGoal<
 		return false;
 	}
 	
+	protected double getShortestDistanceToTarget(Path path, EFSMState target) {
+		double shortestDistance = Double.MAX_VALUE;
+		for (Object s : path.getStates()) {
+			State source = (State)s;
+			double d = AlgorithmFactory.getModel().getShortestPathDistance(source, target);
+			if (d < shortestDistance) {
+				shortestDistance = d;
+			}
+		}
+		return shortestDistance;
+	}
 }

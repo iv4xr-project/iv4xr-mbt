@@ -24,6 +24,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import eu.fbk.iv4xr.mbt.utils.Randomness;
 
 /**
  * @author kifetew
@@ -39,6 +40,8 @@ class EFSMTestExecutorTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		long seed = 1234;
+		Randomness.getInstance(seed);
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
@@ -60,12 +63,15 @@ class EFSMTestExecutorTest {
 			Testcase testcase = testFactory.getTestcase();
 			assertNotNull(testcase);
 			
+			String beforeExec = ((AbstractTestSequence)testcase).toDot();
 			ExecutionResult result = executor.executeTestcase(testcase);
 			executor.reset();
 			assertNotNull (result);
 			if (result.isSuccess()) {
 				System.out.println("******** Feasible path found");
+				System.out.println(beforeExec);
 				System.out.println(((AbstractTestSequence)testcase).toDot());
+				System.out.println(((AbstractTestSequence)testcase).toString());
 			}
 		}
 	}

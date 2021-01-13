@@ -13,6 +13,9 @@ public class ExecutionResult {
 	
 	private ExecutionTrace exectionTrace;
 	
+	private double branchDistance;
+	private int approachLevel;
+	
 	/**
 	 * 
 	 */
@@ -46,6 +49,34 @@ public class ExecutionResult {
 	 */
 	public void setExectionTrace(ExecutionTrace exectionTrace) {
 		this.exectionTrace = exectionTrace;
+	}
+
+	/**
+	 * @return the branchDistance
+	 */
+	public double getBranchDistance() {
+		return branchDistance;
+	}
+
+	/**
+	 * @param branchDistance the branchDistance to set
+	 */
+	public void setBranchDistance(double branchDistance) {
+		this.branchDistance = branchDistance;
+	}
+
+	/**
+	 * @return the approachLevel
+	 */
+	public int getApproachLevel() {
+		return approachLevel;
+	}
+
+	/**
+	 * @param approachLevel the approachLevel to set
+	 */
+	public void setApproachLevel(int approachLevel) {
+		this.approachLevel = approachLevel;
 	}
 
 }

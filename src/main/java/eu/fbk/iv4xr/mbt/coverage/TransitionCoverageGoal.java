@@ -73,22 +73,45 @@ public class TransitionCoverageGoal<
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
 			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
-						new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
+						new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
 			testExecutor.addListner(executionListner);
 			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
 			// get trace from the listner
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
-			Path path = testcase.getPath();
+			// calculate feasibility fitness
+			double feasibilityFitness = -1;
 			if (executionResult.isSuccess()) {
-				if (path.contains(transition)) {
-					fitness = 0;
-				}else {
-					fitness = 1;
-				}
+				feasibilityFitness = 0d;
 			}else {
-				fitness = 100; //infeasible path
+				feasibilityFitness = trace.getPathApproachLevel() + trace.getPathBranchDistance();
 			}
+			
+			// calculate coverage target fitness
+			double targetFitness = -1;
+			if (executionResult.isSuccess()) {
+				if (testcase.getPath().getTransitions().contains(transition)) {
+					if (trace.isCurrentGoalCovered()) {
+						targetFitness = 0d;
+					}else {
+						// target in path, but not covered => path is not feasible?
+						// TODO check this
+						targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
+					}
+				}else { // if target not in path, calculate shortest path to target
+					//TODO calculate shortest path to target
+					targetFitness = getShortestDistanceToTarget (testcase.getPath(), transition.getSrc());
+				}
+			}else { // if path not valid
+				//FIXME for now, simply take feasibilityFitness
+				targetFitness = feasibilityFitness;
+			}
+			
+			// calculate the fitness as a linear combination of the two fitnesses
+			fitness = feasibilityFitness + targetFitness;
+//			logger.debug("Target: {} Fitness: {}", transition.toString(), fitness);
+//			logger.debug(chromosome.getTestcase().toString());
+			testExecutor.removeListner(executionListner);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);
@@ -98,6 +121,13 @@ public class TransitionCoverageGoal<
 	@Override
 	public String toString() {
 		return transition == null? "" : (transition.getSrc() + " --> " + transition.getTgt());
+	}
+
+	/**
+	 * @return the transition
+	 */
+	public Transition getTransition() {
+		return transition;
 	}
 
 }

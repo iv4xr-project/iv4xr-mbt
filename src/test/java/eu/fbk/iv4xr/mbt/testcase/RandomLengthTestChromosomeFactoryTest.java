@@ -26,7 +26,7 @@ class RandomLengthTestChromosomeFactoryTest {
 	 */
 	@Test
 	void testGetChromosome() {
-		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
 		EFSMFactory mFactory = EFSMFactory.getInstance();
 		assertNotNull(mFactory);
 		EFSM efsm = mFactory.getEFSM();

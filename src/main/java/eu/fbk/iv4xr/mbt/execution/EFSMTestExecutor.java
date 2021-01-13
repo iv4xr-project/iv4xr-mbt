@@ -89,14 +89,14 @@ public class EFSMTestExecutor<
 
 	private void notifyExecutionFinished() {
 		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
-			listner.executionStarted(this);
+			listner.executionFinished(this);
 		}
 		
 	}
 
 	private void notifyExecutionStarted() {
 		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
-			listner.executionFinished(this);
+			listner.executionStarted(this);
 		}
 		
 	}

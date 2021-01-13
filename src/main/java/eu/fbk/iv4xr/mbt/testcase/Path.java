@@ -102,4 +102,15 @@ public class Path<
 		return string;
 	}
 
+	
+	@Override
+	public String toString() {
+		String string = "";
+		if (transitions != null) {
+			for (Transition t : transitions) {
+				string += t.toString() + "\n";
+			}
+		}
+		return string;
+	}
 }

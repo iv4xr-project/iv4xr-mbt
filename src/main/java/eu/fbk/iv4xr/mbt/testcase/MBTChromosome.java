@@ -217,4 +217,13 @@ public class MBTChromosome<
 	public static List<SecondaryObjective<MBTChromosome>> getSecondaryObjectives() {
 		return secondaryObjectives;
 	}
+	
+	@Override
+	public String toString() {
+		if (testcase != null) {
+			return testcase.toString();
+		}else {
+			return "";
+		}
+	}
 }

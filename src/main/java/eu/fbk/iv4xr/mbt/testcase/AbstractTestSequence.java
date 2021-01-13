@@ -80,9 +80,22 @@ public class AbstractTestSequence<
 	 * @return path in DOT format
 	 */
 	public String toDot() {
-		return path.toDot();
+		if (path != null) {
+			return path.toDot();
+		}else {
+			return "";
+		}
 	}
 
+	@Override
+	public String toString() {
+		if (path != null) {
+			return path.toString();
+		}else {
+			return "";
+		}
+	}
+	
 	public int getLength() {
 		return path.getLength();
 	}

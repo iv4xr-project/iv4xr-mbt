@@ -10,6 +10,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
@@ -35,11 +36,14 @@ public class PathCoverageGoal<
 	 */
 	private static final long serialVersionUID = 8117932676170582125L;
 
+	
+	private EFSMPath path;
+	
 	/**
 	 * 
 	 */
-	public PathCoverageGoal() {
-		// TODO Auto-generated constructor stub
+	public PathCoverageGoal(EFSMPath p) {
+		path = p;
 	}
 
 	@Override

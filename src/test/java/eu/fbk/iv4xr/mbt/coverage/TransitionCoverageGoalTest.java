@@ -28,6 +28,7 @@ import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
+import eu.fbk.iv4xr.mbt.utils.Randomness;
 
 /**
  * @author kifetew
@@ -42,6 +43,8 @@ class TransitionCoverageGoalTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		long seed = 1234;
+		Randomness.getInstance(seed);
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
 		//transition = new LabRecruitsFreeTravelTransition();
 		transition = new EFSMTransition<>();
@@ -77,7 +80,7 @@ class TransitionCoverageGoalTest {
 		
 		double fitness = goal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 100d);
+		assertTrue(fitness == 94d);
 	}
 
 }

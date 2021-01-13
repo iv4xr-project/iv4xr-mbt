@@ -32,7 +32,16 @@ public class ExecutionTrace<
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
 	
 	private Collection<State> coveredStates = new HashSet<State>();
-	Collection<Transition> coveredTransitions = new HashSet<Transition>();
+	private Collection<Transition> coveredTransitions = new HashSet<Transition>();
+	private boolean currentGoalCovered;
+	
+	private double pathBranchDistance;
+	private int pathApproachLevel;
+	
+	private double targetBranchDistance;
+	private int targetApproachLevel;
+	
+	private boolean success;
 	
 	/**
 	 * 
@@ -53,6 +62,104 @@ public class ExecutionTrace<
 	 */
 	public void setCoveredStates(Collection<State> coveredStates) {
 		this.coveredStates = coveredStates;
+	}
+
+	/**
+	 * @return the coveredTransitions
+	 */
+	public Collection<Transition> getCoveredTransitions() {
+		return coveredTransitions;
+	}
+
+	/**
+	 * @param coveredTransitions the coveredTransitions to set
+	 */
+	public void setCoveredTransitions(Collection<Transition> coveredTransitions) {
+		this.coveredTransitions = coveredTransitions;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public boolean isSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	/**
+	 * @return the pathBranchDistance
+	 */
+	public double getPathBranchDistance() {
+		return pathBranchDistance;
+	}
+
+	/**
+	 * @param pathBranchDistance the pathBranchDistance to set
+	 */
+	public void setPathBranchDistance(double pathBranchDistance) {
+		this.pathBranchDistance = pathBranchDistance;
+	}
+
+	/**
+	 * @return the pathApproachLevel
+	 */
+	public int getPathApproachLevel() {
+		return pathApproachLevel;
+	}
+
+	/**
+	 * @param pathApproachLevel the pathApproachLevel to set
+	 */
+	public void setPathApproachLevel(int pathApproachLevel) {
+		this.pathApproachLevel = pathApproachLevel;
+	}
+
+	/**
+	 * @return the targetBranchDistance
+	 */
+	public double getTargetBranchDistance() {
+		return targetBranchDistance;
+	}
+
+	/**
+	 * @param targetBranchDistance the targetBranchDistance to set
+	 */
+	public void setTargetBranchDistance(double targetBranchDistance) {
+		this.targetBranchDistance = targetBranchDistance;
+	}
+
+	/**
+	 * @return the targetApproachLevel
+	 */
+	public int getTargetApproachLevel() {
+		return targetApproachLevel;
+	}
+
+	/**
+	 * @param targetApproachLevel the targetApproachLevel to set
+	 */
+	public void setTargetApproachLevel(int targetApproachLevel) {
+		this.targetApproachLevel = targetApproachLevel;
+	}
+
+	/**
+	 * @return the currentGoalCovered
+	 */
+	public boolean isCurrentGoalCovered() {
+		return currentGoalCovered;
+	}
+
+	/**
+	 * @param currentGoalCovered the currentGoalCovered to set
+	 */
+	public void setCurrentGoalCovered(boolean currentGoalCovered) {
+		this.currentGoalCovered = currentGoalCovered;
 	}
 
 }

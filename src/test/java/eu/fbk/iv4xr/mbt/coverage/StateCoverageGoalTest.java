@@ -4,6 +4,7 @@
 package eu.fbk.iv4xr.mbt.coverage;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
+import eu.fbk.iv4xr.mbt.utils.Randomness;
 
 /**
  * @author kifetew
@@ -41,6 +43,8 @@ class StateCoverageGoalTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		long seed = 1234;
+		Randomness.getInstance(seed);
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
 		state = new EFSMState("b_0");
 	}
@@ -71,10 +75,10 @@ class StateCoverageGoalTest {
 		
 		StateCoverageGoal stateGoal = new StateCoverageGoal(state);
 		assertNotNull(stateGoal);
-		
+		System.out.println("Chromosome: ("+chromosome.getTestcase().isValid()+") \n" + chromosome.toString());
 		double fitness = stateGoal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-//		assertTrue (fitness == 0d);
+		assertTrue(fitness == 94d);
 	}
 
 }
