@@ -59,6 +59,9 @@ public class EFSMTestExecutor<
 		reset();
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
+		if (!tc.getPath().isConnected()) {
+			System.err.println("TEST NOT VALID: " + testcase.toString());
+		}
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		boolean success = applyTransitions(tc.getPath().getTransitions());
 		//populate the result here...
@@ -72,8 +75,7 @@ public class EFSMTestExecutor<
 
 	private boolean applyTransitions(List<Transition> transitions) {
 		boolean success = true;
-		for (int i = 0; i < transitions.size(); i++) {
-			Transition t = transitions.get(i);
+		for (Transition t : transitions) {
 			notifyTransitionStarted(t);
 			Set<OutParameter> output = efsm.transition(t);
 			if (output == null) {
@@ -124,6 +126,9 @@ public class EFSMTestExecutor<
 	@Override
 	public boolean reset() {
 		efsm.reset();
+		for (ExecutionListener listner : listners) {
+			removeListner(listner);
+		}
 		return true;
 	}
 

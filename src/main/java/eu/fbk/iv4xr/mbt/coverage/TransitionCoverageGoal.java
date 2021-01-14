@@ -109,6 +109,10 @@ public class TransitionCoverageGoal<
 			
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
+			if (!testcase.isValid() && fitness == 0d) {
+				logger.debug("Goal: {}", transition);
+				logger.debug("ERROR: {}", testcase);
+			}
 //			logger.debug("Target: {} Fitness: {}", transition.toString(), fitness);
 //			logger.debug(chromosome.getTestcase().toString());
 			testExecutor.removeListner(executionListner);

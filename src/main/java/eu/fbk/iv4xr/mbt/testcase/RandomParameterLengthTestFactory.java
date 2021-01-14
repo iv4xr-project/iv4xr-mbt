@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class RandomParameterLengthTestFactory<
 		State currentState = (State)initialConfiguration.getState();
 		
 		
-		Collection<Transition> transitions = new LinkedList<Transition>();
+		List<Transition> transitions = new LinkedList<Transition>();
 //		Collection<InParameter> parameters = new LinkedList<InParameter>();
 		int len = 0;
 		

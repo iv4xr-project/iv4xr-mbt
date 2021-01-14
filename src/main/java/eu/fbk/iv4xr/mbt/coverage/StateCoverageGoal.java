@@ -113,7 +113,10 @@ public class StateCoverageGoal<
 			
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
-			
+			if (!testcase.isValid() && fitness == 0d) {
+				logger.debug("Goal: {}", state);
+				logger.debug("ERROR: {}", testcase);
+			}
 //			logger.debug("Target: {} Fitness: {}", state.toString(), fitness);
 //			logger.debug(chromosome.getTestcase().toString());
 			testExecutor.removeListner(executionListner);

@@ -243,13 +243,13 @@ public class ButtonDoors1 {
 	    		.withTransition(d_1_m, d_T_m, t_9)
 	    		.withTransition(d_1_m, d_1_p, t_10)
 	    		.withTransition(d_1_m, b_1, t_11)
-	    		.withTransition(d_T_m,d_1_m, t_12)
+	    		.withTransition(d_T_m, d_1_m, t_12)
 	    		.withTransition(d_T_m, b_1, t_13)
 	    		.withTransition(d_T_m, d_T_p, t_14)
-	    		.withTransition(d_T_m, d_1_m, t_15)
+	    		.withTransition(d_T_m, b_0, t_15)
 	    		.withTransition(d_1_p, d_1_m, t_16)
 	    		.withTransition(d_1_p, b_2, t_17)
-	    		.withTransition(d_1_p,d_2_m,t_18)
+	    		.withTransition(d_1_p, d_2_m,t_18)
 	    		.withTransition(b_2, d_1_p, t_19)
 	    		.withTransition(b_2, b_2, t_20)
 	    		.withTransition(b_2, d_2_m, t_21)
@@ -261,6 +261,7 @@ public class ButtonDoors1 {
 	    		.withTransition(b_3, d_2_p, t_27)
 	    		.withTransition(b_3, b_3, t_28)
 	    		.withTransition(d_T_p, TR, t_29)
+	    		.withTransition(d_T_p, d_T_m, t_30)
 	    		.build(b_0, bd1Context, lrParameterGenerator);
 	    
 	    return(buttonDoors1EFSM);

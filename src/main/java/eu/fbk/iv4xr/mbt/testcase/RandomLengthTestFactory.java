@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ public class RandomLengthTestFactory<
 		State currentState = (State)initialConfiguration.getState();
 		
 		
-		Collection<Transition> transitions = new LinkedList<Transition>();
+		List<Transition> transitions = new LinkedList<Transition>();
 		int len = 0;
 		
 		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)

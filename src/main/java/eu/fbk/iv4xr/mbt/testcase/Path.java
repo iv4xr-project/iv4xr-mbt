@@ -8,6 +8,9 @@ import java.util.Collection;
 //import java.util.LinkedList;
 //import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+
+import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
@@ -45,7 +48,7 @@ public class Path<
 		super();
 	}
 
-	public Path(Collection<Transition> transitions) {
+	public Path(List<Transition> transitions) {
 		super(transitions);
 	}
 
@@ -80,7 +83,7 @@ public class Path<
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		//FIXME we need a proper clone implementation, this is just a placeholder!!
-		Path clone = new Path(transitions);
+		Path clone = new Path(SerializationUtils.clone(transitions));
 		return clone;
 	}
 	

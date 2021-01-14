@@ -124,6 +124,21 @@ public class EFSMPath<
     }
   }
 
+  public boolean isConnected () {
+	  boolean connected = true;
+	  Transition previous = this.transitions.getFirst();
+	  for (int i = 1; i < getLength(); i++) {
+		  Transition current = this.transitions.get(i);
+		  if (!previous.getTgt().equals(current.getSrc())) {
+			  connected = false;
+			  break;
+		  }else {
+			  previous = current;
+		  }
+	  }
+	  return connected;
+  }
+  
   public List<Transition> getTransitions() {
     if (transitions.isEmpty()) {
       return Collections.EMPTY_LIST;
