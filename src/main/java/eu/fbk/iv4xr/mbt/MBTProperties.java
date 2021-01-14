@@ -95,7 +95,7 @@ public class MBTProperties {
 	}
 	
 	@Parameter(key = "test_factory", group = "Search Algorithm", description = "Test factory")
-	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH_PARAMETER;
+	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH;
 	
 	public enum PopulationLimit {
 		INDIVIDUALS, TESTS, STATEMENTS;

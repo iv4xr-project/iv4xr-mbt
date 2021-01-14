@@ -76,8 +76,7 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// setup the search algorithm
 		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
 		
-//		CoverageGoalFactory<?> fitnessFactory = algorithmFactory.getFitnessFactory();
-		List<?> goals = algorithmFactory.getCoverageGoals(); //fitnessFactory.getCoverageGoals();
+		List<?> goals = algorithmFactory.getCoverageGoals();
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		logger.debug("Total goals: {}", goals.size());
 		

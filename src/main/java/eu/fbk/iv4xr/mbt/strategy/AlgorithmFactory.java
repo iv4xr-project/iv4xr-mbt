@@ -60,6 +60,7 @@ import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSA;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
@@ -97,8 +98,8 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	}
 	
 	
-	protected CoverageGoalFactory<?> getFitnessFactory(){
-		switch (MBTProperties.MODELCRITERION[0]){
+	protected CoverageGoalFactory<?> getFitnessFactory(ModelCriterion criterion){
+		switch (criterion){
 		case STATE:
 			return new StateCoverageGoalFactory();
 		case TRANSITION:
@@ -114,8 +115,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	
 	protected List<CoverageGoal> getCoverageGoals(){
 		List<CoverageGoal> goals = new ArrayList<CoverageGoal>();
-		goals.addAll(new StateCoverageGoalFactory().getCoverageGoals());
-		goals.addAll(new TransitionCoverageGoalFactory().getCoverageGoals());
+		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
+			goals.addAll(getFitnessFactory(criterion).getCoverageGoals());
+		}
 		return goals;
 	}
 	

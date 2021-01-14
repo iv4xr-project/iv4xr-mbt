@@ -31,7 +31,7 @@ public class EFSMState implements Comparable<EFSMState>, Cloneable, Serializable
 		if (!(obj instanceof EFSMState))
 			return false;
 		EFSMState other = (EFSMState) obj;
-		if (other.getId() == id) {
+		if (other.getId().equals(id)) {
 			return true;
 		}
 		return false;

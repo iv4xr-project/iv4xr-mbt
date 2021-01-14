@@ -41,7 +41,7 @@ public class EFSMPath<
     transitions = new LinkedList<>(basePath.getEdgeList());
   }
 
-  protected EFSMPath(Collection<Transition> transitions) {
+  protected EFSMPath(List<Transition> transitions) {
     this.transitions = new LinkedList<>(transitions);
   }
 

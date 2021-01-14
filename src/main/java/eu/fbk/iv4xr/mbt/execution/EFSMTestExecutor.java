@@ -56,7 +56,6 @@ public class EFSMTestExecutor<
 	@Override
 	public ExecutionResult executeTestcase(Testcase testcase) {
 		notifyExecutionStarted();
-		reset();
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
 		if (!tc.getPath().isConnected()) {

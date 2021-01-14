@@ -95,6 +95,7 @@ public class RandomLengthTestFactory<
 		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
+		assert path.isConnected();
 		assert path.getTransitionAt(0).getSrc().getId().equalsIgnoreCase(model.getInitialConfiguration().getState().getId());
 		return testcase;
 	}
