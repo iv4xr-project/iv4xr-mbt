@@ -3,8 +3,13 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
@@ -20,6 +25,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
@@ -169,9 +175,71 @@ public class AbstractTestSequence<
 
 	@Override
 	public void mutate() {
-		//TODO define mutation operator
-		int index = Randomness.nextInt(getLength());
-		//path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
+		//System.err.println("BEFORE: " + path);
+		if (Randomness.nextBoolean()) {
+			insertSelfTransitionMutation ();
+		} else {
+			deleteSelfTransitionMutation ();
+		}
+		//System.err.println("AFTER: " + path);
+		
+	}
+
+	private void deleteSelfTransitionMutation() {
+		// find a self transition and remove it
+		Set<Integer> indices = new HashSet<Integer>();
+		for (Transition t : path.getTransitions()) {
+			if (t.isSelfTransition()) {
+				indices.add(path.getTransitions().indexOf(t));
+			}
+		}
+		
+		// choose one at random and remove it
+		if (!indices.isEmpty()) {
+			path.getModfiableTransitions().remove(Randomness.choice(indices));
+		}else {
+			// nothing to do, mutation fails to modify individual
+		}
+		
+	}
+
+	private void insertSelfTransitionMutation() {
+		
+		// from the model, get all possible self transitions (states)
+		EFSM model = AlgorithmFactory.getModel();
+		Map<State, Transition> selfTransitionStates = new HashMap<>();
+		for (Object o : model.getTransitons()) {
+			Transition t = (Transition)o;
+			if (t.isSelfTransition()) {
+				selfTransitionStates.put(t.getSrc(), t);
+			}
+		}
+		
+		// identify a state where self transition is possible
+		selfTransitionStates.keySet().retainAll(path.getStates());
+		
+		// choose one at random
+		State state = Randomness.choice(selfTransitionStates.keySet());
+		
+		
+		int index = -1;
+		for (Transition t : path.getTransitions()) {
+			if (t.getSrc().equals(state)) {
+				index = path.getTransitions().indexOf(t);
+				break;
+			}
+			if (t.getTgt().equals(state)) {
+				index = path.getTransitions().indexOf(t) + 1;
+				break;
+			}
+		}
+		
+		if (index == -1) {
+			return; // mutation fails to change individual
+		}
+		
+		// insert the new transition
+		path.getModfiableTransitions().add(index, (Transition) selfTransitionStates.get(state).clone());
 		
 	}
 

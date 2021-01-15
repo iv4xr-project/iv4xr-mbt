@@ -248,4 +248,8 @@ public class EFSMTransition<
 		
 		return src.toString()+"-{"+inParStr+"}->"+tgt.toString();
 	}
+	
+	public boolean isSelfTransition () {
+		return (src.equals(tgt));
+	}
 }
