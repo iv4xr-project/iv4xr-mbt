@@ -186,17 +186,21 @@ public class AbstractTestSequence<
 	}
 
 	private void deleteSelfTransitionMutation() {
+		if (path.getLength() < 2) {
+			return;
+		}
 		// find a self transition and remove it
 		Set<Integer> indices = new HashSet<Integer>();
-		for (Transition t : path.getTransitions()) {
+		for (int i = 0; i < path.getLength(); i++) {
+			Transition t = path.getTransitionAt(i);
 			if (t.isSelfTransition()) {
-				indices.add(path.getTransitions().indexOf(t));
+				indices.add(i);
 			}
 		}
 		
 		// choose one at random and remove it
 		if (!indices.isEmpty()) {
-			path.getModfiableTransitions().remove(Randomness.choice(indices));
+			path.getModfiableTransitions().remove(path.getModfiableTransitions().get(Randomness.choice(indices)));
 		}else {
 			// nothing to do, mutation fails to modify individual
 		}
