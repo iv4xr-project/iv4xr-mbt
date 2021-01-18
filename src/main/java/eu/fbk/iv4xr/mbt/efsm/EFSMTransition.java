@@ -252,4 +252,17 @@ public class EFSMTransition<
 	public boolean isSelfTransition () {
 		return (src.equals(tgt));
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof EFSMTransition) {
+			EFSMTransition t = (EFSMTransition)obj;
+			return(t.getSrc().equals(src) && t.getTgt().equals(tgt));
+		}else {
+			return false;
+		}
+	}
 }
