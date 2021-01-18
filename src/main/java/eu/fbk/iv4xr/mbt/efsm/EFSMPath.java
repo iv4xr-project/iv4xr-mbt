@@ -54,7 +54,7 @@ public class EFSMPath<
     transitions.add(t);
   }
 
-  protected void append(Transition t) {
+  public void append(Transition t) {
     if (!transitions.isEmpty()) {
       Transition last = transitions.getLast();
       if (last.getTgt() != t.getSrc()) {
@@ -66,15 +66,15 @@ public class EFSMPath<
     transitions.addLast(t);
   }
 
-  protected void append(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
+  public void append(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
     append(other.transitions);
   }
 
-  protected void append(GraphPath<State, Transition> other) {
+  public void append(GraphPath<State, Transition> other) {
     append(new LinkedList<>(other.getEdgeList()));
   }
 
-  private void append(LinkedList<Transition> other) {
+  public void append(LinkedList<Transition> other) {
     if (other.isEmpty()) {
       return;
     }
@@ -84,7 +84,7 @@ public class EFSMPath<
     this.transitions.addAll(other);
   }
 
-  protected void prepend(Transition t) {
+  public void prepend(Transition t) {
     if (!transitions.isEmpty()) {
       Transition first = transitions.getFirst();
       if (first.getSrc() != t.getTgt()) {
@@ -96,15 +96,15 @@ public class EFSMPath<
     transitions.addFirst(t);
   }
 
-  protected void prepend(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
+  public void prepend(EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> other) {
     prepend(other.transitions);
   }
 
-  protected void prepend(GraphPath<State, Transition> other) {
+  public void prepend(GraphPath<State, Transition> other) {
     prepend(new LinkedList<>(other.getEdgeList()));
   }
 
-  private void prepend(LinkedList<Transition> other) {
+  public void prepend(LinkedList<Transition> other) {
     if (other.isEmpty()) {
       return;
     }
@@ -114,7 +114,7 @@ public class EFSMPath<
     this.transitions.addAll(0, other);
   }
 
-  private void ensureConnects(LinkedList<Transition> head, LinkedList<Transition> tail) {
+  public void ensureConnects(LinkedList<Transition> head, LinkedList<Transition> tail) {
     if (!transitions.isEmpty()) {
       Transition last = head.getLast();
       Transition first = tail.getFirst();

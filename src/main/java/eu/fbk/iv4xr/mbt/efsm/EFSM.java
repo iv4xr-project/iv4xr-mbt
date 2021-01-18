@@ -13,7 +13,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.ListenableGraph;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
+import org.jgrapht.alg.shortestpath.GraphMeasurer;
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 
@@ -59,9 +61,18 @@ public  class EFSM<
 	// to add
 	protected EFSMParameterGenerator<InParameter> inParameterSet;
 
-	// fields used to pre-compute shortest path
+	/*
+	 *  helper to access and manage baseGraph
+	 */
+	
+	// shortest path  
 	private double[][] shortestPathsBetweenStates;
 	private VertexToIntegerMap<State> vertexToIntegerMapping;
+	
+	// compute all paths between two vertex
+	private AllDirectedPaths<State, EFSMTransition> allPathsCalculator;
+	// compute distance metrics
+	private GraphMeasurer<State, EFSMTransition> graphMeasurer;
 	
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
@@ -385,4 +396,26 @@ public  class EFSM<
 		
 		}	
 	}	
+
+	public AllDirectedPaths getAllDirectedPathCalculator() {
+		//return this.allPathsCalculator;
+		return new AllDirectedPaths<State, EFSMTransition>(this.baseGraph);
+	}
+	
+	public GraphMeasurer getGraphMeasurer() {
+		//return this.graphMeasurer;
+		return new GraphMeasurer<State, EFSMTransition>(this.baseGraph);
+	}
+	
+	// All paths
+	public void setGraphWorker() {
+		if (this.baseGraph != null) {
+			setShortestPathsBetweenStates();
+			// not serializable for cloning
+			//allPathsCalculator = new AllDirectedPaths<State, EFSMTransition>(this.baseGraph);
+			//graphMeasurer = new GraphMeasurer<State, EFSMTransition>(this.baseGraph);
+		}
+		
+	}
+
 }

@@ -17,6 +17,7 @@ import org.evosuite.ga.FitnessFunction;
 import org.evosuite.testcase.TestFitnessFunction;
 import org.evosuite.utils.Randomness;
 
+import eu.fbk.iv4xr.mbt.algorithm.operators.mutation.Mutator;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
@@ -57,6 +58,8 @@ public class AbstractTestSequence<
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
+	private Mutator mutator;
+	
 //	/** Local EFSM copy to generate parameters **/
 //	private EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> efsm;
 	
@@ -79,6 +82,7 @@ public class AbstractTestSequence<
 	 */
 	public void setPath(Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path) {
 		this.path = path;
+		mutator = new Mutator(path);
 	}
 	
 	/**
@@ -176,76 +180,16 @@ public class AbstractTestSequence<
 	@Override
 	public void mutate() {
 		//System.err.println("BEFORE: " + path);
-		if (Randomness.nextBoolean()) {
-			insertSelfTransitionMutation ();
-		} else {
-			deleteSelfTransitionMutation ();
-		}
+		//if (Randomness.nextBoolean()) {
+		//	insertSelfTransitionMutation ();
+		//} else {
+		//	deleteSelfTransitionMutation ();
+		//}
 		//System.err.println("AFTER: " + path);
+		mutator.mutate();
 		
 	}
 
-	private void deleteSelfTransitionMutation() {
-		if (path.getLength() < 2) {
-			return;
-		}
-		// find a self transition and remove it
-		Set<Integer> indices = new HashSet<Integer>();
-		for (int i = 0; i < path.getLength(); i++) {
-			Transition t = path.getTransitionAt(i);
-			if (t.isSelfTransition()) {
-				indices.add(i);
-			}
-		}
-		
-		// choose one at random and remove it
-		if (!indices.isEmpty()) {
-			path.getModfiableTransitions().remove(path.getModfiableTransitions().get(Randomness.choice(indices)));
-		}else {
-			// nothing to do, mutation fails to modify individual
-		}
-		
-	}
-
-	private void insertSelfTransitionMutation() {
-		
-		// from the model, get all possible self transitions (states)
-		EFSM model = AlgorithmFactory.getModel();
-		Map<State, Transition> selfTransitionStates = new HashMap<>();
-		for (Object o : model.getTransitons()) {
-			Transition t = (Transition)o;
-			if (t.isSelfTransition()) {
-				selfTransitionStates.put(t.getSrc(), t);
-			}
-		}
-		
-		// identify a state where self transition is possible
-		selfTransitionStates.keySet().retainAll(path.getStates());
-		
-		// choose one at random
-		State state = Randomness.choice(selfTransitionStates.keySet());
-		
-		
-		int index = -1;
-		for (Transition t : path.getTransitions()) {
-			if (t.getSrc().equals(state)) {
-				index = path.getTransitions().indexOf(t);
-				break;
-			}
-			if (t.getTgt().equals(state)) {
-				index = path.getTransitions().indexOf(t) + 1;
-				break;
-			}
-		}
-		
-		if (index == -1) {
-			return; // mutation fails to change individual
-		}
-		
-		// insert the new transition
-		path.getModfiableTransitions().add(index, (Transition) selfTransitionStates.get(state).clone());
-		
-	}
 
 	@Override
 	public void clearCoveredGoals() {

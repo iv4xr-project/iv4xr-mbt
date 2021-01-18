@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
+import org.jgrapht.GraphPath;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
@@ -54,6 +55,10 @@ public class Path<
 
 	public Path(Transition... transitions) {
 		super(Arrays.asList(transitions));
+	}
+	
+	public Path(GraphPath<State, Transition> basePath) {
+	    super(basePath.getEdgeList());
 	}
 	
 //	/**
