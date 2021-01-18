@@ -112,7 +112,7 @@ public class RandomLengthTestFactoryTest {
 		assertNotNull(testcase);
 		System.out.println(((AbstractTestSequence) testcase).toDot());
 		LRFPAlgo fpAlgo = new LRFPAlgo(efsm);
-		EFSMState tgt = new EFSMState("TR");
+		EFSMState tgt = new EFSMState("d_T_p");
 		EFSMPath path = fpAlgo.getShortestPath(efsm.getConfiguration(), tgt);
 		System.out.println(new Path(path.getTransitions()).toDot());
 	}

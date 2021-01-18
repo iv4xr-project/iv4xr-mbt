@@ -118,7 +118,7 @@ public class EFSMPath<
     if (!transitions.isEmpty()) {
       Transition last = head.getLast();
       Transition first = tail.getFirst();
-      if (last.getTgt() != first.getSrc()) {
+      if (!last.getTgt().equals(first.getSrc())) {
         throw new IllegalArgumentException("The given paths do not connect");
       }
     }

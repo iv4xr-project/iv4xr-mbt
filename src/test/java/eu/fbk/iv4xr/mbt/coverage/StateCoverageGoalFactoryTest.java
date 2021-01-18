@@ -70,7 +70,7 @@ class StateCoverageGoalFactoryTest {
 		List<StateCoverageGoal> coverageGoals = goalFactory.getCoverageGoals();
 		assertFalse(coverageGoals.isEmpty());
 		System.out.println("Num goals: " + coverageGoals.size());
-		assertTrue(coverageGoals.size() == 11);
+		assertTrue(coverageGoals.size() == 10);
 	}
 
 	/**

@@ -51,12 +51,12 @@ public class LabRecruitsEFSMFactoryTest {
 		Set<EFSMState> states = efsm.getStates();
 		assertNotNull (states);
 		assertTrue (!states.isEmpty());
-		assertTrue(11 == states.size());
+		assertTrue(10 == states.size());
 		
 		Set<EFSMTransition> transitions = efsm.getTransitons();
 		assertNotNull (transitions);
 		assertTrue (!transitions.isEmpty());
-		//assertTrue(31 == transitions.size());
+		assertTrue(30 == transitions.size());
 	}
 
 	@Test

@@ -38,7 +38,7 @@ public class ButtonDoors1 {
 	public EFSMState d_T_m = new EFSMState("d_T_m");
 	public EFSMState d_T_p = new EFSMState("d_T_p");
 	
-	public EFSMState TR = new EFSMState("TR");
+	//public EFSMState TR = new EFSMState("TR");
 	
 	/*
 	 * Variables
@@ -212,8 +212,8 @@ public class ButtonDoors1 {
 		
 		// from d_T_p
 		// t_29 : d_T_p -> TR
-		EFSMTransition t_29 = new EFSMTransition<>();
-		t_29.setInParameter(inputParExplore);
+		//EFSMTransition t_29 = new EFSMTransition<>();
+		//t_29.setInParameter(inputParExplore);
 		// t_30 : t_T_p -> d_T_m
 		EFSMTransition t_30 = new EFSMTransition<>();
 		t_30.setGuard(is_d_T_open);
@@ -260,7 +260,7 @@ public class ButtonDoors1 {
 	    		.withTransition(d_2_p, b_3, t_26)
 	    		.withTransition(b_3, d_2_p, t_27)
 	    		.withTransition(b_3, b_3, t_28)
-	    		.withTransition(d_T_p, TR, t_29)
+	    		//.withTransition(d_T_p, TR, t_29)
 	    		.withTransition(d_T_p, d_T_m, t_30)
 	    		.build(b_0, bd1Context, lrParameterGenerator);
 	    

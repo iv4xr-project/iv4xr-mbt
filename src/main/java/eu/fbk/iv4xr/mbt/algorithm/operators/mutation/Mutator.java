@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.fbk.iv4xr.mbt.utils.Randomness;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.GraphMeasurer;
 
+import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
@@ -30,6 +34,7 @@ public class Mutator<
 	Guard extends EFSMGuard,
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
 
+	protected static final Logger logger = LoggerFactory.getLogger(Mutator.class);
 	Path path;
 	
 	public Mutator(Path path) {
@@ -42,13 +47,16 @@ public class Mutator<
 	
 	public void mutate() {
 		
-		if (Randomness.nextBoolean()) {
-				insertSelfTransitionMutation ();
-			} else {
-				deleteSelfTransitionMutation ();
-		}
 		
-		//singleTransitionRemoval();
+		double choice = Randomness.nextDouble();
+		//logger.debug("MUTATION: " + choice);
+		if (choice < 0.33) {
+			insertSelfTransitionMutation();
+		} else if (choice > 0.33 & choice < 0.66) {
+			deleteSelfTransitionMutation();
+		} else {
+			singleTransitionRemoval();
+		}
 		
 	}
 
@@ -74,33 +82,30 @@ public class Mutator<
 		List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(transitionToRemove.getSrc(),
 				transitionToRemove.getTgt(), true, graphDiameter.intValue());
 		
-		// Select the new path
-		Boolean choosen = false;
-		while(!choosen & allPath.size() > 0) {
-			GraphPath selectePath = Randomness.choice(allPath);
-			if (selectePath.getLength() > 1) {
-				if (transitionToRemoveId > 0 & transitionToRemoveId < path.getLength()-1) {
+		// first and last transition need to be treated separately
+		if (transitionToRemoveId > 0 & transitionToRemoveId < path.getLength()-1) {
+			Boolean choosen = false;
+			while(!choosen & allPath.size() > 0) {
+				GraphPath selectePath = Randomness.choice(allPath);
+				if (selectePath.getLength() > 1) {
 					var head =  path.subPath(0, transitionToRemoveId);
 					var tail = path.subPath(transitionToRemoveId+1,path.getLength());
 					Path newTrunk = new Path(selectePath);
-					Path outPath = new Path();
-					outPath.append(head);
-					outPath.append(newTrunk);
-					outPath.append(tail);
-					path = (Path) outPath;
+					//Path outPath = new Path();
+					//outPath.append(head);
+					//outPath.append(newTrunk);
+					//outPath.append(tail);
+					//logger.debug("MUTATION: ADDED "+newTrunk.getLength()+" transitions");
+					path.getModfiableTransitions().clear();
+					path.append(head);
+					path.append(newTrunk);
+					path.append(tail);
 					choosen = true;
 				}else {
-					choosen = true;
+					allPath.remove(selectePath);
 				}
-
-			}else {
-				allPath.remove(selectePath);
-			}
 		}
-
-
-		//allPath.get(0).getEdgeList();
-		// Select the subpath
+		}
 	}
 
 
