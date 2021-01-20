@@ -223,9 +223,16 @@ public class EFSMTransition<
 
 	//public abstract boolean hasParameterGuard();
 
+	
+	/**
+	 * IMPORTANT NOTE: this clone method is NOT a deep copy. It just returns a copy. 
+	 */
 	@Override
 	public EFSMTransition clone() {	
-		return SerializationUtils.clone(this);
+		EFSMTransition copy = new EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard>(op, guard, inParameter, outParameter);
+		copy.src = src;
+		copy.tgt = tgt;
+		return copy;
 	}
 	
 	

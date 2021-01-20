@@ -1,5 +1,6 @@
 package eu.fbk.iv4xr.mbt.algorithm.operators.mutation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.jgrapht.alg.shortestpath.GraphMeasurer;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
@@ -32,8 +34,12 @@ public class Mutator<
 	Context extends EFSMContext,
 	Operation extends EFSMOperation,
 	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Serializable, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8353952869532319217L;
 	protected static final Logger logger = LoggerFactory.getLogger(Mutator.class);
 	Path path;
 	
@@ -63,7 +69,7 @@ public class Mutator<
 	
 	private void singleTransitionRemoval() {
 
-		EFSM efsm = AlgorithmFactory.getModel();
+		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 
 		// It would be convenient to move path computing objects within the EFSM
 		//AllDirectedPaths<State, Transition> allPathsCalculator = new AllDirectedPaths<>(efsm.getBaseGraph());
@@ -132,7 +138,7 @@ public class Mutator<
 	private void insertSelfTransitionMutation() {
 
 		// from the model, get all possible self transitions (states)
-		EFSM model = AlgorithmFactory.getModel();
+		EFSM model = EFSMFactory.getInstance().getEFSM();
 		Map<State, Transition> selfTransitionStates = new HashMap<>();
 		for (Object o : model.getTransitons()) {
 			Transition t = (Transition) o;

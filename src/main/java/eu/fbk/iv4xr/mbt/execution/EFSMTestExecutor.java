@@ -8,20 +8,12 @@ import java.util.Set;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-
-
-
-import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
@@ -38,19 +30,26 @@ public class EFSMTestExecutor<
 	Guard extends EFSMGuard,
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
 		extends TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+	
+	private static EFSMTestExecutor instance = null;
 		
-		
+	
+	public static EFSMTestExecutor getInstance() {
+		if (instance == null) {
+			instance = new EFSMTestExecutor();
+		}
+		return instance;
+	}
+	
 	/**
 	 * 
 	 */
-	public EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
+	private EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
 		this.efsm = efsm;
-		reset();
 	}
 
-	public EFSMTestExecutor() {
-		this.efsm = AlgorithmFactory.getModel();
-		reset();
+	private EFSMTestExecutor() {
+		this.efsm = EFSMFactory.getInstance().getEFSM();
 	}
 
 	@Override
@@ -59,14 +58,14 @@ public class EFSMTestExecutor<
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
 		if (!tc.getPath().isConnected()) {
-			System.err.println("TEST NOT VALID: " + testcase.toString());
+			throw new RuntimeException("Path not connected: " + testcase.toString());
 		}
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		boolean success = applyTransitions(tc.getPath().getTransitions());
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
-		notifyExecutionFinished();
+		notifyExecutionFinished(success);
 		reset();
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		return result;
@@ -88,9 +87,9 @@ public class EFSMTestExecutor<
 		return success;
 	}
 
-	private void notifyExecutionFinished() {
+	private void notifyExecutionFinished(boolean success) {
 		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
-			listner.executionFinished(this);
+			listner.executionFinished(this, success);
 		}
 		
 	}
@@ -125,9 +124,6 @@ public class EFSMTestExecutor<
 	@Override
 	public boolean reset() {
 		efsm.reset();
-		for (ExecutionListener listner : listners) {
-			removeListner(listner);
-		}
 		return true;
 	}
 

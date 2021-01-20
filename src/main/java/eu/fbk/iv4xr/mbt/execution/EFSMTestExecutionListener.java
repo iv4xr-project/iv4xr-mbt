@@ -3,8 +3,6 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
-import java.util.Set;
-
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoal;
@@ -23,13 +21,8 @@ import eu.fbk.iv4xr.mbt.efsm.exp.UnaryOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
-import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 
 /**
  * @author kifetew
@@ -50,7 +43,6 @@ public class EFSMTestExecutionListener<
 	private int pathApproachLevel = 0;
 	private double pathBranchDistance = 0d;
 	private int passedTransitions = 0;
-	private boolean success = true;
 	private int pathLength;
 	
 	// number of transitions until the current target
@@ -116,10 +108,9 @@ public class EFSMTestExecutionListener<
 	}
 
 	@Override
-	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor) {
-		
+	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, boolean successful) {
 		// check if the path is valid but current goal is not covered
-		if (success) {
+		if (successful) {
 			if (!currentGoalCovered) {
 				targetApproachLevel = distanceToTarget;
 			}
@@ -132,7 +123,7 @@ public class EFSMTestExecutionListener<
 		executionTrace.setTargetApproachLevel(targetApproachLevel);
 		executionTrace.setTargetBranchDistance(targetBranchDistance);
 		
-		executionTrace.setSuccess(success);
+		executionTrace.setSuccess(successful);
 	}
 
 	@Override
@@ -141,8 +132,8 @@ public class EFSMTestExecutionListener<
 	}
 
 	@Override
-	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean success) {
-		if (success) {
+	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+		if (successful) {
 			passedTransitions ++;
 			executionTrace.getCoveredTransitions().add(t);
 			executionTrace.getCoveredStates().add(t.getSrc());
@@ -152,7 +143,6 @@ public class EFSMTestExecutionListener<
 				currentGoalCovered = true;
 			}
 		}else {
-			this.success = false;
 			// compute branch distance of failing guard
 			Guard guard = t.getGuard();
 			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm = testExecutor.efsm;

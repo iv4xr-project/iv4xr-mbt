@@ -62,7 +62,6 @@ public class TransitionCoverageGoal<
 	 */
 	public TransitionCoverageGoal(Transition trans) {
 		transition = trans;
-		testExecutor = new EFSMTestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 	}
 
 	@Override
@@ -74,8 +73,8 @@ public class TransitionCoverageGoal<
 			
 			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
 						new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
-			testExecutor.addListner(executionListner);
-			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
+			EFSMTestExecutor.getInstance().addListner(executionListner);
+			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
 			// get trace from the listner
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
@@ -115,7 +114,7 @@ public class TransitionCoverageGoal<
 			}
 //			logger.debug("Target: {} Fitness: {}", transition.toString(), fitness);
 //			logger.debug(chromosome.getTestcase().toString());
-			testExecutor.removeListner(executionListner);
+			EFSMTestExecutor.getInstance().removeListner(executionListner);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);

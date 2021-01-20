@@ -45,7 +45,7 @@ class SinglePointRelativePathCrossOverTest {
 		EFSMFactory modelFactory = EFSMFactory.getInstance();
 		EFSM efsm = modelFactory.getEFSM();
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> chromosomeFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory,efsm);
+		RandomLengthTestChromosomeFactory<MBTChromosome> chromosomeFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		chromosome1 = chromosomeFactory.getChromosome();
 		chromosome2 = chromosomeFactory.getChromosome();
 	}

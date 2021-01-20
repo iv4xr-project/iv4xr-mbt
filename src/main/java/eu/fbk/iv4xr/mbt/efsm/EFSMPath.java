@@ -1,8 +1,8 @@
 package eu.fbk.iv4xr.mbt.efsm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,9 +24,13 @@ public class EFSMPath<
 	Operation extends EFSMOperation,
 	Guard extends EFSMGuard,
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
-    implements Iterable<Transition> {
+    implements Iterable<Transition>, Serializable, Cloneable {
 
-  protected final LinkedList<Transition> transitions;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2580497263468303058L;
+protected final LinkedList<Transition> transitions;
 
   protected EFSMPath() {
     transitions = new LinkedList<>();
@@ -227,4 +231,5 @@ public class EFSMPath<
   public String toString() {
     return transitions.toString();
   }
+
 }

@@ -61,7 +61,7 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		
 		Properties.MUTATION_RATE = 0.3;
 		Properties.CROSSOVER_RATE = 0.7;
-		Properties.SEARCH_BUDGET = 240;
+		Properties.SEARCH_BUDGET = MBTProperties.SEARCH_BUDGET;
 	}
 	
 	@Override

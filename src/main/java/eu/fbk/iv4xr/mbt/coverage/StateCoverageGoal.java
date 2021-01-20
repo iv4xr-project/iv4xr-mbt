@@ -63,7 +63,6 @@ public class StateCoverageGoal<
 	 */
 	public StateCoverageGoal(State s) {
 		state = s;
-		testExecutor = new EFSMTestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 	}
 
 	@Override
@@ -75,8 +74,9 @@ public class StateCoverageGoal<
 			
 			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
 					new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
-			testExecutor.addListner(executionListner);
-			ExecutionResult executionResult = testExecutor.executeTestcase(testcase);
+//			testExecutor.reset();
+			EFSMTestExecutor.getInstance().addListner(executionListner);
+			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
 			// get trace from the listner
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
@@ -119,7 +119,7 @@ public class StateCoverageGoal<
 			}
 //			logger.debug("Target: {} Fitness: {}", state.toString(), fitness);
 //			logger.debug(chromosome.getTestcase().toString());
-			testExecutor.removeListner(executionListner);
+			EFSMTestExecutor.getInstance().removeListner(executionListner);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);

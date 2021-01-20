@@ -16,6 +16,7 @@ import org.jgrapht.alg.util.Pair;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
@@ -42,7 +43,7 @@ public class PathCoverageGoalFactory<State extends EFSMState,
 	implements CoverageGoalFactory<PathCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> {
 
 	private TreeSingleSourcePathsImpl<State, EFSMTransition> pathFactory; 
-	private EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = AlgorithmFactory.getModel();
+	private EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = EFSMFactory.getInstance().getEFSM();
 	
 	/**
 	 * 

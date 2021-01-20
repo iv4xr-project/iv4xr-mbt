@@ -6,6 +6,10 @@ package eu.fbk.iv4xr.mbt;
 import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.execution.TestExecutor;
+
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
@@ -43,9 +47,22 @@ public class Main {
 			System.out.println("Valid: " + testcase.isValid());
 			System.out.println(testcase.toDot());
 			System.out.println(testcase.toString());
+			if (!testcase.isValid()) {
+				// re-execute for debugging
+				executeForDebug (testcase);
+			}
 		}
 	}
 	
+	private void executeForDebug(AbstractTestSequence testcase) {
+//		TestExecutor executor = new EFSMTestExecutor<>();
+		ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
+		if (!executionResult.isSuccess()) {
+			System.err.println("INVALID: " + testcase.toDot());
+		}
+	}
+
+
 	private void setProperties () {
 		MBTProperties.SEARCH_BUDGET = 500;
 		MBTProperties.LR_mean_buttons = 1;

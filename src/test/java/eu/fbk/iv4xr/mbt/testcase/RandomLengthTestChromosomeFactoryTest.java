@@ -32,7 +32,7 @@ class RandomLengthTestChromosomeFactoryTest {
 		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
 		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory cFactory = new RandomLengthTestChromosomeFactory(testFactory, efsm);
+		RandomLengthTestChromosomeFactory cFactory = new RandomLengthTestChromosomeFactory(testFactory);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
 		assertNotNull (chromosome);

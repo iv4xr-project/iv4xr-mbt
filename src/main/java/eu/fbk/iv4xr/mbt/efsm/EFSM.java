@@ -53,6 +53,7 @@ public  class EFSM<
 	public static final String PROP_CONFIGURATION = "PROP_CONFIGURATION";
 	protected final Context initialContext;
 	protected final State initialState;
+	protected final ListenableGraph<State, EFSMTransition> initialBaseGraph;
 	protected final PropertyChangeSupport pcs;
 	protected State curState;
 	protected Context curContext;
@@ -74,6 +75,8 @@ public  class EFSM<
 	// compute distance metrics
 	private GraphMeasurer<State, EFSMTransition> graphMeasurer;
 	
+	
+	
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
 					State initialState, 
@@ -92,6 +95,7 @@ public  class EFSM<
 
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
 		this.pcs = new PropertyChangeSupport(this);
+		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 	}
 
 	private EFSM(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> base, 
@@ -101,6 +105,7 @@ public  class EFSM<
 		this.curContext = (Context) initialContext.clone();
 		this.curState = this.initialState = initialState;
 		this.baseGraph = base.baseGraph;
+		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 		// we do not want to delegate any events of this to the original listeners
 		this.pcs = null;
 	}
@@ -230,7 +235,7 @@ public  class EFSM<
 	}
 
 	public void reset() {
-		forceConfiguration(new EFSMConfiguration(initialState, initialContext));
+		forceConfiguration(new EFSMConfiguration(initialState, initialContext), initialBaseGraph);
 	}
 	
 	public ListenableGraph<State, EFSMTransition> getBaseGraph() {
@@ -257,7 +262,7 @@ public  class EFSM<
 		return SerializationUtils.clone(this);
 	}
 
-	public void forceConfiguration(EFSMConfiguration<State, Context> config) {
+	public void forceConfiguration(EFSMConfiguration<State, Context> config, ListenableGraph<State, EFSMTransition> initialBaseGraph2) {
 		EFSMConfiguration<State, Context> prefConfig = null;
 		if (pcs != null) {
 			prefConfig = getConfiguration();
@@ -268,6 +273,7 @@ public  class EFSM<
 			// pass null as transition since there was no valid transition
 			this.pcs.firePropertyChange(PROP_CONFIGURATION, prefConfig, Pair.of(getConfiguration(), null));
 		}
+		this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
 	}
 	  
 	/**

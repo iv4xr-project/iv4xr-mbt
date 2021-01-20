@@ -3,40 +3,21 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.testcase.TestFitnessFunction;
-import org.evosuite.utils.Randomness;
+import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.algorithm.operators.mutation.Mutator;
-import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import de.upb.testify.efsm.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
-
-
 
 /**
  * @author kifetew
@@ -51,6 +32,10 @@ public class AbstractTestSequence<
 	Guard extends EFSMGuard,
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Testcase {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6113600146777909496L;
 	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
 	private boolean valid = false;
 	private double fitness = 0d;
@@ -147,10 +132,14 @@ public class AbstractTestSequence<
 	
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		AbstractTestSequence clone = new AbstractTestSequence();
+		AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> clone = new AbstractTestSequence<>();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
+		clone.coveredGoals = new HashSet<FitnessFunction<?>>();
+		for (FitnessFunction<?> goal : coveredGoals) {
+			clone.addCoveredGoal(goal);
+		}
 		return clone;
 	}
 

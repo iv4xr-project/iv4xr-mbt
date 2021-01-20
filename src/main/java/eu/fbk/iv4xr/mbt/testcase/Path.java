@@ -4,13 +4,8 @@
 package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Arrays;
-import java.util.Collection;
-//import java.util.LinkedList;
-//import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 import org.jgrapht.GraphPath;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -20,16 +15,6 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import de.upb.testify.efsm.EFSMPath;
-//import de.upb.testify.efsm.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMPath;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.ParameterGenerator;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-
 
 /**
  * @author kifetew
@@ -60,35 +45,13 @@ public class Path<
 	public Path(GraphPath<State, Transition> basePath) {
 	    super(basePath.getEdgeList());
 	}
-	
-//	/**
-//	 * We would like to have a random init? 
-//	 * Not sure about this init version
-//	 */
-//	private void initializeParameterValues () {
-//		for (int i = 0; i < transitions.size(); i++) {
-//			//parameterValues.add((Parameter) "");		#
-//			parameterValues.add((InParameter) new EFSMParameter() {
-//
-//				@Override
-//				public boolean equals(Object obj) {
-//					// TODO Auto-generated method stub
-//					return false;
-//				}
-//
-//				@Override
-//				public EFSMParameter clone() {
-//					// TODO Auto-generated method stub
-//					return null;
-//				}
-//			});
-//		}
-//	}
-	
+
+	/**
+	 * IMPORTANT NOTE: this clone method DOES not do a deep clone, it's a mere copy.
+	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		//FIXME we need a proper clone implementation, this is just a placeholder!!
-		Path clone = new Path(SerializationUtils.clone(transitions));
+		Path clone = new Path(transitions);
 		return clone;
 	}
 	

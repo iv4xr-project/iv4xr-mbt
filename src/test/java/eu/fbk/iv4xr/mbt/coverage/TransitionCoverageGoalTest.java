@@ -26,6 +26,7 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
 import eu.fbk.iv4xr.mbt.utils.Randomness;
@@ -69,8 +70,8 @@ class TransitionCoverageGoalTest {
 		assertNotNull(mFactory);
 		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
-		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory, efsm);
+		TestFactory testFactory = new RandomLengthTestFactory<>(efsm);
+		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
 		assertNotNull (chromosome);
