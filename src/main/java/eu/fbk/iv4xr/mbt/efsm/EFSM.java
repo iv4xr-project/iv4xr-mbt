@@ -298,7 +298,8 @@ public  class EFSM<
 	/*
 	 * NOTE: do we need to check that curState == transition.getSrc()?
 	 */
-	public Set<OutParameter> transition(Transition transition) {
+	public Set<OutParameter> transition(Transition transition1) {
+		Transition transition = getTransition (transition1);
 		if (transition.isFeasible(curContext)) {
 			EFSMConfiguration<State, Context> prevConfig = null;
 			if (pcs != null) {
@@ -315,6 +316,15 @@ public  class EFSM<
 		return null;
 	}
 	  
+	private Transition getTransition(Transition transition) {
+		for (EFSMTransition t : getTransitons()) {
+			if (t.equals(transition)) {
+				return (Transition) t;
+			}
+		}
+		throw new RuntimeException("Transition not found in model: " +  transition);
+	}
+
 	/**
 	 * transition to a given state for testing
 	 */
