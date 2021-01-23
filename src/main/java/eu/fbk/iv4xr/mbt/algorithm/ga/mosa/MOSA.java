@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.evosuite.Properties;
@@ -155,15 +156,27 @@ public class MOSA<
 		} // if
 		currentIteration++;
 		//logger.error("");
-		//logger.error("N. fronts = "+ranking.getNumberOfSubfronts());
-		//logger.debug("1* front size = "+ranking.getSubfront(0).size());
-		//logger.debug("2* front size = "+ranking.getSubfront(1).size());
+//		logger.error("N. fronts = "+ranking.getNumberOfSubfronts());
+//		logger.debug("1* front size = "+ranking.getSubfront(0).size());
+//		logger.debug("2* front size = "+ranking.getSubfront(1).size());
 		logger.error("Covered goals = "+this.archive.size());
 		logger.error("Uncovered goals = "+uncoveredGoals.size());
 		logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
+//		printBestFitnesses();
 	}
 
 
+
+	private void printBestFitnesses() {
+		for (T t : ranking.getSubfront(0)) {
+			logger.error(t.toString());
+			Map<FitnessFunction<?>, Double> fitnessValues = t.getFitnessValues();
+			for (Entry<FitnessFunction<?>, Double> entry : fitnessValues.entrySet()) {
+				logger.error(entry.getKey() + " : " + entry.getValue());
+			}
+		}
+		
+	}
 
 	/** {@inheritDoc} */
 	@Override

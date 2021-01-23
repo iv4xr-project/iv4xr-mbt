@@ -136,7 +136,7 @@ public class MBTProperties {
 	}
 
 	@Parameter(key = "secondary_objectives", group = "Search Algorithm", description = "Secondary objective during search")
-	public static SecondaryObjective[] SECONDARY_OBJECTIVE = new SecondaryObjective[] { SecondaryObjective.TOTAL_LENGTH };
+	public static SecondaryObjective[] SECONDARY_OBJECTIVE = new SecondaryObjective[] {}; // { SecondaryObjective.TOTAL_LENGTH };
 
 	
 	@Parameter(key = "bloat_factor", group = "Search Algorithm", description = "Maximum relative increase in length")

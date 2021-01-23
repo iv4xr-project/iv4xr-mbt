@@ -47,12 +47,8 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 		MBTChromosome t1 = (MBTChromosome)parent1.clone();
 		MBTChromosome t2 = (MBTChromosome)parent2.clone();
 
-		AbstractTestSequence tc1 = (AbstractTestSequence) t1.getTestcase();
-		AbstractTestSequence tc2 = (AbstractTestSequence) t2.getTestcase();
-		assert tc1.getPath().getTransitionAt(0).getSrc().equals(tc2.getPath().getTransitionAt(0).getSrc());
 		parent1.crossOver(t2, points[0], points[1]);
 		parent2.crossOver(t1, points[1], points[0]);
-		assert tc1.getPath().getSrc().equals(tc2.getPath().getSrc());
 
 	}
 
@@ -61,11 +57,8 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 		AbstractTestSequence tc1 = (AbstractTestSequence) parent1.getTestcase();
 		AbstractTestSequence tc2 = (AbstractTestSequence) parent2.getTestcase();
 		Set<EFSMTransition> commonTransitions = new HashSet<EFSMTransition>();
-		for (Object o : tc1.getPath().getTransitions()) {
-			if (tc2.getPath().contains(((EFSMTransition)o))) {
-				commonTransitions.add((EFSMTransition)o);
-			}
-		}
+		commonTransitions.addAll(tc1.getPath().getTransitions());
+		commonTransitions.retainAll(tc2.getPath().getTransitions());
 		if (commonTransitions.isEmpty()) {
 			points[0] = -1;
 			points[1] = -1;

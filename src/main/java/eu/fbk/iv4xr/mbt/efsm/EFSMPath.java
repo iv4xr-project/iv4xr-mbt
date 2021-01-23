@@ -61,7 +61,7 @@ protected final LinkedList<Transition> transitions;
   public void append(Transition t) {
     if (!transitions.isEmpty()) {
       Transition last = transitions.getLast();
-      if (last.getTgt() != t.getSrc()) {
+      if (!last.getTgt().equals(t.getSrc())) {
         throw new IllegalArgumentException(
             "The given transition does not connect to the last transition of this path");
       }
@@ -91,7 +91,7 @@ protected final LinkedList<Transition> transitions;
   public void prepend(Transition t) {
     if (!transitions.isEmpty()) {
       Transition first = transitions.getFirst();
-      if (first.getSrc() != t.getTgt()) {
+      if (!first.getSrc().equals(t.getTgt())) {
         throw new IllegalArgumentException(
             "The given transition does not connect to the first transition of this path");
       }

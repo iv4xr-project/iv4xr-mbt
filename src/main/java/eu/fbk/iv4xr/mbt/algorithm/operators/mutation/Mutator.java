@@ -56,10 +56,12 @@ public class Mutator<
 		
 		double choice = Randomness.nextDouble();
 		//logger.debug("MUTATION: " + choice);
-		if (choice < 0.33) {
+		if (choice < 0.25) {
 			insertSelfTransitionMutation();
-		} else if (choice > 0.33 & choice < 0.66) {
+		} else if (choice < 0.5) {
 			deleteSelfTransitionMutation();
+		} else if (choice < 0.75) {
+			appendRandomTransitionMutation();
 		} else {
 			singleTransitionRemoval();
 		}
@@ -172,5 +174,12 @@ public class Mutator<
 		// insert the new transition
 		path.getModfiableTransitions().add(index, (Transition) selfTransitionStates.get(state).clone());
 
+	}
+	
+	private void appendRandomTransitionMutation() {
+		EFSMState lastState = path.getTgt();
+		Set<Transition> potentialTransitions = EFSMFactory.getInstance().getEFSM().transitionsOutOf(lastState);
+		Transition t = (Transition) Randomness.choice(potentialTransitions);
+		path.append(t);
 	}
 }
