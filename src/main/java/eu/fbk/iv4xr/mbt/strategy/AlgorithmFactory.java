@@ -57,6 +57,7 @@ import org.evosuite.utils.ResourceController;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSA;
+import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.ExtendedSinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
@@ -254,6 +255,8 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new SinglePointRelativePathCrossOver();
 		case SINGLEPOINT:
 			return new SinglePointPathCrossOver();
+		case EXTENDEDSINGLEPOINTRELATIVE:
+			return new ExtendedSinglePointRelativePathCrossOver();	
 		default:
 			throw new RuntimeException("Unknown crossover function: "
 			        + Properties.CROSSOVER_FUNCTION);

@@ -38,4 +38,7 @@ public abstract class BinaryOp<T> implements Exp<T> {
 		this.parameter2.update(varSet);
 	}
 
+	@Override
+	public abstract boolean equals(Object o);
+	
 }

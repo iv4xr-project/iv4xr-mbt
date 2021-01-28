@@ -3,7 +3,10 @@ package eu.fbk.iv4xr.mbt.efsm;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,8 +69,14 @@ public  class EFSM<
 	 *  helper to access and manage baseGraph
 	 */
 	
-	// shortest path  
+	/*
+	 * / shortest path related fields  
+	 */
+	// give the length of the shortest path between two states
 	private double[][] shortestPathsBetweenStates;
+	// save all the shortest paths between two states
+	private Set<EFSMPath>[][] shortestPaths;
+	// class from jgrapht that create a map between states and integer
 	private VertexToIntegerMap<State> vertexToIntegerMapping;
 	
 	// compute all paths between two vertex
@@ -75,6 +84,10 @@ public  class EFSM<
 	// compute distance metrics
 	private GraphMeasurer<State, EFSMTransition> graphMeasurer;
 	
+	/*
+	 * hashmap to easily retrieve transitions
+	 */
+	protected EFSMTransitionMapper transitionMapper;
 	
 	
 	// Constructors
@@ -86,6 +99,7 @@ public  class EFSM<
 		this.curContext = (Context) initalContext.clone();
 		this.initialContext = (Context) initalContext.clone();
 		this.inParameterSet = parameterSet;
+		
 		
 		final DirectedPseudograph<State, EFSMTransition> tmp = new DirectedPseudograph<State, EFSMTransition>(EFSMTransition.class);
 		//final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(EFSMTransition.class);
@@ -370,6 +384,13 @@ public  class EFSM<
 		}
 	}
 	
+	public Set<EFSMPath> getShortestPaths (State source, State target) {
+		if (this.baseGraph.vertexSet().contains(source) & this.baseGraph.vertexSet().contains(target)) {
+			return this.shortestPaths[(int) this.vertexToIntegerMapping.getVertexMap().get(source)][(int) this.vertexToIntegerMapping.getVertexMap().get(target)];
+		}else {
+			return Collections.<EFSMPath>emptySet();
+		}
+	}
 	
 	/**
 	 * @return the shortestPathsBetweenStates
@@ -386,6 +407,9 @@ public  class EFSM<
 		
 			Set<State> graphStates = (Set<State>) this.baseGraph.vertexSet();
 			this.shortestPathsBetweenStates = new double[graphStates.size()][graphStates.size()];
+			Set<EFSMPath> el = new HashSet<EFSMPath>();
+			Class cls = el.getClass();
+			this.shortestPaths = (Set<EFSMPath>[][])Array.newInstance(cls, graphStates.size(),graphStates.size());
 			
 			// mapping states to integer that can be used to access matrix
 			this.vertexToIntegerMapping = new VertexToIntegerMap<State>(graphStates);
@@ -394,17 +418,28 @@ public  class EFSM<
 			// shortest path algorithm 
 			// use FloydWarshallShortestPaths as it computes all possible shortest path in one pass
 			FloydWarshallShortestPaths shortestPathAlg = new FloydWarshallShortestPaths(this.baseGraph);
+			// to compute all shortes path we need to compute all paths with lengthe shortest path
+			AllDirectedPaths allPathsCalculator =  new AllDirectedPaths(this.baseGraph);
+			
 			
 			for(EFSMState src : graphStates) {
 				for(EFSMState tgt : graphStates) {			
 					if (src == tgt) {
 						this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = 0d;
+						//this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  Collections.<EFSMPath>emptySet();
 					}else {
 						GraphPath<EFSMState, EFSMTransition> shortestPath = shortestPathAlg.getPath(src, tgt);
 						if (shortestPath == null) {
 							this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = Double.MAX_VALUE;		
+							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  Collections.<EFSMPath>emptySet();
 						}else {
 							this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = (double)shortestPath.getLength();
+							List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(src,tgt, false, shortestPath.getLength());
+							Set<EFSMPath> tmp = new HashSet<EFSMPath>();
+							for(GraphPath<State, Transition> gp : allPath) {
+								tmp.add(new EFSMPath<>(gp) );
+							}
+							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  tmp;
 						}
 					}
 				}

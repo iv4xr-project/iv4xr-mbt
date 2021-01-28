@@ -124,7 +124,7 @@ public class MBTProperties {
 	public static StoppingCondition STOPPING_CONDITION = StoppingCondition.MAXTIME;
 
 	public enum CrossoverFunction {
-		SINGLEPOINTRELATIVE, SINGLEPOINTFIXED, SINGLEPOINT, COVERAGE, UNIFORM
+		SINGLEPOINTRELATIVE, SINGLEPOINTFIXED, SINGLEPOINT, COVERAGE, UNIFORM, EXTENDEDSINGLEPOINTRELATIVE
 	}
 
 	@Parameter(key = "crossover_function", group = "Search Algorithm", description = "Crossover function during search")

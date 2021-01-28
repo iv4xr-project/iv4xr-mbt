@@ -1,8 +1,11 @@
 package eu.fbk.iv4xr.mbt.efsm.exp.integer;
 
+//import eu.fbk.iv4xr.mbt.efsm.exp.BinaryOp;
+
 import eu.fbk.iv4xr.mbt.efsm.exp.BinaryOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
+//import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 
 public class IntSum extends BinaryOp<Integer>{
 
@@ -27,6 +30,26 @@ public class IntSum extends BinaryOp<Integer>{
 	public String toDebugString() {
 		return "("+this.getParameter1().toDebugString()+" + "+this.getParameter2().toDebugString()+")";
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof IntSum) {
+			IntSum is = (IntSum) o;
+			if ((is.getParameter1().equals(this.getParameter1()) && is.getParameter2().equals(this.getParameter2()))
+					|| (is.getParameter1().equals(this.getParameter2())
+							&& is.getParameter2().equals(this.getParameter1()))) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
 
 
 }

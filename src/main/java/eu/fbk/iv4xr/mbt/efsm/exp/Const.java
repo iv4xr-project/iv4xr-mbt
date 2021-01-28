@@ -39,4 +39,20 @@ public class Const<T> implements Exp<T> {
 		return value.toString();
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Const) {
+			Const c = (Const)o;
+			if (c.getVal().equals(this.value)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 }

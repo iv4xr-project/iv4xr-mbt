@@ -1,8 +1,10 @@
 package eu.fbk.iv4xr.mbt.efsm.exp.enumerator;
 
+
 import eu.fbk.iv4xr.mbt.efsm.exp.CompareOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 
 public class EnumEq extends CompareOp {
 
@@ -28,6 +30,25 @@ public class EnumEq extends CompareOp {
 	@Override
 	public String toDebugString() {
 		return "("+this.getParameter1().toDebugString()+" = "+this.getParameter2().toDebugString()+")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof EnumEq) {
+			EnumEq is = (EnumEq) o;
+			if ((is.getParameter1().equals(this.getParameter1()) && is.getParameter2().equals(this.getParameter2()))
+					|| (is.getParameter1().equals(this.getParameter2())
+							&& is.getParameter2().equals(this.getParameter1()))) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 }

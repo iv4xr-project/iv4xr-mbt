@@ -3,6 +3,7 @@ package eu.fbk.iv4xr.mbt.efsm.exp.bool;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.UnaryOp;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 
 
 public class BoolNot extends UnaryOp<Boolean> {
@@ -26,5 +27,22 @@ public class BoolNot extends UnaryOp<Boolean> {
 	@Override
 	public String toDebugString() {
 		return "!("+this.getParameter().toDebugString()+")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof BoolNot) {
+			BoolNot is = (BoolNot) o;
+			if ( is.getParameter().equals(this.getParameter()) ) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

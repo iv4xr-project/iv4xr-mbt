@@ -29,4 +29,7 @@ public abstract class UnaryOp<T> implements Exp<T> {
 		this.parameter.update(varSet);		
 	}
 
+	@Override
+	public abstract boolean equals(Object o);
+
 }
