@@ -20,8 +20,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import org.evosuite.Properties.Criterion;
+import org.evosuite.Properties.DoubleValue;
 import org.evosuite.Properties.Parameter;
+import org.evosuite.Properties.RankingType;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
 import org.evosuite.utils.LoggingUtils;
@@ -131,12 +132,24 @@ public class MBTProperties {
 	public static CrossoverFunction CROSSOVER_FUNCTION = CrossoverFunction.SINGLEPOINTRELATIVE;
 	
 	
+	@Parameter(key = "crossover_rate", group = "Search Algorithm", description = "Probability of crossover")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double CROSSOVER_RATE = 0.75;
+
+	@Parameter(key = "headless_chicken_test", group = "Search Algorithm", description = "Activate headless chicken test")
+	public static boolean HEADLESS_CHICKEN_TEST = false;
+
+	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double MUTATION_RATE = 0.75;
+	
+	
 	public enum SecondaryObjective {
 		AVG_LENGTH, MAX_LENGTH, TOTAL_LENGTH, SIZE, EXCEPTIONS, IBRANCH, RHO
 	}
 
 	@Parameter(key = "secondary_objectives", group = "Search Algorithm", description = "Secondary objective during search")
-	public static SecondaryObjective[] SECONDARY_OBJECTIVE = new SecondaryObjective[] {}; // { SecondaryObjective.TOTAL_LENGTH };
+	public static SecondaryObjective[] SECONDARY_OBJECTIVE = new SecondaryObjective[] { SecondaryObjective.TOTAL_LENGTH };
 
 	
 	@Parameter(key = "bloat_factor", group = "Search Algorithm", description = "Maximum relative increase in length")
@@ -163,37 +176,53 @@ public class MBTProperties {
     @Parameter(key = "max_length", group = "Test Creation", description = "Maximum length of test suites (0 = no check)")
 	public static int MAX_LENGTH = 0;
     
+	@Parameter(key = "breeder_truncation", group = "Search Algorithm", description = "Percentage of population to use for breeding in breeder GA")
+	@DoubleValue(min = 0.01, max = 1.0)
+	public static double TRUNCATION_RATE = 0.5;
+
+	@Parameter(key = "number_of_mutations", group = "Search Algorithm", description = "Number of single mutations applied on an individual when a mutation event occurs")
+	public static int NUMBER_OF_MUTATIONS = 1;
+
+	@Parameter(key = "p_test_insertion", group = "Search Algorithm", description = "Initial probability of inserting a new test in a test suite")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_INSERTION = 0.1;
+
+	@Parameter(key = "p_statement_insertion", group = "Search Algorithm", description = "Initial probability of inserting a new statement in a test case")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_STATEMENT_INSERTION = 0.5;
+
+	@Parameter(key = "p_change_parameter", group = "Search Algorithm", description = "Probability of replacing parameters when mutating a method or constructor statementa in a test case")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_CHANGE_PARAMETER = 0.1;
+
+	@Parameter(key = "p_test_delete", group = "Search Algorithm", description = "Probability of deleting statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_DELETE = 1d / 3d;
+
+	@Parameter(key = "p_test_change", group = "Search Algorithm", description = "Probability of changing statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_CHANGE = 1d / 3d;
+
+	@Parameter(key = "p_test_insert", group = "Search Algorithm", description = "Probability of inserting new statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_INSERT = 1d / 3d;
+
+	@Parameter(key = "kincompensation", group = "Search Algorithm", description = "Penalty for duplicate individuals")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double KINCOMPENSATION = 1.0;
+
+	@Parameter(key = "elite", group = "Search Algorithm", description = "Elite size for search algorithm")
+	public static int ELITE = 1;  
+    
     // evosuite 1.0.7
     public enum Strategy {
 	    DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
 	}
-
- // evosuite 1.0.6
-    /*
-    public enum Strategy {
-	    GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
-	}
-    */
     
 	@Parameter(key = "strategy", group = "Runtime", description = "Which mode to use")
 	public static Strategy STRATEGY = Strategy.GA;
 	
 	
-	// Search algorithm evosuite 1.0.7
-	/*
-	public enum Algorithm {
-		// random
-		RANDOM_SEARCH,
-		// GAs
-		STANDARD_GA, MONOTONIC_GA, STEADY_STATE_GA, BREEDER_GA, CELLULAR_GA, STANDARD_CHEMICAL_REACTION, MAP_ELITES,
-		// mu-lambda
-		ONE_PLUS_LAMBDA_LAMBDA_GA, ONE_PLUS_ONE_EA, MU_PLUS_LAMBDA_EA, MU_LAMBDA_EA,
-		// many-objective algorithms
-		MOSA, DYNAMOSA, LIPS, MIO,
-		// multiple-objective optimisation algorithms
-		NSGAII, SPEA2
-	}
-	*/
 	public enum Algorithm {
 		// random
 		RANDOM_SEARCH,
@@ -220,18 +249,15 @@ public class MBTProperties {
 		ModelCriterion.STATE, ModelCriterion.TRANSITION
 	};
 	
-//	public enum Criterion {
-//		EXCEPTION, DEFUSE, ALLDEFS, BRANCH, CBRANCH, STRONGMUTATION, WEAKMUTATION,
-//		MUTATION, STATEMENT, RHO, AMBIGUITY, IBRANCH, READABILITY,
-//        ONLYBRANCH, ONLYMUTATION, METHODTRACE, METHOD, METHODNOEXCEPTION, LINE, ONLYLINE, OUTPUT, INPUT,
-//        REGRESSION,	REGRESSIONTESTS, TRYCATCH
-//	}
+	// MOSA PROPERTIES
+	public enum RankingType {
+		// Preference sorting is the ranking strategy proposed in
+		PREFERENCE_SORTING, 
+		FAST_NON_DOMINATED_SORTING
+	}
 
-//    @Parameter(key = "criterion", group = "Runtime", description = "Coverage criterion. Can define more than one criterion by using a ':' separated list")
-//    public static Criterion[] CRITERION = new Criterion[] {
-//            //these are basic criteria that should be always on by default
-//            Criterion.LINE, Criterion.BRANCH, Criterion.EXCEPTION, Criterion.WEAKMUTATION, Criterion.OUTPUT, Criterion.METHOD, Criterion.METHODNOEXCEPTION, Criterion.CBRANCH  };
-
+	@Parameter(key = "ranking_type", group = "Runtime", description = "type of ranking to use in MOSA")
+	public static RankingType RANKING_TYPE = RankingType.PREFERENCE_SORTING;
 	
     @Parameter(key = "PROJECT_PREFIX", group = "Runtime", description = "Package name of target package")
 	public static String PROJECT_PREFIX = "";
