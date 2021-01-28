@@ -426,7 +426,7 @@ public  class EFSM<
 				for(EFSMState tgt : graphStates) {			
 					if (src == tgt) {
 						this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = 0d;
-						//this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  Collections.<EFSMPath>emptySet();
+						this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  el;
 					}else {
 						GraphPath<EFSMState, EFSMTransition> shortestPath = shortestPathAlg.getPath(src, tgt);
 						if (shortestPath == null) {

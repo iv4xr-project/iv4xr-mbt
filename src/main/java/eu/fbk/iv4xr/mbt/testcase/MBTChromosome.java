@@ -127,12 +127,14 @@ public class MBTChromosome<
 	@Override
 	public void mutate() {
 		testcase.mutate();
+		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
 
 	@Override
 	public void crossOver(Chromosome other, int position1, int position2) throws ConstructionFailedException {
 		testcase.crossOver (((MBTChromosome)other).getTestcase(), position1, position2); 
+		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
 

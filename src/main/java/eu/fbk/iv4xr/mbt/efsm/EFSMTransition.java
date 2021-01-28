@@ -3,6 +3,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -275,5 +276,10 @@ public class EFSMTransition<
 		}else {
 			return false;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(src, tgt, op, guard, inParameter, outParameter);
 	}
 }

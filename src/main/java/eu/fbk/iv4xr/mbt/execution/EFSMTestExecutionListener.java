@@ -3,24 +3,39 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.BinaryOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.CompareOp;
+import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.UnaryOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
+import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
+import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
+import eu.fbk.iv4xr.mbt.efsm.exp.enumerator.EnumEq;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
@@ -58,6 +73,8 @@ public class EFSMTestExecutionListener<
 	
 	private boolean currentGoalCovered = false;
 	
+	// constant used in branch distance calculation
+	final static int K = 1;
 	/**
 	 * 
 	 */
@@ -67,39 +84,65 @@ public class EFSMTestExecutionListener<
 		
 		executionTrace = new ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 		pathLength = this.testcase.getLength();
-		distanceToTarget = getDistanceToTarget ();
+		//distanceToTarget = getDistanceToTarget ();
 	}
 
-	private int getDistanceToTarget() {
-		int d = 0;
-		Transition targetTransition = null;
+	/**
+	 * this method should handle the case where the path is valid but does not contain the target
+	 * @return
+	 */
+	private void computeDistanceToTarget() {
+		double bd = Double.MAX_VALUE;
+		double al = 0;
+		EFSMPath path = ((AbstractTestSequence)testcase).getPath();
+		EFSMState target;
 		if (goal instanceof StateCoverageGoal) {
-			targetTransition = getFirstTransitionForState ((StateCoverageGoal)goal);
-		}else if (goal instanceof TransitionCoverageGoal){
-			targetTransition = (Transition) ((TransitionCoverageGoal)goal).getTransition();
+			target = ((StateCoverageGoal)goal).getState();
+		}else if (goal instanceof TransitionCoverageGoal) {
+			target = ((TransitionCoverageGoal)goal).getTransition().getSrc();
+			al = 1;
 		}else {
 			throw new RuntimeException("Unsupported target type: " + goal);
 		}
-		if (targetTransition == null) { // testcase path does not contain the test goal
-			// assume maximum distance in EFSM
-			d = ((AbstractTestSequence)testcase).getPath().getTransitions().size();
-//			throw new RuntimeException("State has no transition associated: " + goal);
-		}else {
 		
-			d = ((AbstractTestSequence)testcase).getPath().getTransitions().indexOf(targetTransition);
-		}
-		return d;
-	}
-
-	private Transition getFirstTransitionForState(StateCoverageGoal targetState) {
-		for (Object o : ((AbstractTestSequence)testcase).getPath().getTransitions()) {
-			Transition t = (Transition)o;
-			if (targetState.getState().equals(t.getSrc()) ||
-					targetState.getState().equals(t.getTgt())) {
-				return t;
+		// get shortest paths
+		if (target.equals(path.getTgt())) {
+			// this case should happen only when the target is a transition, and that the end of the path is the same as the source of the target transition
+			// in this case, the al = 0, and bd should be calculated on the goal transition itself
+			if (! (goal instanceof TransitionCoverageGoal)) {
+				throw new RuntimeException("Path end and target beginning the same for target: " + goal.toString());
+			}else {
+				if (((TransitionCoverageGoal)goal).getTransition().getGuard() == null) {
+					bd = 0;
+				}else {
+					bd = computeBranchDistance(((TransitionCoverageGoal)goal).getTransition().getGuard().getGuard());
+				}
+			}
+		}else {
+			List<EFSMPath> shortestPaths = new ArrayList<>();
+			Set sps = EFSMFactory.getInstance().getEFSM().getShortestPaths(path.getTgt(), target);
+			shortestPaths.addAll(sps);
+			
+			// approach level is +1 in case the target is a Transition 
+			al += shortestPaths.get(0).getLength();
+	
+			// calculate the minimum branch distance for the transitions outgoing from the end of the path
+			for (EFSMPath sp : shortestPaths) {
+				// compute branch distance for the first transition in the shortest path (outgoing from the last node of the path)
+				double d;
+				if (sp.getTransitionAt(0).getGuard() != null) {
+					d = computeBranchDistance(sp.getTransitionAt(0).getGuard().getGuard());
+				}else {
+					d = 0;
+				}
+				if (d < bd) {
+					bd = d;
+				}
 			}
 		}
-		return null;
+		targetApproachLevel = (int) al;
+		targetBranchDistance = normalize(bd);
+		//System.err.println("TC: \n" + path.toString() + "\nTgt: " + goal.toString() + " : " + "AL: " + al + " BD: " + targetBranchDistance);
 	}
 
 	@Override
@@ -112,7 +155,8 @@ public class EFSMTestExecutionListener<
 		// check if the path is valid but current goal is not covered
 		if (successful) {
 			if (!currentGoalCovered) {
-				targetApproachLevel = distanceToTarget;
+				//targetApproachLevel = distanceToTarget;
+				computeDistanceToTarget();
 			}
 		}
 		executionTrace.setCurrentGoalCovered(currentGoalCovered);
@@ -151,9 +195,12 @@ public class EFSMTestExecutionListener<
 			VarSet contextVars = context.getContext().getContext();
 			InParameter inParameter = t.getInParameter();
 			VarSet parameter = inParameter.getParameter();
-			pathBranchDistance = computeBranchDistance (guardExpression, parameter, contextVars);
+			double pathBD = computeBranchDistance (guardExpression);
+			pathBranchDistance = normalize(pathBD); //, parameter, contextVars);
 			
 			pathApproachLevel = pathLength - passedTransitions - 1;
+			
+			//System.err.println(t.toString() + "BD=" + pathBD + "nBD=" + pathBranchDistance + "AL=" + pathApproachLevel);
 			
 			if (isCurrentTarget (t)) {
 				targetBranchDistance = pathBranchDistance;
@@ -161,6 +208,11 @@ public class EFSMTestExecutionListener<
 			}
 		}
 		
+	}
+
+	private double normalize(double d) {
+		// normalize to a value in [0,1]
+		return d/(d+1);
 	}
 
 	// is the transition just executed the current test target (or part of it)?
@@ -175,10 +227,12 @@ public class EFSMTestExecutionListener<
 		}
 	}
 
-	private double computeBranchDistance(Exp<Boolean> guardExpression, VarSet parameter, VarSet contextVars) {
+	private double computeBranchDistance(Exp<?> guardExpression) {
 		double distance = Double.MAX_VALUE;
 		// determine type of guard expression
-		if (guardExpression instanceof Var<?>) {
+		if (guardExpression == null) {
+			distance = 0d;
+		}else if (guardExpression instanceof Var<?>) {
 			// this is the simplest case where the guard is a simple boolean variable
 			// if the guard failed, by definition the value is opposite to the one expected, i.e, false
 			// hence, branch distance will be 1
@@ -190,7 +244,15 @@ public class EFSMTestExecutionListener<
 			if (guardExpression instanceof BoolOr) {
 				
 			}else if (guardExpression instanceof CompareOp) {
-				
+				distance = getCompareDistance ((CompareOp)guardExpression);
+			}else if (guardExpression instanceof BoolAnd) {
+				// recursive call?
+				BoolAnd boolAnd = (BoolAnd)guardExpression;
+				Exp<?> parameter1 = boolAnd.getParameter1(); 
+				Exp<?> parameter2 = boolAnd.getParameter2();
+				distance = computeBranchDistance (parameter1) + computeBranchDistance (parameter2) ;
+			}else if (guardExpression instanceof BoolOr) {
+				// recursive call
 			}else {
 				throw new RuntimeException("Unsupported BinaryOp: " + guardExpression.toDebugString());
 			}
@@ -199,6 +261,88 @@ public class EFSMTestExecutionListener<
 			distance = 1d;
 		}
 		return distance;
+	}
+
+	/**
+	 * calculate the branch distance for comparisons
+	 * @param guardExpression
+	 * @return
+	 */
+	private double getCompareDistance(CompareOp guardExpression) {
+		double d = Double.MAX_VALUE;
+		// identify by case
+		if (guardExpression instanceof BoolEq) {
+			d = ((BoolEq)guardExpression).eval().getVal()?0:K;
+		}else if (guardExpression instanceof EnumEq) {
+			
+		}else if (guardExpression instanceof IntEq) {
+			IntEq equality = ((IntEq)guardExpression);
+			Const<?> val1 = equality.getParameter1().eval();
+			Const<?> val2 = equality.getParameter2().eval();
+			d = getEqualityDistance (val1, val2);
+		}else if (guardExpression instanceof IntGreat) {
+			IntGreat greater = ((IntGreat)guardExpression);
+			Const<?> val1 = greater.getParameter1().eval();
+			Const<?> val2 = greater.getParameter2().eval();
+			d = getGreaterThanDistance (val1, val2);
+		}else {
+			throw new RuntimeException("Unsupported comparison expression: " + guardExpression.toDebugString());
+		}
+		return d;
+	}
+
+	private double getGreaterThanDistance(Const<?> val1, Const<?> val2) {
+		double distance = Double.MAX_EXPONENT;
+		if (compatible (val1, val2)) {
+			String str1 = val1.toDebugString();
+			String str2 = val2.toDebugString();
+			// identify by type
+			if (NumberUtils.isNumber(str1) && NumberUtils.isNumber(str2)) {
+				distance = NumberUtils.createNumber(str2).doubleValue() - NumberUtils.createNumber(str1).doubleValue();
+				if (distance < 0d) {
+					distance = 0d;
+				}else {
+					distance += K;
+				}
+			} else if (val1.getVal() instanceof Boolean && val2.getVal() instanceof Boolean) {
+				distance = val1.getVal().equals(val2.getVal())?0:1;
+			}else {
+				throw new RuntimeException("Unsupported equality expression: " + val1.toDebugString() + " == " + val2.toDebugString());
+			}
+		}
+		return distance;
+	}
+
+	/**
+	 * a generic equality distance function
+	 * TODO missing cases will be added gradually
+	 * @param val1
+	 * @param val2
+	 * @return
+	 */
+	private double getEqualityDistance(Const<?> val1, Const<?> val2) {
+		double distance = Double.MAX_EXPONENT;
+		if (compatible (val1, val2)) {
+			String str1 = val1.toDebugString();
+			String str2 = val2.toDebugString();
+			// identify by type
+			if (NumberUtils.isNumber(str1) && NumberUtils.isNumber(str2)) {
+				distance = Math.abs(NumberUtils.createNumber(str1).doubleValue() - NumberUtils.createNumber(str2).doubleValue());
+				if (distance != 0d) {
+					distance += K;
+				}
+			} else if (val1.getVal() instanceof Boolean && val2.getVal() instanceof Boolean) {
+				distance = val1.getVal().equals(val2.getVal())?0:K;
+			}else {
+				throw new RuntimeException("Unsupported equality expression: " + val1.toDebugString() + " == " + val2.toDebugString());
+			}
+		}
+		return distance;
+	}
+
+	private boolean compatible(Object val1, Object val2) {
+		// TODO check for a more flexible compatibility, e.g., if both numbers
+		return val1.getClass().equals(val2.getClass());
 	}
 
 	/**

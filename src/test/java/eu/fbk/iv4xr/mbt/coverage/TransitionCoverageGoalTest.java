@@ -46,7 +46,7 @@ class TransitionCoverageGoalTest {
 	void setUp() throws Exception {
 		long seed = 1234;
 		Randomness.getInstance(seed);
-		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
+		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_fire";		
 		//transition = new LabRecruitsFreeTravelTransition();
 		transition = new EFSMTransition<>();
 		
@@ -81,7 +81,7 @@ class TransitionCoverageGoalTest {
 		
 		double fitness = goal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 94d);
+		assertTrue(fitness == 119d);
 	}
 
 }

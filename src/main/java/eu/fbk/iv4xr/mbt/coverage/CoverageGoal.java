@@ -35,7 +35,7 @@ public abstract class CoverageGoal<
 		return false;
 	}
 	
-	protected double getShortestDistanceToTarget(Path path, EFSMState target) {
+	public double getShortestDistanceToTarget(Path path, EFSMState target) {
 		double shortestDistance = Double.MAX_VALUE;
 		for (Object s : path.getStates()) {
 			State source = (State)s;
@@ -46,4 +46,10 @@ public abstract class CoverageGoal<
 		}
 		return shortestDistance;
 	}
+	
+	@Override
+	public abstract boolean equals(Object obj);
+	
+	@Override
+	public abstract int hashCode();
 }

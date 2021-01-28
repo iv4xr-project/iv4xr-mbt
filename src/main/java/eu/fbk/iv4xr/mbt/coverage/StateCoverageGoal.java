@@ -91,20 +91,11 @@ public class StateCoverageGoal<
 			// calculate coverage target fitness
 			double targetFitness = -1;
 			
-			//FIXME currently, path.getStates() returns correct set only if the path is valid,
-			// otherwise, it returns only the source of each transition, hence some vertices may not be in the set
 			if (executionResult.isSuccess()) {
-				if (testcase.getPath().getStates().contains(state)) {
-					if (trace.isCurrentGoalCovered()) {
-						targetFitness = 0d;
-					}else {
-						// target in path, but not covered => path is not feasible?
-						// TODO check this
-						targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
-					}
-				}else { // if target not in path, calculate shortest path to target
-					//TODO calculate shortest path to target
-					targetFitness = getShortestDistanceToTarget (testcase.getPath(), state);
+				if (trace.isCurrentGoalCovered()) {
+					targetFitness = 0d;
+				}else {
+					targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
 				}
 			}else { // if path not valid
 				//FIXME for now, simply take feasibilityFitness
@@ -113,12 +104,6 @@ public class StateCoverageGoal<
 			
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
-			if (!testcase.isValid() && fitness == 0d) {
-				logger.debug("Goal: {}", state);
-				logger.debug("ERROR: {}", testcase);
-			}
-//			logger.debug("Target: {} Fitness: {}", state.toString(), fitness);
-//			logger.debug(chromosome.getTestcase().toString());
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 		}
 		individual.setChanged(false);
@@ -142,6 +127,25 @@ public class StateCoverageGoal<
 	 */
 	public EFSMState getState() {
 		return state;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (! (obj instanceof StateCoverageGoal)) {
+			return false;
+		}
+		
+		StateCoverageGoal other = (StateCoverageGoal)obj;
+		return state.equals(other.getState());
+		
+	}
+
+	@Override
+	public int hashCode() {
+		return state.hashCode();
 	}
 
 }

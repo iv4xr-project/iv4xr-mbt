@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
@@ -232,4 +233,9 @@ protected final LinkedList<Transition> transitions;
     return transitions.toString();
   }
 
+  @Override
+	public int hashCode() {
+		return Objects.hash(transitions);
+	}
+  
 }

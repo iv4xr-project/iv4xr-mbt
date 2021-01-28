@@ -89,17 +89,12 @@ public class TransitionCoverageGoal<
 			// calculate coverage target fitness
 			double targetFitness = -1;
 			if (executionResult.isSuccess()) {
-				if (testcase.getPath().getTransitions().contains(transition)) {
-					if (trace.isCurrentGoalCovered()) {
-						targetFitness = 0d;
-					}else {
-						// target in path, but not covered => path is not feasible?
-						// TODO check this
-						targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
-					}
-				}else { // if target not in path, calculate shortest path to target
-					//TODO calculate shortest path to target
-					targetFitness = getShortestDistanceToTarget (testcase.getPath(), transition.getSrc());
+				if (trace.isCurrentGoalCovered()) {
+					targetFitness = 0d;
+				}else {
+					// target in path, but not covered => path is not feasible?
+					// TODO check this
+					targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
 				}
 			}else { // if path not valid
 				//FIXME for now, simply take feasibilityFitness
@@ -108,12 +103,6 @@ public class TransitionCoverageGoal<
 			
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
-			if (!testcase.isValid() && fitness == 0d) {
-				logger.debug("Goal: {}", transition);
-				logger.debug("ERROR: {}", testcase);
-			}
-//			logger.debug("Target: {} Fitness: {}", transition.toString(), fitness);
-//			logger.debug(chromosome.getTestcase().toString());
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 		}
 		individual.setChanged(false);
@@ -131,6 +120,25 @@ public class TransitionCoverageGoal<
 	 */
 	public Transition getTransition() {
 		return transition;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (! (obj instanceof TransitionCoverageGoal)) {
+			return false;
+		}
+		
+		TransitionCoverageGoal other = (TransitionCoverageGoal)obj;
+		return transition.equals(other.getTransition());
+		
+	}
+
+	@Override
+	public int hashCode() {
+		return transition.hashCode();
 	}
 
 }

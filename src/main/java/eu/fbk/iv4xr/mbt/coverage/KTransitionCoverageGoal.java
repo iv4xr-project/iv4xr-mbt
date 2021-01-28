@@ -80,4 +80,16 @@ public class KTransitionCoverageGoal<
 		return false;
 	}
 
+
+	@Override
+	public boolean equals(Object obj) {
+		throw new RuntimeException("Unimplemented method");
+	}
+
+
+	@Override
+	public int hashCode() {
+		throw new RuntimeException("Unimplemented method");
+	}
+
 }

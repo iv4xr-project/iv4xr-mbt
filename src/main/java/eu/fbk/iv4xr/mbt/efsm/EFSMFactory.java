@@ -2,6 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 
 
@@ -30,6 +31,11 @@ public class EFSMFactory {
 		//	ButtonDoors1 tmp = new ButtonDoors1();
 		//	efsm = tmp.getModel();
 		//	break;
+		case "labrecruits.buttons_doors_fire" :
+			ButtonDoors1Fire bdf = new ButtonDoors1Fire();
+			efsm = bdf.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
 		case "labrecruits.random_default" :
 			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
 			efsm = randomGenerator.getEFMS();

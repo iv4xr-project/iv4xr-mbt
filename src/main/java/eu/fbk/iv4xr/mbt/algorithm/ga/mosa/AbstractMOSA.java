@@ -20,28 +20,11 @@ package eu.fbk.iv4xr.mbt.algorithm.ga.mosa;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.evosuite.ProgressMonitor;
-import org.evosuite.Properties;
-//import org.evosuite.Properties.Criterion;
-import org.evosuite.coverage.FitnessFunctions;
-import org.evosuite.coverage.branch.BranchCoverageSuiteFitness;
-import org.evosuite.coverage.exception.ExceptionCoverageFactory;
-import org.evosuite.coverage.exception.ExceptionCoverageHelper;
-import org.evosuite.coverage.exception.ExceptionCoverageSuiteFitness;
-import org.evosuite.coverage.exception.ExceptionCoverageTestFitness;
-import org.evosuite.coverage.line.LineCoverageSuiteFitness;
-import org.evosuite.coverage.method.MethodCoverageSuiteFitness;
-import org.evosuite.coverage.mutation.StrongMutationSuiteFitness;
-import org.evosuite.coverage.mutation.WeakMutationSuiteFitness;
-import org.evosuite.coverage.statement.StatementCoverageSuiteFitness;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.ConstructionFailedException;
@@ -50,34 +33,20 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.SearchListener;
 import org.evosuite.ga.metaheuristics.mosa.comparators.MOSADominanceComparator;
 import org.evosuite.ga.operators.selection.SelectionFunction;
-import org.evosuite.testcase.TestCase;
 import org.evosuite.testcase.TestChromosome;
-import org.evosuite.testcase.TestFitnessFunction;
-import org.evosuite.testcase.execution.ExecutionResult;
 import org.evosuite.testcase.secondaryobjectives.TestCaseSecondaryObjective;
-import org.evosuite.testcase.statements.ArrayStatement;
-import org.evosuite.testcase.statements.ConstructorStatement;
-import org.evosuite.testcase.statements.MethodStatement;
-import org.evosuite.testcase.statements.PrimitiveStatement;
-import org.evosuite.testcase.statements.Statement;
-import org.evosuite.testcase.statements.StringPrimitiveStatement;
-import org.evosuite.testcase.variable.VariableReference;
 import org.evosuite.testsuite.TestSuiteChromosome;
-import org.evosuite.testsuite.TestSuiteFitnessFunction;
-import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
@@ -128,9 +97,9 @@ public abstract class AbstractMOSA<
 			suiteFitnesses.addAll(algorithmFactory.getCoverageGoals (criterion));
 		}
 		// set the ranking strategy
-		if (Properties.RANKING_TYPE ==  Properties.RankingType.PREFERENCE_SORTING)
+		if (MBTProperties.RANKING_TYPE ==  MBTProperties.RankingType.PREFERENCE_SORTING)
 			ranking = new RankBasedPreferenceSorting<T>();
-		else if (Properties.RANKING_TYPE ==  Properties.RankingType.FAST_NON_DOMINATED_SORTING)
+		else if (MBTProperties.RANKING_TYPE ==  MBTProperties.RankingType.FAST_NON_DOMINATED_SORTING)
 			ranking = new FastNonDominatedSorting<T>();
 		else
 			ranking = new RankBasedPreferenceSorting<T>(); // default ranking strategy
@@ -147,10 +116,10 @@ public abstract class AbstractMOSA<
 	 */
 	@SuppressWarnings("unchecked")
 	protected List<T> breedNextGeneration() {
-		List<T> offspringPopulation = new ArrayList<T>(Properties.POPULATION);
+		List<T> offspringPopulation = new ArrayList<T>(MBTProperties.POPULATION);
 		// we apply only Properties.POPULATION/2 iterations since in each generation
 		// we generate two offsprings
-		for (int i=0; i < Properties.POPULATION/2 && !isFinished(); i++){
+		for (int i=0; i < MBTProperties.POPULATION/2 && !isFinished(); i++){
 			// select best individuals
 			T parent1 = selectionFunction.select(population);
 			T parent2 = selectionFunction.select(population);
@@ -158,7 +127,7 @@ public abstract class AbstractMOSA<
 			T offspring2 = (T) parent2.clone();
 			// apply crossover 
 			try {
-				if (Randomness.nextDouble() <= Properties.CROSSOVER_RATE) {
+				if (Randomness.nextDouble() <= MBTProperties.CROSSOVER_RATE) {
 					crossoverFunction.crossOver(offspring1, offspring2);
 				} 
 			} catch (ConstructionFailedException e) {
@@ -192,7 +161,7 @@ public abstract class AbstractMOSA<
 			}	
 		}
 		// Add new randomly generate tests
-		for (int i = 0; i<Properties.POPULATION * Properties.P_TEST_INSERTION; i++){
+		for (int i = 0; i<MBTProperties.POPULATION * MBTProperties.P_TEST_INSERTION; i++){
 			T tch = null;
 			if (this.getCoveredGoals().size() == 0 || Randomness.nextBoolean()){
 				tch = this.chromosomeFactory.getChromosome();
@@ -222,44 +191,7 @@ public abstract class AbstractMOSA<
 			// to mutate it once again
 			offspring.mutate();
 		}
-//		if (!hasMethodCall(offspring)){
-//			tch.setTestCase(((TestChromosome) parent).getTestCase().clone());
-//			boolean changed = tch.mutationInsert();
-//			if (changed){
-//				for (Statement s : tch.getTestCase())
-//					s.isValid();
-//			} 
-//			offspring.setChanged(changed);
-//		}
 		notifyMutation(offspring);
-	}
-
-	/** This method checks whether the test has only primitive type statements. Indeed,
-	 * crossover and mutation can lead to tests with no method calls (methods or constructors call),
-	 * thus, when executed they will never cover something in the class under test.
-
-	 * @param test to check
-	 * @return true if the test has at least one method or constructor call (i.e., the test may
-	 * cover something when executed; false otherwise
-	 */
-	private boolean hasMethodCall(T test){
-		boolean flag = false;
-		TestCase tc = ((TestChromosome) test).getTestCase();
-		for (Statement s : tc){
-			if (s instanceof MethodStatement){
-				MethodStatement ms = (MethodStatement) s;
-				boolean isTargetMethod = ms.getDeclaringClassName().equals(Properties.TARGET_CLASS);
-				if (isTargetMethod)
-					return true;
-			}
-			if (s instanceof ConstructorStatement){
-				ConstructorStatement ms = (ConstructorStatement) s;
-				boolean isTargetMethod = ms.getDeclaringClassName().equals(Properties.TARGET_CLASS);
-				if (isTargetMethod)
-					return true;
-			}
-		}
-		return flag;
 	}
 
 	/**
@@ -273,42 +205,6 @@ public abstract class AbstractMOSA<
 		((MBTChromosome) chromosome).clearCachedResults();
 //		((MBTChromosome) chromosome).clearMutationHistory();
 		((MBTChromosome) chromosome).getFitnessValues().clear();
-	}
-
-	/**
-	 * When a test case is changed via crossover and/or mutation, it can contains some
-	 * primitive variables that are not used as input (or to store the output) of method calls.
-	 * Thus, this method removes all these "trash" statements.
-	 * @param chromosome
-	 * @return true or false depending on whether "unused variables" are removed
-	 */
-	public boolean removeUnusedVariables(T chromosome) {
-		int sizeBefore = chromosome.size();
-		TestCase t = ((TestChromosome) chromosome).getTestCase();
-		List<Integer> to_delete = new ArrayList<Integer>(chromosome.size());
-		boolean has_deleted = false;
-
-		int num = 0;
-		for (Statement s : t) {
-			VariableReference var = s.getReturnValue();
-			boolean delete = false;
-			delete = delete || s instanceof PrimitiveStatement;
-			delete = delete || s instanceof ArrayStatement;
-			delete = delete || s instanceof StringPrimitiveStatement;
-			if (!t.hasReferences(var) && delete) {
-				to_delete.add(num);
-				has_deleted = true;
-			}
-			num++;
-		}
-		Collections.sort(to_delete, Collections.reverseOrder());
-		for (Integer position : to_delete) {
-			t.remove(position);
-		}
-		int sizeAfter = chromosome.size();
-		if (has_deleted)
-			logger.debug("Removed {} unused statements", (sizeBefore - sizeAfter));
-		return has_deleted;
 	}
 
 	/**
@@ -448,7 +344,7 @@ public abstract class AbstractMOSA<
 		currentIteration = 0;
 
 		// Create a random parent population P0
-		generateInitialPopulation(Properties.POPULATION);
+		generateInitialPopulation(MBTProperties.POPULATION);
 		// Determine fitness
 		calculateFitness();
 		this.notifyIteration();
@@ -458,78 +354,4 @@ public abstract class AbstractMOSA<
 
 	public abstract Set<FitnessFunction<T>> getCoveredGoals();
 
-	/**
-	 * This method analyzes the execution results of a TestChromosome looking for generated exceptions.
-	 * Such exceptions are converted in instances of the class {@link ExceptionCoverageTestFitness},
-	 * which are additional covered goals when using as criterion {@link Properties.Criterion.EXCEPTION}
-	 * @param t TestChromosome to analyze
-	 * @return list of exception goals being covered by t
-	 */
-	public List<ExceptionCoverageTestFitness> deriveCoveredExceptions(T t){
-		List<ExceptionCoverageTestFitness> covered_exceptions = new ArrayList<ExceptionCoverageTestFitness>();
-		TestChromosome testCh = (TestChromosome) t;
-		ExecutionResult result = testCh.getLastExecutionResult();
-
-		Map<String, Set<Class<?>>> implicitTypesOfExceptions = new LinkedHashMap<>();
-		Map<String, Set<Class<?>>> explicitTypesOfExceptions = new LinkedHashMap<>();
-		Map<String, Set<Class<?>>> declaredTypesOfExceptions = new LinkedHashMap<>();
-
-		for (Integer i : result.getPositionsWhereExceptionsWereThrown()) {
-			if(ExceptionCoverageHelper.shouldSkip(result,i)){
-				continue;
-			}
-
-			Class<?> exceptionClass = ExceptionCoverageHelper.getExceptionClass(result,i);
-			String methodIdentifier = ExceptionCoverageHelper.getMethodIdentifier(result, i); //eg name+descriptor
-			boolean sutException = ExceptionCoverageHelper.isSutException(result,i); // was the exception originated by a direct call on the SUT?
-
-			/*
-			 * We only consider exceptions that were thrown by calling directly the SUT (not the other
-			 * used libraries). However, this would ignore cases in which the SUT is indirectly tested
-			 * through another class
-			 */
-
-			if (sutException) {
-
-				boolean notDeclared = ! ExceptionCoverageHelper.isDeclared(result,i);
-
-				if(notDeclared) {
-					/*
-					 * we need to distinguish whether it is explicit (ie "throw" in the code, eg for validating
-					 * input for pre-condition) or implicit ("likely" a real fault).
-					 */
-
-					boolean isExplicit = ExceptionCoverageHelper.isExplicit(result,i);
-
-					if (isExplicit) {
-
-						if (!explicitTypesOfExceptions.containsKey(methodIdentifier)) {
-							explicitTypesOfExceptions.put(methodIdentifier, new LinkedHashSet<Class<?>>());
-						}
-						explicitTypesOfExceptions.get(methodIdentifier).add(exceptionClass);
-					} else {
-
-						if (!implicitTypesOfExceptions.containsKey(methodIdentifier)) {
-							implicitTypesOfExceptions.put(methodIdentifier, new LinkedHashSet<Class<?>>());
-						}
-						implicitTypesOfExceptions.get(methodIdentifier).add(exceptionClass);
-					}
-				} else {
-					if (!declaredTypesOfExceptions.containsKey(methodIdentifier)) {
-						declaredTypesOfExceptions.put(methodIdentifier, new LinkedHashSet<Class<?>>());
-					}
-					declaredTypesOfExceptions.get(methodIdentifier).add(exceptionClass);
-				}
-
-
-				ExceptionCoverageTestFitness.ExceptionType type = ExceptionCoverageHelper.getType(result,i);
-				/*
-				 * Add goal to list of fitness functions to solve
-				 */
-				ExceptionCoverageTestFitness goal = new ExceptionCoverageTestFitness(Properties.TARGET_CLASS, methodIdentifier, exceptionClass, type);
-				covered_exceptions.add(goal);
-			}
-		}
-		return covered_exceptions;
-	}
 }

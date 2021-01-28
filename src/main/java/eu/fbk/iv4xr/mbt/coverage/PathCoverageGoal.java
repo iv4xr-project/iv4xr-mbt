@@ -58,6 +58,25 @@ public class PathCoverageGoal<
 		return false;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (! (obj instanceof PathCoverageGoal)) {
+			return false;
+		}
+		
+		PathCoverageGoal other = (PathCoverageGoal)obj;
+		return path.equals(other.path);
+		
+	}
+
+	@Override
+	public int hashCode() {
+		return path.hashCode();
+	}
+
 	
 
 }
