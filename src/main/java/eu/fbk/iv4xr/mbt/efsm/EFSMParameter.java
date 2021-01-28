@@ -43,4 +43,21 @@ public class EFSMParameter implements  Cloneable, Serializable {
 	public String toString() {
 		return this.toDebugString();
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof EFSMParameter) {
+			EFSMParameter v = (EFSMParameter)o;
+			if (v.getParameter().equals(this.parameter)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 }

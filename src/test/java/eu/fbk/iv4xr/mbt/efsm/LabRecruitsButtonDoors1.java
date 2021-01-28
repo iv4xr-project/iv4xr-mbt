@@ -80,8 +80,15 @@ public class LabRecruitsButtonDoors1 {
 		
 		m.setShortestPathsBetweenStates();
 		System.out.println("Distance between "+bd1.b_0.toString()+" and "+bd1.b_1.toString()+" is "+m.getShortestPathDistance(bd1.b_0, bd1.b_1));
-		//System.out.println("Distance between "+bd1.b_0.toString()+" and "+bd1.TR.toString()+" is "+m.getShortestPathDistance(bd1.b_0, bd1.TR));
+		System.out.println("The number of shortest path between "+bd1.b_0.toString()+" and "+bd1.b_1.toString()+" is "+m.getShortestPaths(bd1.b_0, bd1.b_1).size());
+		
+		
+		System.out.println("Distance between "+bd1.d_T_p.toString()+" and "+bd1.b_3.toString()+" is "+m.getShortestPathDistance(bd1.d_T_p, bd1.b_3));
+		System.out.println("The number of shortest path between "+bd1.d_T_p.toString()+" and "+bd1.b_3.toString()+" is "+m.getShortestPaths(bd1.d_T_p, bd1.b_3).size());
+		
 		//System.out.println("Distance between "+bd1.b_3.toString()+" and "+bd1.TR.toString()+" is "+m.getShortestPathDistance(bd1.b_3, bd1.TR));
+		
+		
 		
 	}
 }

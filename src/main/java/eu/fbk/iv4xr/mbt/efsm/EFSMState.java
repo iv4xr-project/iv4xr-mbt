@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+/**
+ * A state is a non empty string. Passing an empty string results in a runtime exception 
+ */
 public class EFSMState implements Comparable<EFSMState>, Cloneable, Serializable {
 
 	/**
@@ -14,7 +17,12 @@ public class EFSMState implements Comparable<EFSMState>, Cloneable, Serializable
 	private final String id;
 	
 	public EFSMState(String id) {
-		this.id = id;
+		if (id == "" || id == null) {
+			throw new RuntimeException("EFSMState id cannot be empty string or null");
+		}else {
+			this.id = id;
+		}
+		
 	}
 	
 	public String getId() {

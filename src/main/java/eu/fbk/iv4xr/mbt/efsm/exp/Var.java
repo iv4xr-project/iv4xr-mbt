@@ -1,5 +1,6 @@
 package eu.fbk.iv4xr.mbt.efsm.exp;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
 public class Var<T> implements Exp<T> {
 
@@ -53,5 +54,21 @@ public class Var<T> implements Exp<T> {
 		return id+"["+value.toString()+"]";
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Var) {
+			Var v = (Var)o;
+			if (v.getValue().equals(this.value) && v.getId().equals(this.id)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 
 }

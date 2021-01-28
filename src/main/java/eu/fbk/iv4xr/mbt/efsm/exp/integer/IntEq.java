@@ -4,6 +4,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.CompareOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 
+
 public class IntEq extends CompareOp{
 
 	/**
@@ -28,6 +29,25 @@ public class IntEq extends CompareOp{
 	@Override
 	public String toDebugString() {
 		return "("+this.getParameter1().toDebugString()+" = "+this.getParameter2().toDebugString()+")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof IntEq) {
+			IntEq is = (IntEq) o;
+			if ((is.getParameter1().equals(this.getParameter1()) && is.getParameter2().equals(this.getParameter2()))
+					|| (is.getParameter1().equals(this.getParameter2())
+							&& is.getParameter2().equals(this.getParameter1()))) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 }

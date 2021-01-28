@@ -1,6 +1,6 @@
 package eu.fbk.iv4xr.mbt.efsm.exp;
 
-public abstract class CompareOp extends BinaryOp<Boolean> {//implements Exp<Boolean> {
+public abstract class CompareOp extends BinaryOp<Boolean> {
 
 	/**
 	 * 
@@ -13,35 +13,4 @@ public abstract class CompareOp extends BinaryOp<Boolean> {//implements Exp<Bool
 		// TODO Auto-generated constructor stub
 	}
 	
-	/*
-	private Exp<?> parameter1;
-	private Exp<?> parameter2;
-	
-	public CompareOp(Exp<?> parameter1, Exp<?> parameter2){
-		this.parameter1 = parameter1;
-		this.parameter2 = parameter2;
-	}
-	
-	public Exp<?> getParameter1() {
-		return parameter1;
-	}
-
-	public Exp<?> getParameter2() {
-		return parameter2;
-	}
-	
-	@Override
-	public VarSet<?> getVariables(){			
-		VarSet out = new VarSet();
-		out.add(parameter1.getVariables());
-		out.add(parameter2.getVariables());
-		return(out);
-	}
-	
-	@Override
-	public void update(VarSet<?> varSet) {
-		this.parameter1.update(varSet);
-		this.parameter2.update(varSet);
-	}
-	*/
 }

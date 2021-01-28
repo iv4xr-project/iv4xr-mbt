@@ -11,6 +11,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 
+import eu.fbk.iv4xr.mbt.utils.EqualsWithNulls;
 /**
  * 
  * This class is derived from from the EFMS4J project created by
@@ -259,7 +260,7 @@ public class EFSMTransition<
 	public boolean isSelfTransition () {
 		return (src.equals(tgt));
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
@@ -267,7 +268,10 @@ public class EFSMTransition<
 		}
 		if (obj instanceof EFSMTransition) {
 			EFSMTransition t = (EFSMTransition)obj;
-			return(t.getSrc().equals(src) && t.getTgt().equals(tgt));
+			return(t.getSrc().equals(src) && 
+					t.getTgt().equals(tgt) && 
+					EqualsWithNulls.test(t.getInParameter(),inParameter) &&
+					EqualsWithNulls.test(t.getOutParameter(),outParameter));
 		}else {
 			return false;
 		}

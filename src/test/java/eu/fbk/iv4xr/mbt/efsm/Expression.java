@@ -32,6 +32,76 @@ public class Expression {
 	Var<Boolean> bv1 = new Var<Boolean>("bv1", false);		
 	Var<Boolean> bv2 = new Var<Boolean>("bv2", true);	
 	
+	
+	// this test verify that changes in iv1 in testEquals test are not visible
+	// in the testInteger test
+	@Test
+	public void testExpressionEquals() {
+		Var<Integer> v1 = new Var<Integer>("iv1",7);
+		assertTrue(v1.equals(iv1));
+		assertTrue(iv1.equals(v1));
+		iv1.setValue(8);
+		assertFalse(v1.equals(iv1));
+		
+		Var<Boolean> b1 = new Var<Boolean>("bv1", false);
+		assertTrue(b1.equals(bv1));
+		bv1.setValue(true);
+		assertFalse(b1.equals(bv1));
+		
+		Const<Integer> c1 = new Const<Integer>(8);
+		assertFalse(c1.equals(bc1));
+		assertFalse(c1.equals(ic1));
+		assertTrue(c1.equals(iv1.eval()));
+		assertTrue(iv1.eval().equals(c1));
+		
+		IntSum sum1 = new IntSum(ic1, iv1);
+		IntSum sum2 = new IntSum(iv1, ic1);
+		assertTrue(sum1.equals(sum2));
+		
+		IntGreat gt1 = new IntGreat(iv1,ic1);
+		IntGreat gt2 = new IntGreat(ic1,iv1);
+		assertFalse(gt1.equals(gt2));
+	}
+	
+	@Test
+	public void testVarSetEquals() {
+		// test order
+		VarSet vs1 = new VarSet<>();
+		vs1.put(bv1);
+		vs1.put(bv2);
+		vs1.put(iv1);
+		
+		VarSet vs2 = new VarSet<>();
+		vs2.put(iv1);
+		vs2.put(bv1);
+		vs2.put(bv2);
+		
+		assertTrue(vs1.equals(vs2) && vs2.equals(vs1) );
+		
+		iv1.setValue(5);
+		assertTrue(vs1.equals(vs2) && vs2.equals(vs1) );
+		
+		VarSet vs3 = new VarSet<>();
+		vs3.put(iv1);
+		vs3.put(bv1);
+		vs3.put(bv1);
+		assertFalse(vs1.equals(vs3) || vs3.equals(vs1) );
+		
+		VarSet vs4 = new VarSet<>();
+		vs4.put(iv1);
+		vs4.put(bv1);
+		assertFalse(vs1.equals(vs4) || vs4.equals(vs1) );
+		assertTrue(vs3.equals(vs4) && vs4.equals(vs3) );
+		
+		VarSet vs5 = new VarSet<>();
+		vs5.put(iv1);
+		vs5.put(new Var<Integer>("iv1",5));
+		vs5.put(bv1);
+		assertTrue(vs5.equals(vs4) && vs4.equals(vs5) );
+		vs5.put(new Var<Integer>("iv1",7));
+		assertFalse(vs5.equals(vs4) || vs4.equals(vs5) );
+	}
+	
 	@Test
 	public void testInteger() {
 		
@@ -97,5 +167,7 @@ public class Expression {
 
 	}
 	
+
+
 	
 }

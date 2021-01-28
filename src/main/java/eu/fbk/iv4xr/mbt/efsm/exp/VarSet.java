@@ -71,4 +71,21 @@ public class VarSet<T> implements Cloneable, Serializable {
 		
 		return out;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof VarSet) {
+			VarSet v = (VarSet)o;
+			if (v.getHash().equals(this.varSet)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 }
