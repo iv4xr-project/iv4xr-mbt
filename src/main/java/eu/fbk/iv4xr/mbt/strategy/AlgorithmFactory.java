@@ -24,7 +24,7 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.MIO;
 import org.evosuite.ga.metaheuristics.MonotonicGA;
 import org.evosuite.ga.metaheuristics.NSGAII;
-import org.evosuite.ga.metaheuristics.RandomSearch;
+import eu.fbk.iv4xr.mbt.algorithm.random.RandomSearch;
 import org.evosuite.ga.metaheuristics.SPEA2;
 import org.evosuite.ga.metaheuristics.StandardChemicalReaction;
 import org.evosuite.ga.metaheuristics.StandardGA;
@@ -185,7 +185,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 				return new BreederGA<>(factory);
 			case RANDOM_SEARCH:
 				logger.info("Chosen search algorithm: Random");
-				return new RandomSearch<>(factory);
+				return new RandomSearch<T>(factory);
 			case NSGAII:
 				logger.info("Chosen search algorithm: NSGAII");
 				return new NSGAII<>(factory);

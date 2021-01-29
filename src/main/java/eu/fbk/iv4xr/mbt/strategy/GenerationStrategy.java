@@ -12,7 +12,6 @@ import org.evosuite.ga.stoppingconditions.MaxTestsStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxTimeStoppingCondition;
 import org.evosuite.ga.stoppingconditions.StoppingCondition;
 import org.evosuite.ga.stoppingconditions.ZeroFitnessStoppingCondition;
-import org.evosuite.testsuite.TestSuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.ProgressMeter;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -43,7 +42,7 @@ public abstract class GenerationStrategy {
 	 * @param stoppingCondition
 	 * @return
 	 */
-	protected boolean isFinished(TestSuiteChromosome chromosome, StoppingCondition stoppingCondition) {
+	protected boolean isFinished(SuiteChromosome chromosome, StoppingCondition stoppingCondition) {
 		if (stoppingCondition.isFinished())
 			return true;
 

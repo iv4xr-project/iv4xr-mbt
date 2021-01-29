@@ -17,6 +17,8 @@ import org.evosuite.ga.metaheuristics.SearchListener;
 import org.evosuite.ga.stoppingconditions.StoppingConditionImpl;
 
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
+import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
  * @author kifetew
@@ -38,13 +40,25 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		}
 	}
 	
-	public Set<MBTChromosome> getTestSuite (){
-		Set<MBTChromosome> suite = new HashSet<MBTChromosome>();
-		suite.addAll(coverageMap.values());
-		suite.remove(null);
+//	public Set<MBTChromosome> getTestSuite (){
+//		Set<MBTChromosome> suite = new HashSet<MBTChromosome>();
+//		suite.addAll(coverageMap.values());
+//		suite.remove(null);
+//		return suite;
+//	}
+
+	
+	public SuiteChromosome getTestSuite () {
+		SuiteChromosome suite = new MBTSuiteChromosome();
+		for (MBTChromosome test : coverageMap.values()) {
+			if (test != null) {
+				suite.addTest(test);
+			}
+		}
 		return suite;
 	}
-
+	
+	
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
 		MBTChromosome chromosome = (MBTChromosome)arg0;
@@ -133,6 +147,13 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	public void setLimit(long arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * @return the coverage
+	 */
+	public double getCoverage() {
+		return coverage;
 	}
 
 }

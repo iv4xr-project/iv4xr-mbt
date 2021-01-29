@@ -11,35 +11,18 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-//import org.evosuite.Properties;
-import org.evosuite.executionmode.Continuous;
-import org.evosuite.executionmode.Help;
-import org.evosuite.executionmode.ListClasses;
-import org.evosuite.executionmode.ListParameters;
-import org.evosuite.executionmode.MeasureCoverage;
-import org.evosuite.executionmode.PrintStats;
-import org.evosuite.executionmode.Setup;
-import org.evosuite.executionmode.TestGeneration;
-import org.evosuite.executionmode.WriteDependencies;
-import org.evosuite.ga.Chromosome;
 import org.evosuite.utils.LoggingUtils;
 
-import ch.qos.logback.classic.Logger;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
-
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
+import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
+import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
@@ -55,8 +38,6 @@ public class Main {
 	 * 
 	 */
 	public Main() {
-		generationStrategy = new 
-				SearchBasedStrategy<Chromosome>();
 	}
 
 	
@@ -66,8 +47,8 @@ public class Main {
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
 			System.out.println("Valid: " + testcase.isValid());
-			System.out.println(testcase.toDot());
-			System.out.println(testcase.toString());
+			//System.out.println(testcase.toDot());
+			//System.out.println(testcase.toString());
 			if (!testcase.isValid()) {
 				// re-execute for debugging
 				executeForDebug (testcase);
@@ -106,8 +87,17 @@ public class Main {
 
 		Option help = new Option("help", "print this message");
 
-
-//		Option property = OptionBuilder.withArgName("property=value").hasArgs(2).withValueSeparator().withDescription("use value for given property").create("D");
+		Option random = Option.builder("random")
+				.argName("random")
+				.type(String.class)
+				.desc("random search generation")
+				.build();
+		
+		Option mosa = Option.builder("mosa")
+				.argName("mosa")
+				.type(String.class)
+				.desc("MOSA")
+				.build();
 		
 		Option property   = Option.builder("D")
 				.numberOfArgs(2)
@@ -121,6 +111,8 @@ public class Main {
 
 		
 		options.addOption(help);
+		options.addOption(mosa);
+		options.addOption(random);
 		options.addOption(property);
 		return options;
 	}
@@ -132,6 +124,18 @@ public class Main {
 			CommandLine line = parser.parse(options, args);
 			
 			// TODO deal with arguments here ..
+			if (line.hasOption("help")) {
+				System.out.println(options.toString());
+				System.exit(0);
+			}
+			
+			if (line.hasOption("mosa")) {
+				generationStrategy = new SearchBasedStrategy<MBTChromosome>();
+			}
+			
+			if (line.hasOption("random")) {
+				generationStrategy = new RandomTestStrategy<MBTChromosome>();
+			}
 			
 			setGlobalProperties (line);
 		} catch (ParseException e) {
