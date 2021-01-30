@@ -62,6 +62,9 @@ public  class EFSM<
 	protected Context curContext;
 	protected ListenableGraph<State, EFSMTransition> baseGraph;
 	
+	// String version of the model
+	private String efsmString = ""; 
+	
 	// to add
 	protected EFSMParameterGenerator<InParameter> inParameterSet;
 
@@ -87,7 +90,7 @@ public  class EFSM<
 	/*
 	 * hashmap to easily retrieve transitions
 	 */
-	protected EFSMTransitionMapper transitionMapper;
+	private EFSMTransitionMapper transitionMapper;
 	
 	
 	// Constructors
@@ -99,17 +102,22 @@ public  class EFSM<
 		this.curContext = (Context) initalContext.clone();
 		this.initialContext = (Context) initalContext.clone();
 		this.inParameterSet = parameterSet;
-		
-		
+			
 		final DirectedPseudograph<State, EFSMTransition> tmp = new DirectedPseudograph<State, EFSMTransition>(EFSMTransition.class);
 		//final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(EFSMTransition.class);
 		// final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(null);
-
 		Graphs.addGraph(tmp, baseGraph);
 
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
 		this.pcs = new PropertyChangeSupport(this);
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
+	
+		// build the transition mapper
+	//	this.transitionMapper = new EFSMTransitionMapper();
+	//	for(EFSMTransition t: this.baseGraph.edgeSet()) {
+	//		this.transitionMapper.put(t);
+	//	}
+	
 	}
 
 	private EFSM(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> base, 
@@ -122,6 +130,14 @@ public  class EFSM<
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 		// we do not want to delegate any events of this to the original listeners
 		this.pcs = null;
+	}
+		
+	public void setEFMSString(String s) {
+		this.efsmString = s;
+	}
+	
+	public String getEFSMString() {
+		return this.efsmString;
 	}
 	
 	public boolean canTransition(InParameter input) {
@@ -314,6 +330,7 @@ public  class EFSM<
 	 */
 	public Set<OutParameter> transition(Transition transition1) {
 		Transition transition = getTransition (transition1);
+		//Transition transition = (Transition) transitionMapper.get(transition1);
 		if (transition.isFeasible(curContext)) {
 			EFSMConfiguration<State, Context> prevConfig = null;
 			if (pcs != null) {
@@ -329,7 +346,8 @@ public  class EFSM<
 
 		return null;
 	}
-	  
+	 
+
 	private Transition getTransition(Transition transition) {
 		for (EFSMTransition t : getTransitons()) {
 			if (t.equals(transition)) {
@@ -339,6 +357,7 @@ public  class EFSM<
 		throw new RuntimeException("Transition not found in model: " +  transition);
 	}
 
+	
 	/**
 	 * transition to a given state for testing
 	 */
@@ -388,7 +407,7 @@ public  class EFSM<
 		if (this.baseGraph.vertexSet().contains(source) & this.baseGraph.vertexSet().contains(target)) {
 			return this.shortestPaths[(int) this.vertexToIntegerMapping.getVertexMap().get(source)][(int) this.vertexToIntegerMapping.getVertexMap().get(target)];
 		}else {
-			return Collections.<EFSMPath>emptySet();
+			return new HashSet<EFSMPath>();
 		}
 	}
 	
@@ -431,7 +450,7 @@ public  class EFSM<
 						GraphPath<EFSMState, EFSMTransition> shortestPath = shortestPathAlg.getPath(src, tgt);
 						if (shortestPath == null) {
 							this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = Double.MAX_VALUE;		
-							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  Collections.<EFSMPath>emptySet();
+							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  el;
 						}else {
 							this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = (double)shortestPath.getLength();
 							List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(src,tgt, false, shortestPath.getLength());

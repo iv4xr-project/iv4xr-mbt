@@ -64,7 +64,12 @@ public class LabRecruitsRandomEFSMTest {
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
 
 		// plot initial state and context
 		EFSMConfiguration configuration = testEFSM.getConfiguration();
@@ -77,24 +82,22 @@ public class LabRecruitsRandomEFSMTest {
 		// take possibile states
 		// Set<EFSMState> testEFSMStates = testEFSM.getStates();
 
-		// sSet<EFSMTransition> outTransitions = testEFSM.transitionsOutOf((EFSMState)
+		// Set<EFSMTransition> outTransitions = testEFSM.transitionsOutOf((EFSMState)
 		// testEFSMStates.toArray()[6]);
-		/*
-		 * Set set = context.keySet(); Iterator iterator = set.iterator();
-		 * System.out.println("Context is "); while (iterator.hasNext()) { String doorId
-		 * = (String) iterator.next(); System.out.println(" door " + doorId +
-		 * " has button " + context.get(doorId).getButtons().toString()); } if
-		 * (labRecruitsRandomEFSM.get_csv() == "") {
-		 * System.out.println("Cannot create a planar graph with these paratemers"); }
-		 */
+
+		
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}
+
 	}
 
 	@Test
 	public void generateLargeLevel() throws IOException {
-		MBTProperties.LR_seed = 32325439;
+		MBTProperties.LR_seed = 325439;
 		MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_buttons = 40;
-		MBTProperties.LR_n_doors = 15;
+		MBTProperties.LR_n_doors = 28;
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
 
@@ -106,7 +109,12 @@ public class LabRecruitsRandomEFSMTest {
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
 
 		// plot initial state and context
 		EFSMConfiguration configuration = testEFSM.getConfiguration();
@@ -130,8 +138,7 @@ public class LabRecruitsRandomEFSMTest {
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
-		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		
 
 		// plot initial state and context
 		EFSMConfiguration configuration = testEFSM.getConfiguration();
@@ -141,6 +148,13 @@ public class LabRecruitsRandomEFSMTest {
 		EFSMContext context = configuration.getContext();
 		System.out.println("Context is " + configuration.getContext().toString());
 
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
+		
 	}
 
 }

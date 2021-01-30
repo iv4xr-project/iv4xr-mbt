@@ -40,6 +40,7 @@ public class EFSMFactory {
 			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
 			efsm = randomGenerator.getEFMS();
 			efsm.setShortestPathsBetweenStates();
+			efsm.setEFMSString(randomGenerator.get_csv());
 			break;
 		default:
 			throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);

@@ -101,6 +101,9 @@ public class LabRecruitsRandomEFSM {
 	// csv version to feed Lab Recruits
 	private String csvLevel = "";
 	
+	// map from doors to the set of activating button
+	HashMap<Integer, Set<EFSMState>> doorButtonsMap;
+	
 	// parameters generator
 	//LabRecruitsParameterGenerator parameterGenerator = new LabRecruitsParameterGenerator();
 		
@@ -123,12 +126,12 @@ public class LabRecruitsRandomEFSM {
 			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
 			
 			// compute the embedding, if possible
-			//BoyerMyrvoldPlanarityInspector planaryInspector = new BoyerMyrvoldPlanarityInspector(this.doorsGraph);
-			//if (planaryInspector.isPlanar()) {
-			//	this.doorsGraph = planaryInspector.getEmbedding();
-			//}else {
-			//	nTry = nTry - 1;
-			//}
+			BoyerMyrvoldPlanarityInspector planaryInspector = new BoyerMyrvoldPlanarityInspector(this.doorsGraph);
+			if (planaryInspector.isPlanar()) {
+				this.doorsGraph = (Pseudograph<Vector<EFSMState>, Integer>) planaryInspector.getEmbedding().getGraph();
+			}else {
+				nTry = nTry - 1;
+			}
 			
 			// DEBUG saveDoorGraph("data/test_"+nTry+".xml");
 			// test if doorsGraph is effectively planar
@@ -139,7 +142,7 @@ public class LabRecruitsRandomEFSM {
 			this.efsm = doorsGraphToEFSM();
 			
 			// create the csv version that can be played
-			//this.csvLevel = generateCSV();
+			this.csvLevel = generateCSV();
 			nTry = nTry - 1;
 		}
 	}
@@ -608,7 +611,8 @@ public class LabRecruitsRandomEFSM {
 		 * Starting from the door graph we build the context in such a way from a random starting room
 		 * there is a path to each other rooms
 		 */
-		HashMap<Integer, Set<EFSMState>> doorButtonsMap = new HashMap<Integer, Set<EFSMState>>();
+		//HashMap<Integer, Set<EFSMState>> doorButtonsMap = new HashMap<Integer, Set<EFSMState>>();
+		doorButtonsMap = new HashMap<Integer, Set<EFSMState>>();
 		EFSMState initialState = null;
 		// iterator over doors graph vertex set (rooms)
 		Iterator<Vector<EFSMState>> vertexIterator = doorsGraph.vertexSet().iterator();
@@ -835,7 +839,7 @@ public class LabRecruitsRandomEFSM {
 	 * Generate the level as a text file using Wishnu code
 	 * @throws IOException 
 	 */
-	/*
+	
 	private String generateCSV() {
 		
 		
@@ -845,12 +849,11 @@ public class LabRecruitsRandomEFSM {
 		
 		HashMap< Vector<EFSMState> , Integer> GraphRoomToCsvRoom = new HashMap<Vector<EFSMState>, Integer>();
 		
-		LabRecruitsContext doorButtonMap = efsm.getConfiguration().getContext();
+		//EFSMContext doorButtonMap = efsm.getConfiguration().getContext();
 		EFSMState efsmInitialState = efsm.getInitialConfiguration().getState();
 		
-		HashMap<String, Button> buttonDoorMap = new HashMap<String,Button>();
-				
-				
+		HashMap<EFSMState, Button> buttonDoorMap = new HashMap<EFSMState,Button>();
+								
 		//HashMap<Integer, String> buttonList = new  HashMap<Integer, String>();
 		//HashMap<Integer, Integer> doorList = new  HashMap<Integer, Integer>();
 		
@@ -868,7 +871,9 @@ public class LabRecruitsRandomEFSM {
 				}
 				Button b = room.addButton(s.getId());
 				buttonList.add(b);
-				buttonDoorMap.put(s.getId(),b);
+				buttonDoorMap.put(s,b);
+	
+				
 			}
 			csvRooms.add(room);
 			GraphRoomToCsvRoom.put(doorsGraphState, roomId);
@@ -881,8 +886,9 @@ public class LabRecruitsRandomEFSM {
 		while (edgeIterator.hasNext()) {
 			
 			Integer doorsGraphEdge = edgeIterator.next();
-			LabRecruitsDoor doorsGraphDoor = doorButtonMap.getDoor("door"+doorsGraphEdge.toString());
-			HashSet<String> doorsGraphButtons = doorsGraphDoor.getButtons();
+			//LabRecruitsDoor doorsGraphDoor = doorButtonMap.getDoor("door"+doorsGraphEdge.toString());
+			//HashSet<String> doorsGraphButtons = doorsGraphDoor.getButtons();
+			Set<EFSMState> activatingButtons = doorButtonsMap.get(doorsGraphEdge);
 			
 			Vector<EFSMState> source = doorsGraph.getEdgeSource(doorsGraphEdge);
 			Vector<EFSMState> dest = doorsGraph.getEdgeTarget(doorsGraphEdge);
@@ -890,10 +896,14 @@ public class LabRecruitsRandomEFSM {
 			Corridor corridor = Corridor.connect( csvRooms.get(GraphRoomToCsvRoom.get(source)) , csvRooms.get(GraphRoomToCsvRoom.get(dest)) );
 			Door door = corridor.guard("door"+doorsGraphEdge.toString());
 						
-			Iterator<String> doorsGraphButtonsIterator = doorsGraphButtons.iterator();
-			while(doorsGraphButtonsIterator.hasNext()) {			
-				door.operatedBy(buttonDoorMap.get(doorsGraphButtonsIterator.next()));
-			}						
+			//Iterator<String> doorsGraphButtonsIterator = doorsGraphButtons.iterator();
+			//while(doorsGraphButtonsIterator.hasNext()) {			
+			//	door.operatedBy(buttonDoorMap.get(doorsGraphButtonsIterator.next()));
+			//}
+			for(EFSMState s : activatingButtons) {
+				door.operatedBy(buttonDoorMap.get(s));
+			}
+			
 			doorList.add(door);
 		}
 		
@@ -907,7 +917,7 @@ public class LabRecruitsRandomEFSM {
 			return("");
 		}
 	}
-	*/	
+	
 	/** 
 	 * Export door graph to graphml
 	 * @param scenarioId

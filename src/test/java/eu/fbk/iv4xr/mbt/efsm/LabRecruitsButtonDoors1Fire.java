@@ -3,6 +3,8 @@ package eu.fbk.iv4xr.mbt.efsm;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.junit.Test;
@@ -12,7 +14,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 public class LabRecruitsButtonDoors1Fire {
 	
 	@Test
-	public void testModel() {
+	public void testModel() throws IOException {
 		ButtonDoors1Fire bd1 = new ButtonDoors1Fire();
 		EFSM m = bd1.getModel();
 		
@@ -92,7 +94,13 @@ public class LabRecruitsButtonDoors1Fire {
 			assertFalse(t.isFeasible(m.curContext));
 		}
 		
+		// save to dot 
+		//EFSMDotExporter exp = new EFSMDotExporter<>(m);
+		//exp.writeOut(Paths.get("data/button_doors_1_fire.dot"));
 		
+		EFSMExporter exp = new EFSMExporter<>(m);
+		exp.writeOut(Paths.get("data/button_doors_1_fire.dot"),"dot");
+		exp.writeOut(Paths.get("data/button_doors_1_fire.xml"),"gml");
 	}
 
 }

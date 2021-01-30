@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 
@@ -15,7 +18,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 public class LabRecruitsButtonDoors1 {
 
 	@Test
-	public void testModel() {
+	public void testModel() throws IOException {
 		ButtonDoors1 bd1 = new ButtonDoors1();
 		EFSM m = bd1.getModel();
 		
@@ -88,7 +91,10 @@ public class LabRecruitsButtonDoors1 {
 		
 		//System.out.println("Distance between "+bd1.b_3.toString()+" and "+bd1.TR.toString()+" is "+m.getShortestPathDistance(bd1.b_3, bd1.TR));
 		
-		
-		
+		// save to dot 
+		//EFSMDotExporter exp = new EFSMDotExporter<>(m);
+		EFSMExporter exp = new EFSMExporter<>(m);
+		exp.writeOut(Paths.get("data/button_doors_1.dot"),"dot");
+		exp.writeOut(Paths.get("data/button_doors_1.xml"),"gml");
 	}
 }
