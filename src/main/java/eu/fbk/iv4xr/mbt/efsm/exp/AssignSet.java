@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+
 public class AssignSet<T> implements Cloneable, Serializable {
 
 	/**
@@ -67,5 +69,22 @@ public class AssignSet<T> implements Cloneable, Serializable {
 		}
 		
 		return out;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof AssignSet) {
+			AssignSet as = (AssignSet)o;
+			if (as.getHash().equals(this.assignSet)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
 	}
 }

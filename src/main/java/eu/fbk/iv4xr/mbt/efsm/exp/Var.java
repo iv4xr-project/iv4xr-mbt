@@ -71,4 +71,22 @@ public class Var<T> implements Exp<T> {
 		}
 	}
 
+	// ignore the value and check only the ide
+	@Override
+	public boolean equalsUpToValue(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Var) {
+			Var v = (Var)o;
+			if (v.getId().equals(this.id)) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
+
 }

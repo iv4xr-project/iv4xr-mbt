@@ -46,4 +46,21 @@ public class IntSubt extends BinaryOp<Integer>{
 		}
 	}
 
+	@Override
+	public boolean equalsUpToValue(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof IntSubt) {
+			IntSubt is = (IntSubt) o;
+			if ((is.getParameter1().equalsUpToValue(this.getParameter1()) && is.getParameter2().equalsUpToValue(this.getParameter2()))) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
 }

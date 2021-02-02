@@ -11,18 +11,22 @@ import java.util.HashMap;
  *
  */
 
-public class EFSMTransitionMapper {
+public class EFSMTransitionMapper<T extends EFSMTransition> {
 	
-	private HashMap<String, EFSMTransition> transitionsMap;
+	private HashMap<String, T> transitionsMap;
 	
 	// symbol used to connect src and tgt ids
 	private String connector = "+";
+	
+	public EFSMTransitionMapper() {
+		this.transitionsMap = new HashMap<>();	
+	}
 	
 	
 	/*
 	 * compute a string from and EFSMTranstion pasting src and tgt id
 	 */
-	private String hash(EFSMTransition t) {
+	private String hash(T t) {
 		if (t == null) {
 			throw new RuntimeException("EFSMTransitionMapper does not accept null EFSMTransitions");
 		}else {
@@ -33,12 +37,12 @@ public class EFSMTransitionMapper {
 	/*
 	 * insert an EFSMTransition in the map
 	 */
-	public void put(EFSMTransition t) {
+	public void put(T t) {
 		String key = hash(t);
 		transitionsMap.put(key, t);
 	}
 	
-	public EFSMTransition get(EFSMTransition t) {
+	public T get(T t) {
 		
 		String key = hash(t);
 		if (transitionsMap.containsKey(key)) {

@@ -269,10 +269,12 @@ public class EFSMTransition<
 		}
 		if (obj instanceof EFSMTransition) {
 			EFSMTransition t = (EFSMTransition)obj;
-			return(t.getSrc().equals(src) && 
+			return( t.getSrc().equals(src) && 
 					t.getTgt().equals(tgt) && 
 					EqualsWithNulls.test(t.getInParameter(),inParameter) &&
-					EqualsWithNulls.test(t.getOutParameter(),outParameter));
+					EqualsWithNulls.test(t.getOutParameter(),outParameter) &&
+					EqualsWithNulls.test(t.getGuard(), guard) &&
+					EqualsWithNulls.test(t.getOp(), op));
 		}else {
 			return false;
 		}

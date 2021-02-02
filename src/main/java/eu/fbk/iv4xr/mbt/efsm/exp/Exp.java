@@ -13,8 +13,13 @@ public interface Exp<T extends Object> extends Cloneable, Serializable {
 	// update the value of the variables in an expression given a varSet
 	void update(VarSet<?>  varSet);
 	
+	// check also values of variables
 	@Override
 	boolean equals(Object o);
+	
+	// equals that consider only name of variable for managing cases where
+	// the current value of a variable is not known
+	boolean equalsUpToValue(Object o);
 	
 	String toDebugString();
 	

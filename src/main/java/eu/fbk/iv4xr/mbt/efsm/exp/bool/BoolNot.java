@@ -45,4 +45,21 @@ public class BoolNot extends UnaryOp<Boolean> {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean equalsUpToValue(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof BoolNot) {
+			BoolNot is = (BoolNot) o;
+			if ( is.getParameter().equalsUpToValue(this.getParameter()) ) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }

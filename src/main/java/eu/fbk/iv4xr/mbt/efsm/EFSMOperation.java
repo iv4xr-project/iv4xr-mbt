@@ -46,4 +46,21 @@ public class EFSMOperation implements Cloneable, Serializable {
 			return "NOP";
 		}
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof EFSMOperation) {
+			EFSMOperation op = (EFSMOperation)o;
+			if (op.getAssignments().equals(this.operations) ) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 }
