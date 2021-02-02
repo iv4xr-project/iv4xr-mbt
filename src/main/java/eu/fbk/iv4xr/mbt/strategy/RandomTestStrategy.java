@@ -113,6 +113,8 @@ public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy
 					coverages.put(goal, 0d);
 				}
 			}
+			// finished?
+			suite.setCoverageValues(coverages);
 		}
 		LoggingUtils.getEvoLogger().info("* Search Budget:");
 		LoggingUtils.getEvoLogger().info("\t- " + stoppingCondition.toString());
