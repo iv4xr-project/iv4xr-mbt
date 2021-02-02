@@ -87,12 +87,7 @@ public  class EFSM<
 	// compute distance metrics
 	private GraphMeasurer<State, EFSMTransition> graphMeasurer;
 	
-	/*
-	 * hashmap to easily retrieve transitions
-	 */
-	private EFSMTransitionMapper transitionMapper;
-	
-	
+
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
 					State initialState, 
@@ -111,12 +106,6 @@ public  class EFSM<
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
 		this.pcs = new PropertyChangeSupport(this);
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
-	
-		// build the transition mapper
-	//	this.transitionMapper = new EFSMTransitionMapper();
-	//	for(EFSMTransition t: this.baseGraph.edgeSet()) {
-	//		this.transitionMapper.put(t);
-	//	}
 	
 	}
 
@@ -330,7 +319,6 @@ public  class EFSM<
 	 */
 	public Set<OutParameter> transition(Transition transition1) {
 		Transition transition = getTransition (transition1);
-		//Transition transition = (Transition) transitionMapper.get(transition1);
 		if (transition.isFeasible(curContext)) {
 			EFSMConfiguration<State, Context> prevConfig = null;
 			if (pcs != null) {
@@ -349,12 +337,23 @@ public  class EFSM<
 	 
 
 	private Transition getTransition(Transition transition) {
+		/*
 		for (EFSMTransition t : getTransitons()) {
 			if (t.equals(transition)) {
 				return (Transition) t;
 			}
 		}
+		*/
+		Set<EFSMTransition> availableTransitions = (Set<EFSMTransition>)baseGraph.getAllEdges(transition.getSrc(), transition.getTgt());
+		if (availableTransitions.contains(transition)) {
+			for (EFSMTransition t : availableTransitions) {
+				if (t.equals(transition)) {
+					return (Transition) t;
+				}
+			}
+		}
 		throw new RuntimeException("Transition not found in model: " +  transition);
+
 	}
 
 	

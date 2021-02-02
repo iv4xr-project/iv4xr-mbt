@@ -116,6 +116,9 @@ public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy
 			// finished?
 			suite.setCoverageValues(coverages);
 		}
+		for(var t : suite.getTestChromosomes()) {
+			LoggingUtils.getEvoLogger().info("  "+t.getTestcase().toString());
+		}
 		LoggingUtils.getEvoLogger().info("* Search Budget:");
 		LoggingUtils.getEvoLogger().info("\t- " + stoppingCondition.toString());
 		suite.setCoverageValues(coverages);

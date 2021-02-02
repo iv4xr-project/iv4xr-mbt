@@ -43,4 +43,21 @@ public class EFSMGuard implements  Cloneable, Serializable  {
 		}
 		return this.toDebugStrig();
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof EFSMGuard) {
+			EFSMGuard g = (EFSMGuard)o;
+			if (g.getGuard().equals(((EFSMGuard) o).getGuard())) {
+				return true;
+			}else {
+				return false;
+			}		
+		}else {
+			return false;
+		}
+	}
 }

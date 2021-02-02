@@ -219,6 +219,11 @@ public class ButtonDoors1 {
 		t_30.setGuard(is_d_T_open);
 		t_30.setInParameter(inputParExplore);
 		
+		// TO REMOVE
+		// ADDED ONLY FOR TESTING
+		//EFSMTransition t_100 = new EFSMTransition<>();
+		
+		
 		/*
 		 * EFSM declaration
 		 */
@@ -232,6 +237,7 @@ public class ButtonDoors1 {
 
 	    buttonDoors1EFSM = buttonDoors1EFSMBuilder
 	    		.withTransition(b_0, b_1, t_0)
+
 	    		.withTransition(b_0, d_1_m, t_1)
 	    		.withTransition(b_0, d_T_m, t_2)
 	    		.withTransition(b_0, b_0, t_3)
@@ -262,6 +268,8 @@ public class ButtonDoors1 {
 	    		.withTransition(b_3, b_3, t_28)
 	    		//.withTransition(d_T_p, TR, t_29)
 	    		.withTransition(d_T_p, d_T_m, t_30)
+	    		//REMOVE
+	    		//.withTransition(b_0, b_1, t_100)
 	    		.build(b_0, bd1Context, lrParameterGenerator);
 	    
 	    return(buttonDoors1EFSM);

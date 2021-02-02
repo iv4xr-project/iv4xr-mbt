@@ -55,4 +55,9 @@ public class Const<T> implements Exp<T> {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean equalsUpToValue(Object o) {
+		return equals(o);
+	}
 }

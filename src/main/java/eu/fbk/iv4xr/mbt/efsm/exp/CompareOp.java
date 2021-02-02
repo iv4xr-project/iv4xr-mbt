@@ -12,5 +12,5 @@ public abstract class CompareOp extends BinaryOp<Boolean> {
 		super(parameter1, parameter2);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 }

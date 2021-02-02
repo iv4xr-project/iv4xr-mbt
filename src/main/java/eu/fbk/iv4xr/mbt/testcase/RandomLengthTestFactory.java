@@ -89,7 +89,7 @@ public class RandomLengthTestFactory<
 			// until maxLength is reached or final state is reached
 			len++;
 		}
-		model.reset();
+		//model.reset();
 		
 		// build the test case
 		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
