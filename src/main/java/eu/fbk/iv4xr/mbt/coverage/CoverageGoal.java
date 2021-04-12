@@ -13,7 +13,9 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
  * @author kifetew
@@ -29,6 +31,9 @@ public abstract class CoverageGoal<
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
 		extends FitnessFunction<Chromosome> {
 		
+	protected double W_BD = 1;
+	protected double W_AL = 1;
+	
 	public abstract double getFitness(Chromosome test);
 	
 	public boolean isMaximizationFunction() {
@@ -52,4 +57,7 @@ public abstract class CoverageGoal<
 	
 	@Override
 	public abstract int hashCode();
+	
+	protected abstract void updateCollateralCoverage (Chromosome individual, ExecutionResult executionResult);
+	
 }

@@ -27,23 +27,52 @@ public class EFSMFactory {
 			efsm = bd1.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		//case "labrecruits.random_default" :
-		//	ButtonDoors1 tmp = new ButtonDoors1();
-		//	efsm = tmp.getModel();
-		//	break;
 		case "labrecruits.buttons_doors_fire" :
 			ButtonDoors1Fire bdf = new ButtonDoors1Fire();
 			efsm = bdf.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "labrecruits.random_default" :
-			LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
-			efsm = randomGenerator.getEFMS();
-			efsm.setShortestPathsBetweenStates();
-			efsm.setEFMSString(randomGenerator.get_csv());
-			break;
 		default:
-			throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
+			if (MBTProperties.SUT_EFSM.startsWith("labrecruits.random_")){
+				switch (MBTProperties.SUT_EFSM) {
+				case "labrecruits.random_default" :
+					break;
+				case "labrecruits.random_simple" :
+					MBTProperties.LR_mean_buttons = 0.5;
+					MBTProperties.LR_n_buttons = 5;
+					MBTProperties.LR_n_doors = 4;
+					MBTProperties.LR_seed = 325439;
+					break;
+				case "labrecruits.random_medium" :
+					MBTProperties.LR_mean_buttons = 0.5;
+					MBTProperties.LR_n_buttons = 10;
+					MBTProperties.LR_n_doors = 8;
+					MBTProperties.LR_seed = 325439;
+					break;
+				case "labrecruits.random_large" :
+					MBTProperties.LR_mean_buttons = 0.5;
+					MBTProperties.LR_n_buttons = 15;
+					MBTProperties.LR_n_doors = 8;
+					MBTProperties.LR_seed = 325439;
+					break;
+				case "labrecruits.random_extreme" :
+					MBTProperties.LR_mean_buttons = 0.5;
+					MBTProperties.LR_n_buttons = 40;
+					MBTProperties.LR_n_doors = 28;
+					MBTProperties.LR_seed = 325439;
+					break;
+				default:
+					throw new RuntimeException("Unrecognized random SUT: " + MBTProperties.SUT_EFSM);
+				}
+				LabRecruitsRandomEFSM randomGenerator = new LabRecruitsRandomEFSM();
+				efsm = randomGenerator.getEFMS();
+				efsm.setShortestPathsBetweenStates();
+				efsm.setEFMSString(randomGenerator.get_csv());
+				efsm.setAnmlString(randomGenerator.getAnml());
+				efsm.setDotString(randomGenerator.getEFSMAsDot());
+			}else {
+				throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
+			}
 		}
 	}
 	

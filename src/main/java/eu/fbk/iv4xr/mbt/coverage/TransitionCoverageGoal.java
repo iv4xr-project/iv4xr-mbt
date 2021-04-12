@@ -32,6 +32,7 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
  * @author kifetew
@@ -77,13 +78,16 @@ public class TransitionCoverageGoal<
 			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
 			// get trace from the listner
 			ExecutionTrace trace = executionListner.getExecutionTrace();
+
+			// add trace to result
+			executionResult.setExectionTrace(trace);
 			
 			// calculate feasibility fitness
 			double feasibilityFitness = -1;
 			if (executionResult.isSuccess()) {
 				feasibilityFitness = 0d;
 			}else {
-				feasibilityFitness = trace.getPathApproachLevel() + trace.getPathBranchDistance();
+				feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();
 			}
 			
 			// calculate coverage target fitness
@@ -94,7 +98,7 @@ public class TransitionCoverageGoal<
 				}else {
 					// target in path, but not covered => path is not feasible?
 					// TODO check this
-					targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
+					targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
 				}
 			}else { // if path not valid
 				//FIXME for now, simply take feasibilityFitness
@@ -104,6 +108,7 @@ public class TransitionCoverageGoal<
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
+			updateCollateralCoverage(individual, executionResult);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);
@@ -139,6 +144,16 @@ public class TransitionCoverageGoal<
 	@Override
 	public int hashCode() {
 		return transition.hashCode();
+	}
+
+	@Override
+	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
+		ExecutionTrace executionTrace = executionResult.getExectionTrace();
+		for (Object transition : executionTrace.getCoveredTransitions()) {
+			EFSMTransition coveredTransition = (EFSMTransition)transition;
+			CoverageGoal goal = new TransitionCoverageGoal(coveredTransition);
+			individual.addFitness(goal, 0d);
+		}
 	}
 
 }

@@ -81,7 +81,7 @@ public class MBTProperties {
 	 */
 
 	@Parameter(key = "sut_efsm", group = "Search Algorithm", description = "ID of the EFSM for the current SUT")
-	public static String SUT_EFSM = "labrecruits.buttons_doors_1"; // "labrecruits.random_default";
+	public static String SUT_EFSM = "labrecruits.random_default"; // "labrecruits.buttons_doors_fire"; // 
 	
 	@Parameter(key = "population", group = "Search Algorithm", description = "Population size of genetic algorithm")
 	@IntValue(min = 1)
@@ -246,7 +246,7 @@ public class MBTProperties {
 	
 	@Parameter(key = "modelcriterion", group = "Search Algorithm", description = "Model coverage criterion")
 	public static ModelCriterion[] MODELCRITERION = new ModelCriterion[] {
-		ModelCriterion.STATE, ModelCriterion.TRANSITION
+		ModelCriterion.TRANSITION //, ModelCriterion.STATE
 	};
 	
 	// MOSA PROPERTIES

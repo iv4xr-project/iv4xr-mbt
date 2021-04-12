@@ -19,6 +19,7 @@ import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
+import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -68,12 +69,18 @@ public class Main {
 	 * TODO should no longer be necessary, options can now be passed as commandline arguments -Doption=value
 	 */
 	private void setProperties () {
-		MBTProperties.SEARCH_BUDGET = 500;
-		MBTProperties.LR_mean_buttons = 1;
-		MBTProperties.LR_n_buttons = 20;
-		MBTProperties.LR_n_doors = 10 ;
-		MBTProperties.SUT_EFSM = "labrecruits.random_default";
-		MBTProperties.LR_seed = 370327;
+//		MBTProperties.SEARCH_BUDGET = 500;
+//		MBTProperties.LR_mean_buttons = 1;
+//		MBTProperties.LR_n_buttons = 20;
+//		MBTProperties.LR_n_doors = 10 ;
+//		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+//		MBTProperties.LR_seed = 370327;
+		
+		
+		MBTProperties.LR_seed = 325439;
+		MBTProperties.LR_mean_buttons = 0.5;
+		MBTProperties.LR_n_buttons = 40;
+		MBTProperties.LR_n_doors = 28;
 	}
 	
 
@@ -99,6 +106,12 @@ public class Main {
 				.desc("MOSA")
 				.build();
 		
+		Option tamer = Option.builder("tamer")
+				.argName("tamer")
+				.type(String.class)
+				.desc("TAMER")
+				.build();
+		
 		Option property   = Option.builder("D")
 				.numberOfArgs(2)
 				.argName("property=value")
@@ -113,6 +126,7 @@ public class Main {
 		options.addOption(help);
 		options.addOption(mosa);
 		options.addOption(random);
+		options.addOption(tamer);
 		options.addOption(property);
 		return options;
 	}
@@ -137,6 +151,10 @@ public class Main {
 				generationStrategy = new RandomTestStrategy<MBTChromosome>();
 			}
 			
+			if (line.hasOption("tamer")) {
+				generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
+			}
+			
 			setGlobalProperties (line);
 		} catch (ParseException e) {
 			System.err.println("Failed to parse commandline arguments.");
@@ -158,7 +176,7 @@ public class Main {
 
             if (!propertyNames.contains(propertyName)) {
 				LoggingUtils.getEvoLogger().error("* Unknown property: " + propertyName);
-				throw new Error("Unknown property: " + propertyName);
+//				throw new Error("Unknown property: " + propertyName);
 			}
 
             String propertyValue = properties.getProperty(propertyName);
@@ -167,7 +185,7 @@ public class Main {
 				MBTProperties.getInstance().setValue(propertyName, propertyValue);
 				
 			} catch (Exception e) {
-				throw new Error("Invalid value for property " + propertyName+": "+propertyValue+". Exception "+e.getMessage(),e);
+				LoggingUtils.getEvoLogger().error("Invalid value for property " + propertyName+": "+propertyValue+". Exception "+e.getMessage(),e);
 			}
             try {
             	//Do this also for Evosuite global properties, if they exsits
@@ -185,8 +203,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Main main = new Main ();
-		//main.setProperties();
 		main.parseCommandLine(args);
+		//main.setProperties();
 		main.run();
 		System.exit(0);
 	}

@@ -49,4 +49,10 @@ public class EFSMDotExporter<
       exporter.exportGraph(efsm.getBaseGraph(), writer);
     }
   }
+  
+  
+  public void writeOut(Writer writer) {
+	DOTExporter exporter = new DOTExporter<>(stateLabeler);
+	exporter.exportGraph(efsm.getBaseGraph(), writer);
+  }
 }

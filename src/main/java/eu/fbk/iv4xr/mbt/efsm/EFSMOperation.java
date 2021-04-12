@@ -29,8 +29,9 @@ public class EFSMOperation implements Cloneable, Serializable {
 	}
 	
 	@Override
-	public EFSMOperation clone() {	
-		return SerializationUtils.clone(this);
+	public EFSMOperation clone() {
+		
+		return new EFSMOperation((Assign[]) operations.getHash().values().toArray());
 	}
 	
 	public AssignSet getAssignments() {

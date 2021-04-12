@@ -65,6 +65,12 @@ public  class EFSM<
 	// String version of the model
 	private String efsmString = ""; 
 	
+	// ANML version of the model
+	private String anmlString = "";
+	
+	// the model in dot format
+	private String dotString = "";
+	
 	// to add
 	protected EFSMParameterGenerator<InParameter> inParameterSet;
 
@@ -485,6 +491,34 @@ public  class EFSM<
 			//graphMeasurer = new GraphMeasurer<State, EFSMTransition>(this.baseGraph);
 		}
 		
+	}
+
+	/**
+	 * @return the anmlString
+	 */
+	public String getAnmlString() {
+		return anmlString;
+	}
+
+	/**
+	 * @param anmlString the anmlString to set
+	 */
+	public void setAnmlString(String anmlString) {
+		this.anmlString = anmlString;
+	}
+
+	/**
+	 * @return the dotString
+	 */
+	public String getDotString() {
+		return dotString;
+	}
+
+	/**
+	 * @param dotString the dotString to set
+	 */
+	public void setDotString(String dotString) {
+		this.dotString = dotString;
 	}
 
 }

@@ -89,7 +89,9 @@ public class LabRecruitsRandomEFSMTest {
 		if (labRecruitsRandomEFSM.get_csv() == "") {
 			System.out.println("Cannot create a planar graph with these paratemers");
 		}
-
+		
+		String anml = labRecruitsRandomEFSM.getAnml();
+		System.out.println(anml);
 	}
 
 	@Test
@@ -123,6 +125,9 @@ public class LabRecruitsRandomEFSMTest {
 		System.out.println("Initial state is " + configuration.getState().toString());
 		EFSMContext context = configuration.getContext();
 		System.out.println("Context is " + configuration.getContext().toString());
+		
+		String anml = labRecruitsRandomEFSM.getAnml();
+		System.out.println(anml);
 	}
 
 	@Test
@@ -155,6 +160,8 @@ public class LabRecruitsRandomEFSMTest {
 			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
 		}
 		
+		String anml = labRecruitsRandomEFSM.getAnml();
+		System.out.println(anml);
 	}
 
 }

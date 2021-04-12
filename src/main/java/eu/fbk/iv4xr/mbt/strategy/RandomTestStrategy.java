@@ -45,7 +45,9 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * Iteratively generate random tests. If adding the random test
  * leads to improved fitness, keep it, otherwise drop it again.
  * 
- * @author gordon
+ * Class adapted from EvoSuite
+ * 
+ * @author kifetew
  *
  */
 public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy {

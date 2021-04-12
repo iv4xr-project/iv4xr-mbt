@@ -16,6 +16,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
  * @author kifetew
@@ -75,6 +77,12 @@ public class PathCoverageGoal<
 	@Override
 	public int hashCode() {
 		return path.hashCode();
+	}
+
+	@Override
+	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

@@ -3,11 +3,15 @@
  */
 package eu.fbk.iv4xr.mbt.coverage;
 
+import org.evosuite.Properties;
+
 //import java.util.HashSet;
 //import java.util.List;
 //import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
+import org.evosuite.ga.FitnessFunction;
+import org.evosuite.ga.archive.Archive;
 //import org.evosuite.ga.FitnessFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
+import eu.fbk.iv4xr.mbt.testcase.Testcase;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
@@ -80,12 +85,15 @@ public class StateCoverageGoal<
 			// get trace from the listner
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
+			// add trace to result
+			executionResult.setExectionTrace(trace);
+			
 			// calculate feasibility fitness
 			double feasibilityFitness = -1;
 			if (executionResult.isSuccess()) {
 				feasibilityFitness = 0d;
 			}else {
-				feasibilityFitness = trace.getPathApproachLevel() + trace.getPathBranchDistance();
+				feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();
 			}
 			
 			// calculate coverage target fitness
@@ -95,7 +103,7 @@ public class StateCoverageGoal<
 				if (trace.isCurrentGoalCovered()) {
 					targetFitness = 0d;
 				}else {
-					targetFitness = trace.getTargetApproachLevel() + trace.getTargetBranchDistance();
+					targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
 				}
 			}else { // if path not valid
 				//FIXME for now, simply take feasibilityFitness
@@ -105,6 +113,7 @@ public class StateCoverageGoal<
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
+			updateCollateralCoverage(individual, executionResult);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);
@@ -146,6 +155,20 @@ public class StateCoverageGoal<
 	@Override
 	public int hashCode() {
 		return state.hashCode();
+	}
+
+	@Override
+	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
+		ExecutionTrace executionTrace = executionResult.getExectionTrace();
+		for (Object state : executionTrace.getCoveredStates()) {
+			EFSMState coveredState = (EFSMState)state;
+			CoverageGoal goal = new StateCoverageGoal(coveredState);
+			individual.addFitness(goal, 0d);
+//			if (Properties.TEST_ARCHIVE) {
+//				Archive.getArchiveInstance().updateArchive(goal, individual, 0d);
+//			}
+		}
+		
 	}
 
 }

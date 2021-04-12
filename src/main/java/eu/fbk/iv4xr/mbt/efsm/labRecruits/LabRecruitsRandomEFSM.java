@@ -1,5 +1,7 @@
 package eu.fbk.iv4xr.mbt.efsm.labRecruits;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.jgrapht.GraphPath;
@@ -10,10 +12,12 @@ import org.jgrapht.graph.Pseudograph;
 import org.jgrapht.nio.graphml.GraphMLExporter;
 import org.jgrapht.alg.planar.BoyerMyrvoldPlanarityInspector;
 
-
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,12 +28,14 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 import java.util.function.Function;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMBuilder;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -191,6 +197,321 @@ public class LabRecruitsRandomEFSM {
 		return efsm;
 	}
 	
+	
+	public String getAnml () {
+		StringBuffer anml = new StringBuffer();
+		String anmlDomainFile = "anml_templates/lab_recruits/buttons_doors.anml";
+		
+		InputStream inputStream = ClassLoader.getSystemResourceAsStream(anmlDomainFile);
+		try {
+			String content = new String(inputStream.readAllBytes());
+			anml.append(content);
+			inputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String anmlInstance;
+		if (MBTProperties.MODELCRITERION[0] == ModelCriterion.STATE) {
+			anmlInstance = getAnmlInstanceMultiGoal(ModelCriterion.STATE);
+		}else if (MBTProperties.MODELCRITERION[0] == ModelCriterion.TRANSITION) {
+			anmlInstance = getAnmlInstanceMultiGoal(ModelCriterion.TRANSITION);
+		}else {
+			throw new RuntimeException("PlanningBasedGenerator does not support cirterion: " + MBTProperties.MODELCRITERION[0]);
+		}
+		anml.append(anmlInstance);
+		return anml.toString();
+	}
+	
+	/**
+	 * Return the model in ANML language. The domain modeling part is to be reused from the current manual implementation.
+	 * @return string representation of the ANML problem intance
+	 */
+	public String getAnmlInstanceSingleGoal () {
+		StringBuffer anml = new StringBuffer();
+		
+		// prepare the data necessary
+		// set of buttons, doors, mapping (opens)
+		
+		// doors are edges
+		Set<String> doors = new HashSet<>();
+		Set<String> doorSideNames = new HashSet<>();
+		for (Integer e : doorsGraph.edgeSet()) {
+			doors.add(nameDoor(e));
+			doorSideNames.add(nameDoorSide(e, true));
+			doorSideNames.add(nameDoorSide(e, false));
+		}
+		
+		// buttons are vertices
+		Set<String> buttons = new HashSet<>();
+		for (Vector<EFSMState> v : doorsGraph.vertexSet()){
+			for (EFSMState b : v) {
+				buttons.add(b.getId());
+			}
+		}
+		
+		// button opens door
+		Map<String, Set<String>> door2Button = new HashMap<>();
+		for (Entry<Integer, Set<EFSMState>> entry : doorButtonsMap.entrySet()) {
+			Set<String> btns = new HashSet<String>();
+			for (EFSMState btn : entry.getValue()) {
+				btns.add(btn.getId());
+			}
+			door2Button.put(nameDoor(entry.getKey()), btns);
+		}
+		
+		// some strings
+		String buttonType = "Button";
+		String doorType = "Door";
+		String locationType = "Location";
+		
+		//////////////////////////////////////////////////////
+		
+		// buttons
+		anml.append("\ninstance " + buttonType + " ");
+		for (String bn : buttons) {
+			anml.append(" " + bn+ ",");
+		}
+		// replace last , by ;
+			replaceLastCommaBySemicolon(anml);
+		
+		
+		// doors
+//		Set<String> doorSideNames = new HashSet<String>();
+		anml.append("\ninstance " + doorType + " ");
+		for (String doorName : doors) {
+			anml.append(" " + doorName + ",");
+		}
+		// replace last , by ;
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// button locations
+		anml.append("\ninstance " +  locationType + " ");
+		for (String bn : buttons) {
+			anml.append(locationName (bn) + ",");
+		}
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// door side locations
+		anml.append("\ninstance " +  locationType + " ");
+		for (String dsn : doorSideNames) {
+			anml.append(locationName (dsn) + ",");
+		}
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// initialize the constants
+		for (String bn : buttons) {
+			anml.append("\nbutton_location("+ bn +") := " + locationName (bn) + ";");
+		}
+		
+
+		for (Entry<String, Set<String>> entry : door2Button.entrySet()) {
+			for (String b : entry.getValue()) {
+				anml.append("\nconnected("+ b  + "," + entry.getKey() +") := true;");
+			}
+		}
+		anml.append("\nconnected(*) := false;");
+		
+		
+		// add free (non-guarded) transitions/movements
+		for (Object t : efsm.getTransitons()) {
+			EFSMTransition trans = (EFSMTransition)t;
+			if (!trans.isSelfTransition() && trans.getGuard() == null) {
+				anml.append("\nreachable("+ locationName (trans.getSrc().getId()) + "," + locationName (trans.getTgt().getId()) +") := true;");
+			}
+		}
+		anml.append("\nreachable(*) := false;");
+		
+		for (Integer d : doorButtonsMap.keySet()) {
+			String s1 = locationName (nameDoorSide(d, true));
+			String s2 = locationName (nameDoorSide(d, false));
+			String dn = nameDoor (d);
+			anml.append("\ndoor_connection("+ s1 + ", " + s2 +") := " + dn + ";");
+			anml.append("\ndoor_connection("+ s2 + ", " + s1 +") := " + dn + ";");
+		}
+		anml.append("\ndoor_connection(*) := NONE;");
+		
+		
+		
+		// This is the initial state description (the agent is in b0 and all
+		// doors are closed)
+		String b0 = efsm.getInitialConfiguration().getState().getId(); // nameButton(0);
+		anml.append("\n[start] position := " + locationName (b0) + ";");
+		
+		for (String d : door2Button.keySet()) {
+			anml.append("\n[start] open(" + d + ") := false;");
+		}
+		anml.append("\n[start] open(NONE) := false;");
+		
+		// This is the goal of the planning problem: we want to eventually
+		// reach location T
+		
+		// reach all states (buttons and doors)?
+//		for (Object s : efsm.getStates()) {
+//			String target = locationName (((EFSMState)s).getId());
+//			anml.append("\n[end] position == " + target + ";");
+//		}
+		
+		String target = locationName (nameDoorSide(doors.size()-1, true));
+		anml.append("\n[end] position == " + target + ";");
+		return anml.toString();
+	}
+	
+	
+	/**
+	 * Return the model in ANML language. The domain modeling part is to be reused from the current manual implementation.
+	 * @param criterion 
+	 * @return string representation of the ANML problem intance
+	 */
+	public String getAnmlInstanceMultiGoal (ModelCriterion criterion) {
+		StringBuffer anml = new StringBuffer();
+		
+		// prepare the data necessary
+		// set of buttons, doors, mapping (opens)
+		
+		// doors are edges
+		Set<String> doors = new HashSet<>();
+		Set<String> doorSideNames = new HashSet<>();
+		for (Integer e : doorsGraph.edgeSet()) {
+			doors.add(nameDoor(e));
+			doorSideNames.add(nameDoorSide(e, true));
+			doorSideNames.add(nameDoorSide(e, false));
+		}
+		
+		// buttons are vertices
+		Set<String> buttons = new HashSet<>();
+		for (Vector<EFSMState> v : doorsGraph.vertexSet()){
+			for (EFSMState b : v) {
+				buttons.add(b.getId());
+			}
+		}
+		
+		// button opens door
+		Map<String, Set<String>> door2Button = new HashMap<>();
+		for (Entry<Integer, Set<EFSMState>> entry : doorButtonsMap.entrySet()) {
+			Set<String> btns = new HashSet<String>();
+			for (EFSMState btn : entry.getValue()) {
+				btns.add(btn.getId());
+			}
+			door2Button.put(nameDoor(entry.getKey()), btns);
+		}
+		
+		// some strings
+		String buttonType = "Button";
+		String doorType = "Door";
+		String locationType = "Location";
+		
+		//////////////////////////////////////////////////////
+		
+		// buttons
+		anml.append("\ninstance " + buttonType + " ");
+		for (String bn : buttons) {
+			anml.append(" " + bn+ ",");
+		}
+		// replace last , by ;
+			replaceLastCommaBySemicolon(anml);
+		
+		
+		// doors
+//		Set<String> doorSideNames = new HashSet<String>();
+		anml.append("\ninstance " + doorType + " ");
+		for (String doorName : doors) {
+			anml.append(" " + doorName + ",");
+		}
+		// replace last , by ;
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// button locations
+		anml.append("\ninstance " +  locationType + " ");
+		for (String bn : buttons) {
+			anml.append(locationName (bn) + ",");
+		}
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// door side locations
+		anml.append("\ninstance " +  locationType + " ");
+		for (String dsn : doorSideNames) {
+			anml.append(locationName (dsn) + ",");
+		}
+		replaceLastCommaBySemicolon(anml);
+		
+		
+		// initialize the constants
+		for (String bn : buttons) {
+			anml.append("\nbutton_location("+ bn +") := " + locationName (bn) + ";");
+		}
+		
+
+		for (Entry<String, Set<String>> entry : door2Button.entrySet()) {
+			for (String b : entry.getValue()) {
+				anml.append("\nconnected("+ b  + "," + entry.getKey() +") := true;");
+			}
+		}
+		anml.append("\nconnected(*) := false;");
+		
+		
+		// add free (non-guarded) transitions/movements
+		for (Object t : efsm.getTransitons()) {
+			EFSMTransition trans = (EFSMTransition)t;
+			if (!trans.isSelfTransition() && trans.getGuard() == null) {
+				anml.append("\nreachable("+ locationName (trans.getSrc().getId()) + "," + locationName (trans.getTgt().getId()) +") := true;");
+			}
+		}
+		anml.append("\nreachable(*) := false;");
+		
+		for (Integer d : doorButtonsMap.keySet()) {
+			String s1 = locationName (nameDoorSide(d, true));
+			String s2 = locationName (nameDoorSide(d, false));
+			String dn = nameDoor (d);
+			anml.append("\ndoor_connection("+ s1 + ", " + s2 +") := " + dn + ";");
+			anml.append("\ndoor_connection("+ s2 + ", " + s1 +") := " + dn + ";");
+		}
+		anml.append("\ndoor_connection(*) := NONE;");
+		
+		
+		
+		// This is the initial state description (the agent is in b0 and all
+		// doors are closed)
+		String b0 = efsm.getInitialConfiguration().getState().getId(); // nameButton(0);
+		anml.append("\n[start] position := " + locationName (b0) + ";");
+		
+		anml.append("\n[start] forall(Location l) { location_visited(l) := false; };");
+		anml.append("\n[start] forall(Location l1, Location l2) { edge_visited(l1, l2) := false; };");
+		anml.append("\n[start] forall(Door d) { open(d) := false; };");
+		
+		
+		if (criterion == ModelCriterion.STATE) {
+			// This is the goal of the planning problem: we want to eventually
+			// visit all the locations
+			anml.append("\n[end] forall(Location l) { location_visited(l) == true; };");
+		}else if (criterion == ModelCriterion.TRANSITION) {
+			// This is the goal of the planning problem: we want to eventually
+			// visit all the edges
+			anml.append("\n[end] forall(Location l1, Location l2) { (not (reachable(l1, l2) or door_connection(l1, l2) != NONE)) or edge_visited(l1, l2) == true; };");
+		}else {
+			throw new RuntimeException("Unsupported criterion: " + criterion);
+		}
+
+		return anml.toString();
+	}
+	
+	private String locationName (String entityName) {
+		return "l_" + entityName;
+	}
+	
+	/**
+	 * Utility method
+	 * @param anml
+	 */
+	private void replaceLastCommaBySemicolon(StringBuffer anml) {
+		anml.setCharAt(anml.length() - 1, ';');
+	}
 	
 	/*
 	 * Auxiliary function to name a button
@@ -974,6 +1295,27 @@ public class LabRecruitsRandomEFSM {
 			Path outFile = Paths.get(scenarioID+"_efsm.dot");
 			dotExporter.writeOut(outFile);
 		}
+	}
+	
+	/**
+	 * Export efsm to a string in dot format
+	 * 
+	 * @throws IOException 
+	 */
+	public String getEFSMAsDot(){
+		String dot = "";
+		if (efsm != null) {
+			Function<EFSMState, String> stateLabeler = (state) -> { return(state.getId()); };
+			Function<EFSMTransition, String> edgeLabeler = (edge) -> { return(""); };
+			
+			EFSMDotExporter dotExporter = new EFSMDotExporter(efsm,stateLabeler,edgeLabeler);
+			
+			
+			StringBuilderWriter stringWriter = new StringBuilderWriter();
+			dotExporter.writeOut(stringWriter);
+			dot = stringWriter.toString();
+		}
+		return dot;
 	}
 	
 	/*

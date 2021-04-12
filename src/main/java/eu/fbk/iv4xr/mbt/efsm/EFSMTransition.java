@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.evosuite.utils.Randomness;
 
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
@@ -40,6 +41,7 @@ public class EFSMTransition<
 	/**
 	 * 
 	 */
+	private String id;
 	private State src;
 	private State tgt;
 	private Operation op;
@@ -53,14 +55,29 @@ public class EFSMTransition<
 	 *  Maybe this could be made safer.
 	 */
 	
-	public EFSMTransition(Operation op, Guard guard, InParameter inParameter, OutParameter outParameter) {
+	public EFSMTransition(String id, Operation op, Guard guard, InParameter inParameter, OutParameter outParameter) {
+		this.id = id;
 		this.op = op;
 		this.guard = guard;
 		this.inParameter = inParameter;
 		this.outParameter = outParameter;
 	}
 	
-	public EFSMTransition() {
+	public EFSMTransition () {
+		// assign a unique id
+		id = generateUniqueId();
+	}
+	
+	public EFSMTransition(String id) {
+		if (id == null || id.isEmpty()) {
+			this.id = generateUniqueId();
+		}else {
+			this.id = id;
+		}
+	}
+	
+	private String generateUniqueId () {
+		return "" + Randomness.nextLong() + "_" + System.currentTimeMillis();
 	}
 	
 	/*
@@ -231,7 +248,7 @@ public class EFSMTransition<
 	 */
 	@Override
 	public EFSMTransition clone() {	
-		EFSMTransition copy = new EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard>(op, guard, inParameter, outParameter);
+		EFSMTransition copy = new EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard>(id, op, guard, inParameter, outParameter);
 		copy.src = src;
 		copy.tgt = tgt;
 		return copy;
@@ -262,8 +279,7 @@ public class EFSMTransition<
 		return (src.equals(tgt));
 	}
 
-	@Override
-	public boolean equals(Object obj) {
+	public boolean exactEquals(Object obj) {
 		if (obj == this) {
 			return true;
 		}
@@ -280,8 +296,36 @@ public class EFSMTransition<
 		}
 	}
 	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof EFSMTransition) {
+			EFSMTransition t = (EFSMTransition)obj;
+			return id.contentEquals(t.getId());
+		}else {
+			return false;
+		}
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(src, tgt, op, guard, inParameter, outParameter);
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 }
