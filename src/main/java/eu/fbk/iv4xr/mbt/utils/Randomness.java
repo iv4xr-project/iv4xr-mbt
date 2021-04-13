@@ -13,6 +13,8 @@ import org.apache.commons.math3.random.MersenneTwister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
+
 /**
  * Unique random number accessor
  * 
@@ -31,7 +33,7 @@ public class Randomness implements Serializable {
 	private static Randomness instance = new Randomness();
 
 	private Randomness() {
-		seed = System.currentTimeMillis();
+		seed = MBTProperties.RANDOM_SEED;
 		logger.info("No seed given. Using {}.", seed);
 		
 		random = new MersenneTwister(seed);

@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 
@@ -28,7 +29,8 @@ class EFSMToAnmlTest {
 	
 	@Test
 	void testAnmlInstance() {
-		String anmlInstance = lrRandom.getAnmlInstance();
+		ModelCriterion criterion = ModelCriterion.STATE;
+		String anmlInstance = lrRandom.getAnmlInstanceMultiGoal(criterion);
 		System.out.println(anmlInstance);
 	}
 	
