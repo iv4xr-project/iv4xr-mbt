@@ -284,6 +284,38 @@ public class MBTProperties {
 	@Parameter(key = "LR_mean_buttons", group = "Lab Recruits", description = "Expected number of buttons in a room")
 	public static double LR_mean_buttons = 1;
 	
+	@Parameter(key = "LR_n_rooms", group = "Lab Recruits", description = "Number of rooms")
+	public static int LR_n_rooms = 3;
+	
+	/*
+	 * Random generation has four parameters:
+	 * - number of buttons
+	 * - number of doors
+	 * - number of rooms
+	 * - mean number of buttons per room
+	 * Random generation mode fixed on parameter has dependent.
+	 */
+	public enum LR_random_mode {
+		// the number of rooms depends on the number of buttons and the mean buttons per room
+		N_ROOMS_DEPENDENT, 
+		// the number of buttons depends on the number of rooms and the mean number of buttons
+		N_BUTTONS_DEPENDENT,
+		// the user select the number of rooms and buttons and the buttons are uniformly distributed in the rooms
+		UNIFORM_BUTTON_DISTRIBUTION
+	}
+	
+	@Parameter(key = "LR_generation_mode", group = "Lab Recruits", description = "Number of rooms")
+	public static LR_random_mode LR_generation_mode = LR_random_mode.N_ROOMS_DEPENDENT;
+	
+	
+	/*
+	 * Number of maximum tries to generate a randoma level
+	 * 
+	 */
+	@Parameter(key = "LR_n_try_generation", group = "Lab Recruits", description = "Number of tries to generate a LR level")
+	public static int LR_n_try_generation = 3;
+	
+	
 	/**
 	 * Get all parameters that are available
 	 *

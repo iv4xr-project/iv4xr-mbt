@@ -95,6 +95,9 @@ public class LabRecruitsRandomEFSM {
 	// Buttons per room are selected following a Poisson
 	private double meanButtonsPerRoom = MBTProperties.LR_mean_buttons;
 	
+	// Number of rooms
+	private int nRooms = MBTProperties.LR_n_rooms;
+	
 	// random number generator (using Mersenne Twister rng) 
 	private RandomDataGenerator rndGenerator = new RandomDataGenerator(new MersenneTwister(seed));
 	
@@ -119,7 +122,7 @@ public class LabRecruitsRandomEFSM {
 		
 		
 		
-		int nTry = 1;
+		int nTry = MBTProperties.LR_n_try_generation;
 		while(this.csvLevel == "" & nTry > 0) {
 			// generate a list of rooms
 			// each room is a vector of buttons
@@ -132,23 +135,23 @@ public class LabRecruitsRandomEFSM {
 			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
 			
 			// compute the embedding, if possible
+			// if the graph is not planar it is not possible to generate csv
 			BoyerMyrvoldPlanarityInspector planaryInspector = new BoyerMyrvoldPlanarityInspector(this.doorsGraph);
 			if (planaryInspector.isPlanar()) {
 				this.doorsGraph = (Pseudograph<Vector<EFSMState>, Integer>) planaryInspector.getEmbedding().getGraph();
-			}else {
-				nTry = nTry - 1;
+				// DEBUG saveDoorGraph("data/test_"+nTry+".xml");
+				// test if doorsGraph is effectively planar
+				// need to update JGraphT
+				
+				// expand the doors graph to the corresponding EFSM
+				// and add button-doors map
+				this.efsm = doorsGraphToEFSM();
+				
+				// create the csv version that can be played
+				this.csvLevel = generateCSV();	
+			}else if (nTry == 1) {
+				this.efsm = doorsGraphToEFSM();
 			}
-			
-			// DEBUG saveDoorGraph("data/test_"+nTry+".xml");
-			// test if doorsGraph is effectively planar
-			// need to update JGraphT
-			
-			// expand the doors graph to the corresponding EFSM
-			// and add button-doors map
-			this.efsm = doorsGraphToEFSM();
-			
-			// create the csv version that can be played
-			this.csvLevel = generateCSV();
 			nTry = nTry - 1;
 		}
 	}
@@ -160,30 +163,42 @@ public class LabRecruitsRandomEFSM {
 	public int get_nButtons() {
 		return(nButtons);
 	}
+	/*
 	public void set_nButtons(int nB) {
 		nButtons = nB;
 	}
+	*/
 	public int get_nDoors() {
 		return(nDoors);
 	}
+	/*
 	public void set_nDoors(int nD) {
 		nDoors = nD;
 	}
+	*/
 	public double get_meanButtonsPerRoom() {
 		return(meanButtonsPerRoom);
 	}
+	/*
 	public void set_meanButtonsPerRoom(double mBR) {
 		if (mBR >0 ) {
 			meanButtonsPerRoom = mBR;
 		}		
 	}
+	*/
+	public int get_nRooms() {
+		return(nRooms);
+	}
+	
 	public long get_seed() {
 		return(seed);
 	}
+	/*
 	public void set_seed(long newSeed) {
 		seed = newSeed;
 		rndGenerator.reSeed(newSeed);
 	}
+	*/
 	public String get_csv() {
 		return csvLevel;
 	}
@@ -501,6 +516,7 @@ public class LabRecruitsRandomEFSM {
 		return anml.toString();
 	}
 	
+	
 	private String locationName (String entityName) {
 		return "l_" + entityName;
 	}
@@ -538,11 +554,53 @@ public class LabRecruitsRandomEFSM {
 		}
 	}
 	
+	
 	/**
-	 * Generate a set of rooms. The total number of buttons and the expected number of buttons per room are defined
+	 * Generate a room set accordingly with MBTProperty LR_random_mode
+	 * @return A room set represented as a list of vectors. Each vector represents the buttons of a room.
+	 */
+	private List<Vector<EFSMState>> generateRoomSet(){
+		switch (MBTProperties.LR_generation_mode) {
+		case N_ROOMS_DEPENDENT:
+			// n rooms is the dependent variable
+			return generateRoomSetRoomDependent();
+		case N_BUTTONS_DEPENDENT:
+			return generateRoomSetButtonsDependent();
+		default:
+			// n rooms is the dependent variable
+			return generateRoomSetRoomDependent();
+		}
+		
+	}
+	
+	private List<Vector<EFSMState>> generateRoomSetButtonsDependent(){
+		// number of rooms that are not yet generated
+		int availableRooms = nRooms;
+		// buttons names id
+		int currentButtonId = 0;
+		// room set
+		List<Vector<EFSMState>> roomSet = new ArrayList<Vector<EFSMState>>();
+		// generate rooms
+		while ( availableRooms > 0) {
+			int nRoomButtons = (int)rndGenerator.nextPoisson(meanButtonsPerRoom) + 1;
+			// generate a room 
+			Vector<EFSMState> room = generateRoom(currentButtonId,nRoomButtons);
+			roomSet.add(room);
+			// update id for naming buttons
+			currentButtonId = currentButtonId + nRoomButtons;	
+			availableRooms = availableRooms - 1;
+		}
+		this.nButtons =currentButtonId+1;
+		return roomSet;	
+	}
+	
+	
+	
+	/**
+	 * Generate a set of rooms given the number of buttons and the mean number buttons in a room. 
 	 * @return a list of vectors of LabRectuitsState
 	 */
-	private List<Vector<EFSMState>> generateRoomSet(){		
+	private List<Vector<EFSMState>> generateRoomSetRoomDependent(){		
 		// buttons that need to be generated
 		int availableButtons  = nButtons;
 		// buttons names are in the form b_1, b_2, ...
@@ -568,8 +626,10 @@ public class LabRecruitsRandomEFSM {
 			// update id for naming buttons
 			currentButtonId = currentButtonId + nRoomButtons;			
 		}		
+		this.nRooms = roomSet.size();
 		return roomSet;		
 	}
+	
 	
 	/**
 	 * A room is a vector of buttons. Each button is named with an integer.
@@ -1321,11 +1381,18 @@ public class LabRecruitsRandomEFSM {
 	/*
 	 * Save the csv playable with Lab Recruits
 	 */
-	public void saveLabRecruitsLevel(String scenarioID) throws IOException{
+	public void saveLabRecruitsLevel(String scenarioID){
 		Path outFile = Paths.get(scenarioID+"_LR.csv");
-		BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.toString()));
-		writer.write(this.csvLevel);
-        writer.close();
+		
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.toString()));
+			writer.write(this.csvLevel);
+	        writer.close();
+		} catch(IOException io){
+			io.printStackTrace();
+		}
+		
+		
 	}
 	
 }

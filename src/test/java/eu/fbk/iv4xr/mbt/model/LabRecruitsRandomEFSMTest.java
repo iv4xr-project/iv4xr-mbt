@@ -91,15 +91,15 @@ public class LabRecruitsRandomEFSMTest {
 		}
 		
 		String anml = labRecruitsRandomEFSM.getAnml();
-		System.out.println(anml);
+		//System.out.println(anml);
 	}
 
 	@Test
 	public void generateLargeLevel() throws IOException {
 		MBTProperties.LR_seed = 325439;
 		MBTProperties.LR_mean_buttons = 0.5;
-		MBTProperties.LR_n_buttons = 40;
-		MBTProperties.LR_n_doors = 28;
+		MBTProperties.LR_n_buttons = 50;
+		MBTProperties.LR_n_doors = 31;
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
 
@@ -127,7 +127,7 @@ public class LabRecruitsRandomEFSMTest {
 		System.out.println("Context is " + configuration.getContext().toString());
 		
 		String anml = labRecruitsRandomEFSM.getAnml();
-		System.out.println(anml);
+		//System.out.println(anml);
 	}
 
 	@Test
@@ -161,7 +161,33 @@ public class LabRecruitsRandomEFSMTest {
 		}
 		
 		String anml = labRecruitsRandomEFSM.getAnml();
-		System.out.println(anml);
+		//System.out.println(anml);
 	}
 
+	@Test
+	public void generateLevelWithFixedRooms() throws IOException{
+		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
+		MBTProperties.LR_n_rooms = 5;
+		MBTProperties.LR_mean_buttons = 1;
+		MBTProperties.LR_n_doors = 6;
+		
+		// initalize the generator with default parameters
+		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
+
+		// generate and EFSM
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/Five_rooms_Six_doors";
+		// save door graph in graphml formal
+		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		// save EFSM in dot format
+		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
+		
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
+		
+	}
 }
