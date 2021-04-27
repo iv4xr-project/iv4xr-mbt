@@ -162,8 +162,20 @@
 		<dependency>
 			<groupId>com.github.iv4xr-project</groupId>
 			<artifactId>iv4xrDemo</artifactId>
-			<version>master-SNAPSHOT</version>
+			<version>[2.2.1,)</version>
 		</dependency>
-
+		<!-- dependency>
+            <groupId>com.github.iv4xr-project</groupId>
+            <artifactId>lab-recruits-api</artifactId>
+            <version>[2.2.2,)</version>
+        </dependency-->
+		
+		
+		<dependency>
+            <groupId>com.github.iv4xr-project</groupId>
+            <artifactId>aplib</artifactId>
+            <version>[1.2.1,)</version> <!--  at least version 1.2.1 -->
+        </dependency>
+		
 	</dependencies>
 </project>
