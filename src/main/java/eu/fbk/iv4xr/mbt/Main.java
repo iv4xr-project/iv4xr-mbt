@@ -44,17 +44,16 @@ public class Main {
 	
 	private void run () {
 		SuiteChromosome solution = generationStrategy.generateTests();
-		//solution.
-		for (int i = 0; i < solution.size(); i++) {
-			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
-			System.out.println("Valid: " + testcase.isValid());
-			//System.out.println(testcase.toDot());
-			//System.out.println(testcase.toString());
-			if (!testcase.isValid()) {
-				// re-execute for debugging
-				executeForDebug (testcase);
-			}
-		}
+		// print some stats
+		System.out.println("Generated: " + solution.size() + " tests");
+		
+//		for (int i = 0; i < solution.size(); i++) {
+//			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
+//			if (!testcase.isValid()) { // this should not happen anymore
+//				// re-execute for debugging
+//				executeForDebug (testcase);
+//			}
+//		}
 	}
 	
 	private void executeForDebug(AbstractTestSequence testcase) {

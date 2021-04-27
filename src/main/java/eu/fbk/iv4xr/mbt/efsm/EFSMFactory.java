@@ -61,6 +61,12 @@ public class EFSMFactory {
 					MBTProperties.LR_n_doors = 28;
 					MBTProperties.LR_seed = 325439;
 					break;
+				case "labrecruits.random_impossible" :
+					MBTProperties.LR_mean_buttons = 5;
+					MBTProperties.LR_n_buttons = 80;
+					MBTProperties.LR_n_doors = 40;
+					MBTProperties.LR_seed = 325439;
+					break;
 				default:
 					throw new RuntimeException("Unrecognized random SUT: " + MBTProperties.SUT_EFSM);
 				}

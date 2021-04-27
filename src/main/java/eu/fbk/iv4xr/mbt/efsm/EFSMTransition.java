@@ -315,7 +315,7 @@ public class EFSMTransition<
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(src, tgt, op, guard, inParameter, outParameter);
+		return id.hashCode(); //Objects.hash(src, tgt, op, guard, inParameter, outParameter);
 	}
 
 	/**

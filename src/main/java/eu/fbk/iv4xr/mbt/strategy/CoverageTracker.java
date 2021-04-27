@@ -40,22 +40,19 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		}
 	}
 	
-//	public Set<MBTChromosome> getTestSuite (){
-//		Set<MBTChromosome> suite = new HashSet<MBTChromosome>();
-//		suite.addAll(coverageMap.values());
-//		suite.remove(null);
-//		return suite;
-//	}
-
-	
 	public SuiteChromosome getTestSuite () {
-		SuiteChromosome suite = new MBTSuiteChromosome();
-		for (MBTChromosome test : coverageMap.values()) {
-			if (test != null) {
-				suite.addTest(test);
-			}
-		}
-		return suite;
+		Set<MBTChromosome> suite = new HashSet<MBTChromosome>();
+		suite.addAll(coverageMap.values());
+		suite.remove(null);
+		
+		// debug
+		//System.out.println("Original suite size: " + coverageMap.values().size());
+		//System.out.println("Uniques only size  : " + suite.size());
+		
+		SuiteChromosome testSuite = new MBTSuiteChromosome();
+		testSuite.addTests(suite);
+
+		return testSuite;
 	}
 	
 	
