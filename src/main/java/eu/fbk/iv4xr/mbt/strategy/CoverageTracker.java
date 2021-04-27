@@ -16,6 +16,8 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.SearchListener;
 import org.evosuite.ga.stoppingconditions.StoppingConditionImpl;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -26,6 +28,15 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  */
 public class CoverageTracker extends StoppingConditionImpl implements SearchListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2066478272595190175L;
+	
+	protected StringBuffer statistics;
+	private String STATISTICS_HEADER = "goals, covered_goals, coverage, tests, budget, consumed_budget, criteria\n";
+	private long startTime;
+
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
 	double coverage;
 	/**
@@ -33,6 +44,11 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	 * 
 	 */
 	public CoverageTracker(List<?> goals) {
+		// initialize statistics buffer and print header
+		statistics = new StringBuffer();
+//		appendStat(STATISTICS_HEADER);
+		startTime = System.currentTimeMillis();
+		
 		coverage = 0d;
 		coverageMap = new HashMap<FitnessFunction<MBTChromosome>, MBTChromosome>();
 		for (Object goal : goals) {
@@ -102,8 +118,31 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void searchFinished(GeneticAlgorithm<?> arg0) {
-		// TODO Auto-generated method stub
+		// write statistics to buffer
+		int tests = getTestSuite().size();
+		int goals = coverageMap.size();
+		int coveredGoals = getCoveredGoals ();
+		double coverage = getCoverage();
+		long budget = MBTProperties.SEARCH_BUDGET;
+		long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
+		String criteria = "";
+		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
+			criteria += criterion.toString() + ";";
+		}
+		
+		//goals, covered_goals, coverage, tests, budget, consumed_budget
+		String statLine = goals + "," + coveredGoals + "," + coverage + "," + tests + "," + budget + "," + consumedBudget + "," + criteria;
+		appendStat(statLine);
+	}
 
+	private int getCoveredGoals() {
+		int count = 0;
+		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+			if (entry.getValue() != null) {
+				count ++;
+			}
+		}
+		return count;
 	}
 
 	@Override
@@ -153,4 +192,26 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		return coverage;
 	}
 
+	
+	private void appendStat(String string) {
+		statistics.append(string + "\n");
+		
+	}
+	
+	/**
+	 * NOTE: should be after the search is completed.
+	 *  
+	 * @return string containing the search statistics as csv
+	 */
+	public String getStatistics () {
+		return statistics.toString();
+	}
+	
+	/**
+	 * Returns the header for the statistics data in csv
+	 * @return
+	 */
+	public String getStatisticsHeader () {
+		return STATISTICS_HEADER;
+	}
 }

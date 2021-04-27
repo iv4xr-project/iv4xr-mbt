@@ -25,7 +25,7 @@ public abstract class GenerationStrategy {
 	public abstract SuiteChromosome generateTests();
 	
 	/** There should only be one */
-	protected final ProgressMeter progressMonitor = new ProgressMeter();
+	private final ProgressMeter progressMonitor = new ProgressMeter();
 
 	/** There should only be one */
 	protected ZeroFitnessStoppingCondition zeroFitness = new ZeroFitnessStoppingCondition();
@@ -33,6 +33,8 @@ public abstract class GenerationStrategy {
 	/** There should only be one */
 	protected StoppingCondition globalTime = new GlobalTimeStoppingCondition();
 
+	protected CoverageTracker coverageTracker;
+	
 	
 	/**
 	 * Check if the budget has been used up. The GA will do this check
@@ -79,4 +81,13 @@ public abstract class GenerationStrategy {
 			return new MaxGenerationStoppingCondition();
 		}
 	}
+
+
+	/**
+	 * @return the coverageTracker
+	 */
+	public CoverageTracker getCoverageTracker() {
+		return coverageTracker;
+	}
+
 }

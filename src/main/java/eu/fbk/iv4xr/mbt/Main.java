@@ -3,6 +3,8 @@
  */
 package eu.fbk.iv4xr.mbt;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -13,11 +15,12 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.evosuite.utils.LoggingUtils;
 
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
-
+import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
@@ -47,15 +50,55 @@ public class Main {
 		// print some stats
 		System.out.println("Generated: " + solution.size() + " tests");
 		
-//		for (int i = 0; i < solution.size(); i++) {
-//			AbstractTestSequence testcase = (AbstractTestSequence)solution.getTestChromosome(i).getTestcase();
-//			if (!testcase.isValid()) { // this should not happen anymore
-//				// re-execute for debugging
-//				executeForDebug (testcase);
-//			}
-//		}
+		// write tests to disk
+		writeTests (solution);
+		
+		// write statistics to disk
+		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
+		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader());
+		System.out.println(coverageTracker.getStatistics());
+		
 	}
 	
+	/**
+	 * write search statistics to statistics folder defined in MBTProperties
+	 * If there exists one, update it. Otherwise, new file should be created.
+	 * @param statistics
+	 * @param statisticsHeader
+	 */
+	private void writeStatistics(String statistics, String statisticsHeader) {
+		// make sure stats folder exists
+		File statsFolder = new File (MBTProperties.STATISTICS_DIR);
+		if (!statsFolder.exists()) {
+			statsFolder.mkdirs();
+		}
+		
+		File statsFile = new File (MBTProperties.STATISTICS_FILE);
+		boolean exists = false;
+		if (statsFile.exists()) {
+			exists = true;
+		}
+		
+		try {
+			FileUtils.writeStringToFile(statsFile, (exists?statistics:statisticsHeader + statistics), true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * Creates a new folder (currenttime) in the default TESTS folder,
+	 * writes each test in a separate file (for now in .dot format)
+	 * @param solution
+	 */
+	private void writeTests(SuiteChromosome solution) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	private void executeForDebug(AbstractTestSequence testcase) {
 //		TestExecutor executor = new EFSMTestExecutor<>();
 		ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);

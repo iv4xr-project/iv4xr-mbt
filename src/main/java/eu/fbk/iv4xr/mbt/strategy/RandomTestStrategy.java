@@ -82,9 +82,9 @@ public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy
 		
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		
-		CoverageTracker coverageTracker = new CoverageTracker(goals);
-		searchAlgorithm.addListener(coverageTracker);
-		searchAlgorithm.addStoppingCondition(coverageTracker);
+		coverageTracker = new CoverageTracker(goals);
+		searchAlgorithm.addListener(getCoverageTracker());
+		searchAlgorithm.addStoppingCondition(getCoverageTracker());
 		
 		
 		ChromosomeFactory<T> factory = algorithmFactory.getChromosomeFactory();

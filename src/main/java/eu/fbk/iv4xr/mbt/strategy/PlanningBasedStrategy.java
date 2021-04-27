@@ -92,6 +92,13 @@ public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrat
 		
 		List<?> goals = algorithmFactory.getCoverageGoals();
 
+		// TODO this part is currently meaningless, added for the sake of completeness
+		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
+		coverageTracker = new CoverageTracker(goals);
+		searchAlgorithm.addListener(getCoverageTracker());
+		searchAlgorithm.addStoppingCondition(getCoverageTracker());
+		
+		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 		String anml = efsm.getAnmlString();
 		

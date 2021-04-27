@@ -113,10 +113,19 @@ public class MBTProperties {
 	public static long SEARCH_BUDGET = 60;
 
 	@Parameter(key = "OUTPUT_DIR", group = "Runtime", description = "Directory in which to put generated files")
-	public static String OUTPUT_DIR = "evosuite-files";
+	public static String OUTPUT_DIR = "mbt-files";
 
 	public static String PROPERTIES_FILE = OUTPUT_DIR + File.separator + "evosuite.properties";
 
+	
+	public static String TESTS_DIR = OUTPUT_DIR + File.separator + "tests";
+	
+	
+	public static String STATISTICS_DIR = OUTPUT_DIR + File.separator + "statistics";
+	
+	
+	public static String STATISTICS_FILE = STATISTICS_DIR + File.separator + "statistics.csv";
+	
 	public enum StoppingCondition {
 		MAXSTATEMENTS, MAXTESTS,
         /** Max time in seconds */ MAXTIME,

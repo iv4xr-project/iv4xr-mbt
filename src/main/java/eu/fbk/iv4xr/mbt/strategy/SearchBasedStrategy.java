@@ -82,9 +82,9 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		
 		// MOSA has ots 
 //		if (MBTProperties.ALGORITHM != Algorithm.MOSA) {
-			CoverageTracker coverageTracker = new CoverageTracker(goals);
-			searchAlgorithm.addListener(coverageTracker);
-			searchAlgorithm.addStoppingCondition(coverageTracker);
+			coverageTracker = new CoverageTracker(goals);
+			searchAlgorithm.addListener(getCoverageTracker());
+			searchAlgorithm.addStoppingCondition(getCoverageTracker());
 //		}
 		
 		// invoke generate solution on the algorithm
@@ -97,7 +97,7 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 //		for (T test : bestIndividuals) {
 //			solution.addTest((MBTChromosome) test);
 //		}
-		return coverageTracker.getTestSuite();
+		return getCoverageTracker().getTestSuite();
 	}
 
 }
