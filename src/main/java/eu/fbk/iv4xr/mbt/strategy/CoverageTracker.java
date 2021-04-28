@@ -34,8 +34,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	private static final long serialVersionUID = 2066478272595190175L;
 	
 	protected StringBuffer statistics;
-	private String STATISTICS_HEADER = "sut, goals, covered_goals, coverage, tests, budget, consumed_budget, algorithm, criteria, random_seed\n";
+	private String STATISTICS_HEADER = "id, sut, goals, covered_goals, coverage, tests, budget, "
+										+ "consumed_budget, algorithm, criteria, random_seed, lr_seed\n";
 	private long startTime;
+	private long lastSnapshotTime;
 
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
 	double coverage;
@@ -48,6 +50,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		statistics = new StringBuffer();
 //		appendStat(STATISTICS_HEADER);
 		startTime = System.currentTimeMillis();
+		lastSnapshotTime = startTime;
 		
 		coverage = 0d;
 		coverageMap = new HashMap<FitnessFunction<MBTChromosome>, MBTChromosome>();
@@ -83,6 +86,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 			}
 		}
 		
+		// time to take statistics snapshot
+		if (takeSnapshot()) {
+			statisticsSnapshot();
+		}
 	}
 
 	/**
@@ -118,32 +125,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void searchFinished(GeneticAlgorithm<?> arg0) {
-		// write statistics to buffer
-		int tests = getTestSuite().size();
-		int goals = coverageMap.size();
-		int coveredGoals = getCoveredGoals ();
-		double coverage = getCoverage();
-		long budget = MBTProperties.SEARCH_BUDGET;
-		long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
-		String criteria = "";
-		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
-			criteria += criterion.toString() + ";";
-		}
-		criteria = criteria.substring(0, criteria.length()-1);
-		
-		//goals, covered_goals, coverage, tests, budget, consumed_budget
-		String statLine = MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," + budget + "," + consumedBudget + "," + MBTProperties.ALGORITHM + "," + criteria + "," + MBTProperties.RANDOM_SEED;
-		appendStat(statLine);
-	}
-
-	private int getCoveredGoals() {
-		int count = 0;
-		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
-			if (entry.getValue() != null) {
-				count ++;
-			}
-		}
-		return count;
+		statisticsSnapshot();
 	}
 
 	@Override
@@ -188,6 +170,60 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		
 	}
 
+	//////// utility methods for handling statistics
+
+	/**
+	 * time to take snapshot?
+	 * @return
+	 */
+	private boolean takeSnapshot() {
+		long now = System.currentTimeMillis();
+		if ((now - lastSnapshotTime)/1000 >= MBTProperties.STATISTICS_INTERVAL){
+			lastSnapshotTime = now;
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * takes a snapshot of the current state of the search
+	 */
+	private void statisticsSnapshot() {
+		// write statistics to buffer
+		int tests = getTestSuite().size();
+		int goals = coverageMap.size();
+		int coveredGoals = getCoveredGoals ();
+		double coverage = getCoverage();
+		long budget = MBTProperties.SEARCH_BUDGET;
+		long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
+		String criteria = "";
+		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
+			criteria += criterion.toString() + ";";
+		}
+		criteria = criteria.substring(0, criteria.length()-1);
+		
+		//goals, covered_goals, coverage, tests, budget, consumed_budget
+		String statLine = startTime + "," + MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," 
+						+ budget + "," + consumedBudget + "," + MBTProperties.ALGORITHM + "," + criteria + "," 
+						+ MBTProperties.RANDOM_SEED + "," + MBTProperties.LR_seed;
+		appendStat(statLine);
+	}
+
+	/**
+	 * counts the number of covered goals
+	 * @return
+	 */
+	private int getCoveredGoals() {
+		int count = 0;
+		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+			if (entry.getValue() != null) {
+				count ++;
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * @return the coverage
 	 */
@@ -195,7 +231,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		return coverage;
 	}
 
-	
+	/**
+	 * appends the given snapshot ot the statistics buffer
+	 * @param string
+	 */
 	private void appendStat(String string) {
 		statistics.append(string + "\n");
 		

@@ -126,6 +126,10 @@ public class MBTProperties {
 	
 	public static String STATISTICS_FILE = STATISTICS_DIR + File.separator + "statistics.csv";
 	
+	@Parameter(key = "statistics_interval", group = "Search Algorithm", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
+	@LongValue(min = 1)
+	public static long STATISTICS_INTERVAL = 10;
+	
 	public enum StoppingCondition {
 		MAXSTATEMENTS, MAXTESTS,
         /** Max time in seconds */ MAXTIME,
