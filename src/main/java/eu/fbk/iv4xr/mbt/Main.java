@@ -30,6 +30,7 @@ import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
+import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 
 /**
  * @author kifetew
@@ -105,11 +106,13 @@ public class Main {
 		for (MBTChromosome testCase : solution.getTestChromosomes()) {
 			String dotFileName = testFolder + File.separator + "test_" + count + ".dot";
 			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
+			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
 			File dotFile = new File (dotFileName);
 			File txtFile = new File (txtFileName);
 			try {
 				FileUtils.writeStringToFile(dotFile, ((AbstractTestSequence)testCase.getTestcase()).toDot(), Charset.defaultCharset());
 				FileUtils.writeStringToFile(txtFile, testCase.getTestcase().toString(), Charset.defaultCharset());
+				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
