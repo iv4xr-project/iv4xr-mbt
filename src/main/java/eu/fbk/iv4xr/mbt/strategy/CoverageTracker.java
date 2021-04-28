@@ -34,7 +34,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	private static final long serialVersionUID = 2066478272595190175L;
 	
 	protected StringBuffer statistics;
-	private String STATISTICS_HEADER = "goals, covered_goals, coverage, tests, budget, consumed_budget, criteria\n";
+	private String STATISTICS_HEADER = "sut, goals, covered_goals, coverage, tests, budget, consumed_budget, algorithm, criteria, random_seed\n";
 	private long startTime;
 
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
@@ -129,9 +129,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
 			criteria += criterion.toString() + ";";
 		}
+		criteria = criteria.substring(0, criteria.length()-1);
 		
 		//goals, covered_goals, coverage, tests, budget, consumed_budget
-		String statLine = goals + "," + coveredGoals + "," + coverage + "," + tests + "," + budget + "," + consumedBudget + "," + criteria;
+		String statLine = MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," + budget + "," + consumedBudget + "," + MBTProperties.ALGORITHM + "," + criteria + "," + MBTProperties.RANDOM_SEED;
 		appendStat(statLine);
 	}
 
@@ -170,7 +171,9 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public boolean isFinished() {
-		return !coverageMap.values().contains(null);
+//		boolean finished = !coverageMap.values().contains(null);
+		boolean finished = Double.compare(coverage, 1) == 0;
+		return finished;
 	}
 
 	@Override

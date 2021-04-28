@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -18,6 +19,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.utils.LoggingUtils;
 
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
@@ -80,7 +82,7 @@ public class Main {
 		}
 		
 		try {
-			FileUtils.writeStringToFile(statsFile, (exists?statistics:statisticsHeader + statistics), true);
+			FileUtils.writeStringToFile(statsFile, (exists?statistics:statisticsHeader + statistics), Charset.defaultCharset(), true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,11 +92,30 @@ public class Main {
 
 	/**
 	 * Creates a new folder (currenttime) in the default TESTS folder,
-	 * writes each test in a separate file (for now in .dot format)
+	 * writes each test in a separate file (for now in .dot and .txt formats)
 	 * @param solution
 	 */
 	private void writeTests(SuiteChromosome solution) {
-		// TODO Auto-generated method stub
+		// make sure tests folder exists
+		String testFolder = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + System.currentTimeMillis();
+		File testsFolder = new File (testFolder);
+		testsFolder.mkdirs();
+		
+		int count = 1;
+		for (MBTChromosome testCase : solution.getTestChromosomes()) {
+			String dotFileName = testFolder + File.separator + "test_" + count + ".dot";
+			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
+			File dotFile = new File (dotFileName);
+			File txtFile = new File (txtFileName);
+			try {
+				FileUtils.writeStringToFile(dotFile, ((AbstractTestSequence)testCase.getTestcase()).toDot(), Charset.defaultCharset());
+				FileUtils.writeStringToFile(txtFile, testCase.getTestcase().toString(), Charset.defaultCharset());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			count++;
+		}
 		
 	}
 

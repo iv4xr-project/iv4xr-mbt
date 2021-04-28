@@ -87,46 +87,14 @@ public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy
 		searchAlgorithm.addStoppingCondition(getCoverageTracker());
 		
 		
-		ChromosomeFactory<T> factory = algorithmFactory.getChromosomeFactory();
-
 		StoppingCondition stoppingCondition = getStoppingCondition();
 
 		searchAlgorithm.addStoppingCondition(stoppingCondition);
 		
-		SuiteChromosome suite = new MBTSuiteChromosome(); 
+		searchAlgorithm.generateSolution();
 		
+		return getCoverageTracker().getTestSuite();
 		
-//		while (!stoppingCondition.isFinished() && !coverageTracker.isFinished()) {
-//			searchAlgorithm.generateSolution();
-//		}
-		
-		Map<FitnessFunction<?>, Double> coverages = new HashMap<>();
-		while (!isFinished(suite, stoppingCondition)) {
-			T test = factory.getChromosome();
-			Iterator<?> iterator = goals.iterator();
-			while (iterator.hasNext()) {
-				CoverageGoal goal = (CoverageGoal) iterator.next();
-				double fitness = goal.getFitness(test);
-				if (fitness == 0d) {
-					coverages.put(goal, 1d);
-					suite.addTest((MBTChromosome) test);
-					iterator.remove();
-				}else {
-					coverages.put(goal, 0d);
-				}
-			}
-			// finished?
-			suite.setCoverageValues(coverages);
-		}
-		for(var t : suite.getTestChromosomes()) {
-			LoggingUtils.getEvoLogger().info("  "+t.getTestcase().toString());
-		}
-		LoggingUtils.getEvoLogger().info("* Search Budget:");
-		LoggingUtils.getEvoLogger().info("\t- " + stoppingCondition.toString());
-		suite.setCoverageValues(coverages);
-		LoggingUtils.getEvoLogger().info("Coverage: {}%", suite.getCoverage()*100);
-		return suite;
-		//		return coverageTracker.getTestSuite();	
 	}
 	
 }

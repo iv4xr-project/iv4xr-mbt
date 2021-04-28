@@ -30,7 +30,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * RandomSearch class.
+ * RandomSearch class adapted from Evosuite. It implements a simple random search algorithm
+ * The algorithm gets a new individual and evaluates its fitness, until stopping condition is reached.
+ * The tests that cover new goals are collected by the CoverageTracker instance attached to the algorithm.
+ * CoverageTracker is both a search listener and a stopping condition, hence when full coverage is reached by the collected tests, 
+ * it ends the search (even before the search budget is completed).
  * </p>
  * 
  * @author Gordon Fraser
@@ -62,10 +66,10 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 		T newChromosome = chromosomeFactory.getChromosome();
 		getFitnessFunction().getFitness(newChromosome);
 		notifyEvaluation(newChromosome);
-		if (newChromosome.compareTo(getBestIndividual()) <= 0) {
-			logger.info("New fitness: " + newChromosome.getFitness());
-			population.set(0, newChromosome);
-		}
+//		if (newChromosome.compareTo(getBestIndividual()) <= 0) {
+//			logger.info("New fitness: " + newChromosome.getFitness());
+//			population.set(0, newChromosome);
+//		}
 		currentIteration++;
 	}
 
@@ -94,8 +98,6 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 			evolve();
 			this.notifyIteration();
 		}
-		//updateBestIndividualFromArchive();
 		notifySearchFinished();
 	}
-
 }
