@@ -204,7 +204,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		criteria = criteria.substring(0, criteria.length()-1);
 		
 		//goals, covered_goals, coverage, tests, budget, consumed_budget
-		String statLine = startTime + "," + MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," 
+		String statLine = MBTProperties.SessionId + "," + MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," 
 						+ budget + "," + consumedBudget + "," + MBTProperties.ALGORITHM + "," + criteria + "," 
 						+ MBTProperties.RANDOM_SEED + "," + MBTProperties.LR_seed;
 		appendStat(statLine);

@@ -17,6 +17,8 @@ import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
+import nl.uu.cs.aplib.mainConcepts.ProgressStatus;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
@@ -43,18 +45,24 @@ public class LabRecruitsTestSuiteExecutor {
 	private Integer maxCyclePerGoal = 200;
 
 	// basic reporting for test case status
-	private LinkedHashMap<AbstractTestSequence, Boolean> testReporter;
+	private LabRecruitsTestSuiteReporter testReporter;
 
 	public LabRecruitsTestSuiteExecutor(String labRecruitesExeRootDir, String levelFileName, String agentName) {
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
 		this.levelFileName = levelFileName;
 		this.agentName = agentName;
+		testReporter = new LabRecruitsTestSuiteReporter();
 	}
 
 	public void setMaxCycle(Integer max) {
 		this.maxCyclePerGoal = max;
 	}
 
+	public LabRecruitsTestSuiteReporter getReport() {
+		return testReporter;
+	}
+	
+	
 	/**
 	 * We assume a valid solution
 	 * 
@@ -62,11 +70,8 @@ public class LabRecruitsTestSuiteExecutor {
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public LinkedHashMap<AbstractTestSequence, Boolean> executeTestSuite(SuiteChromosome solution)
+	public void executeTestSuite(SuiteChromosome solution)
 			throws InterruptedException {
-
-		// initialize test reporter
-		testReporter = new LinkedHashMap<AbstractTestSequence, Boolean>();
 
 		// open the server
 		LabRecruitsTestServer testServer = testServer = new LabRecruitsTestServer(false,
@@ -77,9 +82,9 @@ public class LabRecruitsTestSuiteExecutor {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
 			Boolean testResult = executeTestCase(testcase);
 			if (!testResult) {
-				testReporter.put(testcase, false);
+				//testReporter.put(testcase, false);
 			} else {
-				testReporter.put(testcase, true);
+				//testReporter.put(testcase, true);
 			}
 		}
 
@@ -87,12 +92,13 @@ public class LabRecruitsTestSuiteExecutor {
 		if (testServer != null)
 			testServer.close();
 
-		return testReporter;
 	}
 
 	// run a test case
-	public Boolean executeTestCase(AbstractTestSequence testcase) {
+	public Boolean executeTestCase(AbstractTestSequence testcase) throws InterruptedException {
 
+		LinkedList<LabRecruitsTestCaseReporter> goalReporter = new LinkedList<LabRecruitsTestCaseReporter>();
+		
 		System.out.println("Executing: " + testcase.toString());
 
 		// set the configuration of the server
@@ -118,27 +124,58 @@ public class LabRecruitsTestSuiteExecutor {
 			return false;
 		}
 
-		for (GoalStructure g : goals) {
+		String status = "SUCCESS";
+		// iterate over goals
+		// 
+		for (int i = 0; i < goals.size(); i++) {
+		//for (GoalStructure g : goals) {
+			GoalStructure g = goals.get(i);
 			testAgent.setGoal(g);
+			System.err.println("Testing "+testcase.getPath().getTransitionAt(i).toString());
 
+		
 			// try to execute the test case
 			int nCycle = 0;
 			while (g.getStatus().inProgress()) {
 				testAgent.update();
 				if (testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen() > 0) {
-					System.err.println(
-							"Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed");
+					String err = "Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed";
+					System.err.println(err);
+					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
+					goalReporter.add(goalRep);
+					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
 					return false;
 				}
-				// Thread.sleep(5);
+				Thread.sleep(20);
 				nCycle++;
 				if (nCycle > maxCyclePerGoal) {
-					System.err.println("The goal cannot be satisfied in " + maxCyclePerGoal + " cycles");
+					String err = "The goal cannot be satisfied in " + maxCyclePerGoal + " cycles";
+					System.err.println(err);
+					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
+					goalReporter.add(goalRep);
+					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
 					return false;
 				}
 			}
+			LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+			goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
+			goalReporter.add(goalRep);
+			if (!g.getStatus().success()) {
+				status = "FAIL";
+			}
 		}
-		return true;
+	
+		if (status == "SUCCESS") {
+			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.TRUE);
+			return true;
+		}else {
+			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
+			return false;
+		}
+		
+		
 	}
 
 	// sample code for translating EFSM test case into a goal structure
@@ -147,17 +184,15 @@ public class LabRecruitsTestSuiteExecutor {
 		List<EFSMTransition> listTransitions = path.getTransitions();
 		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		for (EFSMTransition t : listTransitions) {
-			LinkedList<GoalStructure> transitionGoals = convertEFMSTransitionToGoal(agent, t);
-			for (GoalStructure g : transitionGoals) {
-				subGoals.add(g);
-			}
+			GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
+			subGoals.add(transitionGoals);
 		}
 		return subGoals;
 		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
 		// return testingTask;
 	}
 
-	private LinkedList<GoalStructure> convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
+	private GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
@@ -168,16 +203,22 @@ public class LabRecruitsTestSuiteExecutor {
 		} else if (oppositeDoorSides(t.getSrc(), t.getTgt())) {
 			// to optimize
 			String doorName = convertDoorSideToDoorName(t.getTgt().getId());
-
 			subGoals.add(GoalLib.entityStateRefreshed(doorName));
-			// subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"
-			// should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
+			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
 		} else {
 			subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())));
 		}
-		return subGoals;
+		if (subGoals.size() == 1) {
+			return subGoals.get(0);
+		}else {
+			return SEQ(subGoals.toArray(new GoalStructure[0]));
+		}
 	}
 
+	// convert a state to a string
+	// for buttons it is simply the name
+	// for doors, that are written as d_X_p or d_X_, we have to write doorX
+	// and we use convertDoorSideToDoorName
 	private String convertStateToString(EFSMState s) {
 		if (isDoor(s)) {
 			return convertDoorSideToDoorName(s.getId());
@@ -191,7 +232,8 @@ public class LabRecruitsTestSuiteExecutor {
 		String tmp = doorSide.substring(1, doorSide.length() - 1);
 		return "door" + tmp;
 	}
-
+	
+	// check if a state is a door looking at the first character
 	private Boolean isDoor(EFSMState s) {
 		String name = s.getId();
 		String b = name.substring(0, 1);
@@ -202,6 +244,7 @@ public class LabRecruitsTestSuiteExecutor {
 		}
 	}
 
+	// check if 2 states represent the opposite sites of a door
 	private Boolean oppositeDoorSides(EFSMState s, EFSMState t) {
 		if (!isDoor(s) || !isDoor(t)) {
 			// one of the state is not a door
@@ -213,4 +256,18 @@ public class LabRecruitsTestSuiteExecutor {
 			return false;
 		}
 	}
+
+	// covert the goal status of a goal structure to a string
+	private String getGoalStatus(GoalStructure goal) {
+		if (goal instanceof PrimitiveGoal) {
+			return goal.getStatus().toString();
+		}else {
+			String out = "";
+			for(GoalStructure g : goal.getSubgoals()) {
+				out = out + getGoalStatus(g) +"; ";
+			}
+			return out;
+		}
+	}
+
 }

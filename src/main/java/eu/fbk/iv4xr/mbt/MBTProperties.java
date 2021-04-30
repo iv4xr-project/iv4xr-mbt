@@ -300,7 +300,7 @@ public class MBTProperties {
 	@Parameter(key = "LR_n_rooms", group = "Lab Recruits", description = "Number of rooms")
 	public static int LR_n_rooms = 3;
 	
-	/*
+	/**
 	 * Random generation has four parameters:
 	 * - number of buttons
 	 * - number of doors
@@ -321,12 +321,19 @@ public class MBTProperties {
 	public static LR_random_mode LR_generation_mode = LR_random_mode.N_ROOMS_DEPENDENT;
 	
 	
-	/*
+	/**
 	 * Number of maximum tries to generate a randoma level
 	 * 
 	 */
 	@Parameter(key = "LR_n_try_generation", group = "Lab Recruits", description = "Number of tries to generate a LR level")
 	public static int LR_n_try_generation = 3;
+	
+	/**
+	 * Session id to identify an experiment
+	 * 
+	 */
+	@Parameter(key = "SessionId", group = "Runtime", description = "String that identify an experiment")
+	public static String SessionId = "default_session";
 	
 	
 	/**

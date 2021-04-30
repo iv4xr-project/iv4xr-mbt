@@ -20,6 +20,8 @@ import org.apache.commons.io.FileUtils;
 import org.evosuite.utils.LoggingUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
@@ -49,12 +51,18 @@ public class Main {
 
 	
 	private void run () {
+		
+		MBTProperties.SessionId = "" + System.currentTimeMillis();
+		
 		SuiteChromosome solution = generationStrategy.generateTests();
 		// print some stats
 		System.out.println("Generated: " + solution.size() + " tests");
-		
+	
 		// write tests to disk
 		writeTests (solution);
+		
+		// write model on disk
+		writeModel();
 		
 		// write statistics to disk
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
@@ -98,7 +106,7 @@ public class Main {
 	 */
 	private void writeTests(SuiteChromosome solution) {
 		// make sure tests folder exists
-		String testFolder = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + System.currentTimeMillis();
+		String testFolder = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
 		File testsFolder = new File (testFolder);
 		testsFolder.mkdirs();
 		
@@ -122,6 +130,36 @@ public class Main {
 		
 	}
 
+	/**
+	 * Save EFSM model
+	 */
+	public void writeModel() {
+		String modelFolderName = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId + File.separator + "Model";
+		File modelFolder = new File (modelFolderName);
+		modelFolder.mkdirs();
+		
+		String modelFileName = modelFolderName + File.separator + "EFSM_model.ser";
+		String levelFileName = modelFolderName + File.separator + "LabRecruits_level.csv";
+		String modelDotFileName = modelFolderName + File.separator + "EFSM_model.dot";
+		
+		File csvFile = new File (levelFileName);
+		File dotFile = new File (modelDotFileName);
+		
+		EFSM efsm = EFSMFactory.getInstance().getEFSM();
+		try {
+			
+			TestSerializationUtils.saveEFSM(efsm, modelFileName);
+			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			// if csv is available
+			if (efsm.getEFSMString() != "") {
+				FileUtils.writeStringToFile(csvFile, efsm.getEFSMString(), Charset.defaultCharset());		
+			}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void executeForDebug(AbstractTestSequence testcase) {
 //		TestExecutor executor = new EFSMTestExecutor<>();

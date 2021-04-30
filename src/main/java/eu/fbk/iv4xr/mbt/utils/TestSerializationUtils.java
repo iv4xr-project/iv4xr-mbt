@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 
 /**
@@ -33,6 +34,17 @@ public class TestSerializationUtils {
 	public static void saveTestSequence (AbstractTestSequence test, String filename) throws FileNotFoundException {
 		SerializationUtils.serialize(test, new FileOutputStream(filename));
 	}
+	
+	public EFSM loadEFSM(String filename) throws FileNotFoundException {
+		EFSM efsm = (EFSM) SerializationUtils.deserialize(new FileInputStream(filename));
+		return efsm;
+	}
+	
+	public static void saveEFSM(EFSM efsm, String filename) throws FileNotFoundException {
+		SerializationUtils.serialize(efsm, new FileOutputStream(filename) );
+	}
+	
+	
 	
 	/**
 	 * @param args

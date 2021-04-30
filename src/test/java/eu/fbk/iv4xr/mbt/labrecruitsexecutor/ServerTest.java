@@ -6,13 +6,16 @@ import static org.junit.Assert.fail;
 
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.evosuite.shaded.org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +31,9 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestCaseReporter;
 import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteExecutor;
+import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteReporter;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -73,7 +78,9 @@ public class ServerTest {
 		String agentName = "Agent1";
 		String levelFileName = levelName + "_LR";
 		String labRecruitesExeRootDir = System.getProperty("user.dir");
-
+		Integer maxCycles = 200;
+		String reportFileName = levelPath + "_report.txt";
+		
 		// MBT configurations
 		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
 		MBTProperties.LR_n_rooms = 5;
@@ -101,25 +108,17 @@ public class ServerTest {
 			
 		// create the executor
         LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(labRecruitesExeRootDir, levelFileName, agentName);
+        lrExecutor.setMaxCycle(maxCycles);
         
         // execute the test suite
-        LinkedHashMap<AbstractTestSequence, Boolean> response = lrExecutor.executeTestSuite(solution);
+        lrExecutor.executeTestSuite(solution);
         
-        // check the results
-        System.out.println("Performed "+response.size()+" test");
-        for(AbstractTestSequence test : response.keySet()) {     	
-        	if (response.get(test)) {
-        		//System.out.println("PASS");
-        		//System.out.println(test.toString());
-        	}else {
-        		System.out.println("FAIL");
-        		System.out.println(test.toString());
-        		//fail();
-        	}
-        }
+        LabRecruitsTestSuiteReporter executionReport = lrExecutor.getReport();
 
-		
-
+        File reportFile = new File(reportFileName);
+        
+        FileUtils.writeStringToFile(reportFile, executionReport.toString(),  Charset.defaultCharset());
+        
 	}
 	
 
