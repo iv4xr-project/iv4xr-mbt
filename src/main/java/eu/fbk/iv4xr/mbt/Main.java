@@ -24,6 +24,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteExecutor;
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
@@ -198,6 +200,25 @@ public class Main {
 
 		Option help = new Option("help", "print this message");
 
+		Option execOnSut = Option.builder("exec_on_sut")
+				.argName("exec_on_sut")
+				.type(String.class)
+				.desc("execute tests on the actual system under test")
+				.build();
+		
+		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Path to the SUT executable");
+		executableDir.setArgs(1);
+		
+		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Path to the SUT executable, .csv file in case of LabRecruites");
+		sutExecutable.setArgs(1);
+		
+		Option agentName = new Option("agent_name", "agent_name", true, "Name of the agent in the level, defaults to 'agent1'");
+		agentName.setArgs(1);
+		
+		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to the tests to be executed");
+		testsDir.setArgs(1);
+		
+		
 		Option random = Option.builder("random")
 				.argName("random")
 				.type(String.class)
@@ -228,6 +249,11 @@ public class Main {
 
 		
 		options.addOption(help);
+		options.addOption(execOnSut);
+		options.addOption(executableDir);
+		options.addOption(sutExecutable);
+		options.addOption(testsDir);
+		options.addOption(agentName);
 		options.addOption(mosa);
 		options.addOption(random);
 		options.addOption(tamer);
@@ -245,6 +271,39 @@ public class Main {
 			if (line.hasOption("help")) {
 				System.out.println(options.toString());
 				System.exit(0);
+			}
+			
+			//-exec_on_sut -sut_exec_dir=./gym/Linux -sut_executable=./mbt-files/tests/a.csv -agent_name=agent2 -tests_dir=./mbt-files/tests/a/
+			if (line.hasOption("exec_on_sut")) {
+				String sutExecutableDir = "";
+				String sutExecutable = "";
+				String testsDir = "";
+				String agentName = "";
+				if (line.hasOption("sut_exec_dir")) {
+					sutExecutableDir = line.getOptionValue("sut_exec_dir");
+				}else {
+					System.out.println("exec_on_sut option needs sut_exec_dir parameter");
+				}
+				
+				if (line.hasOption("sut_executable")) {
+					sutExecutable = line.getOptionValue("sut_executable");
+				}
+				
+				if (line.hasOption("tests_dir")) {
+					testsDir = line.getOptionValue("tests_dir");
+				}else {
+					System.out.println("exec_on_sut option needs tests_dir parameter");
+				}
+				
+				if (line.hasOption("agent_name")) {
+					agentName = line.getOptionValue("agent_name", "Agent1");
+				}else {
+					System.out.println("exec_on_sut option needs agent_name parameter, but not provded, using default: agent1");
+				}
+				
+				LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir);
+				executor.execute();
+				return;
 			}
 			
 			if (line.hasOption("mosa")) {

@@ -163,18 +163,18 @@ public abstract class AbstractMOSA<
 		// Add new randomly generate tests
 		for (int i = 0; i<MBTProperties.POPULATION * MBTProperties.P_TEST_INSERTION; i++){
 			T tch = null;
-			if (this.getCoveredGoals().size() == 0 || Randomness.nextBoolean()){
+//			if (this.getCoveredGoals().size() == 0 || Randomness.nextBoolean()){
 				tch = this.chromosomeFactory.getChromosome();
 				tch.setChanged(true);
-			} else {
-				tch = (T) Randomness.choice(getArchive()).clone();
-				tch.mutate(); //tch.mutate();
-			}
-			if (tch.isChanged()) {
+//			} else {
+//				tch = (T) Randomness.choice(getArchive()).clone();
+//				tch.mutate(); //tch.mutate();
+//			}
+//			if (tch.isChanged()) {
 				tch.updateAge(currentIteration);
 				calculateFitness(tch);
 				offspringPopulation.add(tch);
-			}
+//			}
 		}
 //		logger.info("Number of offsprings = {}", offspringPopulation.size());
 		return offspringPopulation;

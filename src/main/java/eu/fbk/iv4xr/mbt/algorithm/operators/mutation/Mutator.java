@@ -57,9 +57,9 @@ public class Mutator<
 			
 		double choice = Randomness.nextDouble();
 		//logger.debug("MUTATION: " + choice);
-		if (choice < 0.1) {
+		if (choice < 0.33) {
 			insertSelfTransitionMutation();
-		} else if (choice < 0.2) {
+		} else if (choice < 0.33) {
 			deleteSelfTransitionMutation();
 	    // embedded in singleTransitionRemoval
 		//} else if (choice < 0.75) {

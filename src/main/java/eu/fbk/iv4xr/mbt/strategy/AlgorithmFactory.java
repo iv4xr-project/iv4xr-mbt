@@ -286,7 +286,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		StoppingCondition stopping_condition = getStoppingCondition();
 		ga.setStoppingCondition(stopping_condition);
 		// ga.addListener(stopping_condition);
-		if (Properties.STOP_ZERO) {
+		if (MBTProperties.STOP_ZERO) {
 			ga.addStoppingCondition(new ZeroFitnessStoppingCondition());
 		}
 

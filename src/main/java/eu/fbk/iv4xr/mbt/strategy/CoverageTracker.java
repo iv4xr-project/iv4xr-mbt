@@ -3,6 +3,7 @@
  */
 package eu.fbk.iv4xr.mbt.strategy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,8 @@ import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 
 /**
  * @author kifetew
@@ -35,12 +38,16 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	
 	protected StringBuffer statistics;
 	private String STATISTICS_HEADER = "id, sut, goals, covered_goals, coverage, tests, budget, "
-										+ "consumed_budget, algorithm, criteria, random_seed, lr_seed\n";
+										+ "consumed_budget, fitness_evaluations, algorithm, criteria, random_seed, lr_seed\n";
 	private long startTime;
 	private long lastSnapshotTime;
 
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
 	double coverage;
+	private int fitnessEvaluations;
+	
+	protected ProgressBar coveragePb;
+	protected ProgressBar budgetPb;
 	/**
 	 * @param goals 
 	 * 
@@ -53,9 +60,16 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		lastSnapshotTime = startTime;
 		
 		coverage = 0d;
+		fitnessEvaluations = 0;
 		coverageMap = new HashMap<FitnessFunction<MBTChromosome>, MBTChromosome>();
 		for (Object goal : goals) {
 			coverageMap.put((FitnessFunction<MBTChromosome>) goal, null);
+		}
+		
+		if (MBTProperties.SHOW_PROGRESS) {
+			//setup progress bar to number of goals to cover and search budget
+			coveragePb = new ProgressBar("Coverage: ", goals.size()); //, ProgressBarStyle.ASCII);
+			budgetPb = new ProgressBar("  Budget: ", MBTProperties.SEARCH_BUDGET); //, ProgressBarStyle.ASCII);
 		}
 	}
 	
@@ -77,6 +91,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
+		fitnessEvaluations++;
 		MBTChromosome chromosome = (MBTChromosome)arg0;
 		if (chromosome.getTestcase().isValid()) {
 			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
@@ -114,7 +129,13 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 			}
 		}
 		coverage = (double)covered / coverageMap.size();
-		System.err.println("Coverage: " + coverage * 100 + " %");
+//		System.err.println("Coverage: " + coverage * 100 + " %");
+		
+		if (MBTProperties.SHOW_PROGRESS) {
+			coveragePb.stepTo(covered);
+			long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
+			budgetPb.stepTo(consumedBudget);
+		}
 	}
 
 	@Override
@@ -130,7 +151,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void searchStarted(GeneticAlgorithm<?> ga) {
-		// TODO Auto-generated method stub
+		if (MBTProperties.SHOW_PROGRESS) {
+			coveragePb.step();
+			budgetPb.step();
+		}
 	}
 
 	@Override
@@ -203,10 +227,24 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		}
 		criteria = criteria.substring(0, criteria.length()-1);
 		
-		//goals, covered_goals, coverage, tests, budget, consumed_budget
-		String statLine = MBTProperties.SessionId + "," + MBTProperties.SUT_EFSM + "," + goals + "," + coveredGoals + "," + coverage + "," + tests + "," 
-						+ budget + "," + consumedBudget + "," + MBTProperties.ALGORITHM + "," + criteria + "," 
-						+ MBTProperties.RANDOM_SEED + "," + MBTProperties.LR_seed;
+		//goals, covered_goals, coverage, tests, budget, consumed_budget, fitness_evaluations, algorithm, cirterion, random_seed, lr_seed 
+		
+		List<String> stats = new ArrayList<String>();
+		stats.add(MBTProperties.SessionId);
+		stats.add(MBTProperties.SUT_EFSM);
+		stats.add(""+goals);
+		stats.add(""+coveredGoals);
+		stats.add(""+coverage);
+		stats.add(""+tests);
+		stats.add(""+budget);
+		stats.add(""+consumedBudget);
+		stats.add(""+fitnessEvaluations);
+		stats.add(MBTProperties.ALGORITHM.toString());
+		stats.add(criteria);
+		stats.add(""+MBTProperties.RANDOM_SEED);
+		stats.add(""+MBTProperties.LR_seed);
+		
+		String statLine = String.join(",", stats);
 		appendStat(statLine);
 	}
 

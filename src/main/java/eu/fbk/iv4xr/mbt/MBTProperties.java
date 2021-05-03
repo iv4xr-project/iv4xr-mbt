@@ -80,6 +80,10 @@ public class MBTProperties {
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
 
+	
+	@Parameter(key = "show_progress", group = "Output", description = "Show progress bar on console")
+	public static boolean SHOW_PROGRESS = true;
+	
 	@Parameter(key = "random_seed", group = "Search Algorithm", description = "Random number seed for MBT")
 	public static long RANDOM_SEED = 123456778;
 	
@@ -155,9 +159,9 @@ public class MBTProperties {
 	@Parameter(key = "headless_chicken_test", group = "Search Algorithm", description = "Activate headless chicken test")
 	public static boolean HEADLESS_CHICKEN_TEST = false;
 
-	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
-	@DoubleValue(min = 0.0, max = 1.0)
-	public static double MUTATION_RATE = 0.75;
+//	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
+//	@DoubleValue(min = 0.0, max = 1.0)
+//	public static double MUTATION_RATE = 0.75;
 	
 	
 	public enum SecondaryObjective {
@@ -172,7 +176,7 @@ public class MBTProperties {
 	public static int BLOAT_FACTOR = 2;
 
 	@Parameter(key = "stop_zero", group = "Search Algorithm", description = "Stop optimization once goal is covered")
-	public static boolean STOP_ZERO = true;
+	public static boolean STOP_ZERO = false;
 
 	@Parameter(key = "dynamic_limit", group = "Search Algorithm", description = "Multiply search budget by number of test goals")
 	public static boolean DYNAMIC_LIMIT = false;
