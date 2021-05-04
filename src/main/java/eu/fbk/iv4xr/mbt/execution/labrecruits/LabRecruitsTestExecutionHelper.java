@@ -20,8 +20,8 @@ public class LabRecruitsTestExecutionHelper {
 
 	LabRecruitsTestSuiteExecutor lrExecutor;
 	SuiteChromosome testSuite;
-	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir) {
-		lrExecutor = new LabRecruitsTestSuiteExecutor(lrExecutableDir, lrLevelPath, agentName);
+	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
+		lrExecutor = new LabRecruitsTestSuiteExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
 		testSuite = parseTests (testsDir);
 	}
 
@@ -59,16 +59,17 @@ public class LabRecruitsTestExecutionHelper {
 	}
 	
 	public static void main(String[] args) {
-		String level = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.random_simple/RANDOM_SEARCH/1620061934680/Model/LabRecruits_level_LR";
+		String level_file = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/mbt-files/tests/labrecruits.random_default/MOSA/1619810829804/Model/LabRecruits_level";
 		String agentName = "Agent1";
-		String execDir = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/";
-		String testsDir = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.buttons_doors_1/RANDOM_SEARCH/1620055088281/";
+		String execDir = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/";
+		String testsDir = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/mbt-files/tests/labrecruits.random_default/MOSA/1619810829804/";
+		Integer maxCyclePerGoal = 500;
 		//SuiteChromosome suite = parseTests(testsDir);
 //		System.out.println(suite.size());
 //		for (MBTChromosome t : suite.getTestChromosomes()) {
 //			System.out.println(t.toString());
 //		}
-		LabRecruitsTestExecutionHelper helper = new LabRecruitsTestExecutionHelper(execDir, level, agentName, testsDir);
+		LabRecruitsTestExecutionHelper helper = new LabRecruitsTestExecutionHelper(execDir, level_file, agentName, testsDir, maxCyclePerGoal);
 		helper.execute();
 	}
 

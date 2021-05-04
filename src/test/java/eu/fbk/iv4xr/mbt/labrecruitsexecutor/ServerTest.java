@@ -85,7 +85,7 @@ public class ServerTest {
 		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
 		MBTProperties.LR_n_rooms = 5;
 		MBTProperties.LR_n_doors = 4;
-		MBTProperties.SEARCH_BUDGET = 60;
+		MBTProperties.SEARCH_BUDGET = 5;
 		MBTProperties.SUT_EFSM = "labrecruits.random_default";
 		
 		// create random level and save it
@@ -107,8 +107,8 @@ public class ServerTest {
 		SuiteChromosome solution = generationStrategy.generateTests();
 			
 		// create the executor
-        LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(labRecruitesExeRootDir, levelFileName, agentName);
-        lrExecutor.setMaxCycle(maxCycles);
+        LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir), Platform.LEVEL_PATH+levelFileName, agentName, maxCycles);
+        //lrExecutor.setMaxCycle(maxCycles);
         
         // execute the test suite
         lrExecutor.executeTestSuite(solution);

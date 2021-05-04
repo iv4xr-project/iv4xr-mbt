@@ -218,6 +218,9 @@ public class Main {
 		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to the tests to be executed");
 		testsDir.setArgs(1);
 		
+		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal");
+		maxCycles.setArgs(1);
+		
 		
 		Option random = Option.builder("random")
 				.argName("random")
@@ -254,6 +257,7 @@ public class Main {
 		options.addOption(sutExecutable);
 		options.addOption(testsDir);
 		options.addOption(agentName);
+		options.addOption(maxCycles);
 		options.addOption(mosa);
 		options.addOption(random);
 		options.addOption(tamer);
@@ -274,11 +278,19 @@ public class Main {
 			}
 			
 			//-exec_on_sut -sut_exec_dir=./gym/Linux -sut_executable=./mbt-files/tests/a.csv -agent_name=agent2 -tests_dir=./mbt-files/tests/a/
+			/*
+			 * -exec_on_sut: enable execution on LabRecruits
+			 * -sut_exec_dir: folder containing gym
+			 * -sut_executable: path to LabRecruits level without .csv extension
+			 * -agent_name: name of the agent
+			 * -tests_dir: folder containing the serialized test cases
+			 */
 			if (line.hasOption("exec_on_sut")) {
 				String sutExecutableDir = "";
 				String sutExecutable = "";
 				String testsDir = "";
 				String agentName = "";
+				Integer maxCycles = 200;
 				if (line.hasOption("sut_exec_dir")) {
 					sutExecutableDir = line.getOptionValue("sut_exec_dir");
 				}else {
@@ -298,10 +310,16 @@ public class Main {
 				if (line.hasOption("agent_name")) {
 					agentName = line.getOptionValue("agent_name", "Agent1");
 				}else {
-					System.out.println("exec_on_sut option needs agent_name parameter, but not provded, using default: agent1");
+					System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
 				}
 				
-				LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir);
+				if (line.hasOption("max_cycles")) {
+					maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
+				}else {
+					System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
+				}
+				
+				LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
 				executor.execute();
 				return;
 			}

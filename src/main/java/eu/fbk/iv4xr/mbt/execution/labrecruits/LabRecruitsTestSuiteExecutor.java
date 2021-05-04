@@ -3,6 +3,7 @@ package eu.fbk.iv4xr.mbt.execution.labrecruits;
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import static org.junit.Assert.fail;
 
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class LabRecruitsTestSuiteExecutor {
 	// LabRecruits basic settings
 	private String labRecruitesExeRootDir;
 	private String levelFileName;
+	private String levelFolder;
 	private String agentName;
 
 	// number of cycle the execution a transition can take
@@ -47,10 +49,13 @@ public class LabRecruitsTestSuiteExecutor {
 	// basic reporting for test case status
 	private LabRecruitsTestSuiteReporter testReporter;
 
-	public LabRecruitsTestSuiteExecutor(String labRecruitesExeRootDir, String levelFileName, String agentName) {
+	public LabRecruitsTestSuiteExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, Integer maxCyclePerGoal) {
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
-		this.levelFileName = levelFileName;
+		// split level path	
+		this.levelFileName = Paths.get(levelPath).getFileName().toString();
+		this.levelFolder = Paths.get(levelPath).getParent().toString();
 		this.agentName = agentName;
+		this.maxCyclePerGoal = maxCyclePerGoal;
 		testReporter = new LabRecruitsTestSuiteReporter();
 	}
 
@@ -74,7 +79,7 @@ public class LabRecruitsTestSuiteExecutor {
 			throws InterruptedException {
 
 		// open the server
-		LabRecruitsTestServer testServer = testServer = new LabRecruitsTestServer(false,
+		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
 				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
 
 		// cycle over the test cases
@@ -102,7 +107,7 @@ public class LabRecruitsTestSuiteExecutor {
 		System.out.println("Executing: " + testcase.toString());
 
 		// set the configuration of the server
-		LabRecruitsConfig lrCfg = new LabRecruitsConfig(levelFileName);
+		LabRecruitsConfig lrCfg = new LabRecruitsConfig(levelFileName, levelFolder);
 
 		// start LabRecruits environment
 		LabRecruitsEnvironment labRecruitsEnvironment = new LabRecruitsEnvironment(lrCfg);
