@@ -57,10 +57,10 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// disable bloat control temporarily
 		Properties.CHECK_BEST_LENGTH = true;
 		
-		Properties.LOG_LEVEL = "WARN";
+		Properties.LOG_LEVEL = "ERROR";
 		
-		Properties.MUTATION_RATE = 0.3;
-		Properties.CROSSOVER_RATE = 0.7;
+		Properties.MUTATION_RATE = 0.2;
+		Properties.CROSSOVER_RATE = 0.6;
 		Properties.SEARCH_BUDGET = MBTProperties.SEARCH_BUDGET;
 	}
 	

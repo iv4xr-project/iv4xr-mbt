@@ -52,6 +52,8 @@ import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
+
 
 /**
  * Abstract class for MOSA

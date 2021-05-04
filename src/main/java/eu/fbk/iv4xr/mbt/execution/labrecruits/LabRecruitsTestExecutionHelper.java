@@ -59,10 +59,11 @@ public class LabRecruitsTestExecutionHelper {
 	}
 	
 	public static void main(String[] args) {
-		String level_file = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/mbt-files/tests/labrecruits.random_default/MOSA/1619810829804/Model/LabRecruits_level";
+		
+		String level_file = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.random_simple/MOSA/1619821255958/Model/LabRecruits_level";
 		String agentName = "Agent1";
-		String execDir = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/";
-		String testsDir = "/Users/prandi/Google Drive/iv4XR/github/iv4xr-project/iv4xr-mbt/devel_ff/mbt-files/tests/labrecruits.random_default/MOSA/1619810829804/";
+		String execDir = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/";
+		String testsDir = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.random_simple/MOSA/1619821255958/";
 		Integer maxCyclePerGoal = 500;
 		//SuiteChromosome suite = parseTests(testsDir);
 //		System.out.println(suite.size());

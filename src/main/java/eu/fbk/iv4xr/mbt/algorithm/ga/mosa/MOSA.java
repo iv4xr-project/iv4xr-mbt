@@ -69,7 +69,7 @@ public class MOSA<
 	private static final Logger logger = LoggerFactory.getLogger(MOSA.class);
 
 	/** Map used to store the covered test goals (keys of the map) and the corresponding covering test cases (values of the map) **/
-//	protected Map<FitnessFunction<T>, T> archive = new LinkedHashMap<FitnessFunction<T>, T>();
+	protected Map<FitnessFunction<T>, T> archive = new LinkedHashMap<FitnessFunction<T>, T>();
 
 	/** Boolean vector to indicate whether each test goal is covered or not. **/
 	protected Set<FitnessFunction<T>> uncoveredGoals = new LinkedHashSet<FitnessFunction<T>>();
@@ -105,7 +105,7 @@ public class MOSA<
 		ranking.computeRankingAssignment(union, uncoveredGoals);
 
 		// add to the archive the new covered goals (and the corresponding test cases)
-		//this.archive.putAll(ranking.getNewCoveredGoals());
+//		this.archive.putAll(ranking.getNewCoveredGoals());
 
 		int remain = population.size();
 		int index = 0;
@@ -170,9 +170,9 @@ public class MOSA<
 	protected void calculateFitness(T c) {
 		for (FitnessFunction<T> fitnessFunction : this.fitnessFunctions) {
 			double value = fitnessFunction.getFitness(c);
-//			if (value == 0.0) {
-//				updateArchive(c, fitnessFunction);
-//			}
+			if (value == 0.0) {
+				updateArchive(c, fitnessFunction);
+			}
 		}
 		notifyEvaluation(c);
 	}
@@ -199,7 +199,7 @@ public class MOSA<
 
 		// TODO add here dynamic stopping condition
 
-		while (!isFinished()) { // && this.getNumberOfCoveredGoals()<this.fitnessFunctions.size()) {
+		while (!isFinished() && this.getNumberOfCoveredGoals()<this.fitnessFunctions.size()) {
 			evolve();
 			notifyIteration();
 		}
@@ -215,16 +215,16 @@ public class MOSA<
 	}
 
 	/** This method is used to print the number of test goals covered by the test cases stored in the current archive **/
-//	private int getNumberOfCoveredGoals() {
-//		int n_covered_goals = this.archive.keySet().size();
-////		logger.debug("# Covered Goals = " + n_covered_goals);
-//		return n_covered_goals;
-//	}
+	private int getNumberOfCoveredGoals() {
+		int n_covered_goals = this.archive.keySet().size();
+//		logger.debug("# Covered Goals = " + n_covered_goals);
+		return n_covered_goals;
+	}
 
-//	/** This method return the test goals covered by the test cases stored in the current archive **/
-//	public Set<FitnessFunction<T>> getCoveredGoals() {
-//		return this.archive.keySet();
-//	}
+	/** This method return the test goals covered by the test cases stored in the current archive **/
+	public Set<FitnessFunction<T>> getCoveredGoals() {
+		return this.archive.keySet();
+	}
 
 	/**
 	 * This method update the archive by adding test cases that cover new test goals, or replacing the
@@ -232,46 +232,46 @@ public class MOSA<
 	 * 
 	 * @param solutionSet is the list of Chromosomes (population)
 	 */
-//	private void updateArchive(T solution, FitnessFunction<T> covered) {
-//		// the next two lines are needed since that coverage information are used
-//		// during EvoSuite post-processing
-//		MBTChromosome tch = (MBTChromosome) solution;
-//		tch.getTestcase().getCoveredGoals().add(covered);
-//
-//		// store the test cases that are optimal for the test goal in the
-//		// archive
-//		if (archive.containsKey(covered)) {
-//			MBTChromosome existingSolution = (MBTChromosome) this.archive.get(covered);
-//			// if the new solution is better (based on secondary criterion), then the archive must be updated
-//			if (solution.compareSecondaryObjective(existingSolution) < 0) {
-//				this.archive.put(covered, solution);
-//			}
-//		} else {
-//			archive.put(covered, solution);
-//			this.uncoveredGoals.remove(covered);
-//		}
-//	}
-//
-//	protected List<T> getArchive() {
-//		return new ArrayList<T>(new LinkedHashSet<T>(this.archive.values()));
-//	}
-//
-//	protected List<T> getFinalTestSuite() {
-//		// trivial case where there are no branches to cover or the archive is empty
-//		if (this.getNumberOfCoveredGoals()==0) {
-//			return getArchive();
-//		}
-//		if (archive.size() == 0) {
-//			if (population.size() > 0) {
-//				return Arrays.asList(this.population.get(this.population.size() - 1));
-//			} else {
-//				return getArchive();
-//			}
-//		}
-//		List<T> final_tests = getArchive();
-//		List<T> tests = this.getNonDominatedSolutions(final_tests);
-//		return tests;
-//	}
+	private void updateArchive(T solution, FitnessFunction<T> covered) {
+		// the next two lines are needed since that coverage information are used
+		// during EvoSuite post-processing
+		MBTChromosome tch = (MBTChromosome) solution;
+		tch.getTestcase().getCoveredGoals().add(covered);
+
+		// store the test cases that are optimal for the test goal in the
+		// archive
+		if (archive.containsKey(covered)) {
+			MBTChromosome existingSolution = (MBTChromosome) this.archive.get(covered);
+			// if the new solution is better (based on secondary criterion), then the archive must be updated
+			if (solution.compareSecondaryObjective(existingSolution) < 0) {
+				this.archive.put(covered, solution);
+			}
+		} else {
+			archive.put(covered, solution);
+			this.uncoveredGoals.remove(covered);
+		}
+	}
+
+	protected List<T> getArchive() {
+		return new ArrayList<T>(new LinkedHashSet<T>(this.archive.values()));
+	}
+
+	protected List<T> getFinalTestSuite() {
+		// trivial case where there are no branches to cover or the archive is empty
+		if (this.getNumberOfCoveredGoals()==0) {
+			return getArchive();
+		}
+		if (archive.size() == 0) {
+			if (population.size() > 0) {
+				return Arrays.asList(this.population.get(this.population.size() - 1));
+			} else {
+				return getArchive();
+			}
+		}
+		List<T> final_tests = getArchive();
+		List<T> tests = this.getNonDominatedSolutions(final_tests);
+		return tests;
+	}
 
 	/**
 	 * This method is used by the Progress Monitor at the and of each generation to show the totol coverage reached by the algorithm.
@@ -285,51 +285,27 @@ public class MOSA<
 	 */
 	@Override @SuppressWarnings("unchecked")
 	public T getBestIndividual() {
-//		List<T> archiveContent = this.getArchive();
-//		if (archiveContent.isEmpty()) {
+		List<T> archiveContent = this.getArchive();
+		if (archiveContent.isEmpty()) {
 			return (T) new TestSuiteChromosome();
-//		}
+		}
 
-//		SuiteChromosome best = new MBTSuiteChromosome();
-//		for (T test : archiveContent) {
-//			best.addTest((MBTChromosome) test);
-//		}
-//		// compute overall fitness and coverage
-//		double coverage = ((double) this.getNumberOfCoveredGoals()) / ((double) this.fitnessFunctions.size());
-//		double fitness = this.fitnessFunctions.size() - this.getNumberOfCoveredGoals();
-//		for (FitnessFunction suiteFitness : suiteFitnesses){
-//			best.setCoverage(suiteFitness, coverage);
-//			best.setFitness(suiteFitness,  this.fitnessFunctions.size() - this.getNumberOfCoveredGoals());
-//		}
-		//suiteFitness.getFitness(best);
-//		return (T) best;
+		SuiteChromosome best = new MBTSuiteChromosome();
+		for (T test : archiveContent) {
+			best.addTest((MBTChromosome) test);
+		}
+		// compute overall fitness and coverage
+		double coverage = ((double) this.getNumberOfCoveredGoals()) / ((double) this.fitnessFunctions.size());
+		double fitness = this.fitnessFunctions.size() - this.getNumberOfCoveredGoals();
+		for (FitnessFunction suiteFitness : suiteFitnesses){
+			best.setCoverage(suiteFitness, coverage);
+			best.setFitness(suiteFitness,  this.fitnessFunctions.size() - this.getNumberOfCoveredGoals());
+		}
+//		suiteFitness.getFitness(best);
+		return (T) best;
 	}
 
-	@Override
-	protected List<T> getFinalTestSuite() {
-		// TODO Auto-generated method stub
-		return null;
+	protected double numberOfCoveredTargets(){
+		return this.archive.keySet().size();
 	}
-
-	@Override
-	protected List<T> getArchive() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected double numberOfCoveredTargets() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Set<FitnessFunction<T>> getCoveredGoals() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-//	protected double numberOfCoveredTargets(){
-//		return this.archive.keySet().size();
-//	}
 }

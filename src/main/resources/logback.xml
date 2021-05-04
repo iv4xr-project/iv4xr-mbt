@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration> <!-- debug="false" scan="true" scanPeriod="30 seconds" -->
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
     <property name="LOG_PATH" value="logs" />
     <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive" />
     <timestamp key="timestamp-by-second" datePattern="yyyyMMdd'T'HHmmss"/>
