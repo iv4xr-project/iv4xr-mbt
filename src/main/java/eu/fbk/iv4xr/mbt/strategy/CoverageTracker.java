@@ -151,10 +151,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void searchStarted(GeneticAlgorithm<?> ga) {
-		if (MBTProperties.SHOW_PROGRESS) {
-			coveragePb.step();
-			budgetPb.step();
-		}
+//		if (MBTProperties.SHOW_PROGRESS) {
+//			coveragePb.step();
+//			budgetPb.step();
+//		}
 	}
 
 	@Override

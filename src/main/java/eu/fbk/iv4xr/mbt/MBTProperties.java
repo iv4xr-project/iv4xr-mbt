@@ -236,7 +236,7 @@ public class MBTProperties {
     
     // evosuite 1.0.7
     public enum Strategy {
-	    DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
+	    SUITE, DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
 	}
     
 	@Parameter(key = "strategy", group = "Runtime", description = "Which mode to use")

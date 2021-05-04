@@ -74,6 +74,7 @@ import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeExceptionsSO;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeLengthSO;
+import eu.fbk.iv4xr.mbt.testsuite.RandomLengthSuiteChromosomeFactory;
 import sun.misc.Signal;
 
 /**
@@ -115,6 +116,8 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new RandomLengthTestChromosomeFactory<T>(testFactory);
 		case MODEL_CHECKING:
 			return new RandomLengthTestChromosomeFactory<T>(testFactory);
+		case SUITE:
+			return (ChromosomeFactory<T>) new RandomLengthSuiteChromosomeFactory(new RandomLengthTestChromosomeFactory(testFactory));
 		default:
 			throw new RuntimeException("Unsupported generation strategy: " + MBTProperties.STRATEGY);
 		}

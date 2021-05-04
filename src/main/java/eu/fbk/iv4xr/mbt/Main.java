@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -43,7 +44,6 @@ import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
  */
 public class Main {
 
-	private GenerationStrategy generationStrategy;
 	
 	/**
 	 * 
@@ -52,14 +52,26 @@ public class Main {
 	}
 
 	
-	private void run () {
+	private void runTestGeneration (CommandLine line) {
+		
+		// determine the test generation strategy
+		GenerationStrategy generationStrategy = new SearchBasedStrategy<MBTChromosome>();
+		if (line.hasOption("random")) {
+			generationStrategy = new RandomTestStrategy<MBTChromosome>();
+		}
+		
+		if (line.hasOption("planning")) {
+			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
+		}
+		
+		// set parameters in MBTProperties and Properties
+		setGlobalProperties (line);
+		
 		
 		MBTProperties.SessionId = "" + System.currentTimeMillis();
 		
 		SuiteChromosome solution = generationStrategy.generateTests();
-		// print some stats
-		System.out.println("Generated: " + solution.size() + " tests");
-	
+		
 		// write tests to disk
 		writeTests (solution);
 		
@@ -212,7 +224,7 @@ public class Main {
 		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Path to the SUT executable, .csv file in case of LabRecruites");
 		sutExecutable.setArgs(1);
 		
-		Option agentName = new Option("agent_name", "agent_name", true, "Name of the agent in the level, defaults to 'agent1'");
+		Option agentName = new Option("agent_name", "agent_name", true, "Name of the agent in the level, defaults to 'Agent1'");
 		agentName.setArgs(1);
 		
 		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to the tests to be executed");
@@ -225,19 +237,19 @@ public class Main {
 		Option random = Option.builder("random")
 				.argName("random")
 				.type(String.class)
-				.desc("random search generation")
+				.desc("random test generation strategy")
 				.build();
 		
-		Option mosa = Option.builder("mosa")
-				.argName("mosa")
+		Option mosa = Option.builder("sbt")
+				.argName("sbt")
 				.type(String.class)
-				.desc("MOSA")
+				.desc("Search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
 				.build();
 		
-		Option tamer = Option.builder("tamer")
-				.argName("tamer")
+		Option tamer = Option.builder("planning")
+				.argName("planning")
 				.type(String.class)
-				.desc("TAMER")
+				.desc("planning based test generation strategy")
 				.build();
 		
 		Option property   = Option.builder("D")
@@ -265,80 +277,70 @@ public class Main {
 		return options;
 	}
 	
-	public void parseCommandLine(String[] args) {
-		Options options = getCommandLineOptions();
+	public CommandLine parseCommandLine(String[] args, Options options) {
 		CommandLineParser parser = new DefaultParser();
+		CommandLine line = null;
 		try {
-			CommandLine line = parser.parse(options, args);
-			
-			// TODO deal with arguments here ..
-			if (line.hasOption("help")) {
-				System.out.println(options.toString());
-				System.exit(0);
-			}
-			
-			//-exec_on_sut -sut_exec_dir=./gym/Linux -sut_executable=./mbt-files/tests/a.csv -agent_name=agent2 -tests_dir=./mbt-files/tests/a/
-			/*
-			 * -exec_on_sut: enable execution on LabRecruits
-			 * -sut_exec_dir: folder containing gym
-			 * -sut_executable: path to LabRecruits level without .csv extension
-			 * -agent_name: name of the agent
-			 * -tests_dir: folder containing the serialized test cases
-			 */
-			if (line.hasOption("exec_on_sut")) {
-				String sutExecutableDir = "";
-				String sutExecutable = "";
-				String testsDir = "";
-				String agentName = "";
-				Integer maxCycles = 200;
-				if (line.hasOption("sut_exec_dir")) {
-					sutExecutableDir = line.getOptionValue("sut_exec_dir");
-				}else {
-					System.out.println("exec_on_sut option needs sut_exec_dir parameter");
-				}
-				
-				if (line.hasOption("sut_executable")) {
-					sutExecutable = line.getOptionValue("sut_executable");
-				}
-				
-				if (line.hasOption("tests_dir")) {
-					testsDir = line.getOptionValue("tests_dir");
-				}else {
-					System.out.println("exec_on_sut option needs tests_dir parameter");
-				}
-				
-				if (line.hasOption("agent_name")) {
-					agentName = line.getOptionValue("agent_name", "Agent1");
-				}else {
-					System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
-				}
-				
-				if (line.hasOption("max_cycles")) {
-					maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
-				}else {
-					System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
-				}
-				
-				LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
-				executor.execute();
-				return;
-			}
-			
-			if (line.hasOption("mosa")) {
-				generationStrategy = new SearchBasedStrategy<MBTChromosome>();
-			}
-			
-			if (line.hasOption("random")) {
-				generationStrategy = new RandomTestStrategy<MBTChromosome>();
-			}
-			
-			if (line.hasOption("tamer")) {
-				generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
-			}
-			
-			setGlobalProperties (line);
+			line = parser.parse(options, args);
 		} catch (ParseException e) {
 			System.err.println("Failed to parse commandline arguments.");
+		}
+		return line;
+	}
+	
+	/**
+	 * execute the actual operation, either test generation or execution
+	 * @param line the commandline arguments entered by the user
+	 * @param options the options available
+	 */
+	private void execute (CommandLine line, Options options) {
+		//-exec_on_sut -sut_exec_dir=./gym/Linux -sut_executable=./mbt-files/tests/a.csv -agent_name=agent2 -tests_dir=./mbt-files/tests/a/
+		/*
+		 * -exec_on_sut: enable execution on LabRecruits
+		 * -sut_exec_dir: folder containing gym
+		 * -sut_executable: path to LabRecruits level without .csv extension
+		 * -agent_name: name of the agent
+		 * -tests_dir: folder containing the serialized test cases
+		 */
+		if (line.hasOption("exec_on_sut")) {
+			String sutExecutableDir = "";
+			String sutExecutable = "";
+			String testsDir = "";
+			String agentName = "";
+			Integer maxCycles = 200;
+			if (line.hasOption("sut_exec_dir")) {
+				sutExecutableDir = line.getOptionValue("sut_exec_dir");
+			}else {
+				System.out.println("exec_on_sut option needs sut_exec_dir parameter");
+			}
+			
+			if (line.hasOption("sut_executable")) {
+				sutExecutable = line.getOptionValue("sut_executable");
+			}
+			
+			if (line.hasOption("tests_dir")) {
+				testsDir = line.getOptionValue("tests_dir");
+			}else {
+				System.out.println("exec_on_sut option needs tests_dir parameter");
+			}
+			
+			if (line.hasOption("agent_name")) {
+				agentName = line.getOptionValue("agent_name", "Agent1");
+			}else {
+				System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
+			}
+			
+			if (line.hasOption("max_cycles")) {
+				maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
+			}else {
+				System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
+			}
+			
+			LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+			executor.execute();
+		}else {
+			
+			runTestGeneration(line);
 		}
 		
 	}
@@ -384,9 +386,16 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Main main = new Main ();
-		main.parseCommandLine(args);
-		//main.setProperties();
-		main.run();
+		Options options = getCommandLineOptions();
+		CommandLine line = main.parseCommandLine(args, options);
+		
+		if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("MBT", options);
+		}else {
+			main.execute(line, options);
+		}
+		
 		System.exit(0);
 	}
 
