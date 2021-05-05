@@ -68,8 +68,8 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		
 		if (MBTProperties.SHOW_PROGRESS) {
 			//setup progress bar to number of goals to cover and search budget
-			coveragePb = new ProgressBar("Coverage: ", goals.size()); //, ProgressBarStyle.ASCII);
-			budgetPb = new ProgressBar("  Budget: ", MBTProperties.SEARCH_BUDGET); //, ProgressBarStyle.ASCII);
+			coveragePb = new ProgressBar(MBTProperties.ALGORITHM + " Coverage: ", goals.size()); //, ProgressBarStyle.ASCII);
+			budgetPb = new ProgressBar(MBTProperties.ALGORITHM + " S.Budget: ", MBTProperties.SEARCH_BUDGET); //, ProgressBarStyle.ASCII);
 		}
 	}
 	
@@ -151,10 +151,10 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void searchStarted(GeneticAlgorithm<?> ga) {
-//		if (MBTProperties.SHOW_PROGRESS) {
-//			coveragePb.step();
-//			budgetPb.step();
-//		}
+		if (MBTProperties.SHOW_PROGRESS) {
+			coveragePb.stepTo(0);
+			budgetPb.stepTo(0);
+		}
 	}
 
 	@Override
