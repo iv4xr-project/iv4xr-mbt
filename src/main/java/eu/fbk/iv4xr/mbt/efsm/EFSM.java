@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,8 @@ public  class EFSM<
 	// compute distance metrics
 	private GraphMeasurer<State, EFSMTransition> graphMeasurer;
 	
+	// convenience map for retreiving transitions by their id, used during test execution on model
+	private Map<String, EFSMTransition> transitionsMap = new HashMap<>();
 
 	// Constructors
 	protected EFSM(Graph<State, Transition> baseGraph, 
@@ -112,6 +115,8 @@ public  class EFSM<
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
 		this.pcs = new PropertyChangeSupport(this);
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
+		
+		this.setTransitionsMap();
 	
 	}
 
@@ -125,6 +130,8 @@ public  class EFSM<
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 		// we do not want to delegate any events of this to the original listeners
 		this.pcs = null;
+		
+		this.setTransitionsMap();
 	}
 		
 	public void setEFMSString(String s) {
@@ -324,7 +331,8 @@ public  class EFSM<
 	 * NOTE: do we need to check that curState == transition.getSrc()?
 	 */
 	public Set<OutParameter> transition(Transition transition1) {
-		Transition transition = getTransition (transition1);
+		Transition transition = (Transition) getTransition (transition1.getId());
+//		Transition transition = getTransition(transition1);
 		if (transition.isFeasible(curContext)) {
 			EFSMConfiguration<State, Context> prevConfig = null;
 			if (pcs != null) {
@@ -343,13 +351,13 @@ public  class EFSM<
 	 
 
 	private Transition getTransition(Transition transition) {
-		/*
-		for (EFSMTransition t : getTransitons()) {
-			if (t.equals(transition)) {
-				return (Transition) t;
-			}
-		}
-		*/
+		
+//		for (EFSMTransition t : getTransitons()) {
+//			if (t.equals(transition)) {
+//				return (Transition) t;
+//			}
+//		}
+		
 		Set<EFSMTransition> availableTransitions = (Set<EFSMTransition>)baseGraph.getAllEdges(transition.getSrc(), transition.getTgt());
 		if (availableTransitions.contains(transition)) {
 			for (EFSMTransition t : availableTransitions) {
@@ -471,7 +479,17 @@ public  class EFSM<
 		
 		}	
 	}	
+	
+	public void setTransitionsMap() {
+		for (EFSMTransition t : getTransitons()) {
+			transitionsMap.put(t.getId(), t);
+		}
+	}
 
+	public EFSMTransition getTransition (String id) {
+		return transitionsMap.get(id);
+	}
+	
 	public AllDirectedPaths getAllDirectedPathCalculator() {
 		//return this.allPathsCalculator;
 		return new AllDirectedPaths<State, EFSMTransition>(this.baseGraph);
