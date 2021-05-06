@@ -113,7 +113,7 @@ public class StateCoverageGoal<
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
-			//updateCollateralCoverage(individual, executionResult);
+			updateCollateralCoverage(individual, executionResult);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);
