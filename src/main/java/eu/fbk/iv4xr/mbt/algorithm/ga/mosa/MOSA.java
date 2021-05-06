@@ -173,8 +173,8 @@ public class MOSA<
 			if (value == 0.0) {
 				updateArchive(c, fitnessFunction);
 			}
+			notifyEvaluation(c);
 		}
-		notifyEvaluation(c);
 	}
 
 	/** {@inheritDoc} */

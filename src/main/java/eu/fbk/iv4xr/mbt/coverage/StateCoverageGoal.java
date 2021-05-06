@@ -113,7 +113,7 @@ public class StateCoverageGoal<
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
-			updateCollateralCoverage(individual, executionResult);
+			//updateCollateralCoverage(individual, executionResult);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);
@@ -159,14 +159,14 @@ public class StateCoverageGoal<
 
 	@Override
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
-		ExecutionTrace executionTrace = executionResult.getExectionTrace();
-		for (Object state : executionTrace.getCoveredStates()) {
-			EFSMState coveredState = (EFSMState)state;
-			CoverageGoal goal = new StateCoverageGoal(coveredState);
-			individual.addFitness(goal, 0d);
-//			if (Properties.TEST_ARCHIVE) {
-//				Archive.getArchiveInstance().updateArchive(goal, individual, 0d);
-//			}
+		// collateral coverage only if the individual is valid
+		if (executionResult.isSuccess()) {
+			ExecutionTrace executionTrace = executionResult.getExectionTrace();
+			for (Object state : executionTrace.getCoveredStates()) {
+				EFSMState coveredState = (EFSMState)state;
+				CoverageGoal goal = new StateCoverageGoal(coveredState);
+				individual.addFitness(goal, 0d);
+			}
 		}
 		
 	}

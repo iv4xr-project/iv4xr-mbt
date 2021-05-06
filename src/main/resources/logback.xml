@@ -5,7 +5,7 @@
     <timestamp key="timestamp-by-second" datePattern="yyyyMMdd'T'HHmmss"/>
     <appender name="Console-Appender" class="ch.qos.logback.core.ConsoleAppender">
     	<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
+			<level>DEBUG</level>
 			<onMatch>DENY</onMatch>
 			<onMismatch>ACCEPT</onMismatch>
 		</filter>
@@ -35,11 +35,18 @@
         <appender-ref ref="RollingFile-Appender" />
     </appender>
 
-    <logger name="org.evosuite"  level="ERROR" additivity="false">
+    <logger name="org.evosuite"  level="DEBUG" additivity="false">
         <appender-ref ref="Console-Appender" />
         <appender-ref ref="File-Appender" />
         <appender-ref ref="Async-Appender" />
     </logger>
+    
+    <logger name="eu.fbk.iv4xr.mbt"  level="DEBUG" additivity="false">
+        <appender-ref ref="Console-Appender" />
+        <appender-ref ref="File-Appender" />
+        <appender-ref ref="Async-Appender" />
+    </logger>
+    
     <root>
         <appender-ref ref="Console-Appender" />
     </root>

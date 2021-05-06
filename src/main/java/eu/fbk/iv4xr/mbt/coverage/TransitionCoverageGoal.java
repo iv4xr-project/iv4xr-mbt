@@ -148,11 +148,15 @@ public class TransitionCoverageGoal<
 
 	@Override
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
-		ExecutionTrace executionTrace = executionResult.getExectionTrace();
-		for (Object transition : executionTrace.getCoveredTransitions()) {
-			EFSMTransition coveredTransition = (EFSMTransition)transition;
-			CoverageGoal goal = new TransitionCoverageGoal(coveredTransition);
-			individual.addFitness(goal, 0d);
+		// collateral coverage only if the individual is valid
+		if (executionResult.isSuccess()) {
+			ExecutionTrace executionTrace = executionResult.getExectionTrace();
+			for (Object transition : executionTrace.getCoveredTransitions()) {
+				EFSMTransition coveredTransition = (EFSMTransition)transition;
+				CoverageGoal goal = new TransitionCoverageGoal(coveredTransition);
+//				individual.addFitness(goal, 0d);
+				updateIndividual(goal, individual, 0d);
+			}
 		}
 	}
 
