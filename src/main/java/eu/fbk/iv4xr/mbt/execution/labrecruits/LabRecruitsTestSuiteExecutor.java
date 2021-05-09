@@ -63,6 +63,10 @@ public class LabRecruitsTestSuiteExecutor {
 		this.maxCyclePerGoal = max;
 	}
 
+	public Integer getMaxCylce() {
+		return maxCyclePerGoal;
+	}
+	
 	public LabRecruitsTestSuiteReporter getReport() {
 		return testReporter;
 	}
@@ -75,33 +79,36 @@ public class LabRecruitsTestSuiteExecutor {
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public void executeTestSuite(SuiteChromosome solution)
+	public boolean executeTestSuite(SuiteChromosome solution)
 			throws InterruptedException {
 
 		// open the server
 		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
 				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
 
+		boolean testSuiteResult = true;
 		// cycle over the test cases
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
 			Boolean testResult = executeTestCase(testcase);
 			if (!testResult) {
-				//testReporter.put(testcase, false);
-			} else {
-				//testReporter.put(testcase, true);
-			}
+				testSuiteResult = false;
+			} 
 		}
 
 		// close the server
 		if (testServer != null)
 			testServer.close();
 
+		return testSuiteResult;
 	}
 
 	// run a test case
 	public Boolean executeTestCase(AbstractTestSequence testcase) throws InterruptedException {
 
+		// Start registering the time of the test suite execution
+		long initialTime = System.currentTimeMillis();
+		
 		LinkedList<LabRecruitsTestCaseReporter> goalReporter = new LinkedList<LabRecruitsTestCaseReporter>();
 		
 		System.out.println("Executing: " + testcase.toString());
@@ -128,7 +135,7 @@ public class LabRecruitsTestSuiteExecutor {
 			System.err.println("Unity refuses to start the Simulation!");
 			return false;
 		}
-
+		
 		String status = "SUCCESS";
 		// iterate over goals
 		// 
@@ -144,23 +151,31 @@ public class LabRecruitsTestSuiteExecutor {
 			while (g.getStatus().inProgress()) {
 				testAgent.update();
 				if (testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen() > 0) {
+					// stop the time
+					long finalTime = System.currentTimeMillis();
+					long timeDuration = finalTime - initialTime;
+					
 					String err = "Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed";
 					System.err.println(err);
 					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
-					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
+					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 					return false;
 				}
 				Thread.sleep(20);
 				nCycle++;
 				if (nCycle > maxCyclePerGoal) {
+					// stop the time
+					long finalTime = System.currentTimeMillis();
+					long timeDuration = finalTime - initialTime;
+					
 					String err = "The goal cannot be satisfied in " + maxCyclePerGoal + " cycles";
 					System.err.println(err);
 					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
-					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
+					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 					return false;
 				}
 			}
@@ -171,12 +186,16 @@ public class LabRecruitsTestSuiteExecutor {
 				status = "FAIL";
 			}
 		}
-	
+		
+		// stop the time
+		long finalTime = System.currentTimeMillis();
+		long timeDuration = finalTime - initialTime;
+		
 		if (status == "SUCCESS") {
-			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.TRUE);
+			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.TRUE, timeDuration);
 			return true;
 		}else {
-			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE);
+			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 			return false;
 		}
 		

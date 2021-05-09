@@ -6,7 +6,10 @@ package eu.fbk.iv4xr.mbt;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -18,15 +21,18 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.tools.ant.types.Path;
 import org.evosuite.utils.LoggingUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteExecutor;
+import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteReporter;
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
@@ -80,8 +86,153 @@ public class Main {
 		
 		// write statistics to disk
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
-		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader());
+		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE);
 		System.out.println(coverageTracker.getStatistics());
+		
+	}
+	
+	
+	/**
+	 * run mutation analysis
+	 */
+	private void runMutationAnalysis (CommandLine line) {
+		String sutExecutableDir = "";
+		String sutExecutable = "";
+		String testsDir = "";
+		String agentName = "";
+		Integer maxCycles = 200;
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir");
+		}else {
+			System.out.println("exec_on_sut option needs sut_exec_dir parameter");
+		}
+		
+		if (line.hasOption("sut_executable")) {
+			sutExecutable = line.getOptionValue("sut_executable");
+		}
+		
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.out.println("exec_on_sut option needs tests_dir parameter");
+		}
+		
+		if (line.hasOption("agent_name")) {
+			agentName = line.getOptionValue("agent_name", "Agent1");
+		}else {
+			System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
+		}
+		
+		if (line.hasOption("max_cycles")) {
+			maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
+		}else {
+			System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
+		}
+		
+		// set parameters in MBTProperties and Properties
+		setGlobalProperties (line);
+		
+		// load csv level
+		File sutExecutableFile = new File(sutExecutable+".csv");
+		String originalLevel = "";
+		try {
+			originalLevel = FileUtils.readFileToString(sutExecutableFile,Charset.defaultCharset());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// execute on wild type scenario
+		LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+		executor.execute();
+		
+		// create mutations
+		LabRecruitMutationManager mutManager = new LabRecruitMutationManager(originalLevel);
+		List<String> mutatedSut = mutManager.getMutations();
+		
+		/*
+		 *  select only tests that pass on the wild type scenario
+		 */
+		List<File> passedTests = new LinkedList<File>();
+		// get the report of the executions
+		LabRecruitsTestSuiteReporter executionReport = executor.getExecutionReport();
+		// if test case pass save the location of the file
+		for(AbstractTestSequence testCase : executionReport.getTestCases()) {
+			if (executionReport.getTestCaseStatus(testCase)) {
+				passedTests.add(executor.getTestCaseFile(testCase));
+			}
+		}
+		
+		/*
+		 * prepare folder with passed test to test mutations
+		 */
+		
+		// create folders
+		File mutFolder = new File (MBTProperties.MUTATION_ANALYSIS_FOLDER);
+		if (!mutFolder.exists()) {
+			mutFolder.mkdirs();
+		}else {
+			try {
+				FileUtils.deleteDirectory(mutFolder);
+			}catch (IOException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			
+		}
+		String mutTestPath = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+"tests";
+		File mutTestFolder = new File (mutTestPath);
+		if (!mutTestFolder.exists()) {
+			mutTestFolder.mkdirs();
+		}
+		
+		try {
+			// copy pass tests in mutTestFolder
+			for(File testFile : passedTests) {
+				FileUtils.copyFileToDirectory(testFile, mutTestFolder);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	
+		/*
+		 * Run tests on each mutations
+		 */
+		Integer n_mutation_run = 0;
+		Integer n_mutation_killed = 0;
+		for (int i = 0; i < Math.min(mutatedSut.size(), MBTProperties.MAX_NUMBER_MUTATIONS); i++) {
+			String sut = mutatedSut.get(i);
+			// save sut
+			String sutPath = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+"mutated_sut_"+i;
+			File sutFile = new File(sutPath+".csv");
+			try {
+				FileUtils.writeStringToFile(sutFile, sut, Charset.defaultCharset(), false);
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			// exec sut
+			LabRecruitsTestExecutionHelper mutExecutor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutPath, agentName, mutTestPath, maxCycles);
+			boolean testSuiteResult = mutExecutor.execute();
+			n_mutation_run ++;
+			if (!testSuiteResult) {
+				n_mutation_killed ++;
+			}
+		}
+		
+		/*
+		 * Save statistics about mutation analysis
+		 */
+		
+		String mutStatHeader = "run_id,  n_tests, n_mutants, n_killed_mutants, wild_type_sut, test_folder\n";
+		
+		String mutStat = String.valueOf(System.currentTimeMillis()) + ",";
+		mutStat = mutStat + passedTests.size() + ",";
+		mutStat = mutStat + n_mutation_run + ",";
+		mutStat = mutStat + n_mutation_killed + ",";
+		mutStat = mutStat + sutExecutableFile + ",";
+		mutStat = mutStat + passedTests.get(0).getParent() + "\n";
+		
+		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE);
 		
 	}
 	
@@ -91,14 +242,16 @@ public class Main {
 	 * @param statistics
 	 * @param statisticsHeader
 	 */
-	private void writeStatistics(String statistics, String statisticsHeader) {
+	private void writeStatistics(String statistics, String statisticsHeader, String fileName) {
 		// make sure stats folder exists
 		File statsFolder = new File (MBTProperties.STATISTICS_DIR);
 		if (!statsFolder.exists()) {
 			statsFolder.mkdirs();
 		}
 		
-		File statsFile = new File (MBTProperties.STATISTICS_FILE);
+		//File statsFile = new File (MBTProperties.STATISTICS_FILE);
+		File statsFile = new File (fileName);
+		
 		boolean exists = false;
 		if (statsFile.exists()) {
 			exists = true;
@@ -112,7 +265,7 @@ public class Main {
 		}
 	}
 
-
+	
 	/**
 	 * Creates a new folder (currenttime) in the default TESTS folder,
 	 * writes each test in a separate file (for now in .dot and .txt formats)
@@ -218,6 +371,14 @@ public class Main {
 				.desc("execute tests on the actual system under test")
 				.build();
 		
+		Option mutationAnalysis = Option.builder("mutation_analysis")
+				.argName("mutation_analysis")
+				.type(String.class)
+				.desc("execute mutation analysis on the actual system under test." 
+						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
+						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
+				.build();
+		
 		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Path to the SUT executable");
 		executableDir.setArgs(1);
 		
@@ -265,6 +426,7 @@ public class Main {
 		
 		options.addOption(help);
 		options.addOption(execOnSut);
+		options.addOption(mutationAnalysis);
 		options.addOption(executableDir);
 		options.addOption(sutExecutable);
 		options.addOption(testsDir);
@@ -337,9 +499,35 @@ public class Main {
 			}
 			
 			LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
-			executor.execute();
-		}else {
 			
+			executor.execute();
+			
+			// save stats
+			writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE );
+			
+			// save debug data
+			writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE);
+			
+			
+			
+			// save execution data for debug
+			//String executorDebug = executor.getDebutTableTable();
+			//String eexecutorDebugFileName = testsDir+"/execution_statistics.csv";
+			//File debugFile = new File(eexecutorDebugFileName);
+			//try {
+
+			//	FileUtils.writeStringToFile(debugFile, executorDebug, Charset.defaultCharset());
+				
+			//} catch (IOException e) {
+			//	e.printStackTrace();
+			//}
+			
+			
+			
+			
+		}else if (line.hasOption("mutation_analysis")) {			
+			runMutationAnalysis(line);
+		}else {
 			runTestGeneration(line);
 		}
 		

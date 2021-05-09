@@ -76,6 +76,8 @@ public class EFSMFactory {
 				efsm.setEFMSString(randomGenerator.get_csv());
 				efsm.setAnmlString(randomGenerator.getAnml());
 				efsm.setDotString(randomGenerator.getEFSMAsDot());
+			//	efsm.setEFSMStringRemoveMutations(randomGenerator.getRemoveMutations());
+			//	efsm.setEFSMStringAddMutations(randomGenerator.getAddMutations());
 			}else {
 				throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
 			}

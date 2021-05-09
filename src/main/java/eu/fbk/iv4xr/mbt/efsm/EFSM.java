@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +66,10 @@ public  class EFSM<
 	
 	// String version of the model
 	private String efsmString = ""; 
+	
+	// String version of the mutated model
+	//private List<String> removeMutationString = new LinkedList<String>();
+	//private List<String> addMutationString = new LinkedList<String>();
 	
 	// ANML version of the model
 	private String anmlString = "";
@@ -134,6 +139,10 @@ public  class EFSM<
 		this.setTransitionsMap();
 	}
 		
+	/*
+	 * setter and getter for string version
+	 * of a level and its mutations
+	 */
 	public void setEFMSString(String s) {
 		this.efsmString = s;
 	}
@@ -141,6 +150,23 @@ public  class EFSM<
 	public String getEFSMString() {
 		return this.efsmString;
 	}
+	
+//	public void setEFSMStringRemoveMutations(List<String> mut) {
+//		this.removeMutationString = mut;
+//	}
+	
+//	public List<String> getEFMStringRemoveMutations(){
+//		return this.removeMutationString;
+//	}
+	
+//	public void setEFSMStringAddMutations(List<String> mut) {
+//		this.addMutationString = mut;
+//	}
+	
+//	public List<String> getEFSMStringAddMutations(){
+//		return this.addMutationString;
+//	}
+	
 	
 	public boolean canTransition(InParameter input) {
 		for (EFSMTransition transition : baseGraph.outgoingEdgesOf(curState)) {
