@@ -23,6 +23,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.types.Path;
 import org.evosuite.utils.LoggingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -50,6 +52,7 @@ import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
  */
 public class Main {
 
+	protected static final Logger logger = LoggerFactory.getLogger(Main.class);
 	
 	/**
 	 * 
@@ -576,14 +579,14 @@ public class Main {
 		Main main = new Main ();
 		Options options = getCommandLineOptions();
 		CommandLine line = main.parseCommandLine(args, options);
-		
+		logger.info("Performing requested operation ...");
 		if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("MBT", options);
 		}else {
 			main.execute(line, options);
 		}
-		
+		logger.info("Requested operation completed.");
 		System.exit(0);
 	}
 

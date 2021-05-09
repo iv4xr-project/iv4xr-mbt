@@ -81,8 +81,10 @@ public class PathCoverageGoal<
 
 	@Override
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
-		// TODO Auto-generated method stub
-		
+		// collateral coverage only if the individual is valid
+		if (executionResult.isSuccess()) {
+			// collect colateral coverage
+		}
 	}
 
 	
