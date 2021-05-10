@@ -110,8 +110,19 @@ public class LabRecruitsRandomEFSM {
 	// csv version to feed Lab Recruits
 	private String csvLevel = "";
 	
+	// mutations
+	private List<String> removeMutations = new LinkedList<String>();
+	private List<String> addMutations = new LinkedList<String>();
+	
+	
 	// map from doors to the set of activating button
 	HashMap<Integer, Set<EFSMState>> doorButtonsMap;
+	
+	// store mutants of the csv version of the level
+	// mutant where a link between a door and a button is removed
+	//private LinkedList<String> removeLinkMutants = new LinkedList<String>();
+	// mutant where a link between a door and a button is added
+	//private LinkedList<String> addLinkMutants = new LinkedList<String>();
 	
 	// parameters generator
 	//LabRecruitsParameterGenerator parameterGenerator = new LabRecruitsParameterGenerator();
@@ -153,6 +164,11 @@ public class LabRecruitsRandomEFSM {
 				this.efsm = doorsGraphToEFSM();
 			}
 			nTry = nTry - 1;
+		}
+		
+		if (this.csvLevel != "") {
+			// create mutants by removing or adding button-door links
+			//generateMutants();
 		}
 	}
 
@@ -212,6 +228,19 @@ public class LabRecruitsRandomEFSM {
 		return efsm;
 	}
 	
+	/*
+	 * Return remove mutations
+	 */
+	public List<String> getRemoveMutations(){
+		return removeMutations;
+	}
+	
+	/*
+	 * Return add mutations
+	 */
+	public List<String> getAddMutations(){
+		return addMutations;
+	}
 	
 	public String getAnml () {
 		StringBuffer anml = new StringBuffer();
@@ -1072,8 +1101,7 @@ public class LabRecruitsRandomEFSM {
 			}
 		}
 		
-		
-		
+
 		/*
 		 * Start building the graph
 		 */
@@ -1216,6 +1244,25 @@ public class LabRecruitsRandomEFSM {
 		
 	}	
 	
+	
+	/**
+	 * Generate mutant levels removing and adding links between 
+	 * doors and buttons
+	 */
+	/*public void generateMutants() {
+		// initialize manger of LabRecruits csv
+		LabRecruitMutationManager csvManager = new LabRecruitMutationManager(csvLevel);
+		// extract the header where button-door map is defined
+		csvManager.setButtonDoorsHeader();
+		csvManager.fillButtonDoorsMap();
+		csvManager.setLayout();
+		csvManager.fillDoorSet();
+		csvManager.fillButtonSet();
+		csvManager.createRemoveMutations();
+		removeMutations = csvManager.createRemoveMutations();
+		addMutations = csvManager.createAddMutations(); 
+	}*/
+	
 	/**
 	 * Generate the level as a text file using Wishnu code
 	 * @throws IOException 
@@ -1240,7 +1287,7 @@ public class LabRecruitsRandomEFSM {
 		
 		int roomId = 0;
 		
-		// iterate over doors graph vertex 
+		// iterate over doors graph vertex (rooms)
 		Iterator<Vector<EFSMState>> vertexIterator = doorsGraph.vertexSet().iterator();
 		while (vertexIterator.hasNext()) {
 			Vector<EFSMState> doorsGraphState = vertexIterator.next();
@@ -1262,7 +1309,7 @@ public class LabRecruitsRandomEFSM {
 			
 		}
 		
-		// iterate over door graph edges
+		// iterate over door graph edges (doors)
 		Iterator<Integer> edgeIterator = doorsGraph.edgeSet().iterator();
 		while (edgeIterator.hasNext()) {
 			

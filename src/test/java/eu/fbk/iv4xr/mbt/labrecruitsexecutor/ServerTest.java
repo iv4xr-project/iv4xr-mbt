@@ -80,6 +80,8 @@ public class ServerTest {
 		String labRecruitesExeRootDir = System.getProperty("user.dir");
 		Integer maxCycles = 200;
 		String reportFileName = levelPath + "_report.txt";
+		String statsFileName = levelPath + "_stats.csv";
+		
 		
 		// MBT configurations
 		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
@@ -107,16 +109,15 @@ public class ServerTest {
 		SuiteChromosome solution = generationStrategy.generateTests();
 			
 		// create the executor
-        LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir), Platform.LEVEL_PATH+levelFileName, agentName, maxCycles);
+        LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(labRecruitesExeRootDir, Platform.LEVEL_PATH+"/"+levelFileName, agentName, maxCycles);
         //lrExecutor.setMaxCycle(maxCycles);
         
         // execute the test suite
         lrExecutor.executeTestSuite(solution);
         
         LabRecruitsTestSuiteReporter executionReport = lrExecutor.getReport();
-
+     
         File reportFile = new File(reportFileName);
-        
         FileUtils.writeStringToFile(reportFile, executionReport.toString(),  Charset.defaultCharset());
         
 	}

@@ -130,9 +130,22 @@ public class MBTProperties {
 	
 	public static String STATISTICS_FILE = STATISTICS_DIR + File.separator + "statistics.csv";
 	
-	@Parameter(key = "statistics_interval", group = "Search Algorithm", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
+	public static String EXECUTIONSTATISTICS_FILE = STATISTICS_DIR + File.separator + "execution_statistics.csv";
+	
+	public static String EXECUTIONDEBUG_FILE = STATISTICS_DIR + File.separator + "execution_debug.csv";
+	
+	@Parameter(key = "statistics_interval", group = "SUT execution", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
 	@LongValue(min = 1)
 	public static long STATISTICS_INTERVAL = 10;
+	
+	public static String MUTATION_ANALYSIS_FOLDER = OUTPUT_DIR + File.separator + "mutations";
+	
+	public static String MUTATION_STATISTIC_FILE = STATISTICS_DIR + File.separator + "mutation_statistics.csv";
+	
+	@Parameter(key = "max_mutations", group = "SUT execution", description = "Maximum number of mutations to execute")
+	@IntValue(min = 1)
+	public static int MAX_NUMBER_MUTATIONS = 10;
+
 	
 	public enum StoppingCondition {
 		MAXSTATEMENTS, MAXTESTS,
