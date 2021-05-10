@@ -10,6 +10,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.evosuite.utils.Randomness;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
@@ -50,7 +51,7 @@ public class EFSMTransition<
 	private InParameter inParameter;
 	private OutParameter outParameter;
 	
-	MersenneTwister random = new MersenneTwister();
+	//MersenneTwister random = new MersenneTwister();
 	
 	/*
 	 *  Source and target states are defined by the EFSM builder.
@@ -80,7 +81,7 @@ public class EFSMTransition<
 	}
 	
 	private String generateUniqueId () {
-		return "" + random.nextLong(); // Randomness.nextLong() + "_" + System.currentTimeMillis();
+		return "" + Randomness.nextLong(); // Randomness.nextLong() + "_" + System.currentTimeMillis();
 	}
 	
 	/*

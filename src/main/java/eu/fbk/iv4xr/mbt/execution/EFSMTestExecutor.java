@@ -6,6 +6,8 @@ package eu.fbk.iv4xr.mbt.execution;
 import java.util.List;
 import java.util.Set;
 
+import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
+
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
@@ -32,7 +34,8 @@ public class EFSMTestExecutor<
 		extends TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 	
 	private static EFSMTestExecutor instance = null;
-		
+	
+	private EFSM clone;
 	
 	public static EFSMTestExecutor getInstance() {
 		if (instance == null) {
@@ -41,17 +44,23 @@ public class EFSMTestExecutor<
 		return instance;
 	}
 	
-	/**
-	 * 
-	 */
-	private EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
-		this.efsm = efsm;
-	}
+//	/**
+//	 * 
+//	 */
+//	private EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
+//		this.efsm = efsm;
+//	}
 
 	private EFSMTestExecutor() {
 		this.efsm = EFSMFactory.getInstance().getEFSM();
+		this.clone = SerializationUtils.clone(this.efsm);
 	}
 
+	// TODO only for debugging purposes, to be disabled
+	public void setEFSM (EFSM efsm) {
+		this.efsm = efsm;
+	}
+	
 	@Override
 	public ExecutionResult executeTestcase(Testcase testcase) {
 		notifyExecutionStarted();
@@ -123,7 +132,9 @@ public class EFSMTestExecutor<
 
 	@Override
 	public boolean reset() {
-		efsm.reset();
+//		efsm.reset();
+//		efsm = EFSMFactory.getInstance(true).getEFSM();
+		efsm = SerializationUtils.clone(this.clone);
 		return true;
 	}
 

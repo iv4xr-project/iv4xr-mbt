@@ -35,7 +35,7 @@ public class TestSerializationUtils {
 		SerializationUtils.serialize(test, new FileOutputStream(filename));
 	}
 	
-	public EFSM loadEFSM(String filename) throws FileNotFoundException {
+	public static EFSM loadEFSM(String filename) throws FileNotFoundException {
 		EFSM efsm = (EFSM) SerializationUtils.deserialize(new FileInputStream(filename));
 		return efsm;
 	}

@@ -321,7 +321,7 @@ public class Main {
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 		try {
 			
-			TestSerializationUtils.saveEFSM(efsm, modelFileName);
+			FileUtils.writeByteArrayToFile(new File(modelFileName), EFSMFactory.getInstance().getOriginalEFSM());
 			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
 			// if csv is available
 			if (efsm.getEFSMString() != "") {
