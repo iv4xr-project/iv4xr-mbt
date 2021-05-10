@@ -91,7 +91,7 @@ public class Main {
 		// write statistics to disk
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE);
-		System.out.println(coverageTracker.getStatistics());
+		logger.info(coverageTracker.getStatistics());
 		
 	}
 	
@@ -592,11 +592,13 @@ public class Main {
 		}catch(Exception e) {
 			logger.error("Error when generating/executing tests for: " + MBTProperties.SUT_EFSM
 					+ " with seed " + Randomness.getSeed()+". LR_Seed : " + MBTProperties.LR_seed, e);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException ex) {
-			}
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException ex) {
+//			}
 			System.exit(1);
+		}finally {
+			System.exit(0);
 		}
 	}
 
