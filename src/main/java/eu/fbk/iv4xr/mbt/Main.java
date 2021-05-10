@@ -172,19 +172,21 @@ public class Main {
 		 */
 		
 		// create folders
-		File mutFolder = new File (MBTProperties.MUTATION_ANALYSIS_FOLDER);
+		String run_id = String.valueOf(System.currentTimeMillis());
+		String outFolder = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+run_id;
+		File mutFolder = new File (outFolder);
 		if (!mutFolder.exists()) {
 			mutFolder.mkdirs();
-		}else {
-			try {
-				FileUtils.deleteDirectory(mutFolder);
-			}catch (IOException e) {
+		}//else {
+			//try {
+			///	FileUtils.deleteDirectory(mutFolder);
+			//}catch (IOException e) {
 				// TODO: handle exception
-				e.printStackTrace();
-			}
+			//	e.printStackTrace();
+			//}
 			
-		}
-		String mutTestPath = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+"tests";
+		//}
+		String mutTestPath = outFolder+File.separator+"tests";
 		File mutTestFolder = new File (mutTestPath);
 		if (!mutTestFolder.exists()) {
 			mutTestFolder.mkdirs();
@@ -207,7 +209,7 @@ public class Main {
 		for (int i = 0; i < Math.min(mutatedSut.size(), MBTProperties.MAX_NUMBER_MUTATIONS); i++) {
 			String sut = mutatedSut.get(i);
 			// save sut
-			String sutPath = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+"mutated_sut_"+i;
+			String sutPath = outFolder+File.separator+"mutated_sut_"+i;
 			File sutFile = new File(sutPath+".csv");
 			try {
 				FileUtils.writeStringToFile(sutFile, sut, Charset.defaultCharset(), false);
@@ -229,7 +231,7 @@ public class Main {
 		
 		String mutStatHeader = "run_id,  n_tests, n_mutants, n_killed_mutants, wild_type_sut, test_folder\n";
 		
-		String mutStat = String.valueOf(System.currentTimeMillis()) + ",";
+		String mutStat =  run_id+ ",";
 		mutStat = mutStat + passedTests.size() + ",";
 		mutStat = mutStat + n_mutation_run + ",";
 		mutStat = mutStat + n_mutation_killed + ",";
