@@ -124,7 +124,12 @@ public abstract class AbstractMOSA<
 		for (int i=0; i < MBTProperties.POPULATION/2 && !isFinished(); i++){
 			// select best individuals
 			T parent1 = selectionFunction.select(population);
-			T parent2 = selectionFunction.select(population);
+			T parent2;
+			if (MBTProperties.HEADLESS_CHICKEN_TEST) {
+				parent2 = newRandomIndividual();
+			}else {
+				parent2 = selectionFunction.select(population);
+			}
 			T offspring1 = (T) parent1.clone();
 			T offspring2 = (T) parent2.clone();
 			// apply crossover 
@@ -138,8 +143,11 @@ public abstract class AbstractMOSA<
 			} 
 
 			// apply mutation on offspring1
-			offspring1.mutate();
-			notifyMutation(offspring1);
+			if (Randomness.nextDouble() <= MBTProperties.MUTATION_RATE) {
+				offspring1.mutate();
+				notifyMutation(offspring1);
+			}
+			
 			if (offspring1.isChanged()) {
 				offspring1.updateAge(currentIteration);
 				calculateFitness(offspring1); 
@@ -147,13 +155,16 @@ public abstract class AbstractMOSA<
 			}
 
 			// apply mutation on offspring2
-			offspring2.mutate();
-			notifyMutation(offspring2);
+			if (Randomness.nextDouble() <= MBTProperties.MUTATION_RATE) {
+				offspring2.mutate();
+				notifyMutation(offspring2);
+			}
+			
 			if (offspring2.isChanged()) {
 				offspring2.updateAge(currentIteration);
 				calculateFitness(offspring2);
 				offspringPopulation.add(offspring2);
-			}	
+			}
 		}
 		// Add new randomly generate tests
 		for (int i = 0; i<MBTProperties.POPULATION * MBTProperties.P_TEST_INSERTION; i++){
@@ -175,6 +186,19 @@ public abstract class AbstractMOSA<
 		return offspringPopulation;
 	}
 
+	
+	/**
+	 * creates a new individual, to be used for headless chicken test
+	 * @return
+	 */
+	private T newRandomIndividual() {
+		T randomChromosome = chromosomeFactory.getChromosome();
+		for (FitnessFunction<?> fitnessFunction : this.fitnessFunctions) {
+			randomChromosome.addFitness(fitnessFunction);
+		}
+		return randomChromosome;
+	}
+	
 	/**
 	 * Method used to mutate an offspring
 	 */

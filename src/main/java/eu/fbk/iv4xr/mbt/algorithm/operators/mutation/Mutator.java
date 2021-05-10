@@ -10,7 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+import org.evosuite.utils.Randomness;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.GraphMeasurer;

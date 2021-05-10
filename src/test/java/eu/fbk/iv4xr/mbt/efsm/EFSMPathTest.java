@@ -20,7 +20,9 @@ import eu.fbk.iv4xr.mbt.execution.TestExecutor;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+
+import org.evosuite.Properties;
+import org.evosuite.utils.Randomness;
 import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 
 /**
@@ -36,8 +38,8 @@ class EFSMPathTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		long seed = 1234;
-		Randomness.getInstance(seed);
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
 		EFSMFactory factory = EFSMFactory.getInstance();
 		assertNotNull(factory);
 		model = factory.getEFSM();

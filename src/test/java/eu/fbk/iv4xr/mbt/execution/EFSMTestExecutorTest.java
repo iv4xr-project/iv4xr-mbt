@@ -6,6 +6,7 @@ package eu.fbk.iv4xr.mbt.execution;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.evosuite.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+import org.evosuite.utils.Randomness;
 
 /**
  * @author kifetew
@@ -40,8 +41,8 @@ class EFSMTestExecutorTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		long seed = 1234;
-		Randomness.getInstance(seed);
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);

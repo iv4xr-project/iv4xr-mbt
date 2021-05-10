@@ -20,19 +20,19 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
  * 
  * @author Gordon Fraser
  */
-public class Randomness implements Serializable {
+public class RandomnessMBT implements Serializable {
 
 	private static final long serialVersionUID = -5934455398558935937L;
 
-	private static final Logger logger = LoggerFactory.getLogger(Randomness.class);
+	private static final Logger logger = LoggerFactory.getLogger(RandomnessMBT.class);
 
 	private static long seed = 0;
 
 	private static MersenneTwister random = null;
 
-	private static Randomness instance = new Randomness();
+	private static RandomnessMBT instance = new RandomnessMBT();
 
-	private Randomness() {
+	private RandomnessMBT() {
 		seed = MBTProperties.RANDOM_SEED;
 		logger.info("No seed given. Using {}.", seed);
 		
@@ -40,7 +40,7 @@ public class Randomness implements Serializable {
 	}
 
 	
-	private Randomness(long s) {
+	private RandomnessMBT(long s) {
 		seed = s;
 		logger.info("No seed given. Using {}.", seed);
 		
@@ -55,9 +55,9 @@ public class Randomness implements Serializable {
 	 * 
 	 * @return a {@link org.evosuite.utils.Randomness} object.
 	 */
-	public static Randomness getInstance() {
+	public static RandomnessMBT getInstance() {
 		if (instance == null) {
-			instance = new Randomness();
+			instance = new RandomnessMBT();
 		}
 		return instance;
 	}
@@ -70,8 +70,8 @@ public class Randomness implements Serializable {
 	 * 
 	 * @return a {@link org.evosuite.utils.Randomness} object.
 	 */
-	public static Randomness getInstance(long dummySeed) {
-		instance = new Randomness(dummySeed);
+	public static RandomnessMBT getInstance(long dummySeed) {
+		instance = new RandomnessMBT(dummySeed);
 		return instance;
 	}
 	
@@ -216,7 +216,7 @@ public class Randomness implements Serializable {
 	 *            a long.
 	 */
 	public static void setSeed(long seed) {
-		Randomness.seed = seed;
+		RandomnessMBT.seed = seed;
 		random.setSeed(seed);
 	}
 

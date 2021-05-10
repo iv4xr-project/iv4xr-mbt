@@ -29,7 +29,9 @@ import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+
+import org.evosuite.Properties;
+import org.evosuite.utils.Randomness;
 
 /**
  * @author kifetew
@@ -44,8 +46,8 @@ class TransitionCoverageGoalTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		long seed = 1234;
-		Randomness.getInstance(seed);
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_fire";		
 		//transition = new LabRecruitsFreeTravelTransition();
 		transition = new EFSMTransition<>();

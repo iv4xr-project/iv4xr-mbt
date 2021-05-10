@@ -19,6 +19,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.evosuite.utils.LoggingUtils;
+import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -388,18 +389,27 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Main main = new Main ();
-		Options options = getCommandLineOptions();
-		CommandLine line = main.parseCommandLine(args, options);
-		logger.info("Performing requested operation ...");
-		if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("MBT", options);
-		}else {
-			main.execute(line, options);
+		try {
+			Main main = new Main ();
+			Options options = getCommandLineOptions();
+			CommandLine line = main.parseCommandLine(args, options);
+			logger.info("Performing requested operation ...");
+			if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp("MBT", options);
+			}else {
+				main.execute(line, options);
+			}
+			logger.info("Requested operation completed.");
+		}catch(Exception e) {
+			logger.error("Error when generating/executing tests for: " + MBTProperties.SUT_EFSM
+					+ " with seed " + Randomness.getSeed()+". LR_Seed : " + MBTProperties.LR_seed, e);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException ex) {
+			}
+			System.exit(1);
 		}
-		logger.info("Requested operation completed.");
-		System.exit(0);
 	}
 
 }

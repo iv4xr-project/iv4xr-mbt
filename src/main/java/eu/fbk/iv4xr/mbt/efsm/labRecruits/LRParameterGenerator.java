@@ -4,7 +4,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+import org.evosuite.utils.Randomness;
 
 public class LRParameterGenerator extends EFSMParameterGenerator<EFSMParameter>  {
 

@@ -26,7 +26,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.utils.Randomness;
+import org.evosuite.utils.Randomness;
 
 
 /**

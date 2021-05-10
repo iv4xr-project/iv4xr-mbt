@@ -189,12 +189,12 @@ public class EFSMTestExecutionListener<
 		}else {
 			// compute branch distance of failing guard
 			Guard guard = t.getGuard();
-			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm = testExecutor.efsm;
+//			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm = testExecutor.efsm;
 			Exp<Boolean> guardExpression = guard.getGuard();
-			EFSMConfiguration<State, Context> context = efsm.getConfiguration();
-			VarSet contextVars = context.getContext().getContext();
-			InParameter inParameter = t.getInParameter();
-			VarSet parameter = inParameter.getParameter();
+//			EFSMConfiguration<State, Context> context = efsm.getConfiguration();
+//			VarSet contextVars = context.getContext().getContext();
+//			InParameter inParameter = t.getInParameter();
+//			VarSet parameter = inParameter.getParameter();
 			double pathBD = computeBranchDistance (guardExpression);
 			pathBranchDistance = normalize(pathBD); //, parameter, contextVars);
 			
@@ -251,9 +251,9 @@ public class EFSMTestExecutionListener<
 				Exp<?> parameter1 = boolAnd.getParameter1(); 
 				Exp<?> parameter2 = boolAnd.getParameter2();
 				distance = computeBranchDistance (parameter1) + computeBranchDistance (parameter2) ;
-			}else if (guardExpression instanceof BoolOr) {
+//			}else if (guardExpression instanceof BoolOr) {
 				// recursive call
-			}else {
+//			}else {
 				throw new RuntimeException("Unsupported BinaryOp: " + guardExpression.toDebugString());
 			}
 		}else if (guardExpression instanceof UnaryOp<?>) {
@@ -292,7 +292,7 @@ public class EFSMTestExecutionListener<
 	}
 
 	private double getGreaterThanDistance(Const<?> val1, Const<?> val2) {
-		double distance = Double.MAX_EXPONENT;
+		double distance = Double.MAX_VALUE;
 		if (compatible (val1, val2)) {
 			String str1 = val1.toDebugString();
 			String str2 = val2.toDebugString();

@@ -159,9 +159,9 @@ public class MBTProperties {
 	@Parameter(key = "headless_chicken_test", group = "Search Algorithm", description = "Activate headless chicken test")
 	public static boolean HEADLESS_CHICKEN_TEST = false;
 
-//	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
-//	@DoubleValue(min = 0.0, max = 1.0)
-//	public static double MUTATION_RATE = 0.75;
+	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double MUTATION_RATE = 0.25;
 	
 	
 	public enum SecondaryObjective {
