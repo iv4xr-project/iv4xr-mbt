@@ -253,7 +253,7 @@ public class EFSMTestExecutionListener<
 				distance = computeBranchDistance (parameter1) + computeBranchDistance (parameter2) ;
 //			}else if (guardExpression instanceof BoolOr) {
 				// recursive call
-//			}else {
+			}else {
 				throw new RuntimeException("Unsupported BinaryOp: " + guardExpression.toDebugString());
 			}
 		}else if (guardExpression instanceof UnaryOp<?>) {
