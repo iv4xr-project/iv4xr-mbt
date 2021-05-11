@@ -4,6 +4,7 @@
 package eu.fbk.iv4xr.mbt.execution;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
@@ -74,6 +75,17 @@ public class EFSMTestExecutor<
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
+		
+		// TODO DEBUG
+//		if (success) {
+//			Map<Transition, Integer> evenCounts = tc.getPath().selfTransitionCounts();
+//			if (!evenCounts.isEmpty()) {
+//				System.out.println("check individual");
+//				System.out.println(testcase);
+//				System.out.println(evenCounts.toString());
+//			}
+//		}
+		
 		notifyExecutionFinished(success);
 		reset();
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
@@ -132,9 +144,10 @@ public class EFSMTestExecutor<
 
 	@Override
 	public boolean reset() {
-//		efsm.reset();
-//		efsm = EFSMFactory.getInstance(true).getEFSM();
-		efsm = SerializationUtils.clone(this.clone);
+		efsm.reset();
+		
+		// This also works, but is slower
+		//efsm = SerializationUtils.clone(this.clone);
 		return true;
 	}
 

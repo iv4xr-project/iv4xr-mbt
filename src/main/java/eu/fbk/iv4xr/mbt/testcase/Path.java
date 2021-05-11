@@ -4,7 +4,11 @@
 package eu.fbk.iv4xr.mbt.testcase;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jgrapht.GraphPath;
 
@@ -83,5 +87,31 @@ public class Path<
 			}
 		}
 		return string;
+	}
+	
+	/**
+	 * debug method to count number of self transitions in the test
+	 */
+	public Map<Transition, Integer> selfTransitionCounts (){
+		Map<Transition, Integer> counts = new HashMap<>(); 
+		for (Object t : transitions) {
+			Transition tr = ((Transition)t);
+			if (tr.isSelfTransition()) { // && tr.getSrc().getId().equalsIgnoreCase("b0")) {
+				if (!counts.containsKey(tr)) {
+					counts.put(tr, 0);
+				}
+				counts.put(tr, counts.get(tr)+1);
+			}
+		}
+		Iterator<Entry<Transition, Integer>> entryIterator = counts.entrySet().iterator();
+//		for (Entry<Transition, Integer> entry : counts.entrySet()) {
+		while (entryIterator.hasNext()) {
+			Entry<Transition, Integer> entry = entryIterator.next();
+			if (entry.getValue() % 2 == 1) {
+				entryIterator.remove();
+				System.out.println("Odd count removed");
+			}
+		}
+		return counts;
 	}
 }

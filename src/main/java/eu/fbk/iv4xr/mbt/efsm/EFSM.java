@@ -325,13 +325,14 @@ public  class EFSM<
 		if (pcs != null) {
 			prefConfig = getConfiguration();
 		}
-		this.curState = config.getState();
+		this.curState = (State) config.getState().clone();
 		this.curContext = (Context) config.getContext().clone();
 		if (pcs != null) {
 			// pass null as transition since there was no valid transition
 			this.pcs.firePropertyChange(PROP_CONFIGURATION, prefConfig, Pair.of(getConfiguration(), null));
 		}
 		this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
+		setTransitionsMap();
 	}
 	  
 	/**
