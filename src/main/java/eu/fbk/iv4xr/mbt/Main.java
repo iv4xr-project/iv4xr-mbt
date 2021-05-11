@@ -219,6 +219,20 @@ public class Main {
 			// exec sut
 			LabRecruitsTestExecutionHelper mutExecutor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutPath, agentName, mutTestPath, maxCycles);
 			boolean testSuiteResult = mutExecutor.execute();
+			
+			
+			// save debug information
+			String statPath = outFolder+File.separator+"stat_mutated_sut_"+i+".csv";
+			String debugHeader = mutExecutor.getDebugHeader();
+			String debugData = mutExecutor.getDebutTableTable();
+			
+			try {
+				FileUtils.writeStringToFile(new File(statPath), debugHeader+debugData, Charset.defaultCharset());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			n_mutation_run ++;
 			if (!testSuiteResult) {
 				n_mutation_killed ++;
@@ -236,7 +250,13 @@ public class Main {
 		mutStat = mutStat + n_mutation_run + ",";
 		mutStat = mutStat + n_mutation_killed + ",";
 		mutStat = mutStat + sutExecutableFile + ",";
-		mutStat = mutStat + passedTests.get(0).getParent() + "\n";
+		if (passedTests.size() > 0 ) {
+			mutStat = mutStat + passedTests.get(0).getParent() + "\n";	
+		}else {
+			mutStat = mutStat + "\n";
+		}
+		
+		
 		
 		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE);
 		

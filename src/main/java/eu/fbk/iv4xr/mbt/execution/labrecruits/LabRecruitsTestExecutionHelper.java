@@ -92,7 +92,7 @@ public class LabRecruitsTestExecutionHelper {
 		boolean success = true;
 		try {
 			this.run_id = String.valueOf(System.currentTimeMillis());
-			lrExecutor.executeTestSuite(testSuite);
+			success = lrExecutor.executeTestSuite(testSuite);
 		} catch (InterruptedException e) {
 			success = false;
 			e.printStackTrace();

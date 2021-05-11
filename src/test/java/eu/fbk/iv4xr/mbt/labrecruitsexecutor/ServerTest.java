@@ -98,7 +98,13 @@ public class ServerTest {
 			System.out.println("Cannot create a planar graph with these paratemers");
 			fail();
 		} else {
+			// TODO fix this part
 			// save the level
+			File resourceFolder = new File (Platform.LEVEL_PATH);
+			if (!resourceFolder.exists()) {
+				resourceFolder.mkdirs();
+			}
+
 			BufferedWriter writer = new BufferedWriter(new FileWriter(levelPath+"_LR.csv"));
 		    writer.write(efsm.getEFSMString()); 
 		    writer.close();
