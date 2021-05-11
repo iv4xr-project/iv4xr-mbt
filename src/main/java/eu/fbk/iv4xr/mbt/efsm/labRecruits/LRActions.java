@@ -6,5 +6,5 @@ package eu.fbk.iv4xr.mbt.efsm.labRecruits;
  * Sep 23, 2020
  */
 public enum LRActions {
-	EXPLORE, TOGGLE; 
+	EXPLORE, TOGGLE, DIE, RESET;
 }
