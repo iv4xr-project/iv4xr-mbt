@@ -4,7 +4,9 @@ import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 
 
@@ -32,9 +34,19 @@ public class EFSMFactory {
 			efsm = bd1.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
+		case "labrecruits.buttons_doors_1_count":
+			ButtonDoors1Count bd1count = new ButtonDoors1Count();
+			efsm = bd1count.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
 		case "labrecruits.buttons_doors_fire" :
 			ButtonDoors1Fire bdf = new ButtonDoors1Fire();
 			efsm = bdf.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "labrecruits.buttons_doors_fire_with_death":
+			ButtonDoors1FireWithDeath bdfwd = new ButtonDoors1FireWithDeath();
+			efsm = bdfwd.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		default:
