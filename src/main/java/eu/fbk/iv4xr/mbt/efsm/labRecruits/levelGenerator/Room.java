@@ -1,5 +1,7 @@
 package eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator;
 
+import java.util.Comparator;
+
 /*
  * @author wish
  */
@@ -11,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import eu.fbk.iv4xr.mbt.MBTProperties;
 
 public class Room extends WalledStructure {
 	
@@ -177,7 +181,7 @@ public class Room extends WalledStructure {
 		if (allowSelfLoop)
 			throw new UnsupportedOperationException("Corridor connecting a room to itself is disabled.") ;
 		
-		Random rnd = new Random(7498) ;
+		Random rnd = new Random(MBTProperties.LR_seed) ;
 		
 		List<Room> rooms = new LinkedList<>() ;
 		for (int r=0; r<numberOfRooms; r++)  {

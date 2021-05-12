@@ -1336,6 +1336,7 @@ public class LabRecruitsRandomEFSM {
 		}
 		
 		// build the planar graph
+	
 		Layout layout = Layout.drawLayoutWithRetries(csvRooms);
 		if (layout != null) {
 			RendererToLRLevelDef renderer = new RendererToLRLevelDef();

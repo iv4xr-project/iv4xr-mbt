@@ -19,6 +19,7 @@ import java.util.Random;
 //import eu.iv4xr.lrtools.levgen.Layout.LayoutItem;
 //import eu.iv4xr.lrtools.levgen.Room.Direction;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Room.Direction;
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Layout.LayoutItem;
 
 public class RendererToLRLevelDef {
@@ -27,7 +28,7 @@ public class RendererToLRLevelDef {
 	int scale = 10 ;
 	int corridorWidth = 2 ;
 	
-	Random rnd = new Random() ;
+	Random rnd = new Random(MBTProperties.LR_seed);
 	
 	static class TextBlock {
 		List<StringBuilder> rows = new LinkedList<>() ;

@@ -7,14 +7,16 @@ package eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator;
  * changes are made to complain Java 8 for using evosuite 1.0.6
  */
 
-import java.util.HashSet;
+//import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Set;
+//import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
 //import eu.iv4xr.lrtools.levgen.Room.Direction;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Room.Direction;
 
@@ -109,6 +111,7 @@ public class Layout {
 	}
 	
 	Pair<Integer,Integer> find(Room struct) {
+		System.out.println();
 		for (int w=0; w<width; w++) {
 			for (int h=0; h<height; h++) {
 				if (layout[w][h] == null) continue ;
@@ -533,11 +536,11 @@ public class Layout {
 		}
 	}
 	
-	static Set<XY> emptyXYset() {
-		return new HashSet<XY>() ;
+	static LinkedHashSet<XY> emptyXYset() {
+		return new LinkedHashSet<XY>() ;
 	}
 	
-	private boolean findRoute_worker2(Set<XY> visited, List<Pair<Integer,Integer>> pathSofar, int x, int y, int goal_x, int goal_y, int maxLength) {
+	private boolean findRoute_worker2(LinkedHashSet<XY> visited, List<Pair<Integer,Integer>> pathSofar, int x, int y, int goal_x, int goal_y, int maxLength) {
 		if (x==goal_x && y==goal_y)       return true ;
 		if (pathSofar.size() > maxLength) return false ;
 		
@@ -596,7 +599,7 @@ public class Layout {
 		return false ;
 	}
 	
-	static Random rnd = new Random(998217) ;
+	static Random rnd = new Random(MBTProperties.LR_seed) ;
 	
 	static List<Pair<Integer,Integer>> shuffle(List<Pair<Integer,Integer>> z) {
 		int N = z.size() ;
@@ -728,6 +731,7 @@ public class Layout {
 	
 	
 	public static Layout drawLayoutWithRetries(List<Room> rooms) {
+		rnd.setSeed(MBTProperties.LR_seed);
 		int maxNumberOfRetries = 30 ;
 		for (int k=0; k<maxNumberOfRetries; k++) {
 			System.err.println("## drawLayoutWithRetries " + k) ;
@@ -904,7 +908,7 @@ public class Layout {
 		// minimize the layout:
 		Layout result = layout.clip() ;
 		// now place the doors:
-		Set<Corridor> allCorridors = new HashSet<>() ;
+		LinkedHashSet<Corridor> allCorridors = new LinkedHashSet<Corridor>() ;
 		for(Room Q : rooms) {
 			allCorridors.addAll(Q.connections.stream().map(C -> C.fst).collect(Collectors.toList())) ;
 		}
