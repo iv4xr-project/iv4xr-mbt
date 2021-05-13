@@ -29,7 +29,7 @@ public class LabRecruitsButtonDoors1 {
 		
 		m.transition(null, bd1.d_1_p);
 		assertFalse(m.curState.equals(bd1.d_1_p));
-		assertFalse((Boolean)m.curContext.getContext().getVariable("d_1").getValue());
+		assertFalse((Boolean)m.curContext.getContext().getVariable("door1").getValue());
 		assertTrue(m.curState.equals(bd1.d_1_m));
 		
 		m.transition(null,bd1.b_1);
@@ -37,7 +37,7 @@ public class LabRecruitsButtonDoors1 {
 		
 		m.transition(null,bd1.b_1);
 		assertTrue(m.curState.equals(bd1.b_1));
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_1").getValue());
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door1").getValue());
 				
 		m.transition(null, bd1.d_1_m);
 		assertTrue(m.curState.equals(bd1.d_1_m));
@@ -48,9 +48,9 @@ public class LabRecruitsButtonDoors1 {
 		assertTrue(m.curState.equals(bd1.b_2));
 		m.transition(null, bd1.b_2);
 		assertTrue(m.curState.equals(bd1.b_2));
-		assertFalse((Boolean)m.curContext.getContext().getVariable("d_1").getValue());
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_2").getValue());
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_T").getValue());
+		assertFalse((Boolean)m.curContext.getContext().getVariable("door1").getValue());
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door2").getValue());
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door3").getValue());
 		
 		m.transition(null, bd1.d_2_m);
 		assertTrue(m.curState.equals(bd1.d_2_m));
@@ -61,9 +61,9 @@ public class LabRecruitsButtonDoors1 {
 		assertTrue(m.curState.equals(bd1.b_3));	
 		m.transition(null, bd1.b_3);
 		assertTrue(m.curState.equals(bd1.b_3));	
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_1").getValue());
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_2").getValue());
-		assertTrue((Boolean)m.curContext.getContext().getVariable("d_T").getValue());		
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door1").getValue());
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door2").getValue());
+		assertTrue((Boolean)m.curContext.getContext().getVariable("door3").getValue());		
 		
 		m.transition(null, bd1.d_2_p);
 		assertTrue(m.curState.equals(bd1.d_2_p));	

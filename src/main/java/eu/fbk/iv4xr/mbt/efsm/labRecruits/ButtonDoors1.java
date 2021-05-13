@@ -27,20 +27,20 @@ public class ButtonDoors1 {
 	 */
 	
 	// buttons
-	public EFSMState b_0 = new EFSMState("b_0");
-	public EFSMState b_1 = new EFSMState("b_1");
-	public EFSMState b_2 = new EFSMState("b_2");
-	public EFSMState b_3 = new EFSMState("b_3");
+	public EFSMState b_0 = new EFSMState("b0");
+	public EFSMState b_1 = new EFSMState("b1");
+	public EFSMState b_2 = new EFSMState("b2");
+	public EFSMState b_3 = new EFSMState("b3");
 	
 	// doors
-	public EFSMState d_1_m = new EFSMState("d_1_m");
-	public EFSMState d_1_p = new EFSMState("d_1_p");
-	public EFSMState d_2_m = new EFSMState("d_2_m");
-	public EFSMState d_2_p = new EFSMState("d_2_p");
-	public EFSMState d_3_m = new EFSMState("d_3_m");
-	public EFSMState d_3_p = new EFSMState("d_3_p");
-	public EFSMState d_T_m = new EFSMState("d_T_m");
-	public EFSMState d_T_p = new EFSMState("d_T_p");
+	public EFSMState d_1_m = new EFSMState("d1m");
+	public EFSMState d_1_p = new EFSMState("d1p");
+	public EFSMState d_2_m = new EFSMState("d2m");
+	public EFSMState d_2_p = new EFSMState("d2p");
+	public EFSMState d_3_m = new EFSMState("d3m");
+	public EFSMState d_3_p = new EFSMState("d3p");
+	public EFSMState d_T_m = new EFSMState("d3m");
+	public EFSMState d_T_p = new EFSMState("d3p");
 	
 	//public EFSMState TR = new EFSMState("TR");
 	
@@ -49,9 +49,9 @@ public class ButtonDoors1 {
 	 */
 	
 	// context variables
-	public Var<Boolean> d_1 = new Var<Boolean>("d_1", false);
-	public Var<Boolean> d_2 = new Var<Boolean>("d_2", false);
-	public Var<Boolean> d_T = new Var<Boolean>("d_T", false);
+	public Var<Boolean> d_1 = new Var<Boolean>("door1", false);
+	public Var<Boolean> d_2 = new Var<Boolean>("door2", false);
+	public Var<Boolean> d_T = new Var<Boolean>("door3", false);
 	
 	// input variables
 	public Var<LRActions> action = new Var<LRActions>("action", null );
