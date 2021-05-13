@@ -41,8 +41,8 @@ class EFSMTestExecutorSerializedTest {
 	@Test
 	@Ignore
 	void testDeserializeAndTest () {
-		String serializedModelFile = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.random_default/RANDOM_SEARCH/1620664444364/Model/EFSM_model.ser";
-		String serializedTestFile = "/Users/kifetew/workspace/projects/iv4xr/MBT/iv4xr-mbt/mbt-files/tests/labrecruits.random_default/RANDOM_SEARCH/1620664444364/test_5.ser";
+		String serializedModelFile = getLocalFilePath ("serialization/EFSM_model.ser");
+		String serializedTestFile = getLocalFilePath("serialization/test.ser");
 		try {
 //			// load serialized model
 			EFSM efsm = TestSerializationUtils.loadEFSM(serializedModelFile);
@@ -51,11 +51,15 @@ class EFSMTestExecutorSerializedTest {
 			// load a serialzed test, execute it on model
 			AbstractTestSequence testcase = TestSerializationUtils.loadTestSequence(serializedTestFile);
 			ExecutionResult result = EFSMTestExecutor.getInstance().executeTestcase(testcase);
-			assertTrue(result.isSuccess());
+			assertFalse(result.isSuccess());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private String getLocalFilePath(String resourceName) {
+		return this.getClass().getClassLoader().getResource(resourceName).getPath();
 	}
 
 }

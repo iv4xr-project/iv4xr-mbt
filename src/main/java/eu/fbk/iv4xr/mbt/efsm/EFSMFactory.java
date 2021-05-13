@@ -68,8 +68,8 @@ public class EFSMFactory {
 					break;
 				case "labrecruits.random_large" :
 					MBTProperties.LR_mean_buttons = 0.5;
-					MBTProperties.LR_n_buttons = 15;
-					MBTProperties.LR_n_doors = 8;
+					MBTProperties.LR_n_buttons = 20;
+					MBTProperties.LR_n_doors = 15;
 					MBTProperties.LR_seed = 325439;
 					break;
 				case "labrecruits.random_extreme" :
@@ -79,9 +79,9 @@ public class EFSMFactory {
 					MBTProperties.LR_seed = 325439;
 					break;
 				case "labrecruits.random_impossible" :
-					MBTProperties.LR_mean_buttons = 5;
-					MBTProperties.LR_n_buttons = 80;
-					MBTProperties.LR_n_doors = 40;
+					MBTProperties.LR_mean_buttons = 0.5;
+					MBTProperties.LR_n_buttons = 100;
+					MBTProperties.LR_n_doors = 100;
 					MBTProperties.LR_seed = 325439;
 					break;
 				default:

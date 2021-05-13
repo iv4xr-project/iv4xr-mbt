@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
@@ -38,6 +40,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
 
 /**
  * @author kifetew
@@ -53,10 +56,12 @@ public class EFSMTestExecutionListener<
 	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
 		implements ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 
+	private static final Logger logger = LoggerFactory.getLogger(EFSMTestExecutor.class);
+	
 	private ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionTrace = null;
 	
-	private int pathApproachLevel = 0;
-	private double pathBranchDistance = 0d;
+	private double pathApproachLevel = Double.MAX_VALUE;
+	private double pathBranchDistance = Double.MAX_VALUE;
 	private int passedTransitions = 0;
 	private int pathLength;
 	
@@ -64,37 +69,44 @@ public class EFSMTestExecutionListener<
 	private int distanceToTarget;
 	
 	// how close is the current test to the current target
-	private int targetApproachLevel = 0;
+	private double targetApproachLevel = Double.MAX_VALUE;
 	
-	private double targetBranchDistance = 0d;
+	private double targetBranchDistance = Double.MAX_VALUE;
 	
 	private Testcase testcase;
+	private EFSMPath path;
 	private CoverageGoal goal;
+	private boolean targetInPath;
 	
 	private boolean currentGoalCovered = false;
 	
 	// constant used in branch distance calculation
 	final static int K = 1;
+	
+	public final static Double PENALITY1 = 100d;
+	public final static Double PENALITY2 = 1000d; //Double.MAX_VALUE;
 	/**
 	 * 
 	 */
 	public EFSMTestExecutionListener(Testcase testcase, CoverageGoal testGoal) {
 		this.testcase = testcase;
+		path = ((AbstractTestSequence)testcase).getPath();
 		goal = testGoal;
+		
+		targetInPath = EFSMPathUtils.pathContainsTarget(path, goal);
 		
 		executionTrace = new ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 		pathLength = this.testcase.getLength();
-		//distanceToTarget = getDistanceToTarget ();
 	}
 
 	/**
 	 * this method should handle the case where the path is valid but does not contain the target
 	 * @return
 	 */
-	private void computeDistanceToTarget() {
+	private void _computeDistanceToTarget() {
 		double bd = Double.MAX_VALUE;
 		double al = 0;
-		EFSMPath path = ((AbstractTestSequence)testcase).getPath();
+		
 		EFSMState target;
 		if (goal instanceof StateCoverageGoal) {
 			target = ((StateCoverageGoal)goal).getState();
@@ -112,10 +124,12 @@ public class EFSMTestExecutionListener<
 			if (! (goal instanceof TransitionCoverageGoal)) {
 				throw new RuntimeException("Path end and target beginning the same for target: " + goal.toString());
 			}else {
-				if (((TransitionCoverageGoal)goal).getTransition().getGuard() == null) {
+				TransitionCoverageGoal targetTransition = (TransitionCoverageGoal)goal;
+				if (targetTransition.getTransition().getGuard() == null) {
 					bd = 0;
 				}else {
-					bd = computeBranchDistance(((TransitionCoverageGoal)goal).getTransition().getGuard().getGuard());
+					bd = computeBranchDistance(targetTransition.getTransition().getGuard().getGuard());
+					logger.debug("Guard1: {} BD: {}", targetTransition.getTransition().getGuard().getGuard().toDebugString(), bd);
 				}
 			}
 		}else {
@@ -140,7 +154,7 @@ public class EFSMTestExecutionListener<
 				}
 			}
 		}
-		targetApproachLevel = (int) al;
+		targetApproachLevel = al;
 		targetBranchDistance = normalize(bd);
 		//System.err.println("TC: \n" + path.toString() + "\nTgt: " + goal.toString() + " : " + "AL: " + al + " BD: " + targetBranchDistance);
 	}
@@ -152,20 +166,31 @@ public class EFSMTestExecutionListener<
 
 	@Override
 	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, boolean successful) {
-		// check if the path is valid but current goal is not covered
-		if (successful) {
-			if (!currentGoalCovered) {
-				//targetApproachLevel = distanceToTarget;
-				computeDistanceToTarget();
+		
+		if (successful) { // path is valid
+			pathApproachLevel = 0d;
+			pathBranchDistance = 0d;
+			
+			if (targetInPath) {
+				targetApproachLevel = 0d;
+				targetBranchDistance = 0d;
+			}else {
+				targetApproachLevel = PENALITY1;
+				targetBranchDistance = PENALITY1;
 			}
+		}else {
+			// this case should already be handled when the transition failed (in transitionFinished())
+			//NOPE
 		}
+		
+		// write data into execution trace
 		executionTrace.setCurrentGoalCovered(currentGoalCovered);
 		
 		executionTrace.setPathApproachLevel(pathApproachLevel);
-		executionTrace.setPathBranchDistance(pathBranchDistance);
+		executionTrace.setPathBranchDistance(normalize(pathBranchDistance));
 		
 		executionTrace.setTargetApproachLevel(targetApproachLevel);
-		executionTrace.setTargetBranchDistance(targetBranchDistance);
+		executionTrace.setTargetBranchDistance(normalize(targetBranchDistance));
 		
 		executionTrace.setSuccess(successful);
 	}
@@ -183,28 +208,35 @@ public class EFSMTestExecutionListener<
 			executionTrace.getCoveredStates().add(t.getSrc());
 			executionTrace.getCoveredStates().add(t.getTgt());
 			
-			if (isCurrentTarget(t)) {
+			if (targetInPath) {
 				currentGoalCovered = true;
+				targetBranchDistance = 0d;
+				targetApproachLevel = 0d;
 			}
 		}else {
 			// compute branch distance of failing guard
 			Guard guard = t.getGuard();
-//			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm = testExecutor.efsm;
 			Exp<Boolean> guardExpression = guard.getGuard();
-//			EFSMConfiguration<State, Context> context = efsm.getConfiguration();
-//			VarSet contextVars = context.getContext().getContext();
-//			InParameter inParameter = t.getInParameter();
-//			VarSet parameter = inParameter.getParameter();
 			double pathBD = computeBranchDistance (guardExpression);
-			pathBranchDistance = normalize(pathBD); //, parameter, contextVars);
+			logger.debug("Guard2: {} BD: {}", guardExpression.toDebugString(), pathBD);
+			pathBranchDistance = pathBD; //, parameter, contextVars);
 			
 			pathApproachLevel = pathLength - passedTransitions - 1;
-			
 			//System.err.println(t.toString() + "BD=" + pathBD + "nBD=" + pathBranchDistance + "AL=" + pathApproachLevel);
 			
-			if (isCurrentTarget (t)) {
-				targetBranchDistance = pathBranchDistance;
-				targetApproachLevel = pathApproachLevel; 
+//			if (isCurrentTarget (t)) {
+//				targetBranchDistance = pathBranchDistance;
+//				targetApproachLevel = pathApproachLevel; 
+//			}
+			
+			// if path does not contain target, apply penality
+			if (!targetInPath) {
+				targetBranchDistance = PENALITY2;
+				targetApproachLevel = PENALITY2;
+			}else {
+				// in this case, fitness should be feasiblity only
+				targetBranchDistance = 0d;
+				targetApproachLevel = 0d;
 			}
 		}
 		
@@ -242,7 +274,8 @@ public class EFSMTestExecutionListener<
 			
 			// TODO here we should do the actual branch distance calculation according to the operator type
 			if (guardExpression instanceof BoolOr) {
-				
+				BoolOr orExp = (BoolOr)guardExpression;
+				distance = Math.min(computeBranchDistance(orExp.getParameter1()), computeBranchDistance(orExp.getParameter2()));
 			}else if (guardExpression instanceof CompareOp) {
 				distance = getCompareDistance ((CompareOp)guardExpression);
 			}else if (guardExpression instanceof BoolAnd) {
@@ -273,8 +306,6 @@ public class EFSMTestExecutionListener<
 		// identify by case
 		if (guardExpression instanceof BoolEq) {
 			d = ((BoolEq)guardExpression).eval().getVal()?0:K;
-		}else if (guardExpression instanceof EnumEq) {
-			
 		}else if (guardExpression instanceof IntEq) {
 			IntEq equality = ((IntEq)guardExpression);
 			Const<?> val1 = equality.getParameter1().eval();
@@ -302,7 +333,8 @@ public class EFSMTestExecutionListener<
 				if (distance < 0d) {
 					distance = 0d;
 				}else {
-					distance += K;
+					//TODO check
+					distance = Math.abs(distance) + K;
 				}
 			} else if (val1.getVal() instanceof Boolean && val2.getVal() instanceof Boolean) {
 				distance = val1.getVal().equals(val2.getVal())?0:1;

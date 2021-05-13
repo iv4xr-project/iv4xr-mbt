@@ -5,9 +5,11 @@ package eu.fbk.iv4xr.mbt.coverage;
 
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
+import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
@@ -82,33 +84,18 @@ public class TransitionCoverageGoal<
 			// add trace to result
 			executionResult.setExectionTrace(trace);
 			
-			// calculate feasibility fitness
-			double feasibilityFitness = -1;
-			if (executionResult.isSuccess()) {
-				feasibilityFitness = 0d;
+			if (MBTProperties.SANITY_CHECK_FITNESS) {
+				fitness = Randomness.nextDouble();
 			}else {
-				feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();
+				// overall fintess is simply the sum of both fitnesses
+				double feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();
+				double targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
+				fitness = feasibilityFitness + targetFitness;
 			}
 			
-			// calculate coverage target fitness
-			double targetFitness = -1;
-			if (executionResult.isSuccess()) {
-				if (trace.isCurrentGoalCovered()) {
-					targetFitness = 0d;
-				}else {
-					// target in path, but not covered => path is not feasible?
-					// TODO check this
-					targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
-				}
-			}else { // if path not valid
-				//FIXME for now, simply take feasibilityFitness
-				targetFitness = feasibilityFitness;
-			}
-			
-			// calculate the fitness as a linear combination of the two fitnesses
-			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 			updateCollateralCoverage(individual, executionResult);
+			logger.debug("Individual ({}): {} \nFitness: {}", executionResult.isSuccess(), individual.toString(), fitness);
 		}
 		individual.setChanged(false);
 		updateIndividual(this, individual, fitness);

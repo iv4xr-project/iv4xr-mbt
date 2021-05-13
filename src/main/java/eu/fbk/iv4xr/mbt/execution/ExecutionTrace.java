@@ -36,10 +36,10 @@ public class ExecutionTrace<
 	private boolean currentGoalCovered;
 	
 	private double pathBranchDistance;
-	private int pathApproachLevel;
+	private double pathApproachLevel;
 	
 	private double targetBranchDistance;
-	private int targetApproachLevel;
+	private double targetApproachLevel;
 	
 	private boolean success;
 	
@@ -109,14 +109,14 @@ public class ExecutionTrace<
 	/**
 	 * @return the pathApproachLevel
 	 */
-	public int getPathApproachLevel() {
+	public double getPathApproachLevel() {
 		return pathApproachLevel;
 	}
 
 	/**
 	 * @param pathApproachLevel the pathApproachLevel to set
 	 */
-	public void setPathApproachLevel(int pathApproachLevel) {
+	public void setPathApproachLevel(double pathApproachLevel) {
 		this.pathApproachLevel = pathApproachLevel;
 	}
 
@@ -137,14 +137,14 @@ public class ExecutionTrace<
 	/**
 	 * @return the targetApproachLevel
 	 */
-	public int getTargetApproachLevel() {
+	public double getTargetApproachLevel() {
 		return targetApproachLevel;
 	}
 
 	/**
 	 * @param targetApproachLevel the targetApproachLevel to set
 	 */
-	public void setTargetApproachLevel(int targetApproachLevel) {
+	public void setTargetApproachLevel(double targetApproachLevel) {
 		this.targetApproachLevel = targetApproachLevel;
 	}
 

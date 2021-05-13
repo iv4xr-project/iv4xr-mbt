@@ -80,6 +80,9 @@ public class MBTProperties {
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
 
+	@Parameter(key = "sanity_check_fitness", group = "Search Algorithm", description = "Sanity check for fitness function, return random value")
+	public static boolean SANITY_CHECK_FITNESS = false;
+	
 	
 	@Parameter(key = "show_progress", group = "Output", description = "Show progress bar on console")
 	public static boolean SHOW_PROGRESS = true;

@@ -142,25 +142,30 @@ public class MOSA<
 			remain = 0;
 		} // if
 		currentIteration++;
-//		logger.debug("N. fronts = "+ranking.getNumberOfSubfronts());
-//		logger.debug("1* front size = "+ranking.getSubfront(0).size());
-//		logger.debug("2* front size = "+ranking.getSubfront(1).size());
-//		logger.debug("Covered goals = "+this.archive.size());
-//		logger.debug("Uncovered goals = "+uncoveredGoals.size());
-//		logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
-//		printBestFitnesses();
+		logger.debug("N. fronts = "+ranking.getNumberOfSubfronts());
+		logger.debug("1* front size = "+ranking.getSubfront(0).size());
+		logger.debug("2* front size = "+ranking.getSubfront(1).size());
+		logger.debug("Covered goals = "+this.archive.size());
+		logger.debug("Uncovered goals = "+uncoveredGoals.size());
+		logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
+		//printBestFitnesses();
 	}
 
 
 
 	private void printBestFitnesses() {
-		for (T t : ranking.getSubfront(0)) {
-			logger.debug(t.toString());
-			Map<FitnessFunction<?>, Double> fitnessValues = t.getFitnessValues();
-			for (Entry<FitnessFunction<?>, Double> entry : fitnessValues.entrySet()) {
-				logger.debug(entry.getKey() + " : " + entry.getValue());
+//		for (int i = 0; i < ranking.getNumberOfSubfronts(); i++) {
+//			logger.debug("SUBFRONT: {}", i);
+			for (T t : ranking.getSubfront(0)) {
+				logger.debug("INDIVIDUAL: {}", t.toString());
+				Map<FitnessFunction<?>, Double> fitnessValues = t.getFitnessValues();
+				for (Entry<FitnessFunction<?>, Double> entry : fitnessValues.entrySet()) {
+					if (uncoveredGoals.contains(entry.getKey())) {
+						logger.debug("GOAL: {} : FITNESS: {}", entry.getKey(), entry.getValue());
+					}
+				}
 			}
-		}
+//		}
 		
 	}
 
@@ -169,11 +174,14 @@ public class MOSA<
 	@SuppressWarnings("unchecked")
 	protected void calculateFitness(T c) {
 		for (FitnessFunction<T> fitnessFunction : this.fitnessFunctions) {
-			double value = fitnessFunction.getFitness(c);
-			if (value == 0.0) {
-				updateArchive(c, fitnessFunction);
+			// evaluate only if the goal is uncovered?
+			if (uncoveredGoals.contains(fitnessFunction)) {
+				double value = fitnessFunction.getFitness(c);
+				if (value == 0.0) {
+					updateArchive(c, fitnessFunction);
+				}
+				notifyEvaluation(c);
 			}
-			notifyEvaluation(c);
 		}
 	}
 

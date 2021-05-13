@@ -17,6 +17,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
+import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
@@ -63,14 +64,14 @@ public class ButtonDoors1Count {
 	private Assign<Integer> b_2_inc_count = new Assign(b_2_toggle_count, new IntSum(b_2_toggle_count, new Const<Integer>(1)));
 	private Assign<Integer> b_3_inc_count = new Assign(b_3_toggle_count, new IntSum(b_3_toggle_count, new Const<Integer>(1)));
 	
-	private Exp<Integer> d_1_toggles = new Const<Integer>(10);
-	private Exp<Integer> d_2_toggles = new Const<Integer>(10);
-	private Exp<Integer> d_T_toggles = new Const<Integer>(10);
+	private Exp<Integer> d_1_toggles = new Const<Integer>(5);
+	private Exp<Integer> d_2_toggles = new Const<Integer>(5);
+	private Exp<Integer> d_T_toggles = new Const<Integer>(5);
 	
 	// guards
-	private Exp<Boolean> d_1 = new IntGreat(b_1_toggle_count, d_1_toggles);
-	private Exp<Boolean> d_2 = new IntGreat(b_1_toggle_count, d_2_toggles);
-	private Exp<Boolean> d_T = new IntGreat(b_1_toggle_count, d_T_toggles);
+	private Exp expr_d1 = new IntGreat(b_1_toggle_count, d_1_toggles);
+	private Exp expr_d2 = new IntGreat(b_2_toggle_count, d_2_toggles);
+	private Exp expr_dT = new IntGreat(b_3_toggle_count, d_T_toggles);
 	
 	// input variables
 	public Var<LRActions> action = new Var<LRActions>("action", null );
@@ -81,6 +82,9 @@ public class ButtonDoors1Count {
 	public EFSM getModel() {
 		
 		
+		Exp<Boolean> d_1 = new BoolOr ( new BoolOr(expr_d1, expr_d2), expr_dT);
+		Exp<Boolean> d_2 = expr_d2;
+		Exp<Boolean> d_T = expr_dT;
 
 				
 		// toggle input parameter

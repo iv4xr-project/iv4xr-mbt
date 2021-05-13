@@ -20,6 +20,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRFPAlgo;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 
 /**
@@ -108,12 +110,17 @@ public class RandomLengthTestFactoryTest {
 		assertNotNull (efsm);
 		RandomLengthTestFactory testFactory = new RandomLengthTestFactory(efsm);
 		assertNotNull(testFactory);
-		Testcase testcase = testFactory.getTestcase();
-		assertNotNull(testcase);
-		System.out.println(((AbstractTestSequence) testcase).toDot());
-		LRFPAlgo fpAlgo = new LRFPAlgo(efsm);
-		EFSMState tgt = new EFSMState("d_T_p");
-		EFSMPath path = fpAlgo.getShortestPath(efsm.getConfiguration(), tgt);
-		System.out.println(new Path(path.getTransitions()).toDot());
+		
+		ExecutionResult executionResult;
+		int count = 0;
+		do {
+			Testcase testcase = testFactory.getTestcase();
+			assertNotNull(testcase);
+			//System.out.println(((AbstractTestSequence) testcase).toDot());
+			executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
+			count++;
+		} while (!executionResult.isSuccess());
+		assertTrue(executionResult.isSuccess());
+		System.out.println("Found valid test after trials: " + count);
 	}
 }

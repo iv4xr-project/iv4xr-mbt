@@ -6,6 +6,7 @@ package eu.fbk.iv4xr.mbt.strategy;
 import java.util.List;
 
 import org.evosuite.Properties;
+import org.evosuite.Properties.SelectionFunction;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.SecondaryObjective;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSATournamentSelection;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
@@ -55,13 +57,14 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		Properties.TEST_ARCHIVE = false;
 		
 		// disable bloat control temporarily
-		Properties.CHECK_BEST_LENGTH = true;
+		Properties.CHECK_BEST_LENGTH = false;
 		
 		Properties.LOG_LEVEL = "ERROR";
 		
-		Properties.MUTATION_RATE = 0.2;
-		Properties.CROSSOVER_RATE = 0.6;
+//		Properties.MUTATION_RATE = 0.2;
+//		Properties.CROSSOVER_RATE = 0.6;
 		Properties.SEARCH_BUDGET = MBTProperties.SEARCH_BUDGET;
+		Properties.SELECTION_FUNCTION = SelectionFunction.TOURNAMENT;
 	}
 	
 	@Override
