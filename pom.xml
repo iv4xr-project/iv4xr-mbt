@@ -169,14 +169,13 @@
 
 
 
-		<dependency>
+		<!-- dependency>
 			<groupId>eu.fbk</groupId>
 			<artifactId>jtamer</artifactId>
 			<version>0.0</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/resources/lib/jtamer.jar</systemPath>
-			<!--  optional>true</optional -->
-		</dependency>
+		</dependency -->
 		
 		<!--  iv4XR demo -->
 		<dependency>
