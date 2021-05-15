@@ -160,10 +160,12 @@ public class LabRecruitMutationManager {
 			for(String d : newMap.get(b)) {
 				outString = outString + d + ",";
 			}
-			// remove last ,
-			outString = outString.substring(0, outString.length()-1);
-			// add retunr
-			outString = outString + System.lineSeparator();
+			if (outString.length() > 0) {
+				// remove last ,
+				outString = outString.substring(0, outString.length()-1);
+				// add retunr
+				outString = outString + System.lineSeparator();
+			}
 		}
 		return outString;
 	}

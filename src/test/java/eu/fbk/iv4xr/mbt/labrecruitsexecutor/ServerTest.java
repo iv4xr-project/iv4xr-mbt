@@ -87,7 +87,7 @@ public class ServerTest {
 		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
 		MBTProperties.LR_n_rooms = 5;
 		MBTProperties.LR_n_doors = 4;
-		MBTProperties.SEARCH_BUDGET = 5;
+		MBTProperties.SEARCH_BUDGET = 10;
 		MBTProperties.SUT_EFSM = "labrecruits.random_default";
 		
 		// create random level and save it
