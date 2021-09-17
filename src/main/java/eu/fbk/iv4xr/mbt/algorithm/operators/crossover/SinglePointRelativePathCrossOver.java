@@ -13,7 +13,8 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 
@@ -46,12 +47,8 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 		MBTChromosome t1 = (MBTChromosome)parent1.clone();
 		MBTChromosome t2 = (MBTChromosome)parent2.clone();
 
-		AbstractTestSequence tc1 = (AbstractTestSequence) t1.getTestcase();
-		AbstractTestSequence tc2 = (AbstractTestSequence) t2.getTestcase();
-		assert tc1.getPath().getTransitionAt(0).getSrc().equals(tc2.getPath().getTransitionAt(0).getSrc());
 		parent1.crossOver(t2, points[0], points[1]);
 		parent2.crossOver(t1, points[1], points[0]);
-		assert tc1.getPath().getSrc().equals(tc2.getPath().getSrc());
 
 	}
 
@@ -59,17 +56,14 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 		int[] points = new int[2];
 		AbstractTestSequence tc1 = (AbstractTestSequence) parent1.getTestcase();
 		AbstractTestSequence tc2 = (AbstractTestSequence) parent2.getTestcase();
-		Set<Transition> commonTransitions = new HashSet<Transition>();
-		for (Object o : tc1.getPath().getTransitions()) {
-			if (tc2.getPath().contains(((Transition)o))) {
-				commonTransitions.add((Transition)o);
-			}
-		}
+		Set<EFSMTransition> commonTransitions = new HashSet<EFSMTransition>();
+		commonTransitions.addAll(tc1.getPath().getTransitions());
+		commonTransitions.retainAll(tc2.getPath().getTransitions());
 		if (commonTransitions.isEmpty()) {
 			points[0] = -1;
 			points[1] = -1;
 		}else {
-			Transition intersection = Randomness.choice(commonTransitions);
+			EFSMTransition intersection = Randomness.choice(commonTransitions);
 //			logger.debug("INTERSECTION POINT: " + intersection.getSrc().getId() + "---" + intersection.getTgt().getId());
 			points[0] = tc1.getPath().getTransitions().indexOf(intersection);
 			points[1] = tc2.getPath().getTransitions().indexOf(intersection);

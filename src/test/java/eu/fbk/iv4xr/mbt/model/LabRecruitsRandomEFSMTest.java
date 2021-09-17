@@ -11,11 +11,17 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import org.jgrapht.io.ExportException;
+//import org.jgrapht.io.ExportException;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 
 //import de.upb.testify.efsm.Configuration;
 //import de.upb.testify.efsm.EFSM;
@@ -23,17 +29,16 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 //import eu.fbk.se.labrecruits.LabRecruitsContext;
 //import eu.fbk.se.labrecruits.LabRecruitsState;
 
-import eu.fbk.iv4xr.mbt.efsm4j.*;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
-
+//import eu.fbk.iv4xr.mbt.efsm4j.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
 
 /**
  * @author Davide Prandi
  *
- * Aug 19, 2020
+ *         Aug 19, 2020
  */
 public class LabRecruitsRandomEFSMTest {
-	
+
 	@Before
 	public void createDataFolder() {
 		File dataDirectory = new File("data/");
@@ -41,142 +46,148 @@ public class LabRecruitsRandomEFSMTest {
 			dataDirectory.mkdir();
 		}
 	}
-	
+
 	@Test
-	public void generateHugeLevel() throws IOException, ExportException  {
+	public void generateSimpleTest() throws IOException {
+		MBTProperties.LR_mean_buttons = 0.5;
+		MBTProperties.LR_n_buttons = 5;
+		MBTProperties.LR_n_doors = 4;
+
+		// initalize the generator with default parameters
+		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
+
+		// generate and EFSM
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/simpleLevel";
+		// save door graph in graphml formal
+		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		// save EFSM in dot format
+		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
+		// save the level
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
+
+		// plot initial state and context
+		EFSMConfiguration configuration = testEFSM.getConfiguration();
+		System.out.println("");
+		System.out.println("***** " + levelId);
+		System.out.println("Initial state is " + configuration.getState().toString());
+		EFSMContext context = configuration.getContext();
+		System.out.println("Context is " + configuration.getContext().toString());
+
+		// take possibile states
+		// Set<EFSMState> testEFSMStates = testEFSM.getStates();
+
+		// Set<EFSMTransition> outTransitions = testEFSM.transitionsOutOf((EFSMState)
+		// testEFSMStates.toArray()[6]);
+
+		
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}
+		
+		String anml = labRecruitsRandomEFSM.getAnml();
+		//System.out.println(anml);
+	}
+
+	@Test
+	public void generateLargeLevel() throws IOException {
+		MBTProperties.LR_seed = 325439;
 		MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_buttons = 50;
-		MBTProperties.LR_n_doors = 21 ;
-		
+		MBTProperties.LR_n_doors = 31;
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
-		
+
 		// generate and EFSM
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
-		String levelId = "data/level3";
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/largeLevel";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
 		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
-		
-		// plot initial state and context 
-		Configuration<LabRecruitsState, LabRecruitsContext> configuration = testEFSM.getConfiguration();
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
+
+		// plot initial state and context
+		EFSMConfiguration configuration = testEFSM.getConfiguration();
 		System.out.println("");
 		System.out.println("***** " + levelId);
 		System.out.println("Initial state is " + configuration.getState().toString());
-		LabRecruitsContext context = configuration.getContext();
-		Set set = context.keySet();
-		Iterator iterator = set.iterator();
-		System.out.println("Context is ");
-		while (iterator.hasNext()) {
-			String doorId = (String) iterator.next();
-			System.out.println(" door " + doorId + " has button " + context.get(doorId).getButtons().toString());
-		}
-		if (labRecruitsRandomEFSM.get_csv() == "") {
-			System.out.println("Cannot create a planar graph with these paratemers");
-		}
+		EFSMContext context = configuration.getContext();
+		System.out.println("Context is " + configuration.getContext().toString());
+		
+		String anml = labRecruitsRandomEFSM.getAnml();
+		//System.out.println(anml);
 	}
-	
-	@Test
-	public void generateLargeLevel() throws IOException, ExportException  {
-		MBTProperties.LR_seed = 32325439;
-		MBTProperties.LR_mean_buttons = 0.5;
-		MBTProperties.LR_n_buttons = 40;
-		MBTProperties.LR_n_doors = 15;
-		
-		// initalize the generator with default parameters
-		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
-		
-		// generate and EFSM
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
-		String levelId = "data/level2";
-		// save door graph in graphml formal
-		labRecruitsRandomEFSM.saveDoorGraph(levelId);
-		// save EFSM in dot format
-		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
-		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
-		
-		// plot initial state and context 
-		Configuration<LabRecruitsState, LabRecruitsContext> configuration = testEFSM.getConfiguration();
-		System.out.println("");
-		System.out.println("***** " + levelId);
-		System.out.println("Initial state is " + configuration.getState().toString());
-		LabRecruitsContext context = configuration.getContext();
-		Set set = context.keySet();
-		Iterator iterator = set.iterator();
-		System.out.println("Context is ");
-		while (iterator.hasNext()) {
-			String doorId = (String) iterator.next();
-			System.out.println(" door " + doorId + " has button " + context.get(doorId).getButtons().toString());
-		}
-		if (labRecruitsRandomEFSM.get_csv() == "") {
-			System.out.println("Cannot create a planar graph with these paratemers");
-		}
-				
-		
-	}
-	
+
 	@Test
 	// default parameters: nButtons = 5, nDoors = 4, meanButtonsPerRoom = 1
-	public void generateLevelDefaultParameters() throws IOException, ExportException  {		
+	public void generateLevelDefaultParameters() throws IOException {
 		// initalize the generator with default parameters
 		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
-		
+
 		// generate and EFSM
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-			Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> testEFSM = labRecruitsRandomEFSM.getEFMS();
-		String levelId = "data/level1";
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/defaultParameters";
 		// save door graph in graphml formal
 		labRecruitsRandomEFSM.saveDoorGraph(levelId);
 		// save EFSM in dot format
 		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
-		// save the level
-		labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
 		
-		// plot initial state and context 
-		Configuration<LabRecruitsState, LabRecruitsContext> configuration = testEFSM.getConfiguration();		
+
+		// plot initial state and context
+		EFSMConfiguration configuration = testEFSM.getConfiguration();
 		System.out.println("");
 		System.out.println("***** " + levelId);
 		System.out.println("Initial state is " + configuration.getState().toString());
-		LabRecruitsContext context =  configuration.getContext(); 
-		Set set =  context.keySet();
-		Iterator iterator = set.iterator();
-		System.out.println("Context is ");
-		while(iterator.hasNext()) {
-			String doorId = (String) iterator.next();
-			System.out.println(" door "+doorId+" has button "+context.get(doorId).getButtons().toString());
-		}
+		EFSMContext context = configuration.getContext();
+		System.out.println("Context is " + configuration.getContext().toString());
+
 		if (labRecruitsRandomEFSM.get_csv() == "") {
 			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
 		}
 		
-		// empty input is not allowed
-		assertNull(testEFSM.transition());
-		// check if EXPLORE transitions are enabled
-		assertTrue(testEFSM.canTransition( new LabRecruitsParameter(LabRecruitsAction.EXPLORE)));
-		// check if TOGGLE transitions are enabled
-		assertTrue(testEFSM.canTransition( new LabRecruitsParameter(LabRecruitsAction.TOGGLE)));
+		String anml = labRecruitsRandomEFSM.getAnml();
+		//System.out.println(anml);
+	}
+
+	@Test
+	public void generateLevelWithFixedRooms() throws IOException{
+		MBTProperties.LR_generation_mode = MBTProperties.LR_random_mode.N_BUTTONS_DEPENDENT;
+		MBTProperties.LR_n_rooms = 5;
+		MBTProperties.LR_mean_buttons = 1;
+		MBTProperties.LR_n_doors = 6;
 		
-		// move to d2 and verify it is closed
-		assertNotNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.EXPLORE), 
-							new LabRecruitsState("d2+","door2")));
-		assertNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.EXPLORE), 
-							new LabRecruitsState("d2-","door2")));
-		// return to button 0, press it, and then traverse door0
-		assertNotNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.EXPLORE), 
-				new LabRecruitsState("b0")));
-		assertNotNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.TOGGLE)));
-		assertNotNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.EXPLORE), 
-				new LabRecruitsState("d2+","door2")));
-		assertNotNull(testEFSM.transition(new LabRecruitsParameter(LabRecruitsAction.EXPLORE), 
-				new LabRecruitsState("d2-","door2")));
+		// initalize the generator with default parameters
+		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
+
+		// generate and EFSM
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/Five_rooms_Six_doors";
+		// save door graph in graphml formal
+		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		// save EFSM in dot format
+		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
+		
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
 		
 	}
-	
-
 }

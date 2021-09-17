@@ -6,6 +6,7 @@ package eu.fbk.iv4xr.mbt.strategy;
 import java.util.List;
 
 import org.evosuite.Properties;
+import org.evosuite.Properties.SelectionFunction;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.SecondaryObjective;
@@ -19,14 +20,16 @@ import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSATournamentSelection;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
+
 
 /**
  * @author kifetew
@@ -54,13 +57,15 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		Properties.TEST_ARCHIVE = false;
 		
 		// disable bloat control temporarily
-		Properties.CHECK_BEST_LENGTH = true;
+		Properties.CHECK_BEST_LENGTH = false;
 		
-		Properties.LOG_LEVEL = "WARN";
+		Properties.LOG_LEVEL = "ERROR";
 		
-		Properties.MUTATION_RATE = 0.3;
-		Properties.CROSSOVER_RATE = 0.7;
-		Properties.SEARCH_BUDGET = 240;
+//		Properties.MUTATION_RATE = 0.2;
+//		Properties.CROSSOVER_RATE = 0.6;
+		Properties.SEARCH_BUDGET = MBTProperties.SEARCH_BUDGET;
+		Properties.SELECTION_FUNCTION = SelectionFunction.TOURNAMENT;
+		Properties.P_TEST_INSERTION = 0.2;
 	}
 	
 	@Override
@@ -75,29 +80,28 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		// setup the search algorithm
 		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
 		
-//		CoverageGoalFactory<?> fitnessFactory = algorithmFactory.getFitnessFactory();
-		List<?> goals = algorithmFactory.getCoverageGoals(); //fitnessFactory.getCoverageGoals();
+		List<?> goals = algorithmFactory.getCoverageGoals();
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		logger.debug("Total goals: {}", goals.size());
 		
 		// MOSA has ots 
-		if (MBTProperties.ALGORITHM != Algorithm.MOSA) {
-			CoverageTracker coverageTracker = new CoverageTracker(goals);
-			searchAlgorithm.addListener(coverageTracker);
-			searchAlgorithm.addStoppingCondition(coverageTracker);
-		}
+//		if (MBTProperties.ALGORITHM != Algorithm.MOSA) {
+			coverageTracker = new CoverageTracker(goals);
+			searchAlgorithm.addListener(getCoverageTracker());
+			searchAlgorithm.addStoppingCondition(getCoverageTracker());
+//		}
 		
 		// invoke generate solution on the algorithm
 		searchAlgorithm.generateSolution();
-		List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
+//		List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
 		
 		// return result from coverageTracker (archive)
-		SuiteChromosome solution = new MBTSuiteChromosome();
+//		SuiteChromosome solution = new MBTSuiteChromosome();
 //		for (MBTChromosome test : coverageTracker.getTestSuite()) {
-		for (T test : bestIndividuals) {
-			solution.addTest((MBTChromosome) test);
-		}
-		return solution;
+//		for (T test : bestIndividuals) {
+//			solution.addTest((MBTChromosome) test);
+//		}
+		return getCoverageTracker().getTestSuite();
 	}
 
 }

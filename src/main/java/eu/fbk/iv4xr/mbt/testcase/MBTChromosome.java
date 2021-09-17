@@ -10,30 +10,31 @@ import java.util.List;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.SecondaryObjective;
-import javax.management.RuntimeErrorException;
-
-import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
 import org.evosuite.testcase.ExecutableChromosome;
 import org.evosuite.testcase.execution.ExecutionResult;
 import org.evosuite.testsuite.TestSuiteFitnessFunction;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
 /**
  * @author kifetew
  *
  */
 public class MBTChromosome<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosome {
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
+		extends ExecutableChromosome {
 	
 	/**
 	 * 
@@ -43,15 +44,11 @@ Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosom
 	/** Secondary objectives used during ranking */
 	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
 	
-	/** Local EFSM copy to generate parameters **/
-	private EFSM<State, Parameter, Context, Trans> efsm;
-	
 	/**
 	 * 
 	 */
-	public MBTChromosome(EFSM<State, Parameter, Context, Trans> model) {
-		this.efsm = model;
-		testcase = new AbstractTestSequence(efsm);
+	public MBTChromosome() {
+		testcase = new AbstractTestSequence();
 	}
 
 	@Override
@@ -68,9 +65,7 @@ Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosom
 
 	@Override
 	public Chromosome clone() {
-		//FIXME implement correctly, this is only a placeholder!
-		EFSM efsmClone = efsm.clone();
-		MBTChromosome clone = new MBTChromosome(efsmClone);
+		MBTChromosome clone = new MBTChromosome();
 		try {
 			clone.setTestcase(testcase.clone());
 		} catch (CloneNotSupportedException e) {
@@ -132,12 +127,14 @@ Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosom
 	@Override
 	public void mutate() {
 		testcase.mutate();
+		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
 
 	@Override
 	public void crossOver(Chromosome other, int position1, int position2) throws ConstructionFailedException {
 		testcase.crossOver (((MBTChromosome)other).getTestcase(), position1, position2); 
+		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
 
@@ -204,5 +201,14 @@ Trans extends Transition<State, Parameter, Context>> extends ExecutableChromosom
 	 */
 	public static List<SecondaryObjective<MBTChromosome>> getSecondaryObjectives() {
 		return secondaryObjectives;
+	}
+	
+	@Override
+	public String toString() {
+		if (testcase != null) {
+			return testcase.toString();
+		}else {
+			return "";
+		}
 	}
 }

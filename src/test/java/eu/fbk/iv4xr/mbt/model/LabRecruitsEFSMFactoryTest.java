@@ -12,11 +12,15 @@ import org.junit.Test;
 
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.*;
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 //import eu.fbk.se.labrecruits.LabRecruitsContext;
 //import eu.fbk.se.labrecruits.LabRecruitsState;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.*;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
 /**
  * @author kifetew
@@ -41,19 +45,18 @@ public class LabRecruitsEFSMFactoryTest {
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();
+		EFSM efsm = factory.getEFSM();
 		assertNotNull (efsm);
 		
-		Set<LabRecruitsState> states = efsm.getStates();
+		Set<EFSMState> states = efsm.getStates();
 		assertNotNull (states);
 		assertTrue (!states.isEmpty());
-		assertTrue(11 == states.size());
+		assertTrue(10 == states.size());
 		
-		Set<Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> transitions = efsm.getTransitons();
+		Set<EFSMTransition> transitions = efsm.getTransitons();
 		assertNotNull (transitions);
 		assertTrue (!transitions.isEmpty());
-		assertTrue(31 == transitions.size());
+		assertTrue(30 == transitions.size());
 	}
 
 	@Test
@@ -61,19 +64,18 @@ public class LabRecruitsEFSMFactoryTest {
 		MBTProperties.SUT_EFSM = "labrecruits.random_default";
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		assertNotNull(factory);
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = factory.getEFSM();
+		EFSM efsm = factory.getEFSM();
 		assertNotNull (efsm);
 		
-		Set<LabRecruitsState> states = efsm.getStates();
+		Set<EFSMState> states = efsm.getStates();
 		assertNotNull (states);
 		assertTrue (!states.isEmpty());
 		assertTrue(11 == states.size());
 		
-		Set<Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> transitions = efsm.getTransitons();
+		Set<EFSMTransition> transitions = efsm.getTransitons();
 		assertNotNull (transitions);
 		assertTrue (!transitions.isEmpty());
-		assertTrue(43 == transitions.size());
+		//assertTrue(43 == transitions.size());
 	}
 	
 }

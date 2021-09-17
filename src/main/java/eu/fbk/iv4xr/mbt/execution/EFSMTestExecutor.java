@@ -4,13 +4,19 @@
 package eu.fbk.iv4xr.mbt.execution;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
+import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
+
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
@@ -19,53 +25,82 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  *
  */
 public class EFSMTestExecutor<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> extends TestExecutor<State, Parameter, Context, Trans> {
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
+		extends TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 	
+	private static EFSMTestExecutor instance = null;
 	
-	/**
-	 * 
-	 */
-	public EFSMTestExecutor(EFSM<State, Parameter, Context, Trans> efsm) {
+	private EFSM clone;
+	
+	public static EFSMTestExecutor getInstance() {
+		if (instance == null) {
+			instance = new EFSMTestExecutor();
+		}
+		return instance;
+	}
+	
+//	/**
+//	 * 
+//	 */
+//	private EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
+//		this.efsm = efsm;
+//	}
+
+	private EFSMTestExecutor() {
+		this.efsm = EFSMFactory.getInstance().getEFSM();
+		this.clone = SerializationUtils.clone(this.efsm);
+	}
+
+	// TODO only for debugging purposes, to be disabled
+	public void setEFSM (EFSM efsm) {
 		this.efsm = efsm;
-		reset();
 	}
-
-	public EFSMTestExecutor() {
-		this.efsm = AlgorithmFactory.getModel();
-		reset();
-	}
-
+	
 	@Override
 	public ExecutionResult executeTestcase(Testcase testcase) {
 		notifyExecutionStarted();
-		reset();
 		ExecutionResult result = new ExecutionResult();
 		AbstractTestSequence tc = (AbstractTestSequence)testcase;
+		if (!tc.getPath().isConnected()) {
+			throw new RuntimeException("Path not connected: " + testcase.toString());
+		}
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
-		boolean success = applyTransitions(tc.getPath().getTransitions(), tc.getPath().getParameterValues());
+		boolean success = applyTransitions(tc.getPath().getTransitions());
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
-		notifyExecutionFinished();
+		
+		// TODO DEBUG
+//		if (success) {
+//			Map<Transition, Integer> evenCounts = tc.getPath().selfTransitionCounts();
+//			if (!evenCounts.isEmpty()) {
+//				System.out.println("check individual");
+//				System.out.println(testcase);
+//				System.out.println(evenCounts.toString());
+//			}
+//		}
+		
+		notifyExecutionFinished(success);
 		reset();
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
 		return result;
 	}
 
-	private boolean applyTransitions(List<Trans> transitions, List<Parameter> parameters) {
+	private boolean applyTransitions(List<Transition> transitions) {
 		boolean success = true;
-		for (int i = 0; i < transitions.size(); i++) {
-			Trans t = transitions.get(i);
-			Parameter p = parameters.get(i);
-			notifyTransitionStarted(t, p);
-			Set<Parameter> output = efsm.transition(p, t);
+		for (Transition t : transitions) {
+			notifyTransitionStarted(t);
+			Set<OutParameter> output = efsm.transition(t);
 			if (output == null) {
 				success = false;
 			}	
-			notifyTransitionFinished(t, p, output, success);
+			notifyTransitionFinished(t, success);
 			if (!success) {
 				break;
 			}
@@ -73,30 +108,30 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 		return success;
 	}
 
-	private void notifyExecutionFinished() {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
-			listner.executionStarted(this);
+	private void notifyExecutionFinished(boolean success) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+			listner.executionFinished(this, success);
 		}
 		
 	}
 
 	private void notifyExecutionStarted() {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
-			listner.executionFinished(this);
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+			listner.executionStarted(this);
 		}
 		
 	}
 	
-	private void notifyTransitionStarted(Trans t, Parameter p) {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
-			listner.transitionStarted(this, t, p);
+	private void notifyTransitionStarted(Transition t) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+			listner.transitionStarted(this, t);
 		}
 		
 	}
 	
-	private void notifyTransitionFinished(Trans t, Parameter p, Set<Parameter> o, boolean success) {
-		for (ExecutionListener<State, Parameter, Context, Trans> listner: listners) {
-			listner.transitionFinished(this, t, p, o, success);
+	private void notifyTransitionFinished(Transition t, boolean success) {
+		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+			listner.transitionFinished(this, t, success);
 		}
 		
 	}
@@ -110,6 +145,9 @@ Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> ext
 	@Override
 	public boolean reset() {
 		efsm.reset();
+		
+		// This also works, but is slower
+		//efsm = SerializationUtils.clone(this.clone);
 		return true;
 	}
 

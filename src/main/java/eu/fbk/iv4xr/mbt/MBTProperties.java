@@ -20,8 +20,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import org.evosuite.Properties.Criterion;
+import org.evosuite.Properties.DoubleValue;
 import org.evosuite.Properties.Parameter;
+import org.evosuite.Properties.RankingType;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
 import org.evosuite.utils.LoggingUtils;
@@ -79,8 +80,18 @@ public class MBTProperties {
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
 
+	@Parameter(key = "sanity_check_fitness", group = "Search Algorithm", description = "Sanity check for fitness function, return random value")
+	public static boolean SANITY_CHECK_FITNESS = false;
+	
+	
+	@Parameter(key = "show_progress", group = "Output", description = "Show progress bar on console")
+	public static boolean SHOW_PROGRESS = true;
+	
+	@Parameter(key = "random_seed", group = "Search Algorithm", description = "Random number seed for MBT")
+	public static long RANDOM_SEED = 123456778;
+	
 	@Parameter(key = "sut_efsm", group = "Search Algorithm", description = "ID of the EFSM for the current SUT")
-	public static String SUT_EFSM = "labrecruits.buttons_doors_1"; // "labrecruits.random_default";
+	public static String SUT_EFSM = "labrecruits.random_default"; // "labrecruits.buttons_doors_fire"; // 
 	
 	@Parameter(key = "population", group = "Search Algorithm", description = "Population size of genetic algorithm")
 	@IntValue(min = 1)
@@ -95,7 +106,7 @@ public class MBTProperties {
 	}
 	
 	@Parameter(key = "test_factory", group = "Search Algorithm", description = "Test factory")
-	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH_PARAMETER;
+	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH;
 	
 	public enum PopulationLimit {
 		INDIVIDUALS, TESTS, STATEMENTS;
@@ -109,10 +120,36 @@ public class MBTProperties {
 	public static long SEARCH_BUDGET = 60;
 
 	@Parameter(key = "OUTPUT_DIR", group = "Runtime", description = "Directory in which to put generated files")
-	public static String OUTPUT_DIR = "evosuite-files";
+	public static String OUTPUT_DIR = "mbt-files";
 
 	public static String PROPERTIES_FILE = OUTPUT_DIR + File.separator + "evosuite.properties";
 
+	
+	public static String TESTS_DIR = OUTPUT_DIR + File.separator + "tests";
+	
+	
+	public static String STATISTICS_DIR = OUTPUT_DIR + File.separator + "statistics";
+	
+	
+	public static String STATISTICS_FILE = STATISTICS_DIR + File.separator + "statistics.csv";
+	
+	public static String EXECUTIONSTATISTICS_FILE = STATISTICS_DIR + File.separator + "execution_statistics.csv";
+	
+	public static String EXECUTIONDEBUG_FILE = STATISTICS_DIR + File.separator + "execution_debug.csv";
+	
+	@Parameter(key = "statistics_interval", group = "SUT execution", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
+	@LongValue(min = 1)
+	public static long STATISTICS_INTERVAL = 10;
+	
+	public static String MUTATION_ANALYSIS_FOLDER = OUTPUT_DIR + File.separator + "mutations";
+	
+	public static String MUTATION_STATISTIC_FILE = STATISTICS_DIR + File.separator + "mutation_statistics.csv";
+	
+	@Parameter(key = "max_mutations", group = "SUT execution", description = "Maximum number of mutations to execute")
+	@IntValue(min = 1)
+	public static int MAX_NUMBER_MUTATIONS = 10;
+
+	
 	public enum StoppingCondition {
 		MAXSTATEMENTS, MAXTESTS,
         /** Max time in seconds */ MAXTIME,
@@ -124,11 +161,23 @@ public class MBTProperties {
 	public static StoppingCondition STOPPING_CONDITION = StoppingCondition.MAXTIME;
 
 	public enum CrossoverFunction {
-		SINGLEPOINTRELATIVE, SINGLEPOINTFIXED, SINGLEPOINT, COVERAGE, UNIFORM
+		SINGLEPOINTRELATIVE, SINGLEPOINTFIXED, SINGLEPOINT, COVERAGE, UNIFORM, EXTENDEDSINGLEPOINTRELATIVE
 	}
 
 	@Parameter(key = "crossover_function", group = "Search Algorithm", description = "Crossover function during search")
 	public static CrossoverFunction CROSSOVER_FUNCTION = CrossoverFunction.SINGLEPOINTRELATIVE;
+	
+	
+	@Parameter(key = "crossover_rate", group = "Search Algorithm", description = "Probability of crossover")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double CROSSOVER_RATE = 0.75;
+
+	@Parameter(key = "headless_chicken_test", group = "Search Algorithm", description = "Activate headless chicken test")
+	public static boolean HEADLESS_CHICKEN_TEST = false;
+
+	@Parameter(key = "mutation_rate", group = "Search Algorithm", description = "Probability of mutation")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double MUTATION_RATE = 0.25;
 	
 	
 	public enum SecondaryObjective {
@@ -143,7 +192,7 @@ public class MBTProperties {
 	public static int BLOAT_FACTOR = 2;
 
 	@Parameter(key = "stop_zero", group = "Search Algorithm", description = "Stop optimization once goal is covered")
-	public static boolean STOP_ZERO = true;
+	public static boolean STOP_ZERO = false;
 
 	@Parameter(key = "dynamic_limit", group = "Search Algorithm", description = "Multiply search budget by number of test goals")
 	public static boolean DYNAMIC_LIMIT = false;
@@ -163,37 +212,53 @@ public class MBTProperties {
     @Parameter(key = "max_length", group = "Test Creation", description = "Maximum length of test suites (0 = no check)")
 	public static int MAX_LENGTH = 0;
     
+	@Parameter(key = "breeder_truncation", group = "Search Algorithm", description = "Percentage of population to use for breeding in breeder GA")
+	@DoubleValue(min = 0.01, max = 1.0)
+	public static double TRUNCATION_RATE = 0.5;
+
+	@Parameter(key = "number_of_mutations", group = "Search Algorithm", description = "Number of single mutations applied on an individual when a mutation event occurs")
+	public static int NUMBER_OF_MUTATIONS = 1;
+
+	@Parameter(key = "p_test_insertion", group = "Search Algorithm", description = "Initial probability of inserting a new test in a test suite")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_INSERTION = 0.1;
+
+	@Parameter(key = "p_statement_insertion", group = "Search Algorithm", description = "Initial probability of inserting a new statement in a test case")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_STATEMENT_INSERTION = 0.5;
+
+	@Parameter(key = "p_change_parameter", group = "Search Algorithm", description = "Probability of replacing parameters when mutating a method or constructor statementa in a test case")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_CHANGE_PARAMETER = 0.1;
+
+	@Parameter(key = "p_test_delete", group = "Search Algorithm", description = "Probability of deleting statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_DELETE = 1d / 3d;
+
+	@Parameter(key = "p_test_change", group = "Search Algorithm", description = "Probability of changing statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_CHANGE = 1d / 3d;
+
+	@Parameter(key = "p_test_insert", group = "Search Algorithm", description = "Probability of inserting new statements during mutation")
+    @DoubleValue(min = 0.0, max = 1.0)
+	public static double P_TEST_INSERT = 1d / 3d;
+
+	@Parameter(key = "kincompensation", group = "Search Algorithm", description = "Penalty for duplicate individuals")
+	@DoubleValue(min = 0.0, max = 1.0)
+	public static double KINCOMPENSATION = 1.0;
+
+	@Parameter(key = "elite", group = "Search Algorithm", description = "Elite size for search algorithm")
+	public static int ELITE = 1;  
+    
     // evosuite 1.0.7
     public enum Strategy {
-	    DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
+	    SUITE, DYNAMOSA, GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
 	}
-
- // evosuite 1.0.6
-    /*
-    public enum Strategy {
-	    GA, RANDOM, RANDOM_FIXED, NOVELTY, MAP_ELITES, MODEL_CHECKING
-	}
-    */
     
 	@Parameter(key = "strategy", group = "Runtime", description = "Which mode to use")
 	public static Strategy STRATEGY = Strategy.GA;
 	
 	
-	// Search algorithm evosuite 1.0.7
-	/*
-	public enum Algorithm {
-		// random
-		RANDOM_SEARCH,
-		// GAs
-		STANDARD_GA, MONOTONIC_GA, STEADY_STATE_GA, BREEDER_GA, CELLULAR_GA, STANDARD_CHEMICAL_REACTION, MAP_ELITES,
-		// mu-lambda
-		ONE_PLUS_LAMBDA_LAMBDA_GA, ONE_PLUS_ONE_EA, MU_PLUS_LAMBDA_EA, MU_LAMBDA_EA,
-		// many-objective algorithms
-		MOSA, DYNAMOSA, LIPS, MIO,
-		// multiple-objective optimisation algorithms
-		NSGAII, SPEA2
-	}
-	*/
 	public enum Algorithm {
 		// random
 		RANDOM_SEARCH,
@@ -217,21 +282,18 @@ public class MBTProperties {
 	
 	@Parameter(key = "modelcriterion", group = "Search Algorithm", description = "Model coverage criterion")
 	public static ModelCriterion[] MODELCRITERION = new ModelCriterion[] {
-		ModelCriterion.STATE, ModelCriterion.TRANSITION
+		ModelCriterion.TRANSITION //, ModelCriterion.STATE
 	};
 	
-//	public enum Criterion {
-//		EXCEPTION, DEFUSE, ALLDEFS, BRANCH, CBRANCH, STRONGMUTATION, WEAKMUTATION,
-//		MUTATION, STATEMENT, RHO, AMBIGUITY, IBRANCH, READABILITY,
-//        ONLYBRANCH, ONLYMUTATION, METHODTRACE, METHOD, METHODNOEXCEPTION, LINE, ONLYLINE, OUTPUT, INPUT,
-//        REGRESSION,	REGRESSIONTESTS, TRYCATCH
-//	}
+	// MOSA PROPERTIES
+	public enum RankingType {
+		// Preference sorting is the ranking strategy proposed in
+		PREFERENCE_SORTING, 
+		FAST_NON_DOMINATED_SORTING
+	}
 
-//    @Parameter(key = "criterion", group = "Runtime", description = "Coverage criterion. Can define more than one criterion by using a ':' separated list")
-//    public static Criterion[] CRITERION = new Criterion[] {
-//            //these are basic criteria that should be always on by default
-//            Criterion.LINE, Criterion.BRANCH, Criterion.EXCEPTION, Criterion.WEAKMUTATION, Criterion.OUTPUT, Criterion.METHOD, Criterion.METHODNOEXCEPTION, Criterion.CBRANCH  };
-
+	@Parameter(key = "ranking_type", group = "Runtime", description = "type of ranking to use in MOSA")
+	public static RankingType RANKING_TYPE = RankingType.PREFERENCE_SORTING;
 	
     @Parameter(key = "PROJECT_PREFIX", group = "Runtime", description = "Package name of target package")
 	public static String PROJECT_PREFIX = "";
@@ -254,6 +316,45 @@ public class MBTProperties {
 	
 	@Parameter(key = "LR_mean_buttons", group = "Lab Recruits", description = "Expected number of buttons in a room")
 	public static double LR_mean_buttons = 1;
+	
+	@Parameter(key = "LR_n_rooms", group = "Lab Recruits", description = "Number of rooms")
+	public static int LR_n_rooms = 3;
+	
+	/**
+	 * Random generation has four parameters:
+	 * - number of buttons
+	 * - number of doors
+	 * - number of rooms
+	 * - mean number of buttons per room
+	 * Random generation mode fixed on parameter has dependent.
+	 */
+	public enum LR_random_mode {
+		// the number of rooms depends on the number of buttons and the mean buttons per room
+		N_ROOMS_DEPENDENT, 
+		// the number of buttons depends on the number of rooms and the mean number of buttons
+		N_BUTTONS_DEPENDENT,
+		// the user select the number of rooms and buttons and the buttons are uniformly distributed in the rooms
+		UNIFORM_BUTTON_DISTRIBUTION
+	}
+	
+	@Parameter(key = "LR_generation_mode", group = "Lab Recruits", description = "Number of rooms")
+	public static LR_random_mode LR_generation_mode = LR_random_mode.N_ROOMS_DEPENDENT;
+	
+	
+	/**
+	 * Number of maximum tries to generate a randoma level
+	 * 
+	 */
+	@Parameter(key = "LR_n_try_generation", group = "Lab Recruits", description = "Number of tries to generate a LR level")
+	public static int LR_n_try_generation = 3;
+	
+	/**
+	 * Session id to identify an experiment
+	 * 
+	 */
+	@Parameter(key = "SessionId", group = "Runtime", description = "String that identify an experiment")
+	public static String SessionId = "default_session";
+	
 	
 	/**
 	 * Get all parameters that are available

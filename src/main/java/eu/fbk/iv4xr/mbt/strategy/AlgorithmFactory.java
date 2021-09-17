@@ -8,14 +8,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.evosuite.Properties;
-//import org.evosuite.Properties.Criterion;
-import org.evosuite.Properties.Strategy;
 import org.evosuite.Properties.TheReplacementFunction;
 import org.evosuite.ShutdownTestWriter;
 import org.evosuite.TestGenerationContext;
 import org.evosuite.coverage.branch.BranchPool;
-import org.evosuite.coverage.mutation.MutationTestPool;
-import org.evosuite.coverage.mutation.MutationTimeoutStoppingCondition;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
@@ -28,7 +24,7 @@ import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.MIO;
 import org.evosuite.ga.metaheuristics.MonotonicGA;
 import org.evosuite.ga.metaheuristics.NSGAII;
-import org.evosuite.ga.metaheuristics.RandomSearch;
+import eu.fbk.iv4xr.mbt.algorithm.random.RandomSearch;
 import org.evosuite.ga.metaheuristics.SPEA2;
 import org.evosuite.ga.metaheuristics.StandardChemicalReaction;
 import org.evosuite.ga.metaheuristics.StandardGA;
@@ -56,11 +52,12 @@ import org.evosuite.strategy.PropertiesSearchAlgorithmFactory;
 import org.evosuite.testcase.localsearch.BranchCoverageMap;
 import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
 import org.evosuite.testsuite.TestSuiteReplacementFunction;
-import org.evosuite.utils.ArrayUtil;
 import org.evosuite.utils.ResourceController;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSA;
+import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.ExtendedSinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
@@ -69,14 +66,7 @@ import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoalFactory;
-//import de.upb.testify.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
@@ -84,6 +74,7 @@ import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeExceptionsSO;
 import eu.fbk.iv4xr.mbt.testcase.secondaryobjectives.MinimizeLengthSO;
+import eu.fbk.iv4xr.mbt.testsuite.RandomLengthSuiteChromosomeFactory;
 import sun.misc.Signal;
 
 /**
@@ -92,17 +83,8 @@ import sun.misc.Signal;
  */
 public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgorithmFactory<T>{
 
-	
-	public static EFSM getModel () {
-		//LabRecruitsEFSMFactory efsmFactory = LabRecruitsEFSMFactory.getInstance();
-		EFSMFactory efsmFactory = EFSMFactory.getInstance();		
-		EFSM efsm = efsmFactory.getEFSM();
-		return efsm;
-	}
-	
-	
-	protected CoverageGoalFactory<?> getFitnessFactory(){
-		switch (MBTProperties.MODELCRITERION[0]){
+	protected CoverageGoalFactory<?> getFitnessFactory(ModelCriterion criterion){
+		switch (criterion){
 		case STATE:
 			return new StateCoverageGoalFactory();
 		case TRANSITION:
@@ -118,8 +100,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	
 	protected List<CoverageGoal> getCoverageGoals(){
 		List<CoverageGoal> goals = new ArrayList<CoverageGoal>();
-		goals.addAll(new StateCoverageGoalFactory().getCoverageGoals());
-		goals.addAll(new TransitionCoverageGoalFactory().getCoverageGoals());
+		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
+			goals.addAll(getFitnessFactory(criterion).getCoverageGoals());
+		}
 		return goals;
 	}
 	
@@ -130,9 +113,11 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		
 		case GA:
 		case DYNAMOSA:
-			return new RandomLengthTestChromosomeFactory<T>(testFactory, getModel());
+			return new RandomLengthTestChromosomeFactory<T>(testFactory);
 		case MODEL_CHECKING:
-			return new RandomLengthTestChromosomeFactory<T>(testFactory, getModel());
+			return new RandomLengthTestChromosomeFactory<T>(testFactory);
+		case SUITE:
+			return (ChromosomeFactory<T>) new RandomLengthSuiteChromosomeFactory(new RandomLengthTestChromosomeFactory(testFactory));
 		default:
 			throw new RuntimeException("Unsupported generation strategy: " + MBTProperties.STRATEGY);
 		}
@@ -141,9 +126,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	protected TestFactory getTestFactory() {
 		switch (MBTProperties.TEST_FACTORY) {
 		case RANDOM_LENGTH:
-			return new RandomLengthTestFactory(getModel());
+			return new RandomLengthTestFactory(EFSMFactory.getInstance().getEFSM());
 		case RANDOM_LENGTH_PARAMETER:
-			return new RandomParameterLengthTestFactory(getModel());
+			return new RandomParameterLengthTestFactory(EFSMFactory.getInstance().getEFSM());
 		default:
 			throw new RuntimeException("Unsupported test factory: " + MBTProperties.TEST_FACTORY);
 		}
@@ -203,7 +188,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 				return new BreederGA<>(factory);
 			case RANDOM_SEARCH:
 				logger.info("Chosen search algorithm: Random");
-				return new RandomSearch<>(factory);
+				return new RandomSearch<T>(factory);
 			case NSGAII:
 				logger.info("Chosen search algorithm: NSGAII");
 				return new NSGAII<>(factory);
@@ -273,29 +258,14 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new SinglePointRelativePathCrossOver();
 		case SINGLEPOINT:
 			return new SinglePointPathCrossOver();
+		case EXTENDEDSINGLEPOINTRELATIVE:
+			return new ExtendedSinglePointRelativePathCrossOver();	
 		default:
 			throw new RuntimeException("Unknown crossover function: "
 			        + Properties.CROSSOVER_FUNCTION);
 		}
 	}
-	
-	// evosuite 1.0.7
-	/*
-=======
 
->>>>>>> 5daf1208b83a9f1383f58cb75b00743e90fd859e
-	private RankingFunction<T> getRankingFunction() {
-	  switch (Properties.RANKING_TYPE) {
-	    case FAST_NON_DOMINATED_SORTING:
-	      return new FastNonDominatedSorting<>();
-	    case PREFERENCE_SORTING:
-	    default:
-	      return new RankBasedPreferenceSorting<>();
-	  }
-	}
-<<<<<<< HEAD
-	*/
-	
 	@Override
 	public GeneticAlgorithm<T> getSearchAlgorithm() {
 		ChromosomeFactory<T> factory = getChromosomeFactory();
@@ -319,7 +289,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		StoppingCondition stopping_condition = getStoppingCondition();
 		ga.setStoppingCondition(stopping_condition);
 		// ga.addListener(stopping_condition);
-		if (Properties.STOP_ZERO) {
+		if (MBTProperties.STOP_ZERO) {
 			ga.addStoppingCondition(new ZeroFitnessStoppingCondition());
 		}
 

@@ -3,3 +3,4 @@
 .settings/
 data/
 .classpath
+**/.DS_Store

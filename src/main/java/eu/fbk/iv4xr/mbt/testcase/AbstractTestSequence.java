@@ -3,70 +3,86 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.testcase.TestFitnessFunction;
-import org.evosuite.utils.Randomness;
+import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import de.upb.testify.efsm.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameterGenerator;
+import eu.fbk.iv4xr.mbt.algorithm.operators.mutation.Mutator;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
 /**
  * @author kifetew
  *
  */
-public class AbstractTestSequence<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends Transition<State, Parameter, Context>> implements Testcase {
+public class AbstractTestSequence<State extends EFSMState, InParameter extends EFSMParameter, OutParameter extends EFSMParameter, Context extends EFSMContext, Operation extends EFSMOperation, Guard extends EFSMGuard, Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
+		implements Testcase {
 
-	private Path<State, Parameter, Context, Trans> path;
-	private boolean valid = false;
-	private double fitness = 0d;
-	
-	/** Coverage goals this test covers */
-	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
-	
-	/** Local EFSM copy to generate parameters **/
-	private EFSM<State, Parameter, Context, Trans> efsm;
-	
 	/**
 	 * 
 	 */
-	public AbstractTestSequence(EFSM<State, Parameter, Context, Trans> model) {
-		this.efsm = model;
-	}
+	private static final long serialVersionUID = 6113600146777909496L;
+	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
+	private boolean valid = false;
+	private double fitness = 0d;
+
+	/** Coverage goals this test covers */
+	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
+
+	private Mutator mutator;
+
+//	/** Local EFSM copy to generate parameters **/
+//	private EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> efsm;
+
+//	/**
+//	 * 
+//	 */
+//	public AbstractTestSequence(EFSM<State, InParameter, OutParameter, Context, Operation,  Guard, Transition> model) {
+//		this.efsm = model;
+//	}
 
 	/**
 	 * @return the path
 	 */
-	public Path<State, Parameter, Context, Trans> getPath() {
+	public Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath() {
 		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path<State, Parameter, Context, Trans> path) {
+	public void setPath(Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path) {
 		this.path = path;
+		mutator = new Mutator(path);
 	}
-	
+
 	/**
 	 * 
 	 * @return path in DOT format
 	 */
 	public String toDot() {
-		return path.toDot();
+		if (path != null) {
+			return path.toDot();
+		} else {
+			return "";
+		}
+	}
+
+	@Override
+	public String toString() {
+		if (path != null) {
+			return path.toString();
+		} else {
+			return "";
+		}
 	}
 
 	public int getLength() {
@@ -83,14 +99,14 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 		return fitness;
 	}
 
-	public void setFitness (double f) {
+	public void setFitness(double f) {
 		fitness = f;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractTestSequence) {
-			AbstractTestSequence ts = (AbstractTestSequence)obj;
+			AbstractTestSequence ts = (AbstractTestSequence) obj;
 			if (getLength() == ts.getLength()) {
 				boolean eq = true;
 				for (int i = 0; i < getLength(); i++) {
@@ -100,21 +116,24 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 					}
 				}
 				return eq;
-			}else {
+			} else {
 				return false;
 			}
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		EFSM efsmClone = efsm.clone();
-		AbstractTestSequence clone = new AbstractTestSequence(efsmClone);
+		AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> clone = new AbstractTestSequence<>();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
+		clone.coveredGoals = new HashSet<FitnessFunction<?>>();
+		for (FitnessFunction<?> goal : coveredGoals) {
+			clone.addCoveredGoal(goal);
+		}
 		return clone;
 	}
 
@@ -130,25 +149,49 @@ Trans extends Transition<State, Parameter, Context>> implements Testcase {
 
 	@Override
 	public void crossOver(Testcase other, int position1, int position2) {
-		LinkedList<Trans> newTransitions = new LinkedList<Trans>();
-		LinkedList<Parameter> newParameters = new LinkedList<Parameter>();
-		for (int i = 0; i <= position1; i++) {
-			newTransitions.add(path.getTransitionAt(i));
-			newParameters.add(path.parameterValues.get(i));
+
+		/*
+		 * if (!path.getTransitionAt(position1).getSrc() .equals(((AbstractTestSequence)
+		 * other).path.getTransitionAt(position2).getSrc())) { EFSMTransition t1 =
+		 * path.getTransitionAt(position1); EFSMTransition t2 = ((AbstractTestSequence)
+		 * other).path.getTransitionAt(position2); EFSMState s1 = t1.getSrc(); EFSMState
+		 * s2 = t2.getSrc(); s1.equals(s2); }
+		 * 
+		 * LinkedList<Transition> newTransitions = new LinkedList<Transition>(); for
+		 * (int i = 0; i <= position1; i++) {
+		 * newTransitions.add(path.getTransitionAt(i)); } for (int i = position2 + 1; i
+		 * < other.getLength(); i++) { AbstractTestSequence<State, InParameter,
+		 * OutParameter, Context, Operation, Guard, Transition> otherTc =
+		 * (AbstractTestSequence<State, InParameter, OutParameter, Context, Operation,
+		 * Guard, Transition>) other;
+		 * newTransitions.add(otherTc.path.getTransitionAt(i)); } path = new
+		 * Path(newTransitions);
+		 */
+		AbstractTestSequence othertc = (AbstractTestSequence) other;
+		if (path.getTransitionAt(position1).equals(
+				(othertc.path.getTransitionAt(position2)))){
+			var trunk1 = path.subPath(0, position1);
+			var trunk2 = othertc.path.subPath(position2, other.getLength());
+			path.getModfiableTransitions().clear();
+			path.append(trunk1); 
+			path.append(trunk2);	
 		}
-		for (int i = position2+1; i < other.getLength(); i++) {
-			AbstractTestSequence<State, Parameter, Context, Trans> otherTc = (AbstractTestSequence<State, Parameter, Context, Trans>)other;
-			newTransitions.add(otherTc.path.getTransitionAt(i));
-			newParameters.add((Parameter) otherTc.path.parameterValues.get(i));
-		}
-		path = new Path(newTransitions, newParameters);
+		
+		 
+
 	}
 
 	@Override
 	public void mutate() {
-		int index = Randomness.nextInt(getLength());
-		//path.parameterValues.set(index, (Parameter) new LabRecruitsParameterGenerator().getRandom());
-		
+		// System.err.println("BEFORE: " + path);
+		// if (Randomness.nextBoolean()) {
+		// insertSelfTransitionMutation ();
+		// } else {
+		// deleteSelfTransitionMutation ();
+		// }
+		// System.err.println("AFTER: " + path);
+		mutator.mutate();
+
 	}
 
 	@Override

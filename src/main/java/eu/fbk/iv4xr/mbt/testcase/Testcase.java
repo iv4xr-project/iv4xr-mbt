@@ -3,6 +3,7 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
@@ -13,7 +14,7 @@ import org.evosuite.testcase.TestFitnessFunction;
  * @author kifetew
  *
  */
-public interface Testcase extends Comparable<Testcase> {
+public interface Testcase extends Comparable<Testcase>, Serializable, Cloneable {
 	
 	/**
 	 * Return the length of the test case (e.g., as number of transitions)
@@ -25,7 +26,7 @@ public interface Testcase extends Comparable<Testcase> {
 	public double getFitness ();
 
 
-	public Testcase clone() throws CloneNotSupportedException;
+	public Testcase clone()  throws CloneNotSupportedException;
 	
 	public boolean isValid ();
 	

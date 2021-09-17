@@ -1,0 +1,81 @@
+// The types of objects in this domain
+type Door;
+type Button;
+type Location;
+
+//////////////////////////////////////////////////////////////////////
+// The changing state of the problem (basically the state varibles)
+
+// Boolean variable representing whether a certain door d is open or not
+fluent boolean open(Door d);
+
+// The current position of the agent
+fluent Location position;
+
+// Boolean variables representing the visited locations and edges
+fluent boolean location_visited(Location l);
+fluent boolean edge_visited(Location l1, Location l2);
+
+//////////////////////////////////////////////////////////////////////
+// Non-changing part of the problem, these constants must be
+// initialized before planning (see below) and then they remain fixed.
+
+// Location of each button
+constant Location button_location(Button b);
+
+// Whether each button ic onnected to a door or not
+constant boolean connected(Button b, Door d);
+
+// Whether a certain location is directly reachable from another or not
+constant boolean reachable(Location l1, Location l2);
+
+// If two locations are connected through a door, the Door object is
+// returned, otherwise NONE
+constant Door door_connection(Location l1, Location l2);
+
+// A sentinel value indicaring that two locations are not connected
+// through a door
+instance Door NONE;
+
+//////////////////////////////////////////////////////////////////////
+// Actions of the problem
+
+// Interact with a button in the current location
+action toggle(Button b) {
+   // We assume the interaction takes 1 time unit
+   duration := 1;
+
+   // We can only interact with buttons in our current location
+   [start] position == button_location(b);
+
+   // Switch the status of all doors connected to button `b`
+   [end] forall(Door d) {
+      open(d) := (open(d) xor connected(b, d));
+   };
+};
+
+// Move between connected locations or through doors
+action travel_to(Location from, Location to) {
+   // We assume the duration of the trave is 2 time units
+   duration := 2;
+
+   // Either `to` is reachable from `position` or there is an open
+   // door between the two locations
+   [start] position == from;
+   [start] reachable(from, to) or
+       (door_connection(from, to) != NONE and open(door_connection(from, to)));
+
+   // Change the value of the current position
+   [end] position := to;
+
+   // Set the destination and the edge as visited
+   [end] location_visited(to) := true;
+   [end] edge_visited(from, to) := true;
+};
+
+
+//////////////////////////////////////////////////////////////////////
+// From here on, we describe the specific planning instance idicating
+// where we are initially and what is the status of the doors and the
+// connection graph
+

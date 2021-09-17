@@ -7,10 +7,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
+//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
@@ -18,13 +25,17 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  *
  */
 public abstract class TestExecutor<
-State extends EFSMState,
-Parameter extends EFSMParameter,
-Context extends IEFSMContext<Context>,
-Trans extends eu.fbk.iv4xr.mbt.efsm4j.Transition<State, Parameter, Context>> {
+		State extends EFSMState,
+		InParameter extends EFSMParameter,
+		OutParameter extends EFSMParameter,
+		Context extends EFSMContext,
+		Operation extends EFSMOperation,
+		Guard extends EFSMGuard,
+		Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
 
-	protected EFSM<State, Parameter, Context, Trans> efsm;
-	protected transient Set<ExecutionListener<State, Parameter, Context, Trans>> listners = new HashSet<ExecutionListener<State, Parameter, Context, Trans>>();
+	protected EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm;
+	protected transient Set<ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> listners = 
+				new HashSet<ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>>();
 	/**
 	 * 
 	 */

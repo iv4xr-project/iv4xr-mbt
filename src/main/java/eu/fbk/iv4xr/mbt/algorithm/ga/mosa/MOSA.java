@@ -19,38 +19,29 @@ package eu.fbk.iv4xr.mbt.algorithm.ga.mosa;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import org.evosuite.Properties;
-import org.evosuite.Properties.Criterion;
-import org.evosuite.coverage.exception.ExceptionCoverageFactory;
-import org.evosuite.coverage.exception.ExceptionCoverageTestFitness;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
-import org.evosuite.ga.metaheuristics.lips.BudgetConsumptionMonitor;
 import org.evosuite.ga.metaheuristics.mosa.comparators.OnlyCrowdingComparator;
-import org.evosuite.rmi.ClientServices;
-import org.evosuite.statistics.RuntimeVariable;
-import org.evosuite.testcase.TestChromosome;
-import org.evosuite.testcase.TestFitnessFunction;
 import org.evosuite.testsuite.TestSuiteChromosome;
-import org.evosuite.testsuite.TestSuiteFitnessFunction;
-import org.evosuite.utils.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
+import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -62,12 +53,16 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  * @param <T>
  */
-public class MOSA<T extends Chromosome,
-	State extends EFSMState, 
-	Parameter extends EFSMParameter, 
-	Context extends IEFSMContext<Context>, 
-	Trans extends Transition<State, Parameter, Context>> extends 
-		AbstractMOSA<T,State,Parameter,Context,Trans> {
+public class MOSA<
+	T extends Chromosome,
+	State extends EFSMState,
+	InParameter extends EFSMParameter,
+	OutParameter extends EFSMParameter,
+	Context extends EFSMContext,
+	Operation extends EFSMOperation,
+	Guard extends EFSMGuard,
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
+		AbstractMOSA<T,State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 
@@ -105,12 +100,12 @@ public class MOSA<T extends Chromosome,
 		union.addAll(offspringPopulation);
 
 		// Ranking the union
-		logger.debug("Union Size =" + union.size());
+//		logger.debug("Union Size =" + union.size());
 		// Ranking the union using the best rank algorithm (modified version of the non dominated sorting algorithm
 		ranking.computeRankingAssignment(union, uncoveredGoals);
 
 		// add to the archive the new covered goals (and the corresponding test cases)
-		//this.archive.putAll(ranking.getNewCoveredGoals());
+//		this.archive.putAll(ranking.getNewCoveredGoals());
 
 		int remain = population.size();
 		int index = 0;
@@ -147,47 +142,47 @@ public class MOSA<T extends Chromosome,
 			remain = 0;
 		} // if
 		currentIteration++;
-		//logger.error("");
-		//logger.error("N. fronts = "+ranking.getNumberOfSubfronts());
-		//logger.debug("1* front size = "+ranking.getSubfront(0).size());
-		//logger.debug("2* front size = "+ranking.getSubfront(1).size());
-		logger.error("Covered goals = "+this.archive.size());
-		logger.error("Uncovered goals = "+uncoveredGoals.size());
+		logger.debug("N. fronts = "+ranking.getNumberOfSubfronts());
+		logger.debug("1* front size = "+ranking.getSubfront(0).size());
+		logger.debug("2* front size = "+ranking.getSubfront(1).size());
+		logger.debug("Covered goals = "+this.archive.size());
+		logger.debug("Uncovered goals = "+uncoveredGoals.size());
 		logger.debug("Generation=" + currentIteration + " Population Size=" + population.size() + " Archive size=" + archive.size());
+		//printBestFitnesses();
 	}
 
 
+
+	private void printBestFitnesses() {
+//		for (int i = 0; i < ranking.getNumberOfSubfronts(); i++) {
+//			logger.debug("SUBFRONT: {}", i);
+			for (T t : ranking.getSubfront(0)) {
+				logger.debug("INDIVIDUAL: {}", t.toString());
+				Map<FitnessFunction<?>, Double> fitnessValues = t.getFitnessValues();
+				for (Entry<FitnessFunction<?>, Double> entry : fitnessValues.entrySet()) {
+					if (uncoveredGoals.contains(entry.getKey())) {
+						logger.debug("GOAL: {} : FITNESS: {}", entry.getKey(), entry.getValue());
+					}
+				}
+			}
+//		}
+		
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void calculateFitness(T c) {
 		for (FitnessFunction<T> fitnessFunction : this.fitnessFunctions) {
-			double value = fitnessFunction.getFitness(c);
-			if (value == 0.0) {
-				//((TestChromosome)c).addCoveredGoals(fitnessFunction);
-				updateArchive(c, fitnessFunction);
+			// evaluate only if the goal is uncovered?
+			if (uncoveredGoals.contains(fitnessFunction)) {
+				double value = fitnessFunction.getFitness(c);
+				if (value == 0.0) {
+					updateArchive(c, fitnessFunction);
+				}
+				notifyEvaluation(c);
 			}
 		}
-//		if (ArrayUtil.contains(Properties.CRITERION, Criterion.EXCEPTION)){
-//			// if one of the coverage criterion is Criterion.EXCEPTION,
-//			// then we have to analyze the results of the execution do look
-//			// for generated exceptions
-//			List<ExceptionCoverageTestFitness> list = deriveCoveredExceptions(c);
-//			for (ExceptionCoverageTestFitness exp : list){
-//				// new covered exceptions (goals) have to be added to the archive
-//				updateArchive(c, (FitnessFunction<T>) exp);
-//				if (!fitnessFunctions.contains(exp)){
-//					// let's update the list of fitness functions 
-//					this.fitnessFunctions.add((FitnessFunction<T>) exp);
-//					// let's update the newly discovered exceptions to ExceptionCoverageFactory 
-//					ExceptionCoverageFactory.getGoals().put(exp.toString(), exp);
-//				}
-//			}
-//		}
-		notifyEvaluation(c);
-		// update the time needed to reach the max coverage
-//		budgetMonitor.checkMaxCoverage(this.archive.keySet().size());
 	}
 
 	/** {@inheritDoc} */
@@ -314,7 +309,7 @@ public class MOSA<T extends Chromosome,
 			best.setCoverage(suiteFitness, coverage);
 			best.setFitness(suiteFitness,  this.fitnessFunctions.size() - this.getNumberOfCoveredGoals());
 		}
-		//suiteFitness.getFitness(best);
+//		suiteFitness.getFitness(best);
 		return (T) best;
 	}
 

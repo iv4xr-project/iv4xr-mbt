@@ -12,7 +12,6 @@ import org.evosuite.ga.stoppingconditions.MaxTestsStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxTimeStoppingCondition;
 import org.evosuite.ga.stoppingconditions.StoppingCondition;
 import org.evosuite.ga.stoppingconditions.ZeroFitnessStoppingCondition;
-import org.evosuite.testsuite.TestSuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.ProgressMeter;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -26,7 +25,7 @@ public abstract class GenerationStrategy {
 	public abstract SuiteChromosome generateTests();
 	
 	/** There should only be one */
-	protected final ProgressMeter progressMonitor = new ProgressMeter();
+	private final ProgressMeter progressMonitor = new ProgressMeter();
 
 	/** There should only be one */
 	protected ZeroFitnessStoppingCondition zeroFitness = new ZeroFitnessStoppingCondition();
@@ -34,6 +33,8 @@ public abstract class GenerationStrategy {
 	/** There should only be one */
 	protected StoppingCondition globalTime = new GlobalTimeStoppingCondition();
 
+	protected CoverageTracker coverageTracker;
+	
 	
 	/**
 	 * Check if the budget has been used up. The GA will do this check
@@ -43,7 +44,7 @@ public abstract class GenerationStrategy {
 	 * @param stoppingCondition
 	 * @return
 	 */
-	protected boolean isFinished(TestSuiteChromosome chromosome, StoppingCondition stoppingCondition) {
+	protected boolean isFinished(SuiteChromosome chromosome, StoppingCondition stoppingCondition) {
 		if (stoppingCondition.isFinished())
 			return true;
 
@@ -80,4 +81,13 @@ public abstract class GenerationStrategy {
 			return new MaxGenerationStoppingCondition();
 		}
 	}
+
+
+	/**
+	 * @return the coverageTracker
+	 */
+	public CoverageTracker getCoverageTracker() {
+		return coverageTracker;
+	}
+
 }

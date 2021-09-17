@@ -13,14 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
 
 
 
@@ -32,8 +34,7 @@ import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
  */
 class TransitionCoverageGoalFactoryTest {
 
-	EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-	Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm;
+	EFSM efsm;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -67,7 +68,7 @@ class TransitionCoverageGoalFactoryTest {
 		List<TransitionCoverageGoal> coverageGoals = goalFactory.getCoverageGoals();
 		assertFalse(coverageGoals.isEmpty());
 		System.out.println("Num goals: " + coverageGoals.size());
-		assertTrue(coverageGoals.size() == 31);
+		assertTrue(coverageGoals.size() == 30);
 	}
 
 }

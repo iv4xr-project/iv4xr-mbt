@@ -5,25 +5,36 @@ package eu.fbk.iv4xr.mbt.coverage;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 //import de.upb.testify.efsm.EFSM;
 //import de.upb.testify.efsm.Transition;
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
+//import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
+//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsEFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFreeTravelTransition;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
-import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsFreeTravelTransition;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsParameter;
+//import eu.fbk.iv4xr.mbt.efsm4j.labrecruits.LabRecruitsState;
+import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomParameterLengthTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.TestFactory;
+
+import org.evosuite.Properties;
+import org.evosuite.utils.Randomness;
 
 /**
  * @author kifetew
@@ -31,15 +42,30 @@ import eu.fbk.iv4xr.mbt.testcase.TestFactory;
  */
 class TransitionCoverageGoalTest {
 
-	Transition transition;
+	
+	EFSMFactory mFactory;
+	EFSM model;
+	TestFactory testFactory;
+	RandomLengthTestChromosomeFactory<MBTChromosome> cFactory;
+	
+	double PENALITY1 = EFSMTestExecutionListener.PENALITY1;
+	double PENALITY2 = EFSMTestExecutionListener.PENALITY2;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
-		transition = new LabRecruitsFreeTravelTransition();
+		mFactory = EFSMFactory.getInstance(true);
+		model = mFactory.getEFSM();
+		testFactory = new RandomLengthTestFactory<>(model);
+		assertNotNull(testFactory);
+		cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
+		assertNotNull(cFactory);
+		
 		
 	}
 
@@ -48,32 +74,91 @@ class TransitionCoverageGoalTest {
 	 */
 	@Test
 	void testTransitionCoverageGoal() {
+		EFSMTransition transition = model.getTransition("t_0");
 		TransitionCoverageGoal goal = new TransitionCoverageGoal(transition);
 		assertNotNull(goal);
 	}
-
-	/**
-	 * Test method for {@link eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoal#getFitness(org.evosuite.ga.Chromosome)}.
-	 */
+	
 	@Test
-	void testGetFitnessChromosome() {
-		EFSMFactory mFactory = EFSMFactory.getInstance(true);
-		assertNotNull(mFactory);
-		EFSM<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext, 
-		Transition<LabRecruitsState, LabRecruitsParameter, LabRecruitsContext>> efsm = mFactory.getEFSM();
-		assertNotNull (efsm);
-		TestFactory testFactory = new RandomParameterLengthTestFactory(efsm);
-		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory, efsm);
-		assertNotNull(cFactory);
-		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
-		assertNotNull (chromosome);
+	void testGetFitnessInvalidPathTargetPresent() {
+		AbstractTestSequence t = new AbstractTestSequence<>();
+		Path path = new Path<>();
+		path.append(model.getTransition("t_0"));  // b0 -> b1
+		path.append(model.getTransition("t_7"));  // b1 -> b1
+		path.append(model.getTransition("t_4"));  // b1 -> dtm
+		path.append(model.getTransition("t_14"));  // dtm -> dtp
+		t.setPath(path);
 		
-		TransitionCoverageGoal goal = new TransitionCoverageGoal((Transition) efsm.getTransitons().toArray()[0]);
-		assertNotNull(goal);
+		MBTChromosome c = new MBTChromosome<>();
+		c.setTestcase(t);
+		EFSMTransition trans = model.getTransition("t_14");
+		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
+		double fitness = goal.getFitness(c);
+		double expectedFitness = 0.5d;
+		System.out.println("Actual fitness: " + fitness);
+		System.out.println("Expected fitness: " + expectedFitness);
+		assertTrue(expectedFitness == fitness); 
+	}
+	
+	@Test
+	void testGetFitnessInvalidPathTargetNotPresent() {
+		AbstractTestSequence t = new AbstractTestSequence<>();
+		Path path = new Path<>();
+		path.append(model.getTransition("t_0"));  // b0 -> b1
+		path.append(model.getTransition("t_7"));  // b1 -> b1
+		path.append(model.getTransition("t_4"));  // b1 -> dtm
+		path.append(model.getTransition("t_14"));  // dtm -> dtp
+		t.setPath(path);
 		
-		double fitness = goal.getFitness(chromosome);
-		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 0d);
+		MBTChromosome c = new MBTChromosome<>();
+		c.setTestcase(t);
+		EFSMTransition trans = model.getTransition("t_30");
+		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
+		double fitness = goal.getFitness(c);
+		double expectedFitness = 0.5d + (PENALITY2 + (PENALITY2/(PENALITY2+1)));
+		System.out.println("Actual fitness: " + fitness);
+		System.out.println("Expected fitness: " + expectedFitness);
+		assertTrue(expectedFitness == fitness); 
+	}
+	
+	@Test
+	void testGetFitnessValidPathTargetPresent() {
+		AbstractTestSequence t = new AbstractTestSequence<>();
+		Path path = new Path<>();
+		path.append(model.getTransition("t_0"));  // b0 -> b1
+		path.append(model.getTransition("t_7"));  // b1 -> b1
+		path.append(model.getTransition("t_4"));  // b1 -> dtm
+		t.setPath(path);
+		
+		MBTChromosome c = new MBTChromosome<>();
+		c.setTestcase(t);
+		EFSMTransition trans = model.getTransition("t_4");
+		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
+		double fitness = goal.getFitness(c);
+		double expectedFitness = 0d;
+		System.out.println("Actual fitness: " + fitness);
+		System.out.println("Expected fitness: " + expectedFitness);
+		assertTrue(expectedFitness == fitness); 
 	}
 
+	@Test
+	void testGetFitnessValidPathTargetNotPresent() {
+		AbstractTestSequence t = new AbstractTestSequence<>();
+		Path path = new Path<>();
+		path.append(model.getTransition("t_0"));  // b0 -> b1
+		path.append(model.getTransition("t_7"));  // b1 -> b1
+		path.append(model.getTransition("t_4"));  // b1 -> dtm
+		t.setPath(path);
+		
+		MBTChromosome c = new MBTChromosome<>();
+		c.setTestcase(t);
+		EFSMTransition trans = model.getTransition("t_30");
+		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
+		double fitness = goal.getFitness(c);
+		double expectedFitness = PENALITY1 + (PENALITY1/(PENALITY1+1));
+		System.out.println("Actual fitness: " + fitness);
+		System.out.println("Expected fitness: " + expectedFitness);
+		assertTrue(expectedFitness == fitness); 
+	}
+	
 }
