@@ -6,6 +6,8 @@ package eu.fbk.iv4xr.mbt.utils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.Serializable;
+import java.util.Base64;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -45,6 +47,21 @@ public class TestSerializationUtils {
 	}
 	
 	
+	// utils to serialize to/from string
+	
+	public static String serializeToString (Serializable obj) {
+		byte[] bytes = SerializationUtils.serialize(obj);
+		String ser = Base64.getEncoder().encodeToString(bytes);
+		return ser;
+	}
+	
+	
+	public static Serializable deserializeFromString (String ser) {
+		byte[] bytes = Base64.getDecoder().decode(ser);
+		Object obj = SerializationUtils.deserialize(bytes);
+		return (Serializable)obj;
+	}
+	
 	
 	/**
 	 * @param args
@@ -55,3 +72,4 @@ public class TestSerializationUtils {
 	}
 
 }
+
