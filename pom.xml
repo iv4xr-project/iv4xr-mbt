@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.fbk.iv4xr</groupId>
 	<artifactId>mbt</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>iv4xr-MBT</name>
-	<description>Model based test genration tool</description>
+	<description>Model based test generation tool</description>
 
 	<properties>
 		<maven.compiler.source>10</maven.compiler.source>
