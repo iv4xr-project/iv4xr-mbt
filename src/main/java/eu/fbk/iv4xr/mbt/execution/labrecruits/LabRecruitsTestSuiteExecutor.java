@@ -203,7 +203,7 @@ public class LabRecruitsTestSuiteExecutor {
 	}
 
 	// sample code for translating EFSM test case into a goal structure
-	private List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, AbstractTestSequence tc) {
+	public List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, AbstractTestSequence tc) {
 		Path path = tc.getPath();
 		List<EFSMTransition> listTransitions = path.getTransitions();
 		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
