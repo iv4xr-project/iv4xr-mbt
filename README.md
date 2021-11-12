@@ -32,11 +32,12 @@ where:
 - $progress switches on or off the progress bar during the search phase, default=true
 
 # Sut configuration
-The random EFSM generator has four parameters that can be changed to define the structure of the model:
+The random EFSM generator has five parameters that can be changed to define the structure of the model:
 - LR_mean_buttons: mean number of buttons in a room
 - LR_n_buttons: total number of buttons in the level
 - LR_n_doors: number of doors in the level
 - LR_seed: random seed for level generation
+- LR_n_goalFlags: number of goal flags in the level
 
 Predefined $sut corresponds to the following parameters:
 - labrecruits.random_simple: LR_mean_buttons = 0.5, LR_n_buttons = 5,
@@ -51,10 +52,10 @@ Value labrecruits.buttons_doors_1 for $sut corresponds to Lab Recruits predefine
 
 To generate a random EFSM with different parameters it suffices to use
 labrecruits.random_default as $sut and to pass the parameters to the program.
-For instance, a level with 2 buttons per room, 6 buttons, 3 doors, and seed 555 is
+For instance, a level with 2 buttons per room, 6 buttons, 3 doors, 1 goal flag and seed 555 is
 generate with (then runs the test generation on it using default values, see above)
 
-> java -jar mbt-0.0.1-SNAPSHOT-jar-with-dependencies.jar -sbt -Dsut_efsm=labrecruits.random_default -DLR_mean_buttons=2 -DLR_n_buttons=6 LR_n_doors=3 LR_seed=555
+> java -jar mbt-0.0.1-SNAPSHOT-jar-with-dependencies.jar -sbt -Dsut_efsm=labrecruits.random_default -DLR_mean_buttons=2 -DLR_n_buttons=6 -DLR_n_doors=3 -DLR_n_goalFlags=1 -DLR_seed=555
 
 ### Test generation output
 The output of the tool is saved in folder mbt-files. Subfolder 'statistics' reports

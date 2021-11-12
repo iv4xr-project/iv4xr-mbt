@@ -34,6 +34,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.function.Function;
 
+import javax.management.RuntimeErrorException;
+
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -45,6 +47,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransitionMapper;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
@@ -54,6 +57,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Button;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Corridor;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Door;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.GoalFlag;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Room;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.RendererToLRLevelDef;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Layout;
@@ -81,6 +85,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Layout;
  */
 public class LabRecruitsRandomEFSM {
 	
+	public enum StateType { Button, GoalFlag, DoorSide };
 	
 	// Random seed to generate level layout
 	private long seed = MBTProperties.LR_seed;
@@ -97,6 +102,9 @@ public class LabRecruitsRandomEFSM {
 	
 	// Number of rooms
 	private int nRooms = MBTProperties.LR_n_rooms;
+	
+	// Number of flags
+	private int nGoalFlags = MBTProperties.LR_n_goalFlags;
 	
 	// random number generator (using Mersenne Twister rng) 
 	private RandomDataGenerator rndGenerator = new RandomDataGenerator(new MersenneTwister(seed));
@@ -118,6 +126,7 @@ public class LabRecruitsRandomEFSM {
 	// map from doors to the set of activating button
 	HashMap<Integer, Set<EFSMState>> doorButtonsMap;
 	
+
 	// store mutants of the csv version of the level
 	// mutant where a link between a door and a button is removed
 	//private LinkedList<String> removeLinkMutants = new LinkedList<String>();
@@ -130,20 +139,24 @@ public class LabRecruitsRandomEFSM {
 	// Default parameters
 
 	public LabRecruitsRandomEFSM() {
-		
-		
-		
+				
 		int nTry = MBTProperties.LR_n_try_generation;
 		while(this.csvLevel == "" & nTry > 0) {
 			// generate a list of rooms
 			// each room is a vector of buttons
 			List<Vector<EFSMState>> roomSet = generateRoomSet();	
 
+			// add goal flags, if needed
+			if (nGoalFlags > 0) {
+			 	roomSet = addGoalFlags(roomSet);
+			}
+			
 			// the number of rooms are not predefined
 			// int nRooms = roomSet.size(); // not needed?
 			// connect rooms with doors
 			// the problem is equivalent to the creation of a connected graph
 			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
+	
 			
 			// compute the embedding, if possible
 			// if the graph is not planar it is not possible to generate csv
@@ -172,7 +185,37 @@ public class LabRecruitsRandomEFSM {
 		}
 	}
 
+
+
 	
+	/**
+	 * Add goal flags to rooms
+	 * @param roomSet
+	 * @return
+	 */
+	private List<Vector<EFSMState>> addGoalFlags(List<Vector<EFSMState>> roomSet) {
+		
+		
+		if (nGoalFlags > 0) {
+			int nConsumedGoalFlags = 0;
+			while (nConsumedGoalFlags < nGoalFlags) {
+				// generate a flag state
+				EFSMState goalFlagState = new EFSMState(nameGoalFlag(nConsumedGoalFlags));
+				// random choose a room
+				int roomId = rndGenerator.getRandomGenerator().nextInt(roomSet.size());
+				// add the flag
+				roomSet.get(roomId).add(goalFlagState);
+				// increment consumed goal flags
+				nConsumedGoalFlags +=1;
+			}
+			return roomSet;
+		}else {
+			return roomSet;
+		}
+		
+	}
+	
+
 	// NOTE: parameters are in MBTProperties and we could avoid changing them,
 	//       but we keep for testing purposes
 	// get and set parameters 	
@@ -565,10 +608,19 @@ public class LabRecruitsRandomEFSM {
 		return ( "b"+Integer.toString(i));
 	}
 	
+	
+	/*
+	 * Auxiliary function to name a goal flag
+	 */
+	private String nameGoalFlag(Integer i) {
+		return ( "gf"+Integer.toString(i));
+	}
+	
+	
 	/*
 	 * Auxiliary function to name a door
 	 */
-	private String nameDoor(Integer i) {
+ 	private String nameDoor(Integer i) {
 		return ( "door"+Integer.toString(i));
 	}
 	
@@ -581,6 +633,26 @@ public class LabRecruitsRandomEFSM {
 		}else {
 			return("d"+i+"m");
 		}
+	}
+	
+
+	public StateType getStateType(EFSMState eState) {
+		
+		char firstChar = eState.getId().charAt(0);
+		
+		if (firstChar == 'b') {
+			return StateType.Button;
+		}
+		
+		if (firstChar == 'd') {
+			return StateType.DoorSide;
+		}
+		
+		if (firstChar == 'g') {
+			return StateType.GoalFlag;
+		}
+		
+		throw new RuntimeException("Cannot determine state type of state"+eState.getId());
 	}
 	
 	
@@ -602,6 +674,10 @@ public class LabRecruitsRandomEFSM {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private List<Vector<EFSMState>> generateRoomSetButtonsDependent(){
 		// number of rooms that are not yet generated
 		int availableRooms = nRooms;
@@ -622,7 +698,6 @@ public class LabRecruitsRandomEFSM {
 		this.nButtons =currentButtonId+1;
 		return roomSet;	
 	}
-	
 	
 	
 	/**
@@ -681,73 +756,7 @@ public class LabRecruitsRandomEFSM {
 	 * @param roomSet
 	 * @return doors graph
 	 */
-	/*
-	 * private Pseudograph<Vector<EFSMState>,Integer>
-	 * generateDoorsGraph(List<Vector<EFSMState>> roomSet){
-	 * 
-	 * doorsGraph = new Pseudograph<>(Integer.class);
-	 * 
-	 * // add vertex, i.e., set of labrecruits states for (Vector<EFSMState> vector
-	 * : roomSet) { doorsGraph.addVertex(vector); }
-	 * 
-	 * 
-	 * 
-	 * // tmp values to store used and remaining rooms that need to be connected
-	 * Set<Vector<EFSMState>> usedRooms = new LinkedHashSet<>(); // need to clone
-	 * because vertexSet returns a view Set<Vector<EFSMState>> availableRooms = new
-	 * LinkedHashSet<>(doorsGraph.vertexSet());
-	 * 
-	 * 
-	 * // pick first node and update used and available rooms //Vector<?> firstNode
-	 * = (Vector<?>) availableRooms.toArray()[rndGenerator.nextInt(0,
-	 * availableRooms.size()-1)]; int firstNodeId = rndGenerator.nextInt(0,
-	 * availableRooms.size()-1); Vector<EFSMState> firstNode =
-	 * availableRooms.stream().skip(firstNodeId).iterator().next();
-	 * availableRooms.remove(firstNode); usedRooms.add(firstNode);
-	 * 
-	 * // iterate over nDoors and add an edge each time selecting // one node from
-	 * the used and from the available for (int i = 0; i < nDoors; i++) { // random
-	 * pick an available and a used node int nextAvailableId =
-	 * rndGenerator.nextInt(0, availableRooms.size()-1); Vector<EFSMState>
-	 * unconnectedNode =
-	 * availableRooms.stream().skip(nextAvailableId).iterator().next(); int
-	 * nextUsedId = rndGenerator.nextInt(0, usedRooms.size()-1); Vector<EFSMState>
-	 * connectedNode = usedRooms.stream().skip(nextUsedId).iterator().next(); // add
-	 * a new edge to the graph doorsGraph.addEdge(connectedNode, unconnectedNode,i);
-	 * // update available and used rooms availableRooms.remove(unconnectedNode);
-	 * usedRooms.add(unconnectedNode); // no more rooms but still some door to
-	 * create if (availableRooms.size() == 0) { break; } }
-	 * 
-	 * // 3 situations are possible
-	 * 
-	 * // all rooms are used but there are still some available door: random add
-	 * doors between random rooms if (doorsGraph.edgeSet().size() < nDoors) { for
-	 * (int j = doorsGraph.edgeSet().size(); j < nDoors; j++) { // random pick two
-	 * rooms id (could be the same) int firstRoomId = rndGenerator.nextInt(0,
-	 * usedRooms.size()-1); int secondRoomId = rndGenerator.nextInt(0,
-	 * usedRooms.size()-1); Vector<EFSMState> firstRoom =
-	 * usedRooms.stream().skip(firstRoomId).iterator().next(); if (firstRoomId !=
-	 * secondRoomId) { Vector<EFSMState> secondRoom =
-	 * usedRooms.stream().skip(secondRoomId).iterator().next();
-	 * doorsGraph.addEdge(firstRoom, secondRoom,j); }else { // self loop are doors
-	 * to empty rooms (solved when building the final EFSM)
-	 * doorsGraph.addEdge(firstRoom, firstRoom, j); }
-	 * 
-	 * } }
-	 * 
-	 * // all doors are used but there are still some room: merge remaining rooms
-	 * with used rooms // remove unused rooms for (Vector<EFSMState> room :
-	 * availableRooms) { doorsGraph.removeVertex(room); } // add unused buttons to
-	 * already connected rooms
-	 * 
-	 * for(Vector<LabRecruitsState> room : availableRooms) { int toMergeId =
-	 * rndGenerator.nextInt(0, doorsGraph.vertexSet().size() - 1);
-	 * doorsGraph.vertexSet().stream().skip(toMergeId).iterator().next().addAll(room
-	 * ); }
-	 * 
-	 * // all rooms and doors are used: exit return(doorsGraph); }
-	 * 
-	 */	
+	
 	
 	
 	/*
@@ -897,6 +906,7 @@ public class LabRecruitsRandomEFSM {
 	 * door graph we build the context in such a way from a random starting room
 	 * there is a path to each other rooms
 	 */
+	/*
 	private HashMap<Integer, Set<EFSMState>> buttonDoorsMap() {
 
 		HashMap<Integer, Set<EFSMState>> doorButtonsMap = new HashMap<Integer, Set<EFSMState>>();
@@ -966,7 +976,8 @@ public class LabRecruitsRandomEFSM {
 		
 		return (doorButtonsMap);
 	}
-
+	 */
+	
 	/**
 	 * Convert a doors graph to an EFSM. 
 	 * For each node of the doors graph create a totally connected graph of buttons. For each edge of
@@ -1051,8 +1062,10 @@ public class LabRecruitsRandomEFSM {
 
 				for (Integer currentDoor : traversedDoors) {
 					connectedDoors.add(currentDoor);
-					EFSMState currentButton = availableButtons
-							.get(rndGenerator.nextInt(0, availableButtons.size() - 1));
+					// FIXME
+					
+					EFSMState currentButton = getRandomButton(availableButtons);
+					
 					Set<EFSMState> newSet = new HashSet<EFSMState>();
 					if (doorButtonsMap.containsKey(currentDoor)) {
 						newSet.addAll(doorButtonsMap.get(currentDoor));
@@ -1072,13 +1085,14 @@ public class LabRecruitsRandomEFSM {
 			for (Integer missingDoor : missingDoors) {
 				Vector<EFSMState> randomRoom = doorsGraph.vertexSet().stream()
 						.skip(rndGenerator.nextLong(0, doorsGraph.vertexSet().size() - 1)).iterator().next();
-				EFSMState randomButtom = randomRoom.get(rndGenerator.nextInt(0, randomRoom.size() - 1));
-
+				//EFSMState randomButtom = randomRoom.get(rndGenerator.nextInt(0, randomRoom.size() - 1));
+				EFSMState randomButton = getRandomButton(randomRoom);
+				
 				Set<EFSMState> newSet = new HashSet<EFSMState>();
 				if (doorButtonsMap.containsKey(missingDoor)) {
 					newSet.addAll(doorButtonsMap.get(missingDoor));
 				}
-				newSet.add(randomButtom);
+				newSet.add(randomButton);
 				doorButtonsMap.put(missingDoor, newSet);
 
 			}
@@ -1117,19 +1131,20 @@ public class LabRecruitsRandomEFSM {
 			Vector<EFSMState> room =  vertexIterator.next();
 			for (int i = 0; i < room.size(); i++) {
 				for (int j = 0; j < room.size(); j++) {
-					if (room.get(i).equals(room.get(j))) {
-						EFSMTransition toggle = new EFSMTransition<>();
-						toggle.setInParameter(inputParToggle);	
-						if (buttonDoorsMap.containsKey(room.get(i))){
-							List<Assign> doorTriggers = new ArrayList<>();
-							for(Integer d: buttonDoorsMap.get(room.get(i))) {
-								doorTriggers.add(doorTriggerMap.get(d));
+					if (room.get(i).equals(room.get(j)))  {
+						if (getStateType(room.get(i)).equals(StateType.Button)) {
+							EFSMTransition toggle = new EFSMTransition<>();
+							toggle.setInParameter(inputParToggle);	
+							if (buttonDoorsMap.containsKey(room.get(i))){
+								List<Assign> doorTriggers = new ArrayList<>();
+								for(Integer d: buttonDoorsMap.get(room.get(i))) {
+									doorTriggers.add(doorTriggerMap.get(d));
+								}
+								EFSMOperation op = new EFSMOperation(doorTriggers.toArray(new Assign[doorTriggers.size()]));
+								toggle.setOp(op);
 							}
-							EFSMOperation op = new EFSMOperation(doorTriggers.toArray(new Assign[doorTriggers.size()]));
-							toggle.setOp(op);
+							labRecruitsBuilder.withTransition(room.get(i), room.get(i),toggle);
 						}
-						labRecruitsBuilder.withTransition(room.get(i), room.get(i),toggle);
-				//		labRecruitsBuilder.withTransition(room.get(i), room.get(i), new LabRecruitsToggleTransition());
 					}else {
 						EFSMTransition explore = new EFSMTransition<>();
 						explore.setInParameter(inputParExplore);
@@ -1138,6 +1153,8 @@ public class LabRecruitsRandomEFSM {
 					}
 				}
 			}
+			
+			
 		}
 		
 		
@@ -1244,6 +1261,16 @@ public class LabRecruitsRandomEFSM {
 		
 	}	
 	
+	// get random button from a room removing goal flg
+	public EFSMState getRandomButton(Vector<EFSMState> room ) {
+		
+		EFSMState currentButton = room.get(rndGenerator.nextInt(0, room.size() - 1));
+		while(!getStateType(currentButton).equals(StateType.Button)) {
+			currentButton = room.get(rndGenerator.nextInt(0, room.size() - 1));
+		}
+		
+		return currentButton;
+	}
 	
 	/**
 	 * Generate mutant levels removing and adding links between 
@@ -1272,7 +1299,8 @@ public class LabRecruitsRandomEFSM {
 		
 		
 		List<Room> csvRooms = new LinkedList<>() ;			
-		List<Button> buttonList = new LinkedList<>();		
+		List<Button> buttonList = new LinkedList<>();
+		List<GoalFlag> goalFlagList = new LinkedList<>();
 		List<Door> doorList = new LinkedList<>();
 		
 		HashMap< Vector<EFSMState> , Integer> GraphRoomToCsvRoom = new HashMap<Vector<EFSMState>, Integer>();
@@ -1297,11 +1325,15 @@ public class LabRecruitsRandomEFSM {
 				if (s.equals(efsmInitialState)) {
 					room.placeAgent("Agent1");
 				}
-				Button b = room.addButton(s.getId());
-				buttonList.add(b);
-				buttonDoorMap.put(s,b);
-	
-				
+				if (getStateType(s).equals(StateType.Button)) {
+					Button b = room.addButton(s.getId());
+					buttonList.add(b);
+					buttonDoorMap.put(s,b);
+				}
+				if (getStateType(s).equals(StateType.GoalFlag)) {
+					GoalFlag g = room.addGoalFlag(s.getId());
+					goalFlagList.add(g);
+				}
 			}
 			csvRooms.add(room);
 			GraphRoomToCsvRoom.put(doorsGraphState, roomId);
@@ -1443,5 +1475,74 @@ public class LabRecruitsRandomEFSM {
 		
 	}
 	
+	
+	
+	/*
+	 * private Pseudograph<Vector<EFSMState>,Integer>
+	 * generateDoorsGraph(List<Vector<EFSMState>> roomSet){
+	 * 
+	 * doorsGraph = new Pseudograph<>(Integer.class);
+	 * 
+	 * // add vertex, i.e., set of labrecruits states for (Vector<EFSMState> vector
+	 * : roomSet) { doorsGraph.addVertex(vector); }
+	 * 
+	 * 
+	 * 
+	 * // tmp values to store used and remaining rooms that need to be connected
+	 * Set<Vector<EFSMState>> usedRooms = new LinkedHashSet<>(); // need to clone
+	 * because vertexSet returns a view Set<Vector<EFSMState>> availableRooms = new
+	 * LinkedHashSet<>(doorsGraph.vertexSet());
+	 * 
+	 * 
+	 * // pick first node and update used and available rooms //Vector<?> firstNode
+	 * = (Vector<?>) availableRooms.toArray()[rndGenerator.nextInt(0,
+	 * availableRooms.size()-1)]; int firstNodeId = rndGenerator.nextInt(0,
+	 * availableRooms.size()-1); Vector<EFSMState> firstNode =
+	 * availableRooms.stream().skip(firstNodeId).iterator().next();
+	 * availableRooms.remove(firstNode); usedRooms.add(firstNode);
+	 * 
+	 * // iterate over nDoors and add an edge each time selecting // one node from
+	 * the used and from the available for (int i = 0; i < nDoors; i++) { // random
+	 * pick an available and a used node int nextAvailableId =
+	 * rndGenerator.nextInt(0, availableRooms.size()-1); Vector<EFSMState>
+	 * unconnectedNode =
+	 * availableRooms.stream().skip(nextAvailableId).iterator().next(); int
+	 * nextUsedId = rndGenerator.nextInt(0, usedRooms.size()-1); Vector<EFSMState>
+	 * connectedNode = usedRooms.stream().skip(nextUsedId).iterator().next(); // add
+	 * a new edge to the graph doorsGraph.addEdge(connectedNode, unconnectedNode,i);
+	 * // update available and used rooms availableRooms.remove(unconnectedNode);
+	 * usedRooms.add(unconnectedNode); // no more rooms but still some door to
+	 * create if (availableRooms.size() == 0) { break; } }
+	 * 
+	 * // 3 situations are possible
+	 * 
+	 * // all rooms are used but there are still some available door: random add
+	 * doors between random rooms if (doorsGraph.edgeSet().size() < nDoors) { for
+	 * (int j = doorsGraph.edgeSet().size(); j < nDoors; j++) { // random pick two
+	 * rooms id (could be the same) int firstRoomId = rndGenerator.nextInt(0,
+	 * usedRooms.size()-1); int secondRoomId = rndGenerator.nextInt(0,
+	 * usedRooms.size()-1); Vector<EFSMState> firstRoom =
+	 * usedRooms.stream().skip(firstRoomId).iterator().next(); if (firstRoomId !=
+	 * secondRoomId) { Vector<EFSMState> secondRoom =
+	 * usedRooms.stream().skip(secondRoomId).iterator().next();
+	 * doorsGraph.addEdge(firstRoom, secondRoom,j); }else { // self loop are doors
+	 * to empty rooms (solved when building the final EFSM)
+	 * doorsGraph.addEdge(firstRoom, firstRoom, j); }
+	 * 
+	 * } }
+	 * 
+	 * // all doors are used but there are still some room: merge remaining rooms
+	 * with used rooms // remove unused rooms for (Vector<EFSMState> room :
+	 * availableRooms) { doorsGraph.removeVertex(room); } // add unused buttons to
+	 * already connected rooms
+	 * 
+	 * for(Vector<LabRecruitsState> room : availableRooms) { int toMergeId =
+	 * rndGenerator.nextInt(0, doorsGraph.vertexSet().size() - 1);
+	 * doorsGraph.vertexSet().stream().skip(toMergeId).iterator().next().addAll(room
+	 * ); }
+	 * 
+	 * // all rooms and doors are used: exit return(doorsGraph); }
+	 * 
+	 */	
 }
  
