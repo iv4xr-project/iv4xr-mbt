@@ -636,7 +636,7 @@ public class LabRecruitsRandomEFSM {
 	}
 	
 
-	public StateType getStateType(EFSMState eState) {
+	public static StateType getStateType(EFSMState eState) {
 		
 		char firstChar = eState.getId().charAt(0);
 		

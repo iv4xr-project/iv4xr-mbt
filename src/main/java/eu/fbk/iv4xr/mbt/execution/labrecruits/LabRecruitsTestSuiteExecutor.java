@@ -23,6 +23,7 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -231,6 +232,9 @@ public class LabRecruitsTestSuiteExecutor {
 			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
 		} else {
 			subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())));
+			if (LabRecruitsRandomEFSM.getStateType(t.getTgt()).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
+				subGoals.add(GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
+			}
 		}
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
