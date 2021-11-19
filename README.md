@@ -4,7 +4,7 @@ The tool mbt requires at least Java 11. To see the online help.
 
 > java -jar mbt-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 
-mbt has three running modes: test generation, execute on sut, and mutation analysis.
+Tool mbt has three running modes: test generation, execute on sut, and mutation analysis.
 
 # Building
 
