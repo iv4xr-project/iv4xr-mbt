@@ -1,6 +1,6 @@
 # iv4xr-mbt
 
-The tool mbt requires at least Java 11. To see the online help
+The tool mbt requires at least Java 11. To see the online help.
 
 > java -jar mbt-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 
@@ -8,7 +8,7 @@ mbt has three running modes: test generation, execute on sut, and mutation analy
 
 # Building
 
-MBT is a Java library that can be built and installed with the Maven tool, in the usual maven-way. The dependency on Evosuite 1.0.6 might be a problem, if the latter fails to build. In that case, a known workaround is to use Evosuite jar-file directly. This can be found in Evosuite Github site. Use the right version as specified in MBT's Maven dependency, and also comment-out that dependency. 
+MBT is a Java library that can be built and installed with the Maven tool, in the usual maven-way. The dependency on Evosuite 1.0.6 might be a problem, if the latter fails to build. In that case, a known workaround is to use Evosuite jar-file directly. This can be found in Evosuite Github site. Use the right version as specified in MBT's Maven dependency, and also comment-out that dependency.
 
 # Test generation
 
