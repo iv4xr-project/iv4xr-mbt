@@ -57,10 +57,7 @@ public class Translation_from_LRMBTtestcas_to_GoalStructures_Test {
     @Test
     public void test1_translations_from_EFSMtransitions_to_GoalStructures() throws Exception {
     	
-    	if(TestSettings.USE_GRAPHICS) {
-    		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-    		new Scanner(System.in) . nextLine() ;
-    	}
+    	TestSettings.youCanRepositionWindow();
     	
     	// set the level to play; this mini level:
     	var config = new LabRecruitsConfig("visibilitytest") ;
