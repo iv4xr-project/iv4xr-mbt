@@ -23,9 +23,18 @@ public class Room extends WalledStructure {
 	int ID ;
 	List<Pair<Corridor,Direction>> connections  = new LinkedList<>() ;
 	List<Button> buttons = new LinkedList<>() ;
+	List<GoalFlag> goalFlags = new LinkedList<GoalFlag>();
 	Agent agent = null ;
 	
 	public Room(int id) { ID = id ; }
+	
+	public GoalFlag addGoalFlag(GoalFlag GF) {
+		goalFlags.add(GF) ; return GF ; 
+	}
+	
+	public GoalFlag addGoalFlag(String goalFlagId) {
+		return addGoalFlag(new GoalFlag(goalFlagId)) ; 
+	}
 	
 	public Button addButton(Button B) {
 		buttons.add(B) ; return B ;
@@ -260,5 +269,7 @@ public class Room extends WalledStructure {
 			System.out.println(R.toString()) ;
 		}
 	}
+
+
 
 }

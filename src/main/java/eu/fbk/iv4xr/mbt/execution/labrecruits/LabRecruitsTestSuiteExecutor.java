@@ -23,6 +23,7 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -49,6 +50,8 @@ public class LabRecruitsTestSuiteExecutor {
 	// basic reporting for test case status
 	private LabRecruitsTestSuiteReporter testReporter;
 
+	public LabRecruitsTestSuiteExecutor(){ }
+	
 	public LabRecruitsTestSuiteExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, Integer maxCyclePerGoal) {
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
 		// split level path	
@@ -206,8 +209,21 @@ public class LabRecruitsTestSuiteExecutor {
 	public List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, AbstractTestSequence tc) {
 		Path path = tc.getPath();
 		List<EFSMTransition> listTransitions = path.getTransitions();
+		return convertTestCaseToGoalStructure(agent,listTransitions) ;
+		//List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
+		//for (EFSMTransition t : listTransitions) {
+		//	GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
+		//	subGoals.add(transitionGoals);
+		//}
+		//return subGoals;
+		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
+		// return testingTask;
+	}
+	
+	// translating a test-case represented as a sequence of EFSM-transitions to a list of goal-structures:
+	public List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, List<EFSMTransition>  tc) {
 		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
-		for (EFSMTransition t : listTransitions) {
+		for (EFSMTransition t : tc) {
 			GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
 			subGoals.add(transitionGoals);
 		}
@@ -223,14 +239,24 @@ public class LabRecruitsTestSuiteExecutor {
 		// look at src and tgt state to understand the type of transition
 		if (t.getSrc().equals(t.getTgt())) {
 			// if self loop we are pressing a button
-			subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
+			//subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
+			subGoals.add(GoalLib.entityInteracted(convertStateToString(t.getTgt())));
+			
 		} else if (oppositeDoorSides(t.getSrc(), t.getTgt())) {
 			// to optimize
-			String doorName = convertDoorSideToDoorName(t.getTgt().getId());
+			//String doorName = convertDoorSideToDoorName(t.getTgt().getId());
+			String doorName = convertStateToString(t.getTgt());
 			subGoals.add(GoalLib.entityStateRefreshed(doorName));
 			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
 		} else {
-			subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())));
+			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())) ;
+			if (LabRecruitsRandomEFSM.getStateType(t.getTgt()).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
+				subGoals.add(SEQ(G,
+						         GoalLib.entityInCloseRange(convertStateToString(t.getTgt()))) );
+			}
+			else {
+				subGoals.add(G) ;
+			}
 		}
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
@@ -241,7 +267,7 @@ public class LabRecruitsTestSuiteExecutor {
 
 	// convert a state to a string
 	// for buttons it is simply the name
-	// for doors, that are written as d_X_p or d_X_, we have to write doorX
+	// for doors, that are written as dXp or dXm, we have to write doorX
 	// and we use convertDoorSideToDoorName
 	private String convertStateToString(EFSMState s) {
 		if (isDoor(s)) {
@@ -261,10 +287,10 @@ public class LabRecruitsTestSuiteExecutor {
 	private Boolean isDoor(EFSMState s) {
 		String name = s.getId();
 		String b = name.substring(0, 1);
-		if (name.substring(0, 1).equals("b")) {
-			return false;
-		} else {
+		if (name.substring(0, 1).equals("d")) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 

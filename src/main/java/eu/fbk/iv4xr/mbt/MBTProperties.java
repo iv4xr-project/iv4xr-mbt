@@ -320,6 +320,9 @@ public class MBTProperties {
 	@Parameter(key = "LR_n_rooms", group = "Lab Recruits", description = "Number of rooms")
 	public static int LR_n_rooms = 3;
 	
+	@Parameter(key = "LR_n_goalFlags", group = "Lab Recruits", description = "Number of goal flags")
+	public static int LR_n_goalFlags = 0;
+	
 	/**
 	 * Random generation has four parameters:
 	 * - number of buttons

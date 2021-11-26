@@ -34,6 +34,16 @@ public class EFSMConfiguration<State extends EFSMState, Context extends EFSMCont
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((context == null) ? 0 : context.hashCode());
+		result = prime * result + ((curState == null) ? 0 : curState.hashCode());
+		return result;
+	}
+
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -45,8 +55,5 @@ public class EFSMConfiguration<State extends EFSMState, Context extends EFSMCont
 		return Objects.equal(curState, that.curState) && Objects.equal(context, that.context);
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(curState, context);
-	}
+
 }

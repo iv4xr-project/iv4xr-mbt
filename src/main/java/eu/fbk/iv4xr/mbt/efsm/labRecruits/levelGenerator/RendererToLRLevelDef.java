@@ -76,6 +76,10 @@ public class RendererToLRLevelDef {
 		return "f:b^" + id ;
 	}
 	
+	static String goalFlagCode(String id) {
+		return "f:g^" + id;
+	}
+	
 	static String agentCode(String id) {
 		return "f:a^" + id ;
 	}
@@ -186,6 +190,12 @@ public class RendererToLRLevelDef {
 				//var loc = spots.get(rnd.nextInt(spots.size())) ;
 				Pair<Integer,Integer> loc = spots.get(rnd.nextInt(spots.size())) ;
 				map[loc.fst][loc.snd] = buttonCode(b.ID) ;
+				spots.remove(loc) ;
+			}
+			
+			for(GoalFlag gf : R.goalFlags) {
+				Pair<Integer,Integer> loc = spots.get(rnd.nextInt(spots.size())) ;
+				map[loc.fst][loc.snd] = goalFlagCode(gf.ID) ;
 				spots.remove(loc) ;
 			}
 		}

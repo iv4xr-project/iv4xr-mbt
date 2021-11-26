@@ -190,4 +190,28 @@ public class LabRecruitsRandomEFSMTest {
 		}
 		
 	}
+	
+	@Test
+	public void generateSimpleTestWithGoalFlag() throws IOException {
+		MBTProperties.LR_n_goalFlags =2;
+		
+		// initalize the generator with default parameters
+		LabRecruitsRandomEFSM labRecruitsRandomEFSM = new LabRecruitsRandomEFSM();
+		
+		// generate and EFSM
+		EFSM testEFSM = labRecruitsRandomEFSM.getEFMS();
+		String levelId = "data/default_with_2_goalFlag";
+		// save door graph in graphml formal
+		labRecruitsRandomEFSM.saveDoorGraph(levelId);
+		// save EFSM in dot format
+		labRecruitsRandomEFSM.saveEFSMtoDot(levelId);
+		
+		if (labRecruitsRandomEFSM.get_csv() == "") {
+			System.out.println("Cannot create a planar graph with these paratemers");
+		}else {
+			// save the level
+			labRecruitsRandomEFSM.saveLabRecruitsLevel(levelId);
+		}
+	}
+	
 }

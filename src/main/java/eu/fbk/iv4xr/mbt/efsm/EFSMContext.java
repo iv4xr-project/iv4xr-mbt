@@ -60,5 +60,28 @@ public class EFSMContext implements Cloneable, Serializable  {
 	public String toString() {
 		return this.toDebugString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((context == null) ? 0 : context.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof EFSMContext))
+			return false;
+		EFSMContext other = (EFSMContext) obj;
+		if (context == null) {
+			if (other.context != null)
+				return false;
+		} else if (!context.equals(other.context))
+			return false;
+		return true;
+	}
 	
 }
