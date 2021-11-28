@@ -113,7 +113,7 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 		}
 	
 		@Override
-		public IState clone() {
+		public IExplorableState clone() {
 			EFSMConfiguration conf_ = cloneEFSMconfiguration(conf) ;
 			return new EFSMStateWrapper(conf_) ;
 		}

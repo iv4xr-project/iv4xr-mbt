@@ -83,9 +83,13 @@ public class TestMC {
     @Test 
 	public void test3() {
 		//MBTProperties.LR_seed = 178971287 ;
-		MBTProperties.LR_n_buttons = 70 ;
-		MBTProperties.LR_n_doors = 60 ;
-		MBTProperties.LR_n_rooms = 50 ;
+		//MBTProperties.LR_n_buttons = 70 ;
+		//MBTProperties.LR_n_doors = 60 ;
+		//MBTProperties.LR_n_rooms = 50 ;
+    	// Using a smaller level to speed up the test :)
+		MBTProperties.LR_n_buttons = 40 ;
+		MBTProperties.LR_n_doors = 30 ;
+		MBTProperties.LR_n_rooms = 18 ;
 		//MBTProperties.LR_mean_buttons = 0.5;
 		MBTProperties.LR_n_goalFlags = 1 ;
 		// generate an EFSM with the above params:
