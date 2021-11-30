@@ -5,7 +5,7 @@
 	<!--   <groupId>eu.fbk.iv4xr</groupId> -->
 	<groupId>com.github.iv4xr-project</groupId>
 	<artifactId>mbt</artifactId>
-	<version>1.0.1b</version>
+	<version>1.0.1c</version>
 	<name>iv4xr-MBT</name>
 	<description>Model based test generation tool</description>
 
