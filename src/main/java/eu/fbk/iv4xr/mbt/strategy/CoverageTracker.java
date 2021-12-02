@@ -38,13 +38,16 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	
 	protected StringBuffer statistics;
 	private String STATISTICS_HEADER = "id, sut, goals, covered_goals, coverage, tests, budget, "
-										+ "consumed_budget, fitness_evaluations, algorithm, criteria, random_seed, lr_seed\n";
+										+ "consumed_budget, fitness_evaluations, feasible_paths, infeasible_paths, feasible_rate, algorithm, criteria, random_seed, lr_seed\n";
 	private long startTime;
 	private long lastSnapshotTime;
 
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
 	double coverage;
 	private int fitnessEvaluations;
+	private int feasiblePaths;
+	private int infeasiblePaths;
+	private double feasibleRate;
 	
 	protected ProgressBar coveragePb;
 	protected ProgressBar budgetPb;
@@ -61,6 +64,9 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		
 		coverage = 0d;
 		fitnessEvaluations = 0;
+		feasiblePaths = 0;
+		infeasiblePaths = 0;
+		feasibleRate = 0d;
 		coverageMap = new HashMap<FitnessFunction<MBTChromosome>, MBTChromosome>();
 		for (Object goal : goals) {
 			coverageMap.put((FitnessFunction<MBTChromosome>) goal, null);
@@ -94,11 +100,14 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		fitnessEvaluations++;
 		MBTChromosome chromosome = (MBTChromosome)arg0;
 		if (chromosome.getTestcase().isValid()) {
+			feasiblePaths++;
 			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
 				if (Double.compare(entry.getValue(), 0d) == 0) {
 					updateCoverageMap (chromosome, entry.getKey());
 				}
 			}
+		}else {
+			infeasiblePaths++;
 		}
 		
 		// time to take statistics snapshot
@@ -128,7 +137,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 				covered ++;
 			}
 		}
-		coverage = (double)covered / coverageMap.size();
+		coverage = (double)covered / coverageMap.size() * 100;
 //		System.err.println("Coverage: " + coverage * 100 + " %");
 		
 		if (MBTProperties.SHOW_PROGRESS) {
@@ -136,6 +145,8 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 			long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
 			budgetPb.stepTo(consumedBudget);
 		}
+		
+		feasibleRate = (double)feasiblePaths / (double)fitnessEvaluations * 100;
 	}
 
 	@Override
@@ -239,6 +250,9 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		stats.add(""+budget);
 		stats.add(""+consumedBudget);
 		stats.add(""+fitnessEvaluations);
+		stats.add(""+feasiblePaths);
+		stats.add(""+infeasiblePaths);
+		stats.add(""+feasibleRate);
 		stats.add(MBTProperties.ALGORITHM.toString());
 		stats.add(criteria);
 		stats.add(""+MBTProperties.RANDOM_SEED);
