@@ -38,15 +38,16 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	
 	protected StringBuffer statistics;
 	private String STATISTICS_HEADER = "id, sut, goals, covered_goals, coverage, tests, budget, "
-										+ "consumed_budget, fitness_evaluations, feasible_paths, infeasible_paths, feasible_rate, algorithm, criteria, random_seed, lr_seed\n";
+										+ "consumed_budget, fitness_evaluations, feasible_paths, feasible_rate, algorithm, criteria, random_seed, lr_seed\n";
 	private long startTime;
 	private long lastSnapshotTime;
 
 	Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap;
 	double coverage;
+	private int coveredGoals;
+	private int totalGoals;
 	private int fitnessEvaluations;
 	private int feasiblePaths;
-	private int infeasiblePaths;
 	private double feasibleRate;
 	
 	protected ProgressBar coveragePb;
@@ -61,11 +62,12 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 //		appendStat(STATISTICS_HEADER);
 		startTime = System.currentTimeMillis();
 		lastSnapshotTime = startTime;
-		
+	
+		totalGoals = goals.size();
+		coveredGoals = 0;
 		coverage = 0d;
 		fitnessEvaluations = 0;
 		feasiblePaths = 0;
-		infeasiblePaths = 0;
 		feasibleRate = 0d;
 		coverageMap = new HashMap<FitnessFunction<MBTChromosome>, MBTChromosome>();
 		for (Object goal : goals) {
@@ -101,13 +103,17 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		MBTChromosome chromosome = (MBTChromosome)arg0;
 		if (chromosome.getTestcase().isValid()) {
 			feasiblePaths++;
+			boolean newGoalCovered = false;
 			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
 				if (Double.compare(entry.getValue(), 0d) == 0) {
 					updateCoverageMap (chromosome, entry.getKey());
+					newGoalCovered = true;
 				}
 			}
-		}else {
-			infeasiblePaths++;
+			if (newGoalCovered) {
+				coveredGoals = getCoveredGoals();
+				coverage = (double)coveredGoals / totalGoals;
+			}
 		}
 		
 		// time to take statistics snapshot
@@ -130,23 +136,11 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 
 	@Override
 	public void iteration(GeneticAlgorithm<?> arg0) {
-		// update coverage
-		int covered = 0;
-		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
-			if (entry.getValue() != null) {
-				covered ++;
-			}
-		}
-		coverage = (double)covered / coverageMap.size() * 100;
-//		System.err.println("Coverage: " + coverage * 100 + " %");
-		
 		if (MBTProperties.SHOW_PROGRESS) {
-			coveragePb.stepTo(covered);
+			coveragePb.stepTo(coveredGoals);
 			long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
 			budgetPb.stepTo(consumedBudget);
 		}
-		
-		feasibleRate = (double)feasiblePaths / (double)fitnessEvaluations * 100;
 	}
 
 	@Override
@@ -227,10 +221,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	private void statisticsSnapshot() {
 		// write statistics to buffer
 		int tests = getTestSuite().size();
-		int goals = coverageMap.size();
-		int coveredGoals = getCoveredGoals ();
-		double coverage = getCoverage();
-		long budget = MBTProperties.SEARCH_BUDGET;
+//		double coverage = getCoverage();
 		long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
 		String criteria = "";
 		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
@@ -238,20 +229,21 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		}
 		criteria = criteria.substring(0, criteria.length()-1);
 		
+		feasibleRate = (double)feasiblePaths / (double)fitnessEvaluations;
+		
 		//goals, covered_goals, coverage, tests, budget, consumed_budget, fitness_evaluations, algorithm, cirterion, random_seed, lr_seed 
 		
 		List<String> stats = new ArrayList<String>();
 		stats.add(MBTProperties.SessionId);
 		stats.add(MBTProperties.SUT_EFSM);
-		stats.add(""+goals);
+		stats.add(""+totalGoals);
 		stats.add(""+coveredGoals);
 		stats.add(""+coverage);
 		stats.add(""+tests);
-		stats.add(""+budget);
+		stats.add(""+MBTProperties.SEARCH_BUDGET);
 		stats.add(""+consumedBudget);
 		stats.add(""+fitnessEvaluations);
 		stats.add(""+feasiblePaths);
-		stats.add(""+infeasiblePaths);
 		stats.add(""+feasibleRate);
 		stats.add(MBTProperties.ALGORITHM.toString());
 		stats.add(criteria);
