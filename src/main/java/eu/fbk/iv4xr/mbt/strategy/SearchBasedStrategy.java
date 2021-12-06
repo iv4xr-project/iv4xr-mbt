@@ -81,7 +81,6 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
 		
 		List<?> goals = algorithmFactory.getCoverageGoals();
-		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		
 		Iterator<?> iterator = goals.iterator();
 		while (iterator.hasNext()) {
@@ -92,6 +91,7 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 			}
 		}
 		
+		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		
 		logger.debug("Total goals: {}", goals.size());
 		
