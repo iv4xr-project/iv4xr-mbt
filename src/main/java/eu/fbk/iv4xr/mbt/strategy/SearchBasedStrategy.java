@@ -3,31 +3,20 @@
  */
 package eu.fbk.iv4xr.mbt.strategy;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.evosuite.Properties;
 import org.evosuite.Properties.SelectionFunction;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.ga.SecondaryObjective;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
-import org.evosuite.testcase.TestChromosome;
-import org.evosuite.testcase.secondaryobjectives.MinimizeExceptionsSecondaryObjective;
-import org.evosuite.testcase.secondaryobjectives.MinimizeLengthSecondaryObjective;
-import org.evosuite.testsuite.TestSuiteChromosome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
-import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSATournamentSelection;
-import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
+import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 
@@ -66,6 +55,54 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		Properties.SEARCH_BUDGET = MBTProperties.SEARCH_BUDGET;
 		Properties.SELECTION_FUNCTION = SelectionFunction.TOURNAMENT;
 		Properties.P_TEST_INSERTION = 0.2;
+	}
+	
+	
+	/**
+	 * Generate tests to cover specific states in the model passed as arguments
+	 * NOTE: MBT must be launched with the criterion STATE.
+	 * @param states
+	 * @return
+	 */
+	public SuiteChromosome generateTests(Set<String> states) {
+		
+		if (MBTProperties.MODELCRITERION.length != 1 || 
+				MBTProperties.MODELCRITERION[0] != MBTProperties.ModelCriterion.STATE) {
+			throw new RuntimeException("This method must be used only with STATE coverage criterion. Run mbt with -Dcriterion=STATE");
+		}
+		
+		// set some Evosuite properties that control the search algorithms
+		configureEvosuiteSettings();
+		
+		AlgorithmFactory<T> algorithmFactory = new AlgorithmFactory<T>();
+		
+		
+		// setup the search algorithm
+		GeneticAlgorithm<T> searchAlgorithm = algorithmFactory.getSearchAlgorithm();
+		
+		List<?> goals = algorithmFactory.getCoverageGoals();
+		
+		Iterator<?> iterator = goals.iterator();
+		while (iterator.hasNext()) {
+			Object next = iterator.next();
+			StateCoverageGoal state = (StateCoverageGoal)next;
+			if (!states.contains(state.getState().getId())) {
+				iterator.remove();
+			}
+		}
+		
+		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
+		
+		logger.debug("Total goals: {}", goals.size());
+		
+		coverageTracker = new CoverageTracker(goals);
+		searchAlgorithm.addListener(getCoverageTracker());
+		searchAlgorithm.addStoppingCondition(getCoverageTracker());
+		
+		// invoke generate solution on the algorithm
+		searchAlgorithm.generateSolution();
+
+		return getCoverageTracker().getTestSuite();
 	}
 	
 	@Override

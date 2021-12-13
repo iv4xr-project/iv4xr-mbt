@@ -90,7 +90,7 @@ public class Main {
 		
 		// write statistics to disk
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
-		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE);
+		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
 		logger.info(coverageTracker.getStatistics());
 		
 	}
@@ -173,7 +173,7 @@ public class Main {
 		
 		// create folders
 		String run_id = String.valueOf(System.currentTimeMillis());
-		String outFolder = MBTProperties.MUTATION_ANALYSIS_FOLDER+File.separator+run_id;
+		String outFolder = MBTProperties.MUTATION_ANALYSIS_FOLDER()+File.separator+run_id;
 		File mutFolder = new File (outFolder);
 		if (!mutFolder.exists()) {
 			mutFolder.mkdirs();
@@ -258,7 +258,7 @@ public class Main {
 		
 		
 		
-		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE);
+		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE());
 		
 	}
 	
@@ -270,7 +270,7 @@ public class Main {
 	 */
 	private void writeStatistics(String statistics, String statisticsHeader, String fileName) {
 		// make sure stats folder exists
-		File statsFolder = new File (MBTProperties.STATISTICS_DIR);
+		File statsFolder = new File (MBTProperties.STATISTICS_DIR_NAME);
 		if (!statsFolder.exists()) {
 			statsFolder.mkdirs();
 		}
@@ -299,7 +299,7 @@ public class Main {
 	 */
 	private void writeTests(SuiteChromosome solution) {
 		// make sure tests folder exists
-		String testFolder = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
+		String testFolder = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
 		File testsFolder = new File (testFolder);
 		testsFolder.mkdirs();
 		
@@ -327,7 +327,7 @@ public class Main {
 	 * Save EFSM model
 	 */
 	public void writeModel() {
-		String modelFolderName = MBTProperties.TESTS_DIR + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId + File.separator + "Model";
+		String modelFolderName = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId + File.separator + "Model";
 		File modelFolder = new File (modelFolderName);
 		modelFolder.mkdirs();
 		
@@ -529,10 +529,10 @@ public class Main {
 			executor.execute();
 			
 			// save stats
-			writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE );
+			writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
 			
 			// save debug data
-			writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE);
+			writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 			
 			
 			

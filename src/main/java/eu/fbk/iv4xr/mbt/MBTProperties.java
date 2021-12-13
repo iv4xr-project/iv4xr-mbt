@@ -119,31 +119,30 @@ public class MBTProperties {
 	@LongValue(min = 1)
 	public static long SEARCH_BUDGET = 60;
 
-	@Parameter(key = "OUTPUT_DIR", group = "Runtime", description = "Directory in which to put generated files")
+	@Parameter(key = "output_dir", group = "Runtime", description = "Directory in which to put generated files")
 	public static String OUTPUT_DIR = "mbt-files";
 
-	public static String PROPERTIES_FILE = OUTPUT_DIR + File.separator + "evosuite.properties";
+	public static String PROPERTIES_FILE() { return OUTPUT_DIR + File.separator + "evosuite.properties";}
 
 	
-	public static String TESTS_DIR = OUTPUT_DIR + File.separator + "tests";
+	public static String TESTS_DIR () { return OUTPUT_DIR + File.separator + "tests";}
 	
 	
-	public static String STATISTICS_DIR = OUTPUT_DIR + File.separator + "statistics";
+	public static String STATISTICS_DIR_NAME = "statistics";
 	
+	public static String STATISTICS_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "statistics.csv"; }
 	
-	public static String STATISTICS_FILE = STATISTICS_DIR + File.separator + "statistics.csv";
+	public static String EXECUTIONSTATISTICS_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "execution_statistics.csv";}
 	
-	public static String EXECUTIONSTATISTICS_FILE = STATISTICS_DIR + File.separator + "execution_statistics.csv";
-	
-	public static String EXECUTIONDEBUG_FILE = STATISTICS_DIR + File.separator + "execution_debug.csv";
+	public static String EXECUTIONDEBUG_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "execution_debug.csv";}
 	
 	@Parameter(key = "statistics_interval", group = "SUT execution", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
 	@LongValue(min = 1)
 	public static long STATISTICS_INTERVAL = 10;
 	
-	public static String MUTATION_ANALYSIS_FOLDER = OUTPUT_DIR + File.separator + "mutations";
+	public static String MUTATION_ANALYSIS_FOLDER() { return OUTPUT_DIR + File.separator + "mutations";}
 	
-	public static String MUTATION_STATISTIC_FILE = STATISTICS_DIR + File.separator + "mutation_statistics.csv";
+	public static String MUTATION_STATISTIC_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "mutation_statistics.csv";}
 	
 	@Parameter(key = "max_mutations", group = "SUT execution", description = "Maximum number of mutations to execute")
 	@IntValue(min = 1)
@@ -413,7 +412,7 @@ public class MBTProperties {
 	 * Load and initialize a properties file from the default path
 	 */
 	public void loadProperties(boolean silent) {
-		loadPropertiesFile(System.getProperty(PROPERTIES_FILE,
+		loadPropertiesFile(System.getProperty(PROPERTIES_FILE(),
 				"evosuite-files/evosuite.properties"), silent);
 		initializeProperties();
 	}
