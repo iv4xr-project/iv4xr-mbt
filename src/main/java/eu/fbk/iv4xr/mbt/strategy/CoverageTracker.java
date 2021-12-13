@@ -105,13 +105,14 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 			feasiblePaths++;
 			boolean newGoalCovered = false;
 			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
-				if (Double.compare(entry.getValue(), 0d) == 0) {
+				if (Double.compare(entry.getValue(), 0d) == 0 && coverageMap.containsKey(entry.getKey())) {
 					updateCoverageMap (chromosome, entry.getKey());
 					newGoalCovered = true;
 				}
 			}
 			if (newGoalCovered) {
 				coveredGoals = getCoveredGoals();
+				assert (coveredGoals <= totalGoals);
 				coverage = (double)coveredGoals / totalGoals;
 			}
 		}
