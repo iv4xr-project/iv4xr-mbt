@@ -358,6 +358,13 @@ public class MBTProperties {
 	public static String SessionId = "default_session";
 	
 	
+	public enum GoalConstraintOnTestFactory{
+		ENDS_WITH, STARTS_WITH, CONTAINS, EXCLUDES
+	}
+	
+	@Parameter(key = "goal_constraint_on_test_factory", group = "Search Algorithm", description = "Model coverage criterion")
+	public static GoalConstraintOnTestFactory GOAL_CONSTRAINT_ON_TEST_FACTORY = GoalConstraintOnTestFactory.ENDS_WITH;
+	
 	/**
 	 * Get all parameters that are available
 	 *
