@@ -284,6 +284,10 @@ public class MBTProperties {
 		ModelCriterion.TRANSITION //, ModelCriterion.STATE
 	};
 	
+	
+	@Parameter(key = "k_transition_size", group = "Search Algorithm", description = "Model coverage criterion")
+	public static int k_transition_size = 3;
+	
 	// MOSA PROPERTIES
 	public enum RankingType {
 		// Preference sorting is the ranking strategy proposed in

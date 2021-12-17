@@ -31,7 +31,7 @@ public class EFSMPath<
 	 * 
 	 */
 	private static final long serialVersionUID = -2580497263468303058L;
-protected final LinkedList<Transition> transitions;
+	protected final LinkedList<Transition> transitions;
 
   protected EFSMPath() {
     transitions = new LinkedList<>();
@@ -233,9 +233,47 @@ protected final LinkedList<Transition> transitions;
     return transitions.toString();
   }
 
-  @Override
+
+	/**
+	 * 
+	 * @param kTransition
+	 * @return
+	 */
+	public boolean isSubPath(EFSMPath kTransition) {
+		int indexOfSubList = Collections.indexOfSubList(this.getTransitions(), kTransition.getTransitions());
+		if (indexOfSubList == -1) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(transitions);
+//	}
+
+	@Override
 	public int hashCode() {
-		return Objects.hash(transitions);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((transitions == null) ? 0 : transitions.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof EFSMPath))
+			return false;
+		EFSMPath other = (EFSMPath) obj;
+		if (transitions == null) {
+			if (other.transitions != null)
+				return false;
+		} else if (!transitions.equals(other.transitions))
+			return false;
+		return true;
 	}
   
 }
