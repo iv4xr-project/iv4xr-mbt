@@ -38,6 +38,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
 import eu.fbk.iv4xr.mbt.efsm.exp.enumerator.EnumEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
@@ -315,6 +316,11 @@ public class EFSMTestExecutionListener<
 			IntGreat greater = ((IntGreat)guardExpression);
 			Const<?> val1 = greater.getParameter1().eval();
 			Const<?> val2 = greater.getParameter2().eval();
+			d = getGreaterThanDistance (val1, val2);
+		}else if (guardExpression instanceof IntLess) {
+			IntLess lesser = ((IntLess)guardExpression);
+			Const<?> val1 = lesser.getParameter1().eval();
+			Const<?> val2 = lesser.getParameter2().eval();
 			d = getGreaterThanDistance (val1, val2);
 		}else {
 			throw new RuntimeException("Unsupported comparison expression: " + guardExpression.toDebugString());
