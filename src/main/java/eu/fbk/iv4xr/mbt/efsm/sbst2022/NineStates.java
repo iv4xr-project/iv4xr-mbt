@@ -25,7 +25,7 @@ public class NineStates {
 	/*
 	 * Model parameters
 	 */
-	public Integer step = 10;
+	public Integer step = 20;
 	
 	public Integer initial_x_coord = 20;
 	public Integer initial_y_coord = 20;
@@ -269,9 +269,9 @@ public class NineStates {
 		
 		// from south east can do SE, S, E
 		EFSMTransition t_se_se = new EFSMTransition<>();
-		t_se_se.setInParameter(parGoSouthWest);
-		t_se_se.setGuard(can_move_south_west);
-		t_se_se.setOp(move_south_west);
+		t_se_se.setInParameter(parGoSouthEast);
+		t_se_se.setGuard(can_move_south_east);
+		t_se_se.setOp(move_south_east);
 		
 		EFSMTransition t_se_south = new EFSMTransition<>();
 		t_se_south.setInParameter(parGoSouth);

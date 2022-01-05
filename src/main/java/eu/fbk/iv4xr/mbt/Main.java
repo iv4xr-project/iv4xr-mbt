@@ -21,6 +21,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.tools.ant.types.Path;
 import org.evosuite.utils.LoggingUtils;
 import org.evosuite.utils.Randomness;
@@ -31,6 +32,7 @@ import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
+import eu.fbk.iv4xr.mbt.efsm.sbst2022.TestToPoints;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
@@ -308,12 +310,19 @@ public class Main {
 			String dotFileName = testFolder + File.separator + "test_" + count + ".dot";
 			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
 			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
+			String csvFileName = testFolder + File.separator + "test_" + count + ".csv";
 			File dotFile = new File (dotFileName);
 			File txtFile = new File (txtFileName);
+			File csvFile = new File (csvFileName);
+			AbstractTestSequence abstractTestSequence = (AbstractTestSequence)testCase.getTestcase();
 			try {
-				FileUtils.writeStringToFile(dotFile, ((AbstractTestSequence)testCase.getTestcase()).toDot(), Charset.defaultCharset());
-				FileUtils.writeStringToFile(txtFile, testCase.getTestcase().toString(), Charset.defaultCharset());
-				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
+				FileUtils.writeStringToFile(dotFile, abstractTestSequence.toDot(), Charset.defaultCharset());
+				FileUtils.writeStringToFile(txtFile, abstractTestSequence.toString(), Charset.defaultCharset());
+				TestSerializationUtils.saveTestSequence(abstractTestSequence, serFileName);
+				// SBST competition specific
+				List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
+				String pointsCsv = pointsToCsv(points);
+				FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -322,6 +331,20 @@ public class Main {
 		}
 		
 	}
+
+	/**
+	 * format the list of Pairs to csv entries and return them as string
+	 * @param points
+	 * @return
+	 */
+	private String pointsToCsv(List<Pair<Integer, Integer>> points) {
+		StringBuffer buffer = new StringBuffer();
+		for (Pair<Integer, Integer> point : points) {
+			buffer.append(point.toString("%1$s,%2$s") + "\n");
+		}
+		return buffer.toString();
+	}
+
 
 	/**
 	 * Save EFSM model
