@@ -28,7 +28,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 //import eu.fbk.iv4xr.mbt.utils.Randomness;
 //import eu.fbk.se.labrecruits.LabRecruitsState;
-import org.evosuite.utils.Randomness;
+//import org.evosuite.utils.RandomnessMBT;
+import eu.fbk.iv4xr.mbt.utils.RandomnessMBT;
 
 
 /**
@@ -67,7 +68,7 @@ public class RandomLengthTestFactory<
 	
 	@Override
 	public Testcase getTestcase() {
-		int randomLength = Randomness.nextInt(maxLength) + 1;
+		int randomLength = RandomnessMBT.nextInt(maxLength) + 1;
 		EFSMConfiguration<State, Context> initialConfiguration = model.getInitialConfiguration();
 		State currentState = (State)initialConfiguration.getState();
 		
@@ -80,7 +81,7 @@ public class RandomLengthTestFactory<
 			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
-			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+			Transition transition = (Transition) RandomnessMBT.choice(outgoingTransitions);
 			transitions.add(transition);
 			
 			// take the state at the end of the chosen transition, and repeat

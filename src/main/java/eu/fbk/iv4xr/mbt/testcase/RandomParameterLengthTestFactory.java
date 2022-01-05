@@ -26,7 +26,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
 //import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
 //import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-import org.evosuite.utils.Randomness;
+//import org.evosuite.utils.Randomness;
+import eu.fbk.iv4xr.mbt.utils.RandomnessMBT;
 
 
 /**
@@ -65,7 +66,7 @@ public class RandomParameterLengthTestFactory<
 	
 	@Override
 	public Testcase getTestcase() {
-		int randomLength = Randomness.nextInt(maxLength) + 1;
+		int randomLength = RandomnessMBT.nextInt(maxLength) + 1;
 		
 		model.reset();
 		
@@ -96,7 +97,7 @@ public class RandomParameterLengthTestFactory<
 			}
 			
 			// pick one transition at random and add it to path
-			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+			Transition transition = (Transition) RandomnessMBT.choice(outgoingTransitions);
 			transitions.add(transition);
 //			parameters.add(input);
 			

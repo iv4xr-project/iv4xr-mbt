@@ -100,6 +100,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 				// does the individual respect the coverageGoal constraint? if no apply penality
 				if (!respectsCoverageGoalConstraint(testcase)) {
 					fitness += GOAL_CONSTRAINT_PENALITY;
+					executionResult.setSuccess(false);
 				}
 			}
 			
@@ -166,7 +167,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 	boolean respectsCoverageGoalConstraint (AbstractTestSequence testcase) {
 		boolean result = false;
 		switch (MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY) {
-		case ENDS_WITH:
+		case ENDS_WITH_STATE:
 			if (constrainingGoal instanceof StateCoverageGoal) {
 				EFSMState goal = ((StateCoverageGoal)constrainingGoal).getState();
 				if (testcase.getPath().getTgt().equals(goal)) {

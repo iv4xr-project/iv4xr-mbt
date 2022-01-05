@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,90 +34,113 @@ import eu.fbk.iv4xr.mbt.utils.RandomnessMBT;
 //import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 //import eu.fbk.iv4xr.mbt.utils.Randomness;
 //import eu.fbk.se.labrecruits.LabRecruitsState;
-import org.evosuite.utils.Randomness;
-
+//import org.evosuite.utils.Randomness;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+import org.jgrapht.graph.GraphWalk;
 
 /**
  * 
- * This factory generates paths in the model constrained by a given {@link CoverageGoal}.
- * The nature of the constraint is controlled by the parameter {@link MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY}.
+ * This factory generates paths in the model constrained by a given
+ * {@link CoverageGoal}. The nature of the constraint is controlled by the
+ * parameter {@link MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY}.
  * 
  * @author kifetew
  *
  */
-public class CoverageGoalConstrainedTestFactory<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements TestFactory {
-	
+public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParameter extends EFSMParameter, OutParameter extends EFSMParameter, Context extends EFSMContext, Operation extends EFSMOperation, Guard extends EFSMGuard, Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
+		implements TestFactory {
+
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(CoverageGoalConstrainedTestFactory.class);
-	
-	private int maxLength = 100;
+
+	private int maxLength = MBTProperties.MAX_PATH_LENGTH;
 	EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = null;
 	CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal = null;
-	
+
 	/**
 	 * 
 	 */
-	public CoverageGoalConstrainedTestFactory(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm, CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal) {
+	public CoverageGoalConstrainedTestFactory(
+			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm,
+			CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal) {
 		model = efsm;
 		this.constrainingGoal = constrainingGoal;
 	}
 
-	
 	/**
 	 * 
 	 */
-	public CoverageGoalConstrainedTestFactory(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm, int max) {
+	public CoverageGoalConstrainedTestFactory(
+			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm, int max) {
 		model = efsm;
 		maxLength = max;
 	}
-	
+
 	@Override
 	public Testcase getTestcase() {
-		int randomLength = Randomness.nextInt(maxLength) + 1;
-		EFSMConfiguration<State, Context> initialConfiguration = model.getInitialConfiguration();
-		State currentState = (State)initialConfiguration.getState();
-		
-		
+		// int randomLength = Randomness.nextInt(maxLength) + 1;
+//		EFSMConfiguration<State, Context> initialConfiguration = model.getInitialConfiguration();
+//		State currentState = (State)initialConfiguration.getState();
+//		
+//		
 		List<Transition> transitions = new LinkedList<Transition>();
-		int len = 0;
-		
-		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)
-		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
-			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
-			
-			// pick one transition at random and add it to path
-			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
-			transitions.add(transition);
-			
-			// take the state at the end of the chosen transition, and repeat
-			currentState = transition.getTgt();
-			
-			
-			// check if goal constraint is satisfied, if so quit the loop
-			EFSMState goal = null;
-			switch(MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY) {
-			case ENDS_WITH:
-				if (constrainingGoal instanceof StateCoverageGoal) {
-					goal = ((StateCoverageGoal)constrainingGoal).getState();
+//		//int len = 0;
+//		
+//		
+//		EFSMState goal = null;
+//		if (constrainingGoal instanceof StateCoverageGoal) {
+//			goal = ((StateCoverageGoal)constrainingGoal).getState();
+//		}else {
+//			throw new RuntimeException("Constrain goal not supported");
+//		}
+//		
+		switch (MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY) {
+		case ENDS_WITH_STATE:
+			if (constrainingGoal instanceof StateCoverageGoal) {
+				EFSMState goal = ((StateCoverageGoal) constrainingGoal).getState();
+				if (!model.getStates().contains(goal)) {
+					throw new RuntimeException("Goal " + constrainingGoal.toString() + " not valid for the current model");
 				}
+				transitions = getTestCaseWithEnd(goal);
 				break;
+			} else {
+				throw new RuntimeException("Goal " + constrainingGoal.toString() + " not compatible with "
+						+ MBTProperties.GoalConstraintOnTestFactory.ENDS_WITH_STATE.toString());
 			}
-			if (goal != null && goal.equals(currentState) && RandomnessMBT.nextBoolean()) {
-				break;
-			}
-			
-			// until maxLength is reached or final state is reached
-			len++;
+		default:
+			throw new RuntimeException(MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY + " not implemented");
 		}
-		//model.reset();
-		
+
+//		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)
+//		while (len < randomLength && !model.transitionsOutOf(currentState).isEmpty()) {
+//			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
+//			
+//			// pick one transition at random and add it to path
+//			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+//			transitions.add(transition);
+//			
+//			// take the state at the end of the chosen transition, and repeat
+//			currentState = transition.getTgt();
+//			
+//			
+//			// check if goal constraint is satisfied, if so quit the loop
+//			EFSMState goal = null;
+//			switch(MBTProperties.GOAL_CONSTRAINT_ON_TEST_FACTORY) {
+//			case ENDS_WITH_STATE:
+//				if (constrainingGoal instanceof StateCoverageGoal) {
+//					goal = ((StateCoverageGoal)constrainingGoal).getState();
+//				}
+//				break;
+//			}
+//			if (goal != null && goal.equals(currentState) ) { //&& RandomnessMBT.nextBoolean()) {
+//				break;
+//			}
+//			
+//			// until maxLength is reached or final state is reached
+//			len++;
+//		}
+		// model.reset();
+
 		// build the test case
 		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
 		Path path = new Path (transitions);
@@ -125,4 +150,110 @@ public class CoverageGoalConstrainedTestFactory<
 		return testcase;
 	}
 
+	/**
+	 * Randomly choose a state and compute all AllDirectPath of small size
+	 * allPathLength; select a path and append it to the final test case. Repeat
+	 * until required size, then append a path to finalState of size allPathLength.
+	 * 
+	 * @param finalState
+	 * @return
+	 */
+//	private List<Transition> getEndWithStateTestCase(EFSMState finalState) {
+//
+//		int randomLength = Randomness.nextInt(maxLength) + 1;
+//		// TODO to check
+//		Integer allPathLength = 3;
+//		List<Transition> transitions = new LinkedList<Transition>();
+//		EFSMState initialState = model.getInitialConfiguration().getState();
+//		Set<State> states = model.getStates();
+//		AllDirectedPaths allDirectedPathCalculator = model.getAllDirectedPathCalculator();
+//
+//		// build path
+//		EFSMState currentState = initialState;
+//		while (transitions.size() + allPathLength < randomLength) {
+//			// random pick a state
+//			EFSMState nextState = (EFSMState) Randomness.choice(states);
+//			List allPaths = allDirectedPathCalculator.getAllPaths(currentState, nextState, false, allPathLength);
+//			if (allPaths.size() > 0) {
+//				GraphWalk nextPath = (GraphWalk) Randomness.choice(allPaths);
+//				transitions.addAll(nextPath.getEdgeList());
+//				if (transitions.size() > 0) {
+//					currentState = transitions.get(transitions.size() - 1).getTgt();
+//					if (currentState.equals(finalState)) {
+//						return transitions;
+//					}
+//				}
+//			}
+//		}
+//
+//		// add goal
+//		List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, false, allPathLength);
+//		// the goal is not reachable from the last state
+//		if (finalPaths.size() == 0) {
+//			int idToRemove = transitions.size()-1;
+//			while(finalPaths.size() == 0) {
+//				idToRemove = Randomness.nextInt(1, transitions.size()-1);		
+//				EFSMState tgt = (EFSMState) transitions.get(idToRemove).getTgt();
+//				finalPaths = allDirectedPathCalculator.getAllPaths(tgt, finalState, false, allPathLength);
+//			}
+//			transitions = transitions.stream().limit(idToRemove+1).collect(Collectors.toList());
+//			
+//		}
+//		
+//		GraphWalk nextPath = (GraphWalk) Randomness.choice(finalPaths);
+//		transitions.addAll(nextPath.getEdgeList());
+//		
+//		return transitions;
+//
+//	}
+
+	
+	private List<Transition> getTestCaseWithEnd(EFSMState finalState) {
+		
+		Integer allPathLength = 3;
+		List<Transition> transitions = new LinkedList<Transition>();
+		EFSMState initialState = model.getInitialConfiguration().getState();
+		Set<State> states = model.getStates();
+		AllDirectedPaths allDirectedPathCalculator = model.getAllDirectedPathCalculator();
+		model.getShortestPathDistance(null, null);
+		
+		Boolean end = false;
+		
+		EFSMState currentState = initialState;
+		
+		while (!end) {
+			// try to build path to final state
+			List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true, allPathLength);
+			// if it is possible to reach the final state randomly decide to end the process
+			// the probability to end is inversely proportional to the lenght of the path
+			int guessSize = RandomnessMBT.nextInt(1, maxLength);
+			
+			if (finalPaths.size() > 0 && transitions.size() >= guessSize) {
+				GraphWalk nextPath = (GraphWalk) RandomnessMBT.choice(finalPaths);
+				if (nextPath.getEdgeList().size() > 0) {
+					transitions.addAll(nextPath.getEdgeList());
+					end = true;
+				}
+			}else if (transitions.size() < guessSize){
+				// add a random piece of path
+				EFSMState nextState = (EFSMState) RandomnessMBT.choice(model.getStatesWithinSPDistance((State)currentState, allPathLength));
+				List allPaths = allDirectedPathCalculator.getAllPaths(currentState, nextState, true, allPathLength);
+				if (allPaths.size() > 0) {
+					GraphWalk nextPath = (GraphWalk) RandomnessMBT.choice(allPaths);
+					if (nextPath.getEdgeList().size() > 0) {
+						transitions.addAll(nextPath.getEdgeList());
+						currentState = transitions.get(transitions.size() - 1).getTgt();					
+					}
+				}
+			}else if (transitions.size() >= maxLength/2){
+				// remove some nodes
+				Integer half = transitions.size()/2;
+				transitions = transitions.stream().limit(half).collect(Collectors.toList());
+				currentState = transitions.get(transitions.size() - 1).getTgt();	
+			}
+		}		
+		return transitions;		
+	}
+	
+	
 }

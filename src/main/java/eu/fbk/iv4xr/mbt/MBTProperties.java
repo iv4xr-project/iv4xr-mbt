@@ -102,8 +102,11 @@ public class MBTProperties {
 	public static int MAX_PATH_LENGTH = 100;
 	
 	public enum TestFactory{
-		RANDOM_LENGTH, RANDOM_LENGTH_PARAMETER;
+		RANDOM_LENGTH, RANDOM_LENGTH_PARAMETER, RANDOM_LENGTH_FIX_TARGET;
 	}
+	
+	@Parameter(key = "state_target", group = "Search Algorithm", description = "Reuired and state of the solution")
+	public static String STATE_TARGET = null;
 	
 	@Parameter(key = "test_factory", group = "Search Algorithm", description = "Test factory")
 	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH;
@@ -276,7 +279,7 @@ public class MBTProperties {
 	
 	
 	public enum ModelCriterion {
-		STATE, TRANSITION, KTRANSITION, PATH
+		STATE, TRANSITION, KTRANSITION, PATH, TRANSITION_FIX_END_STATE
 	}
 	
 	@Parameter(key = "modelcriterion", group = "Search Algorithm", description = "Model coverage criterion")
@@ -359,11 +362,11 @@ public class MBTProperties {
 	
 	
 	public enum GoalConstraintOnTestFactory{
-		ENDS_WITH, STARTS_WITH, CONTAINS, EXCLUDES
+		ENDS_WITH_STATE, STARTS_WITH_STATE, CONTAINS_STATE, EXCLUDES_STATE
 	}
 	
 	@Parameter(key = "goal_constraint_on_test_factory", group = "Search Algorithm", description = "Model coverage criterion")
-	public static GoalConstraintOnTestFactory GOAL_CONSTRAINT_ON_TEST_FACTORY = GoalConstraintOnTestFactory.ENDS_WITH;
+	public static GoalConstraintOnTestFactory GOAL_CONSTRAINT_ON_TEST_FACTORY = GoalConstraintOnTestFactory.ENDS_WITH_STATE;
 	
 	/**
 	 * Get all parameters that are available
