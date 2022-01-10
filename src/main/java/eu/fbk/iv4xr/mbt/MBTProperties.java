@@ -88,7 +88,7 @@ public class MBTProperties {
 	public static boolean SHOW_PROGRESS = true;
 	
 	@Parameter(key = "random_seed", group = "Search Algorithm", description = "Random number seed for MBT")
-	public static long RANDOM_SEED = 123456778;
+	public static Long RANDOM_SEED = null;
 	
 	@Parameter(key = "sut_efsm", group = "Search Algorithm", description = "ID of the EFSM for the current SUT")
 	public static String SUT_EFSM = "labrecruits.random_default"; // "labrecruits.buttons_doors_fire"; // 

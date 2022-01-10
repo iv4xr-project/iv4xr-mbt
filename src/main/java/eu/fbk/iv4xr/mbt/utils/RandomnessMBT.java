@@ -33,8 +33,14 @@ public class RandomnessMBT implements Serializable {
 	private static RandomnessMBT instance = new RandomnessMBT();
 
 	private RandomnessMBT() {
-		seed = MBTProperties.RANDOM_SEED;
-		logger.info("No seed given. Using {}.", seed);
+		Long randomSeed = MBTProperties.RANDOM_SEED;
+		if (randomSeed != null) {
+			seed = randomSeed;
+			logger.info("Random seed: {}", seed);
+		}else {
+			seed = System.currentTimeMillis();
+			logger.info("No seed given. Using {}.", seed);
+		}
 		
 		random = new MersenneTwister(seed);
 	}
