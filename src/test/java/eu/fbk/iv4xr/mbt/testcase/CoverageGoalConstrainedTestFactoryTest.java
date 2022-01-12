@@ -79,7 +79,7 @@ public class CoverageGoalConstrainedTestFactoryTest {
 		
 		Integer nTests = 1000;
 		for (int i = 0; i < nTests; i++) {
-			//System.out.print(i+" ");
+			// System.out.print(i+" ");
 
 			EFSMState endState = (EFSMState) Randomness.choice(states);	
 			assertTrue(states.contains(endState));
@@ -91,8 +91,9 @@ public class CoverageGoalConstrainedTestFactoryTest {
 			
 			AbstractTestSequence testcase = (AbstractTestSequence)testFactory.getTestcase();
 			assertNotNull(testcase);
+			assertTrue(testcase.getLength() <= MBTProperties.MAX_PATH_LENGTH);
 			
-			//System.out.println(testcase.getLength());
+			// System.out.println(testcase.getLength());
 			
 			EFSMTransition lastTranstion = testcase.getPath().getTransitionAt(testcase.getPath().getLength()-1);
 			assertTrue(lastTranstion.getTgt().equals(endState));

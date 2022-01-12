@@ -3,6 +3,8 @@
  */
 package eu.fbk.iv4xr.mbt.coverage;
 
+import java.util.Collections;
+
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.utils.Randomness;
@@ -171,7 +173,10 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 			if (constrainingGoal instanceof StateCoverageGoal) {
 				EFSMState goal = ((StateCoverageGoal)constrainingGoal).getState();
 				if (testcase.getPath().getTgt().equals(goal)) {
-					result = true;
+					int frequency = Collections.frequency(testcase.getPath().getStates(), goal);
+					if (frequency == 1 ) {
+						result = true;
+					}				
 				}
 			}
 			break;

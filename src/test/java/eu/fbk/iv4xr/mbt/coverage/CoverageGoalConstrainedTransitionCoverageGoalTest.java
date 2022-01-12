@@ -5,9 +5,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
 import org.evosuite.Properties.NoSuchParameterException;
+import org.evosuite.utils.Randomness;
 import org.junit.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
@@ -61,6 +63,14 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 		// Search budget in seconds
 		MBTProperties.SEARCH_BUDGET = 30;
 		
+		// set seed
+//        try {
+//        	//Do this also for Evosuite global properties, if they exsits
+//        	org.evosuite.Properties.getInstance().setValue("random_seed", "32817");
+//        }catch (Exception e) {
+//        }
+		
+  
 		// Optionally set output folder
 		// MBTProperties.OUTPUT_DIR = "outdir";
 		
@@ -79,10 +89,13 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 		
 		int count = 1;
 		for (MBTChromosome testCase : solution.getTestChromosomes()) {
+			System.out.println(count);
 			AbstractTestSequence testSequence = (AbstractTestSequence)testCase.getTestcase();
 			// check that the last state is target state
 			EFSMTransition lastTranstion = testSequence.getPath().getTransitionAt(testSequence.getPath().getLength()-1);
 			assertTrue(lastTranstion.getTgt().equals(new EFSMState(targetState)));
+			// check that the target state appears only once in the solution
+			assertTrue(Collections.frequency(testSequence.getPath().getStates(), new EFSMState(targetState)) == 1);
 			
 			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
 			File txtFile = new File (txtFileName);

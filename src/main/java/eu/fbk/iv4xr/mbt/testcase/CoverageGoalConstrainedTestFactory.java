@@ -3,11 +3,10 @@
  */
 package eu.fbk.iv4xr.mbt.testcase;
 
-import java.util.Collection;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -17,24 +16,15 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.utils.RandomnessMBT;
 
-//import eu.fbk.iv4xr.mbt.efsm4j.Configuration;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.utils.Randomness;
-//import eu.fbk.se.labrecruits.LabRecruitsState;
-//import org.evosuite.utils.Randomness;
+
+import org.evosuite.utils.Randomness;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.graph.GraphWalk;
 
@@ -101,7 +91,7 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 				if (!model.getStates().contains(goal)) {
 					throw new RuntimeException("Goal " + constrainingGoal.toString() + " not valid for the current model");
 				}
-				transitions = getTestCaseWithEnd(goal);
+				transitions = fastGetTestCaseWithEnd(goal);
 				break;
 			} else {
 				throw new RuntimeException("Goal " + constrainingGoal.toString() + " not compatible with "
@@ -207,11 +197,70 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 //
 //	}
 
+	/**
+	 * 
+	 * @param finalState
+	 * @return
+	 */
+//	private List<Transition> getTestCaseWithEnd(EFSMState finalState) {
+//		
+//		Integer allPathLength = 3;
+//		List<Transition> transitions = new LinkedList<Transition>();
+//		EFSMState initialState = model.getInitialConfiguration().getState();
+//		Set<State> states = model.getStates();
+//		AllDirectedPaths allDirectedPathCalculator = model.getAllDirectedPathCalculator();
+//		model.getShortestPathDistance(null, null);
+//		
+//		Boolean end = false;
+//		
+//		EFSMState currentState = initialState;
+//		
+//		while (!end) {
+//			// try to build path to final state
+//			List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true, allPathLength);
+//			// if it is possible to reach the final state randomly decide to end the process
+//			// the probability to end is inversely proportional to the lenght of the path
+//			int guessSize = Randomness.nextInt(1, maxLength);
+//			
+//			if (finalPaths.size() > 0 && transitions.size() >= guessSize) {
+//				GraphWalk nextPath = (GraphWalk) Randomness.choice(finalPaths);
+//				if (nextPath.getEdgeList().size() > 0) {
+//					transitions.addAll(nextPath.getEdgeList());
+//					end = true;
+//				}
+//			}else if (transitions.size() < guessSize){
+//				// add a random piece of path
+//				EFSMState nextState = (EFSMState) Randomness.choice(model.getStatesWithinSPDistance((State)currentState, allPathLength));
+//				List allPaths = allDirectedPathCalculator.getAllPaths(currentState, nextState, true, allPathLength);
+//				if (allPaths.size() > 0) {
+//					GraphWalk nextPath = (GraphWalk) Randomness.choice(allPaths);
+//					if (nextPath.getEdgeList().size() > 0) {
+//						transitions.addAll(nextPath.getEdgeList());
+//						currentState = transitions.get(transitions.size() - 1).getTgt();					
+//					}
+//				}
+//			}else if (transitions.size() >= maxLength/2){
+//				// remove some nodes
+//				Integer half = transitions.size()/2;
+//				transitions = transitions.stream().limit(half).collect(Collectors.toList());
+//				currentState = transitions.get(transitions.size() - 1).getTgt();	
+//			}
+//		}		
+//		return transitions;		
+//	}
+//	
+	/**
+	 * 
+	 * @param finalState
+	 * @return
+	 */
+	private List<Transition> fastGetTestCaseWithEnd(EFSMState finalState) {
 	
-	private List<Transition> getTestCaseWithEnd(EFSMState finalState) {
-		
+		// max lenght used in all path calculator
 		Integer allPathLength = 3;
+		
 		List<Transition> transitions = new LinkedList<Transition>();
+		
 		EFSMState initialState = model.getInitialConfiguration().getState();
 		Set<State> states = model.getStates();
 		AllDirectedPaths allDirectedPathCalculator = model.getAllDirectedPathCalculator();
@@ -222,38 +271,37 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 		EFSMState currentState = initialState;
 		
 		while (!end) {
-			// try to build path to final state
-			List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true, allPathLength);
-			// if it is possible to reach the final state randomly decide to end the process
-			// the probability to end is inversely proportional to the lenght of the path
-			int guessSize = RandomnessMBT.nextInt(1, maxLength);
-			
-			if (finalPaths.size() > 0 && transitions.size() >= guessSize) {
-				GraphWalk nextPath = (GraphWalk) RandomnessMBT.choice(finalPaths);
-				if (nextPath.getEdgeList().size() > 0) {
-					transitions.addAll(nextPath.getEdgeList());
-					end = true;
-				}
-			}else if (transitions.size() < guessSize){
-				// add a random piece of path
-				EFSMState nextState = (EFSMState) RandomnessMBT.choice(model.getStatesWithinSPDistance((State)currentState, allPathLength));
-				List allPaths = allDirectedPathCalculator.getAllPaths(currentState, nextState, true, allPathLength);
-				if (allPaths.size() > 0) {
-					GraphWalk nextPath = (GraphWalk) RandomnessMBT.choice(allPaths);
+			// int guessSize = Randomness.nextInt(1, maxLength);
+			boolean stop = Randomness.nextBoolean();
+			// check if it time to stop
+			if (stop) {
+				// check if the final state is reachable (shortest path are precomputed)
+				if (model.getStatesWithinSPDistance((State) currentState, allPathLength).contains(finalState)) {
+					// take a random path to the final state
+					List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true,
+							allPathLength);
+					GraphWalk nextPath = (GraphWalk) Randomness.choice(finalPaths);
 					if (nextPath.getEdgeList().size() > 0) {
 						transitions.addAll(nextPath.getEdgeList());
-						currentState = transitions.get(transitions.size() - 1).getTgt();					
+						end = true;
 					}
 				}
-			}else if (transitions.size() >= maxLength/2){
-				// remove some nodes
-				Integer half = transitions.size()/2;
-				transitions = transitions.stream().limit(half).collect(Collectors.toList());
-				currentState = transitions.get(transitions.size() - 1).getTgt();	
+			} else if (transitions.size() >= maxLength - allPathLength) {
+				// try to remove some transition from path
+				Integer removePoint = Randomness.nextInt(1, transitions.size());
+				transitions = transitions.stream().limit(removePoint).collect(Collectors.toList());
+				currentState = transitions.get(transitions.size() - 1).getTgt();
+			} else {
+				// add a random transition
+				Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf((State) currentState);
+				Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+				transitions.add(transition);
+				currentState = transition.getTgt();
 			}
-		}		
-		return transitions;		
+		}
+		
+		return transitions;	
+		
 	}
-	
 	
 }
