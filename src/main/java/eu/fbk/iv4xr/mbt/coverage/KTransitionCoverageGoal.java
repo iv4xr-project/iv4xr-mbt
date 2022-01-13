@@ -25,6 +25,7 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
@@ -81,6 +82,17 @@ public class KTransitionCoverageGoal<
 			if (MBTProperties.SANITY_CHECK_FITNESS) {
 				fitness = Randomness.nextDouble();
 			}else {
+				// feasibility fitness is the same of transition coverage
+				double feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();		
+				double targetFitness;
+				if (testcase.getPath().isSubPath(kTransition)) {
+					targetFitness = 0;
+				}else {
+					targetFitness = 1 ;
+				}
+				 
+				
+				fitness = feasibilityFitness +  targetFitness ;
 				
 			}
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
@@ -105,23 +117,23 @@ public class KTransitionCoverageGoal<
 	}
 
 
-//	@Override
-//	public boolean equals(Object obj) {
-//		throw new RuntimeException("Unimplemented method");
-//	}
-//
-//
-//	@Override
-//	public int hashCode() {
-//		throw new RuntimeException("Unimplemented method");
-//	}
-
 
 	@Override
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
 		// collateral coverage only if the individual is valid
-		if (executionResult.isSuccess()) {
-			// collect colateral coverage
+		if (executionResult.isSuccess()) {	
+			// get the solution path
+			MBTChromosome chromosome = (MBTChromosome)individual;
+			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
+			Path path = testcase.getPath();
+			// the path size should be at list K_TRANSITION_SIZE to include a goal
+			if (path.getLength() >=  MBTProperties.K_TRANSITION_SIZE) {
+				for (int i = 0; i < path.getLength() - MBTProperties.K_TRANSITION_SIZE+1; i++) {
+					EFSMPath subPath = path.subPath(i, i + MBTProperties.K_TRANSITION_SIZE);
+					KTransitionCoverageGoal goal = new KTransitionCoverageGoal(subPath);
+					updateIndividual(goal, individual, 0d);
+				}
+			}
 		}
 		
 	}

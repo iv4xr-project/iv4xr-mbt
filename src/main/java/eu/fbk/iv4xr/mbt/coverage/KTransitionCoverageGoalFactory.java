@@ -73,10 +73,10 @@ public class KTransitionCoverageGoalFactory<
 			// get all >=k path from s
 			Set<State> sourceSet = new LinkedHashSet<>();
 			sourceSet.add(s);
-			List<GraphPath<State, Transition>> allPaths = allDirectedPathCalculator.getAllPaths(sourceSet, vertexSet, false, MBTProperties.k_transition_size);
+			List<GraphPath<State, Transition>> allPaths = allDirectedPathCalculator.getAllPaths(sourceSet, vertexSet, false, MBTProperties.K_TRANSITION_SIZE);
 			// filter path with length less than k and transform into a KTransitionCoverageGoal
 			for(GraphPath<State, Transition> path : allPaths ) {
-				if (path.getLength() != MBTProperties.k_transition_size) {
+				if (path.getLength() != MBTProperties.K_TRANSITION_SIZE) {
 					continue;
 				}
 				EFSMPath efsmPath = new EFSMPath<>(path);

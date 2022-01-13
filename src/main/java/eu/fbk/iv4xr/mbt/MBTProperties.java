@@ -286,7 +286,7 @@ public class MBTProperties {
 	
 	
 	@Parameter(key = "k_transition_size", group = "Search Algorithm", description = "Model coverage criterion")
-	public static int k_transition_size = 3;
+	public static int K_TRANSITION_SIZE = 3;
 	
 	// MOSA PROPERTIES
 	public enum RankingType {
