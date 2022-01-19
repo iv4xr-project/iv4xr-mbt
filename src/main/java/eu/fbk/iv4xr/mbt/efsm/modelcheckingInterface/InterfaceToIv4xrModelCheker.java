@@ -2,6 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm.modelcheckingInterface;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -9,6 +10,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
+import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 import eu.iv4xr.framework.extensions.ltl.IExplorableState;
 import eu.iv4xr.framework.extensions.ltl.IState;
@@ -44,6 +47,7 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 	 */
 	public InterfaceToIv4xrModelCheker(EFSM efsm) {
 		this.efsm = efsm ;
+		this.reset();
 	}
 	
 	@Override
@@ -54,14 +58,16 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 	}
 
 	@Override
-	public IExplorableState getCurrentState() {
+	public EFSMStateWrapper getCurrentState() {
 		return history.get(0) ;
 	}
 
 	@Override
 	public boolean backTrackToPreviousState() {
-		if(history.isEmpty()) 
-			return false ;
+		if(history.size() == 1) {
+			// should contain at least one element!
+			return false ;			
+		}
 		history.remove(0) ;
 		return true ;
 	}
@@ -83,12 +89,44 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 
 	@Override
 	public void execute(ITransition tr) {
-		InterfaceToIv4xrModelCheker.EFSMTransitionWrapper tr_ = (InterfaceToIv4xrModelCheker.EFSMTransitionWrapper) tr ;
-		InterfaceToIv4xrModelCheker.EFSMStateWrapper currentState = (InterfaceToIv4xrModelCheker.EFSMStateWrapper) getCurrentState().clone() ;
-		tr_.tr.take(currentState.conf.getContext()) ;
-		EFSMConfiguration newState = new EFSMConfiguration(tr_.tr.getTgt(),currentState.conf.getContext()) ;
-		history.add(0,new InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState)) ;	
+		InterfaceToIv4xrModelCheker.EFSMTransitionWrapper tr_ = (InterfaceToIv4xrModelCheker.EFSMTransitionWrapper) tr;
+		InterfaceToIv4xrModelCheker.EFSMStateWrapper currentState = (InterfaceToIv4xrModelCheker.EFSMStateWrapper) getCurrentState()
+				.clone();
+
+		// System.out.println(">>>> TRANS: " + tr_.tr) ;
+		// System.out.println(" from: " + currentState.showState()) ;
+
+		// The assignment-part of an EFSM-transition keeps a pointer to the target-variables of the assignment.
+		// Since we keep cloning configurations, we need to first sync the values of these variables
+		// with their values according to the current configuration :
+
+		if (tr_.tr.getOp() != null && tr_.tr.getOp().getAssignments() != null) {
+			// get the assignments of this transition:
+			var assignments = tr_.tr.getOp().getAssignments().getHash();
+			EFSMContext ctx = currentState.conf.getContext();
+			// Sync the values of their target-vars with the context:
+			for (var asg : assignments.entrySet()) {
+				var asg_ = (Map.Entry<String,Assign>) asg;
+				String vname = asg_.getKey();
+				Assign A = asg_.getValue();
+				Var v = ctx.getContext().getVariable(vname);
+				if (v != null) {
+					A.getVariable().setValue(v.getValue());
+				}
+			}
+		}
+
+		// execute the transition:
+		tr_.tr.take(currentState.conf.getContext());
+		
+		// get the new state:
+		EFSMConfiguration newState = new EFSMConfiguration(tr_.tr.getTgt(), currentState.conf.getContext());
+		// System.out.println(" to : " + new
+		// InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState).showState()) ;
+		history.add(0, new InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState));
 	}
+	
+	
 	
 	public static EFSMConfiguration cloneEFSMconfiguration(EFSMConfiguration conf) {
 		return  new EFSMConfiguration(conf.getState().clone(),conf.getContext().clone()) ; 
