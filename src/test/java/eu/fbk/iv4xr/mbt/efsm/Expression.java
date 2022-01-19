@@ -12,6 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.fbk.iv4xr.mbt.efsm.exp.*;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.*;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleEq;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleGreat;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleLess;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleSubt;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleSum;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.*;
 
 
@@ -31,6 +36,13 @@ public class Expression {
 	Const<Boolean> bc2 = new Const<Boolean>(true);
 	Var<Boolean> bv1 = new Var<Boolean>("bv1", false);		
 	Var<Boolean> bv2 = new Var<Boolean>("bv2", true);	
+	
+	Const<Double> dc1 = new Const<Double>(1.0);
+	Const<Double> dc2 = new Const<Double>(11.0);
+	
+	Var<Double> dv1 = new Var<Double>("dv1",7.0);
+	Var<Double> dv2 = new Var<Double>("dv2",11.2);
+	
 	
 	
 	// this test verify that changes in iv1 in testEquals test are not visible
@@ -168,6 +180,45 @@ public class Expression {
 	}
 	
 
+	@Test
+	public void testDouble() {
+		Var<Double> v1 =  new Var<Double>("dv1",7.0);
+		
+		assertTrue(v1.equals(dv1));
+		assertTrue(dv1.equals(v1));
+	
+		assertFalse(v1.equals(dv2));
+		assertFalse(dv2.equals(v1));
+				
+		// Equal op
+		DoubleEq deq1 = new DoubleEq(v1, dv1);
+		assertTrue(deq1.eval().getVal());
+		DoubleEq deq2 = new DoubleEq(v1, dv2);
+		assertFalse(deq2.eval().getVal());
+		
+		// Great op
+		DoubleGreat dg1 = new DoubleGreat(dv1, v1);
+		assertFalse(dg1.eval().getVal());
+		DoubleGreat dg2 = new DoubleGreat(dv2, v1);
+		assertTrue(dg2.eval().getVal());
+		
+		// Less op
+		DoubleLess dl1 = new DoubleLess(dv1, v1);
+		assertFalse(dl1.eval().getVal());
+		DoubleLess dl2 = new DoubleLess(v1,dv2);
+		assertTrue(dl2.eval().getVal());
+		
+		// Subtraction
+		DoubleSubt dsub1 = new DoubleSubt(v1, dv1);
+		assertTrue(dsub1.eval().getVal() == 0d);
+		assertTrue(new DoubleLess(dsub1, v1).eval().getVal());
+		
+		// Sum
+		DoubleSum dsum1 = new DoubleSum(v1, dv2);
+		assertTrue(dsum1.eval().getVal() == 18.2d);
+		
+		
+	}
 
 	
 }

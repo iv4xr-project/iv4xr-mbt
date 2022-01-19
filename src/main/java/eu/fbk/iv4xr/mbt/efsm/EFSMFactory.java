@@ -8,6 +8,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
+import eu.fbk.iv4xr.mbt.efsm.sbst2022.BeamNgModelGenerator;
 import eu.fbk.iv4xr.mbt.efsm.sbst2022.NineStates;
 
 
@@ -53,6 +54,11 @@ public class EFSMFactory {
 		case "sbst2022.nine_states":
 			NineStates nineStates = new NineStates();
 			efsm = nineStates.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "beamng_model":
+			BeamNgModelGenerator modelGenerator = new BeamNgModelGenerator();
+			efsm = modelGenerator.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		default:

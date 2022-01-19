@@ -357,6 +357,51 @@ public class MBTProperties {
 	@Parameter(key = "SessionId", group = "Runtime", description = "String that identify an experiment")
 	public static String SessionId = "default_session";
 	
+	/**
+	 * BeamNG model generator for <a href="URL#https://sbst22.github.io/tools/">SBST 2022 Tool Competition</a> 
+	 */
+	
+	/**
+	 * Field size parameters
+	 */
+	@Parameter(key = "beamng_min_x_coord", group = "BeamNG", description = "Minimum x coordinate")
+	public static double beamng_min_x_coord = 20d;
+	@Parameter(key = "beamng_min_y_coord", group = "BeamNG", description = "Minimum y coordinate")
+	public static double beamng_min_y_coord = 20d;
+	@Parameter(key = "beamng_max_x_coord", group = "BeamNG", description = "Maximum x coordinate")
+	public static double beamng_max_x_coord = 180d;
+	@Parameter(key = "beamng_max_y_coord", group = "BeamNG", description = "Maximum y coordinate")
+	public static double beamng_max_y_coord = 180d;
+	
+	/**
+	 * Initial position
+	 */
+	@Parameter(key = "beamng_initial_x_coord", group = "BeamNG", description = "Initial x coordinate")
+	public static double beamng_initial_x_coord = 60d;
+	@Parameter(key = "beamng_initial_y_coord", group = "BeamNG", description = "Initial y coordinate")
+	public static double beamng_initial_y_coord = 60d;
+	
+	/**
+	 * Number of possible directions. The minimum angle for a curve will be 360 divided by the number of possible directions
+	 */
+	@Parameter(key = "beamng_n_directions", group = "BeamNG", description = "Number of possible direction tha car can take.")
+	public static int beamng_n_directions = 8;
+	
+	/**
+	 * Maximum angle for a curve
+	 */
+	@Parameter(key = "beamng_max_angle", group = "BeamNG", description = "Maximum angle for a curve")
+	public static double beamng_max_angle = 45d;
+	
+	/**
+	 * Street length
+	 */
+	@Parameter(key = "beamng_min_street_length", group = "BeamNG", description = "Mimimum length of a street piece.")
+	public static int beamng_min_street_length = 20;
+	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
+	public static int beamng_max_street_length = 28;
+	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
+	public static int beamng_street_chunck_length = 5;
 	
 	/**
 	 * Get all parameters that are available

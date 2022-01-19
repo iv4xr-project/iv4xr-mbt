@@ -1,5 +1,6 @@
 package eu.fbk.iv4xr.mbt.efsm;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
+import eu.fbk.iv4xr.mbt.efsm.sbst2022.BeamNgModelGenerator;
 import eu.fbk.iv4xr.mbt.efsm.sbst2022.Direction;
 import eu.fbk.iv4xr.mbt.efsm.sbst2022.NineStates;
 import eu.fbk.iv4xr.mbt.efsm.sbst2022.OneState;
@@ -132,6 +134,15 @@ public class SBST2022Test {
 		assertTrue(((Integer) currentContext.getContext().getVariable("pos_y").getValue())
 				.equals(nineStates.initial_y_coord + 2 * nineStates.step));
 
+	}
+	
+	
+	@Test
+	public void testModelCreator() {
+		BeamNgModelGenerator modelGenerator = new BeamNgModelGenerator();
+		EFSM model = modelGenerator.getModel();
+		
+		assertNotNull(model);;
 	}
 
 }
