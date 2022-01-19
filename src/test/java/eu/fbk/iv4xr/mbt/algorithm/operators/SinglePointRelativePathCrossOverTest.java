@@ -5,7 +5,9 @@ package eu.fbk.iv4xr.mbt.algorithm.operators;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.evosuite.Properties;
 import org.evosuite.ga.ConstructionFailedException;
+import org.evosuite.utils.Randomness;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +43,8 @@ class SinglePointRelativePathCrossOverTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
 		//LabRecruitsEFSMFactory modelFactory = LabRecruitsEFSMFactory.getInstance();
 		EFSMFactory modelFactory = EFSMFactory.getInstance();
 		EFSM efsm = modelFactory.getEFSM();

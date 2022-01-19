@@ -305,7 +305,10 @@ public class LabRecruitsRandomEFSM {
 		}else if (MBTProperties.MODELCRITERION[0] == ModelCriterion.TRANSITION) {
 			anmlInstance = getAnmlInstanceMultiGoal(ModelCriterion.TRANSITION);
 		}else {
-			throw new RuntimeException("PlanningBasedGenerator does not support cirterion: " + MBTProperties.MODELCRITERION[0]);
+			// FIXME to update
+			//throw new RuntimeException("PlanningBasedGenerator does not support criterion: " + MBTProperties.MODELCRITERION[0]);
+			System.err.println("PlanningBasedGenerator does not support criterion: " + MBTProperties.MODELCRITERION[0]);
+			return "";
 		}
 		anml.append(anmlInstance);
 		return anml.toString();
