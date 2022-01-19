@@ -400,7 +400,7 @@ public class MBTProperties {
 	public static int beamng_min_street_length = 20;
 	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
 	public static int beamng_max_street_length = 28;
-	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
+	@Parameter(key = "beamng_street_chunck_length", group = "BeamNG", description = "Step increment between min and max street lenght")
 	public static int beamng_street_chunck_length = 5;
 	
 	/**
