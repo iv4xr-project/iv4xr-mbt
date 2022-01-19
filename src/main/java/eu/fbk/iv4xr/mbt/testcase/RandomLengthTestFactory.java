@@ -8,10 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -20,16 +21,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-//import eu.fbk.iv4xr.mbt.efsm4j.Configuration;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
-//import eu.fbk.iv4xr.mbt.utils.Randomness;
-//import eu.fbk.se.labrecruits.LabRecruitsState;
-//import org.evosuite.utils.RandomnessMBT;
-import eu.fbk.iv4xr.mbt.utils.RandomnessMBT;
+
 
 
 /**
@@ -48,7 +40,7 @@ public class RandomLengthTestFactory<
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(RandomLengthTestFactory.class);
 	
-	private int maxLength = 100;
+	private int maxLength = MBTProperties.MAX_PATH_LENGTH;
 	EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = null;
 	/**
 	 * 
@@ -68,7 +60,7 @@ public class RandomLengthTestFactory<
 	
 	@Override
 	public Testcase getTestcase() {
-		int randomLength = RandomnessMBT.nextInt(maxLength) + 1;
+		int randomLength = Randomness.nextInt(maxLength) + 1;
 		EFSMConfiguration<State, Context> initialConfiguration = model.getInitialConfiguration();
 		State currentState = (State)initialConfiguration.getState();
 		
@@ -81,7 +73,7 @@ public class RandomLengthTestFactory<
 			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
-			Transition transition = (Transition) RandomnessMBT.choice(outgoingTransitions);
+			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
