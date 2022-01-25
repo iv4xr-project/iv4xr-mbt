@@ -17,6 +17,7 @@ import game.Platform;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
+import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.ProgressStatus;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
@@ -231,6 +232,8 @@ public class LabRecruitsTestSuiteExecutor {
 		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
 		// return testingTask;
 	}
+	
+	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f ;
 
 	private GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
@@ -251,12 +254,20 @@ public class LabRecruitsTestSuiteExecutor {
 		} else {
 			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())) ;
 			if (LabRecruitsRandomEFSM.getStateType(t.getTgt()).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
-				subGoals.add(SEQ(G,
-						         GoalLib.entityInCloseRange(convertStateToString(t.getTgt()))) );
+				// target is a goal-flag:
+				String goalFlagId = convertStateToString(t.getTgt()) ;
+				G = SEQ(GoalLib.atBGF(goalFlagId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
+						GoalLib.invariantChecked(agent, 
+							"The agent should be near " + goalFlagId, 
+							(BeliefState S) -> {
+								var gf = S.worldmodel().getElement(goalFlagId) ;
+								return Vec3.dist(S.worldmodel().getFloorPosition(), gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG ;
+							})
+						) ;
+				//G = SEQ(G,
+				//		GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
 			}
-			else {
-				subGoals.add(G) ;
-			}
+			subGoals.add(G) ;
 		}
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
