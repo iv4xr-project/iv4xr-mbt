@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
+import org.evosuite.Properties;
 import org.evosuite.Properties.NoSuchParameterException;
 import org.evosuite.utils.Randomness;
 import org.junit.Test;
@@ -63,6 +64,9 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 		// Search budget in seconds
 		MBTProperties.SEARCH_BUDGET = 30;
 		
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
+		
 		// set seed
 //        try {
 //        	//Do this also for Evosuite global properties, if they exsits
@@ -87,9 +91,10 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 		File testsFolder = new File (testFolder);
 		testsFolder.mkdirs();
 		
-		int count = 1;
+		int count = 0;
 		for (MBTChromosome testCase : solution.getTestChromosomes()) {
-			System.out.println(count);
+			count++;
+			//System.out.println(count);
 			AbstractTestSequence testSequence = (AbstractTestSequence)testCase.getTestcase();
 			// check that the last state is target state
 			EFSMTransition lastTranstion = testSequence.getPath().getTransitionAt(testSequence.getPath().getLength()-1);
@@ -105,9 +110,9 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			count++;
+			
 		}
-		
+		assertTrue(count == 6);
 	}
 
 }
