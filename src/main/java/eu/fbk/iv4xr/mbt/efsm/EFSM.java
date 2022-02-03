@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -449,6 +450,18 @@ public  class EFSM<
 		}else {
 			return new HashSet<EFSMPath>();
 		}
+	}
+	
+	public Set<State> getStatesWithinSPDistance(State source, double maxDist){
+		Integer sourceId = (int) this.vertexToIntegerMapping.getVertexMap().get(source);
+		baseGraph.vertexSet();
+		Set<State> outSet = new LinkedHashSet();
+		for(State s : baseGraph.vertexSet()) {
+			if (this.shortestPathsBetweenStates[sourceId][this.vertexToIntegerMapping.getVertexMap().get(s)] < maxDist ) {
+				outSet.add(s);
+			}
+		}
+		return outSet;
 	}
 	
 	/**

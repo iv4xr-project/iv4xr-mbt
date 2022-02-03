@@ -61,12 +61,16 @@ import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.ExtendedSinglePointRelativ
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
+import eu.fbk.iv4xr.mbt.coverage.CoverageGoalConstrainedTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.PathCoverageGoalFactory;
+import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoalFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.testcase.CoverageGoalConstrainedTestFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
 import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
@@ -93,6 +97,14 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new KTransitionCoverageGoalFactory();
 		case PATH:
 			return new PathCoverageGoalFactory();
+		case TRANSITION_FIX_END_STATE:
+			if (MBTProperties.STATE_TARGET != null) {
+				// The validity of the target is checked in the factory
+				EFSMState targetState = new EFSMState(MBTProperties.STATE_TARGET);
+				StateCoverageGoal goal = new StateCoverageGoal(targetState);
+				return new CoverageGoalConstrainedTransitionCoverageGoalFactory(goal);
+			}
+			throw new RuntimeException("Criterion " + criterion +" requires to specify parameter state_target");
 		default:
 			throw new RuntimeException("Unsupported model coverage criterion: " + MBTProperties.MODELCRITERION);	
 		}
@@ -129,6 +141,14 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			return new RandomLengthTestFactory(EFSMFactory.getInstance().getEFSM());
 		case RANDOM_LENGTH_PARAMETER:
 			return new RandomParameterLengthTestFactory(EFSMFactory.getInstance().getEFSM());
+		case RANDOM_LENGTH_FIX_TARGET:
+			if (MBTProperties.STATE_TARGET != null) {
+				// The validity of the target is checked in the factory
+				EFSMState targetState = new EFSMState(MBTProperties.STATE_TARGET);
+				StateCoverageGoal goal = new StateCoverageGoal(targetState);
+				return new CoverageGoalConstrainedTestFactory(EFSMFactory.getInstance().getEFSM(),goal);
+			}
+			throw new RuntimeException("Test factory " + MBTProperties.TEST_FACTORY+" requires to specify parameter state_target");
 		default:
 			throw new RuntimeException("Unsupported test factory: " + MBTProperties.TEST_FACTORY);
 		}
@@ -413,6 +433,18 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			break;
 		case PATH:
 			goals.addAll(new PathCoverageGoalFactory().getCoverageGoals());
+			break;
+		case TRANSITION_FIX_END_STATE:
+			if (MBTProperties.STATE_TARGET != null) {
+				// The validity of the target is checked in the factory
+				EFSMState targetState = new EFSMState(MBTProperties.STATE_TARGET);
+				StateCoverageGoal goal = new StateCoverageGoal(targetState);
+				goals.addAll(new CoverageGoalConstrainedTransitionCoverageGoalFactory(goal).getCoverageGoals());
+			}else {
+				throw new RuntimeException("Criterion " + criterion +" requires to specify parameter state_target");
+				
+			}
+			break;
 		default:
 			throw new RuntimeException("Unsupported model coverage criterion: " + criterion);
 		}

@@ -5,7 +5,7 @@
 	<!--   <groupId>eu.fbk.iv4xr</groupId> -->
 	<groupId>com.github.iv4xr-project</groupId>
 	<artifactId>mbt</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.5</version>
 	<name>iv4xr-MBT</name>
 	<description>Model based test generation tool</description>
 
@@ -182,7 +182,7 @@
 		<dependency>
 			<groupId>com.github.iv4xr-project</groupId>
 			<artifactId>iv4xrDemo</artifactId>
-			<version>2.3.0</version>
+			<version>2.3.4b</version>
 			<!--   <version>[2.2.5,)</version> does not work for jitpack-->
 		</dependency>
 		<!-- dependency>
@@ -195,7 +195,7 @@
 		<dependency>
             <groupId>com.github.iv4xr-project</groupId>
             <artifactId>aplib</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.2</version>
         </dependency>
 		
 		<dependency>

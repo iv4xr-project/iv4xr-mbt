@@ -27,7 +27,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM.StateType;
 import eu.fbk.iv4xr.mbt.efsm.modelcheckingInterface.InterfaceToIv4xrModelCheker;
 import eu.iv4xr.framework.extensions.ltl.BasicModelChecker;
 
-public class TestMC {
+public class MCTest {
 	
 	
 	//@Test
