@@ -280,7 +280,9 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 					// take a random path to the final state
 					List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true,
 							allPathLength);
-					GraphWalk nextPath = (GraphWalk) Randomness.choice(finalPaths);
+					//GraphWalk nextPath = (GraphWalk) Randomness.choice(finalPaths);
+					int nextInt = Randomness.nextInt(finalPaths.size());
+					GraphWalk nextPath = (GraphWalk) finalPaths.get(nextInt);
 					if (nextPath.getEdgeList().size() > 0) {
 						transitions.addAll(nextPath.getEdgeList());
 						end = true;
