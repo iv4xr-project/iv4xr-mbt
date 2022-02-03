@@ -491,7 +491,7 @@ public  class EFSM<
 			// use FloydWarshallShortestPaths as it computes all possible shortest path in one pass
 			FloydWarshallShortestPaths shortestPathAlg = new FloydWarshallShortestPaths(this.baseGraph);
 			// to compute all shortes path we need to compute all paths with lengthe shortest path
-			AllDirectedPaths allPathsCalculator =  new AllDirectedPaths(this.baseGraph);
+			// AllDirectedPaths allPathsCalculator =  new AllDirectedPaths(this.baseGraph);
 			
 			
 			for(EFSMState src : graphStates) {
@@ -506,11 +506,12 @@ public  class EFSM<
 							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  el;
 						}else {
 							this.shortestPathsBetweenStates[mapStateInteger.get(src)][mapStateInteger.get(tgt)] = (double)shortestPath.getLength();
-							List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(src,tgt, false, shortestPath.getLength());
+							//List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(src,tgt, false, shortestPath.getLength());
 							Set<EFSMPath> tmp = new HashSet<EFSMPath>();
-							for(GraphPath<State, Transition> gp : allPath) {
-								tmp.add(new EFSMPath<>(gp) );
-							}
+//							for(GraphPath<State, Transition> gp : allPath) {
+//								tmp.add(new EFSMPath<>(gp) );
+//							}
+							tmp.add(new EFSMPath<>(shortestPath) );
 							this.shortestPaths[mapStateInteger.get(src)][mapStateInteger.get(tgt)] =  tmp;
 						}
 					}
