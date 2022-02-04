@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
+import eu.fbk.iv4xr.mbt.coverage.CoverageGoalConstrainedTransitionCoverageGoal;
+import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.TransitionCoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -200,8 +202,8 @@ public class EFSMTestExecutionListener<
 		
 	}
 
-	@Override
-	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+//	@Override
+	public void _transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
 		if (successful) {
 			passedTransitions ++;
 			executionTrace.getCoveredTransitions().add(t);
@@ -239,9 +241,72 @@ public class EFSMTestExecutionListener<
 				targetApproachLevel = 0d;
 			}
 		}
-		
 	}
 
+	/**
+	 * When a transition is executed use execution information to compute 
+	 * pathBranchDistance, pathApproachLevel, targetBranchDistance, targetApproachLevel
+	 * @param testExecutor
+	 * @param t
+	 * @param successful
+	 */
+	@Override
+	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+		
+		// depending on the goal use a different approach
+		if (goal instanceof StateCoverageGoal) {
+			transitionFinished_simpleUpdate(testExecutor, t, successful);
+		}else if (goal instanceof TransitionCoverageGoal) {
+			transitionFinished_simpleUpdate(testExecutor, t, successful);
+		}else if (goal instanceof KTransitionCoverageGoal) {
+			transitionFinished_simpleUpdate(testExecutor, t, successful);
+		}else if (goal instanceof CoverageGoalConstrainedTransitionCoverageGoal) {
+			transitionFinished_simpleUpdate(testExecutor, t, successful);
+		}else {
+			throw new RuntimeException("Unsupported target type: " + goal.toString());
+		}
+		
+	}
+	
+	
+	private void transitionFinished_simpleUpdate(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+		if (successful) {
+			passedTransitions ++;
+			executionTrace.getCoveredTransitions().add(t);
+			executionTrace.getCoveredStates().add(t.getSrc());
+			executionTrace.getCoveredStates().add(t.getTgt());
+			
+			if (targetInPath) {
+				currentGoalCovered = true;
+				targetBranchDistance = 0d;
+				targetApproachLevel = 0d;
+			}
+		}else {
+			// compute branch distance of failing guard
+			Guard guard = t.getGuard();
+			Exp<Boolean> guardExpression = guard.getGuard();
+			double pathBD = computeBranchDistance (guardExpression);
+			logger.debug("Guard2: {} BD: {}", guardExpression.toDebugString(), pathBD);
+			pathBranchDistance = pathBD; //, parameter, contextVars);
+			
+			pathApproachLevel = pathLength - passedTransitions - 1;
+			
+			// if path does not contain target, apply penality
+			if (!targetInPath) {
+				targetBranchDistance = PENALITY2;
+				targetApproachLevel = PENALITY2;
+			}else {
+				// in this case, fitness should be feasiblity only
+				targetBranchDistance = 0d;
+				targetApproachLevel = 0d;
+			}
+		}
+	}
+	
+	
+	
+	
+	
 	private double normalize(double d) {
 		// normalize to a value in [0,1]
 		return d/(d+1);

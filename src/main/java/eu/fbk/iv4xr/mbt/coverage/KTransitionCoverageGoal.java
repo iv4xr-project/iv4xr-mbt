@@ -84,16 +84,8 @@ public class KTransitionCoverageGoal<
 			}else {
 				// feasibility fitness is the same of transition coverage
 				double feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();		
-				double targetFitness;
-				if (testcase.getPath().isSubPath(kTransition)) {
-					targetFitness = 0;
-				}else {
-					targetFitness = 1 ;
-				}
-				 
-				
-				fitness = feasibilityFitness +  targetFitness ;
-				
+				double targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
+				fitness = feasibilityFitness + targetFitness;
 			}
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 			updateCollateralCoverage(individual, executionResult);
