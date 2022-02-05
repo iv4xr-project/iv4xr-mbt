@@ -384,15 +384,18 @@ public class Main {
 		String modelFileName = modelFolderName + File.separator + "EFSM_model.ser";
 		String levelFileName = modelFolderName + File.separator + "LabRecruits_level.csv";
 		String modelDotFileName = modelFolderName + File.separator + "EFSM_model.dot";
+		String modelFeaturesFileName = modelFolderName + File.separator + "EFSM_features.csv";
 		
 		File csvFile = new File (levelFileName);
 		File dotFile = new File (modelDotFileName);
+		File featureFile = new File (modelFeaturesFileName);
 		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 		try {
 			
 			FileUtils.writeByteArrayToFile(new File(modelFileName), EFSMFactory.getInstance().getOriginalEFSM());
 			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			FileUtils.writeStringToFile(featureFile, efsm.getEfsmSummaryFeaures(), Charset.defaultCharset());
 			// if csv is available
 			if (efsm.getEFSMString() != "") {
 				FileUtils.writeStringToFile(csvFile, efsm.getEFSMString(), Charset.defaultCharset());		

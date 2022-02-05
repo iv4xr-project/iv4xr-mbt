@@ -16,15 +16,18 @@ import java.util.Set;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphMetrics;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.ListenableGraph;
+import org.jgrapht.alg.scoring.ClusteringCoefficient;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
 import org.jgrapht.alg.shortestpath.GraphMeasurer;
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 
+import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 import eu.fbk.iv4xr.mbt.utils.VertexToIntegerMap;
 
 
@@ -578,6 +581,31 @@ public  class EFSM<
 	 */
 	public void setDotString(String dotString) {
 		this.dotString = dotString;
+	}
+
+	public String getEfsmSummaryFeaures() {
+		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,Average Clustering Coefficient\n";
+		
+		int n_vertex = initialBaseGraph.vertexSet().size();
+		int n_edges = initialBaseGraph.edgeSet().size();
+		int n_vars = initialContext.getContext().getHash().keySet().size();
+		
+		double diameter = GraphMetrics.getDiameter(this.initialBaseGraph);
+		int girth = GraphMetrics.getGirth(this.initialBaseGraph);
+		double radius = GraphMetrics.getRadius(this.initialBaseGraph);
+		
+		ClusteringCoefficient cf = new ClusteringCoefficient(this.initialBaseGraph);
+		double averageClusteringCoefficient = cf.getAverageClusteringCoefficient(); 
+		
+		features += Integer.toString(n_vertex) + "," +
+					Integer.toString(n_edges)+","+
+					Integer.toString(n_vars)+","+
+					Double.toString(diameter)+","+
+					Integer.toString(girth)+","+
+					Double.toString(radius)+","+
+					Double.toString(averageClusteringCoefficient)+"\n";
+		
+		return features;
 	}
 
 }
