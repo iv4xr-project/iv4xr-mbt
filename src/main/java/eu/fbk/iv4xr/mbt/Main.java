@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -22,6 +25,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.types.Path;
+import org.evosuite.ga.FitnessFunction;
 import org.evosuite.utils.LoggingUtils;
 import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
@@ -82,19 +86,34 @@ public class Main {
 		
 		SuiteChromosome solution = generationStrategy.generateTests();
 		
+		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
+
 		// write tests to disk
-		writeTests (solution);
+		writeTests (solution, coverageTracker.getCoverageMap());
 		
 		// write model on disk
 		writeModel();
 		
 		// write statistics to disk
-		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
 		logger.info(coverageTracker.getStatistics());
 		
+		// if enabled, print uncovered goals
+		if (org.evosuite.Properties.PRINT_MISSED_GOALS) {
+			List<FitnessFunction<MBTChromosome>> uncoveredGoals = coverageTracker.getUncoveredGoals();
+			printUncoveredGoals(uncoveredGoals);
+		}
 	}
 	
+	/**
+	 * print out uncovered goals
+	 */
+	private void printUncoveredGoals(List<FitnessFunction<MBTChromosome>> uncoveredGoals) {
+		System.out.println();
+		for (FitnessFunction<MBTChromosome> uncoveredGoal : uncoveredGoals) {
+			System.out.println(" - Uncovered goal: " + uncoveredGoal.toString());
+		}
+	}
 	
 	/**
 	 * run mutation analysis
@@ -297,7 +316,7 @@ public class Main {
 	 * writes each test in a separate file (for now in .dot and .txt formats)
 	 * @param solution
 	 */
-	private void writeTests(SuiteChromosome solution) {
+	private void writeTests(SuiteChromosome solution, Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap) {
 		// make sure tests folder exists
 		String testFolder = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
 		File testsFolder = new File (testFolder);
@@ -310,9 +329,14 @@ public class Main {
 			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
 			File dotFile = new File (dotFileName);
 			File txtFile = new File (txtFileName);
+			
+			// get the list of goals covered by this individual
+			String coveredGoals = getGoveredGoalsAsComment (coverageMap, testCase);
 			try {
-				FileUtils.writeStringToFile(dotFile, ((AbstractTestSequence)testCase.getTestcase()).toDot(), Charset.defaultCharset());
-				FileUtils.writeStringToFile(txtFile, testCase.getTestcase().toString(), Charset.defaultCharset());
+				String testAsDot = ((AbstractTestSequence)testCase.getTestcase()).toDot();
+				String testAsText = testCase.getTestcase().toString();
+				FileUtils.writeStringToFile(dotFile, coveredGoals + testAsDot, Charset.defaultCharset());
+				FileUtils.writeStringToFile(txtFile, coveredGoals + testAsText, Charset.defaultCharset());
 				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -321,6 +345,32 @@ public class Main {
 			count++;
 		}
 		
+	}
+
+	/**
+	 * format the list of covered goals as commented strings to be prepended to each test (chromosome)
+	 * @param set
+	 * @return
+	 */
+	private String getGoveredGoalsAsComment(Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap,
+			MBTChromosome testCase) {
+		// first get the set of all covered goals by the given chromosome
+		LinkedHashSet<FitnessFunction<MBTChromosome>> coveredGoals = new LinkedHashSet<>();
+		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+			if (entry.getValue() != null && entry.getValue().equals(testCase)) {
+				coveredGoals.add(entry.getKey());
+			}
+		}
+		StringBuffer buffer = new StringBuffer();
+		String commentChar = "#";
+		
+		buffer.append(commentChar + " Total number of goals covered by this test: " + coveredGoals.size() + System.lineSeparator());
+		for (FitnessFunction<MBTChromosome> goal : coveredGoals) {
+			buffer.append(commentChar + " " + goal.toString() + System.lineSeparator());
+		}
+		buffer.append(System.lineSeparator());
+		
+		return buffer.toString();
 	}
 
 	/**

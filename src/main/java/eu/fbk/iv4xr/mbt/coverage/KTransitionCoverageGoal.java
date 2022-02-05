@@ -156,5 +156,10 @@ public class KTransitionCoverageGoal<
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return kTransition == null? "" : kTransition.toString();
+	}
 
 }

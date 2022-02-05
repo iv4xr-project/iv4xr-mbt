@@ -60,4 +60,7 @@ public abstract class CoverageGoal<
 	
 	protected abstract void updateCollateralCoverage (Chromosome individual, ExecutionResult executionResult);
 	
+	@Override
+	public abstract String toString();
+	
 }

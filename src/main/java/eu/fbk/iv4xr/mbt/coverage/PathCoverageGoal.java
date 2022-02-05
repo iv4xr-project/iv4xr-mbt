@@ -87,6 +87,11 @@ public class PathCoverageGoal<
 		}
 	}
 
+	@Override
+	public String toString() {
+		return path == null? "" : path.toString();
+	}
+
 	
 
 }
