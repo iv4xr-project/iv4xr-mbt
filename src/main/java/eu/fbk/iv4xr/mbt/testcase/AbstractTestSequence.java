@@ -18,6 +18,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
 /**
  * @author kifetew
@@ -36,6 +37,8 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
+	
+	private ExecutionResult executionResult;
 
 	private Mutator mutator;
 
@@ -134,6 +137,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		for (FitnessFunction<?> goal : coveredGoals) {
 			clone.addCoveredGoal(goal);
 		}
+		clone.setExecutionResult(executionResult);
 		return clone;
 	}
 
@@ -190,7 +194,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		// deleteSelfTransitionMutation ();
 		// }
 		// System.err.println("AFTER: " + path);
-		mutator.mutate();
+		mutator.mutate(executionResult);
 
 	}
 
@@ -212,5 +216,13 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	@Override
 	public boolean isGoalCovered(FitnessFunction goal) {
 		return coveredGoals.contains(goal);
+	}
+
+	public void setExecutionResult(ExecutionResult executionResult) {
+		this.executionResult = executionResult;
+	}
+	
+	public ExecutionResult getExecutionResult() {
+		return this.executionResult;
 	}
 }

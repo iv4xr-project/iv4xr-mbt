@@ -3,6 +3,7 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -29,8 +30,12 @@ public class ExecutionTrace<
 	Context extends EFSMContext,
 	Operation extends EFSMOperation,
 	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
+	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3139864863859510093L;
 	private Collection<State> coveredStates = new HashSet<State>();
 	private Collection<Transition> coveredTransitions = new HashSet<Transition>();
 	private boolean currentGoalCovered;
@@ -42,6 +47,7 @@ public class ExecutionTrace<
 	private double targetApproachLevel;
 	
 	private boolean success;
+	private int passedTransitions = -1;
 	
 	/**
 	 * 
@@ -162,4 +168,11 @@ public class ExecutionTrace<
 		this.currentGoalCovered = currentGoalCovered;
 	}
 
+	public void setPassedTransitions(int passedTransitions) {
+		this.passedTransitions = passedTransitions;
+	}
+
+	public int getPassedTransitions() {
+		return this.passedTransitions;
+	}
 }

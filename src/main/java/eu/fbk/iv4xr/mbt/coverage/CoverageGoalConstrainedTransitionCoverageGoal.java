@@ -105,7 +105,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 					executionResult.setSuccess(false);
 				}
 			}
-			
+			testcase.setExecutionResult(executionResult);
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 			updateCollateralCoverage(individual, executionResult);
 			logger.debug("Individual ({}): {} \nFitness: {}", executionResult.isSuccess(), individual.toString(), fitness);

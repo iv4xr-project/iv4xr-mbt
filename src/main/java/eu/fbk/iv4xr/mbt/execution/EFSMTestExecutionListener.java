@@ -194,6 +194,8 @@ public class EFSMTestExecutionListener<
 		executionTrace.setTargetApproachLevel(targetApproachLevel);
 		executionTrace.setTargetBranchDistance(normalize(targetBranchDistance));
 		
+		executionTrace.setPassedTransitions(passedTransitions);
+		
 		executionTrace.setSuccess(successful);
 	}
 

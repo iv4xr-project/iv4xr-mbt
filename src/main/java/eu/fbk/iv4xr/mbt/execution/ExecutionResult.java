@@ -3,11 +3,18 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
+import java.io.Serializable;
+
 /**
  * @author kifetew
  *
  */
-public class ExecutionResult {
+public class ExecutionResult implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1932533482647130787L;
 
 	private boolean success;
 	

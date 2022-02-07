@@ -87,6 +87,7 @@ public class KTransitionCoverageGoal<
 				double targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
 				fitness = feasibilityFitness + targetFitness;
 			}
+			testcase.setExecutionResult(executionResult);
 			EFSMTestExecutor.getInstance().removeListner(executionListner);
 			updateCollateralCoverage(individual, executionResult);
 			logger.debug("Individual ({}): {} \nFitness: {}", executionResult.isSuccess(), individual.toString(), fitness);

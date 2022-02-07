@@ -69,6 +69,8 @@ public class SinglePointRelativePathCrossOver extends CrossOverFunction {
 			points[1] = tc2.getPath().getTransitions().indexOf(intersection);
 		} 
 //		logger.debug("Point1: " + points[0] + " & " + points[1]);
+		logger.debug("parent1: length: {}, passed: {}", tc1.getLength(), tc1.getExecutionResult().getExectionTrace().getPassedTransitions());
+		logger.debug("parent2: length: {}, passed: {}", tc2.getLength(), tc2.getExecutionResult().getExectionTrace().getPassedTransitions());
 		return points;
 	}
 

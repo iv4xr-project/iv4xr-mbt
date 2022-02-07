@@ -109,7 +109,7 @@ public class StateCoverageGoal<
 				//FIXME for now, simply take feasibilityFitness
 				targetFitness = feasibilityFitness;
 			}
-			
+			testcase.setExecutionResult(executionResult);
 			// calculate the fitness as a linear combination of the two fitnesses
 			fitness = feasibilityFitness + targetFitness;
 			EFSMTestExecutor.getInstance().removeListner(executionListner);

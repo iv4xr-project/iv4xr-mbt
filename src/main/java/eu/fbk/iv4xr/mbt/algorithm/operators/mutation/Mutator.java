@@ -24,6 +24,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 
@@ -53,9 +54,9 @@ public class Mutator<
 		return path;
 	}
 	
-	public void mutate() {
-			
+	public void mutate(ExecutionResult executionResult) {
 		double choice = Randomness.nextDouble();
+		logger.debug("Passed transitions: {}", executionResult.getExectionTrace().getPassedTransitions());
 		//logger.debug("MUTATION: " + choice);
 		if (choice < 0.33) {
 			insertSelfTransitionMutation();
