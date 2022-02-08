@@ -120,7 +120,10 @@ public class SBSTMain {
 		solution = generationStrategy.generateTests();
 		
 	}
-	
+
+	public SuiteChromosome getTestSuite() {
+		return solution;
+	}
 
 	public int totalTests () {
 		if (solution != null) {
@@ -153,23 +156,85 @@ public class SBSTMain {
 	}
 	
 	/**
+	 * format the list of Pairs to csv entries and return them as string
+	 * @param points
+	 * @return
+	 */
+	public static String pointsToCsv(List<Pair<Integer, Integer>> points) {
+		StringBuffer buffer = new StringBuffer();
+		for (Pair<Integer, Integer> point : points) {
+			buffer.append(point.toString("%1$s,%2$s") + "\n");
+		}
+		return buffer.toString();
+	}
+	
+	public static void writeTests(SuiteChromosome solution, String testFolder) {
+		// make sure tests folder exists
+//		String testFolder = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
+		File testsFolder = new File (testFolder);
+		if (testsFolder.exists()) {
+			try {
+				FileUtils.deleteDirectory(testsFolder);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		testsFolder.mkdirs();
+		
+		int count = 1;
+		for (MBTChromosome testCase : solution.getTestChromosomes()) {
+//			String dotFileName = testFolder + File.separator + "test_" + count + ".dot";
+//			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
+//			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
+			String csvFileName = testFolder + File.separator + "test_" + count + ".csv";
+//			File dotFile = new File (dotFileName);
+//			File txtFile = new File (txtFileName);
+			File csvFile = new File (csvFileName);
+			AbstractTestSequence abstractTestSequence = (AbstractTestSequence)testCase.getTestcase();
+			try {
+//				FileUtils.writeStringToFile(dotFile, abstractTestSequence.toDot(), Charset.defaultCharset());
+//				FileUtils.writeStringToFile(txtFile, abstractTestSequence.toString(), Charset.defaultCharset());
+//				TestSerializationUtils.saveTestSequence(abstractTestSequence, serFileName);
+				// SBST competition specific
+				List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
+				String pointsCsv = pointsToCsv(points);
+				FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			count++;
+		}
+		
+	}
+	
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		SBSTMain sbstMain = new SBSTMain(60, "sbst2022.nine_states");
-//		SBSTMain sbstMain = new SBSTMain(60, "beamng_model", 
-//				10,10,190,190, // field
-//				20,20, // initial position
-//				36, // correspond to 2 degree min rotation
-//				20, // max angle
-//				10, // min street length
-//				15 //max street length
-//				);
-		while (sbstMain.hasMoreTests()) {
-			//List<Pair<Integer,Integer>> test = sbstMain.getNextTest();
-			List<Pair<Double,Double>> test = sbstMain.getNextTest();
-			System.out.println(test.toString());
-		}
+		int mbt_generation_budget = Integer.parseInt(args[0]);
+		
+		int map_border_size = 10;
+		double min_x = map_border_size;
+		double min_y = map_border_size;
+		double max_x = Integer.parseInt(args[1]) - map_border_size;
+		double max_y = Integer.parseInt(args[1]) - map_border_size;
+		double initial_x = 40;
+		double initial_y = 40;
+		int n_rotation = 12;
+		double max_rotation_angle = 45;
+		int min_street_length = 10;
+		int max_street_length = 40;
+		int street_length_step = 10;
+		SBSTMain sbstMain = new SBSTMain(mbt_generation_budget, "beamng_model", min_x, min_y, max_x, max_y, initial_x, initial_y,
+                n_rotation, max_rotation_angle, min_street_length, max_street_length, street_length_step);
+		writeTests(sbstMain.getTestSuite(), args[2]);
+//		while (sbstMain.hasMoreTests()) {
+//			//List<Pair<Integer,Integer>> test = sbstMain.getNextTest();
+//			List<Pair<Double,Double>> test = sbstMain.getNextTest();
+//			System.out.println(test.toString());
+//		}
 		System.exit(0);
 	}
 
