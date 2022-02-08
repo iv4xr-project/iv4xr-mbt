@@ -82,7 +82,7 @@ public class TransitionCoverageGoal<
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 
 			// add trace to result
-			executionResult.setExectionTrace(trace);
+			executionResult.setExecutionTrace(trace);
 			
 			if (MBTProperties.SANITY_CHECK_FITNESS) {
 				fitness = Randomness.nextDouble();
@@ -137,7 +137,7 @@ public class TransitionCoverageGoal<
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
 		// collateral coverage only if the individual is valid
 		if (executionResult.isSuccess()) {
-			ExecutionTrace executionTrace = executionResult.getExectionTrace();
+			ExecutionTrace executionTrace = executionResult.getExecutionTrace();
 			for (Object transition : executionTrace.getCoveredTransitions()) {
 				EFSMTransition coveredTransition = (EFSMTransition)transition;
 				CoverageGoal goal = new TransitionCoverageGoal(coveredTransition);

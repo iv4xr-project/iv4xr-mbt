@@ -32,7 +32,10 @@ public interface Testcase extends Comparable<Testcase>, Serializable, Cloneable 
 	
 	public void setValid (boolean valid);
 
-
+	public boolean isChanged();
+	
+	public void setChanged (boolean changed);
+	
 	public void crossOver(Testcase other, int position1, int position2);
 
 

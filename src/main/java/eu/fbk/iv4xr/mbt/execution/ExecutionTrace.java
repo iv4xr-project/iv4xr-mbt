@@ -175,4 +175,27 @@ public class ExecutionTrace<
 	public int getPassedTransitions() {
 		return this.passedTransitions;
 	}
+	
+	@Override
+	protected ExecutionTrace clone() {
+		ExecutionTrace copy = new ExecutionTrace<>();
+		if (coveredStates != null) {
+			for (State state : coveredStates) {
+				copy.getCoveredStates().add(state.clone());
+			}
+		}
+		if (coveredTransitions != null) {
+			for (Transition transition : coveredTransitions) {
+				copy.getCoveredTransitions().add(transition.clone());
+			}
+		}
+		copy.setCurrentGoalCovered(currentGoalCovered);
+		copy.setPathBranchDistance(pathBranchDistance);
+		copy.setPathApproachLevel(pathApproachLevel);
+		copy.setTargetBranchDistance(targetBranchDistance);
+		copy.setTargetApproachLevel(targetApproachLevel);
+		copy.setSuccess(success);
+		copy.setPassedTransitions(passedTransitions);
+		return copy;
+	}
 }

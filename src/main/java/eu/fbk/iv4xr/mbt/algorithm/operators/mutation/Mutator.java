@@ -61,7 +61,11 @@ public class Mutator<
 	 */
 	public void mutate(ExecutionResult executionResult) {
 		// set the number of passed transitions
-		passedTransitions = executionResult.getExectionTrace().getPassedTransitions();
+		if (executionResult != null) {
+			passedTransitions = executionResult.getExecutionTrace().getPassedTransitions();
+		}else {
+			passedTransitions = 0;
+		}
 		double choice = Randomness.nextDouble();
 		
 		removeFirstNotFeasible();
@@ -112,7 +116,7 @@ public class Mutator<
 	 */
 	public void _mutate(ExecutionResult executionResult) {
 		double choice = Randomness.nextDouble();
-		logger.debug("Passed transitions: {}", executionResult.getExectionTrace().getPassedTransitions());
+		logger.debug("Passed transitions: {}", executionResult.getExecutionTrace().getPassedTransitions());
 		//logger.debug("MUTATION: " + choice);
 		if (choice < 0.33) {
 			insertSelfTransitionMutation();

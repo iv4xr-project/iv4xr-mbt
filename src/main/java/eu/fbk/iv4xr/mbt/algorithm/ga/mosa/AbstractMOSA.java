@@ -132,6 +132,11 @@ public abstract class AbstractMOSA<
 			}
 			T offspring1 = (T) parent1.clone();
 			T offspring2 = (T) parent2.clone();
+			
+			// assume unchanged at first
+			offspring1.setChanged(false);
+			offspring2.setChanged(false);
+			
 			// apply crossover 
 			try {
 				if (Randomness.nextDouble() <= MBTProperties.CROSSOVER_RATE) {

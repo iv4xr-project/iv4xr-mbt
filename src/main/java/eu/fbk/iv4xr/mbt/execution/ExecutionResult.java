@@ -18,7 +18,7 @@ public class ExecutionResult implements Serializable {
 
 	private boolean success;
 	
-	private ExecutionTrace exectionTrace;
+	private ExecutionTrace executionTrace;
 	
 	private double branchDistance;
 	private int approachLevel;
@@ -47,15 +47,15 @@ public class ExecutionResult implements Serializable {
 	/**
 	 * @return the exectionTrace
 	 */
-	public ExecutionTrace getExectionTrace() {
-		return exectionTrace;
+	public ExecutionTrace getExecutionTrace() {
+		return executionTrace;
 	}
 
 	/**
 	 * @param exectionTrace the exectionTrace to set
 	 */
-	public void setExectionTrace(ExecutionTrace exectionTrace) {
-		this.exectionTrace = exectionTrace;
+	public void setExecutionTrace(ExecutionTrace exectionTrace) {
+		this.executionTrace = exectionTrace;
 	}
 
 	/**
@@ -86,4 +86,16 @@ public class ExecutionResult implements Serializable {
 		this.approachLevel = approachLevel;
 	}
 
+	@Override
+	public ExecutionResult clone() {
+		ExecutionResult copy = new ExecutionResult();
+		copy.setSuccess(success);
+		if (executionTrace != null) {
+			copy.setExecutionTrace(executionTrace.clone());
+		}
+		copy.setBranchDistance(branchDistance);
+		copy.setApproachLevel(approachLevel);
+		return copy;
+	}
+	
 }

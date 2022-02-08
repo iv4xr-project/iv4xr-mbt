@@ -77,7 +77,7 @@ public class KTransitionCoverageGoal<
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
 			// add trace to result
-			executionResult.setExectionTrace(trace);
+			executionResult.setExecutionTrace(trace);
 			
 			if (MBTProperties.SANITY_CHECK_FITNESS) {
 				fitness = Randomness.nextDouble();

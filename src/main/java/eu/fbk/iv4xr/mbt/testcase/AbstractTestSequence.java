@@ -34,6 +34,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
 	private boolean valid = false;
 	private double fitness = 0d;
+	private boolean changed = true;
 
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
@@ -133,11 +134,12 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
+		clone.setChanged(changed);
 		clone.coveredGoals = new HashSet<FitnessFunction<?>>();
 		for (FitnessFunction<?> goal : coveredGoals) {
 			clone.addCoveredGoal(goal);
 		}
-		clone.setExecutionResult(executionResult);
+		clone.setExecutionResult(executionResult.clone());
 		return clone;
 	}
 
@@ -194,7 +196,14 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		// deleteSelfTransitionMutation ();
 		// }
 		// System.err.println("AFTER: " + path);
-		mutator.mutate(executionResult);
+		
+		// if the individual has changed but not evaluated, do not pass its execution result
+		if (changed) {
+			mutator.mutate(null);
+		}else {
+			mutator.mutate(executionResult);
+		}
+		changed = true;
 
 	}
 
@@ -224,5 +233,21 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	
 	public ExecutionResult getExecutionResult() {
 		return this.executionResult;
+	}
+
+	/**
+	 * @return the changed
+	 */
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	/**
+	 * @param changed the changed to set
+	 */
+	@Override
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 }

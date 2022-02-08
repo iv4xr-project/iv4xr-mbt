@@ -86,7 +86,7 @@ public class StateCoverageGoal<
 			ExecutionTrace trace = executionListner.getExecutionTrace();
 			
 			// add trace to result
-			executionResult.setExectionTrace(trace);
+			executionResult.setExecutionTrace(trace);
 			
 			// calculate feasibility fitness
 			double feasibilityFitness = -1;
@@ -161,7 +161,7 @@ public class StateCoverageGoal<
 	protected void updateCollateralCoverage(Chromosome individual, ExecutionResult executionResult) {
 		// collateral coverage only if the individual is valid
 		if (executionResult.isSuccess()) {
-			ExecutionTrace executionTrace = executionResult.getExectionTrace();
+			ExecutionTrace executionTrace = executionResult.getExecutionTrace();
 			for (Object state : executionTrace.getCoveredStates()) {
 				EFSMState coveredState = (EFSMState)state;
 				CoverageGoal goal = new StateCoverageGoal(coveredState);
