@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.evosuite.utils.Randomness;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
-import org.jgrapht.alg.shortestpath.GraphMeasurer;
 
-import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
@@ -25,7 +23,6 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
-import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 
 public class Mutator<
@@ -45,6 +42,7 @@ public class Mutator<
 	private Path path;
 	private Integer minSubPathLenght = 2;
 	private Integer maxSubPathLenght = 5;
+	private Integer passedTransitions = 0;
 	
 	public Mutator(Path path) {
 		this.path = path;
@@ -54,7 +52,65 @@ public class Mutator<
 		return path;
 	}
 	
+
+	
+	/**
+	 * Mutate use information about the execution to try to improve the
+	 * probability of increasing the feasibility of a path
+	 * @param executionResult
+	 */
 	public void mutate(ExecutionResult executionResult) {
+		// set the number of passed transitions
+		passedTransitions = executionResult.getExectionTrace().getPassedTransitions();
+		double choice = Randomness.nextDouble();
+		
+		removeFirstNotFeasible();
+	}
+	
+	
+	
+	/**
+	 * try to remove the first not feasible transition
+	 */
+	public void removeFirstNotFeasible() {
+		
+		// case of passedTransitions equals to 0
+		// no feasible transitions in the path
+		if (passedTransitions == 0) {
+			
+			return;
+		}
+		
+		// case of all transitions are feasible
+		// passedTransitions equals path size
+		if (passedTransitions == path.getLength()) {
+			
+			return;
+		}
+		
+		// case passed transition are between 0 and path length
+		if (passedTransitions > 0 && passedTransitions < path.getLength()) {
+			
+			return;
+		}
+	
+		// should not arrive here because or passedTransitions < 0 or > path length
+		throw new RuntimeException("\nError: path \n"+path.toString()+" has "+passedTransitions+" over "+path.getLength()+" passed transitions");
+		
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	//
+	// Old versions based only on path without using execution information
+	//
+	////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * First version that do not use information about execution 
+	 * @param executionResult
+	 */
+	public void _mutate(ExecutionResult executionResult) {
 		double choice = Randomness.nextDouble();
 		logger.debug("Passed transitions: {}", executionResult.getExectionTrace().getPassedTransitions());
 		//logger.debug("MUTATION: " + choice);
@@ -70,6 +126,7 @@ public class Mutator<
 		}
 		
 	}
+	
 	
 	private void singleTransitionRemoval() {
 
