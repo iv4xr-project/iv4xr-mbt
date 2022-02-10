@@ -335,8 +335,8 @@ public  class EFSM<
 			// pass null as transition since there was no valid transition
 			this.pcs.firePropertyChange(PROP_CONFIGURATION, prefConfig, Pair.of(getConfiguration(), null));
 		}
-		this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
-		setTransitionsMap();
+		//this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
+		//setTransitionsMap();
 	}
 	  
 	/**

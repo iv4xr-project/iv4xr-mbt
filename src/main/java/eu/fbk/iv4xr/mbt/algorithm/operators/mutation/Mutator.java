@@ -15,11 +15,13 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
@@ -40,12 +42,14 @@ public class Mutator<
 	private static final long serialVersionUID = 8353952869532319217L;
 	protected static final Logger logger = LoggerFactory.getLogger(Mutator.class);
 	private Path path;
+	private Integer pathSize;
 	private Integer minSubPathLenght = 2;
 	private Integer maxSubPathLenght = 5;
 	private Integer passedTransitions = 0;
 	
 	public Mutator(Path path) {
 		this.path = path;
+		this.pathSize = path.getLength();
 	}
 	
 	public Path getPath() {
@@ -62,69 +66,172 @@ public class Mutator<
 	public void mutate(ExecutionResult executionResult) {
 		// set the number of passed transitions
 		if (executionResult != null) {
+			// information about execution si available and can be used
 			passedTransitions = executionResult.getExecutionTrace().getPassedTransitions();
+			//mutate_path(executionResult);
+			mutate_feasible(executionResult);			
 		}else {
+			// only FSM strcuture can be used
 			passedTransitions = 0;
+			mutate_path(executionResult);
 		}
-		double choice = Randomness.nextDouble();
-		
-		removeFirstNotFeasible();
 	}
 	
+	
+	////////////////////////////////////////////////////////////////////////
+	//
+	// The individual has been already executed and information about
+	// feasibility can be used
+	//
+	////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Randomly choose a feasiblity aware mutation
+	 * @param executionResult
+	 */
+	public void mutate_feasible(ExecutionResult executionResult) {
+		double choice = Randomness.nextDouble();
+		removeFirstNotFeasible();
+	}
 	
 	
 	/**
 	 * try to remove the first not feasible transition
 	 */
 	public void removeFirstNotFeasible() {
+
+		// get the model
+		EFSM efsm = EFSMFactory.getInstance().getEFSM();
+		AllDirectedPaths allDirectedPathCalculator = efsm.getAllDirectedPathCalculator();
 		
 		// case of passedTransitions equals to 0
-		// no feasible transitions in the path
+		// no feasible transitions in the path so try to change the first one
 		if (passedTransitions == 0) {
-			
+			// get initial transitions
+			EFSMConfiguration<State, Context> initialConfiguration = efsm.getInitialConfiguration();
+			EFSMState initialState = initialConfiguration.getState();
+			Set<EFSMTransition> startingTransitions = efsm.transitionsOutOf(initialState);
+			// first transition of the path
+			EFSMTransition firstTransition = path.getTransitionAt(0);
+			// remove firstTransition from initial transitions
+			startingTransitions.remove(firstTransition);
+			// use remaining transitions as first transition
+			if (startingTransitions.size() == 0) {
+				// this EFMS need to be checked
+				logger.info("The EFSM has only one starting transition and it is not feasible");
+			} else {
+				// the path has only one transition
+				if (path.getLength() == 1) {
+					EFSMTransition newFirstTransition = Randomness.choice(startingTransitions);
+					path = new Path(newFirstTransition);
+				} else {
+					boolean done = false;
+					EFSMTransition newFirstTransition = null;
+					while (!done && startingTransitions.size() > 0) {
+						newFirstTransition = Randomness.choice(startingTransitions);
+						// find a path between newFirstTransition and the second transition of path
+						List<GraphPath> allPaths = allDirectedPathCalculator.getAllPaths(newFirstTransition.getTgt(),
+								firstTransition.getTgt(), false, maxSubPathLenght);
+						List<GraphPath> zeroPAths = allDirectedPathCalculator.getAllPaths(newFirstTransition.getTgt(),
+								firstTransition.getTgt(), false, 0);
+						allPaths.removeAll(zeroPAths);					
+						if (allPaths.size() > 0) {
+							// build the new path
+							GraphPath choice = Randomness.choice(allPaths);
+
+							Path firstTransitionPath = new Path(newFirstTransition);
+							Path secondChunkPath = new Path(choice);
+							Path subPath = (Path) path.subPath(1, pathSize);
+							path.getModfiableTransitions().clear();
+							path.append(firstTransitionPath);
+							path.append(secondChunkPath);
+							path.append(subPath);
+							done = true;
+						} else {
+							startingTransitions.remove(newFirstTransition);
+						}
+					}
+				}
+			}
 			return;
 		}
-		
+
 		// case of all transitions are feasible
 		// passedTransitions equals path size
-		if (passedTransitions == path.getLength()) {
+		if (passedTransitions == pathSize) {
+			// add few transitions at the end
+			EFSMState endState = path.getTransitionAt(pathSize-1).getTgt();
+			HashSet<EFSMState> initialSet = new HashSet<EFSMState>();
+			initialSet.add(endState);
+			
+			List<GraphPath> allNewExtension = allDirectedPathCalculator.getAllPaths(initialSet, efsm.getStates(), false, minSubPathLenght);
+			List<GraphPath> zeroTran = allDirectedPathCalculator.getAllPaths(initialSet, efsm.getStates(), false, 0);
+			allNewExtension.removeAll(zeroTran);
+			GraphPath choice = Randomness.choice(allNewExtension);
+			path.append(new Path(choice));
 			
 			return;
 		}
-		
+
 		// case passed transition are between 0 and path length
-		if (passedTransitions > 0 && passedTransitions < path.getLength()) {
+		if (passedTransitions > 0 && passedTransitions < pathSize) {
+
+			// get first unfeasible transition
+			EFSMTransition firstUnfeasibleTransition = path.getTransitionAt(passedTransitions);
 			
+			// find an alternative path between the src and the tgt of the first unfeasible transition
+			
+			// find all paths between src and tgt of 
+			List<GraphPath> newPaths = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), firstUnfeasibleTransition.getTgt(), false, maxSubPathLenght);
+			List<GraphPath> zeroTran = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), efsm.getStates(), false, 0);
+			newPaths.removeAll(zeroTran);
+			
+			if (newPaths.size() > 1 ) {
+				EFSMPath head = path.subPath(0, passedTransitions);
+				GraphPath center = Randomness.choice(newPaths);
+				Path newPath = new Path<>();
+				//path.getModfiableTransitions().clear();
+				newPath.append(head);
+				newPath.append(new Path(center));
+				if (pathSize > passedTransitions + 1) {
+					// there is tail
+					EFSMPath tail = path.subPath(passedTransitions+1, pathSize);
+					newPath.append(tail);
+				}
+				path = newPath;
+			}
+			
+			// remove unfeasible subpath
+//			EFSMPath subPath = path.subPath(0, passedTransitions);
+//			path.getModfiableTransitions().clear();
+//			path.append(subPath);
 			return;
 		}
-	
+
 		// should not arrive here because or passedTransitions < 0 or > path length
-		throw new RuntimeException("\nError: path \n"+path.toString()+" has "+passedTransitions+" over "+path.getLength()+" passed transitions");
-		
-	}
-	
+		throw new RuntimeException("\nError: path \n" + path.toString() + " has " + passedTransitions + " over "
+				+ path.getLength() + " passed transitions");
+
+	}	
 	
 	////////////////////////////////////////////////////////////////////////
 	//
-	// Old versions based only on path without using execution information
+	// The individual is new due to crossover and not yet executed
+	// Use only path information to add mutations
 	//
 	////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * First version that do not use information about execution 
+	 * Randomly choose a path mutation
 	 * @param executionResult
 	 */
-	public void _mutate(ExecutionResult executionResult) {
+	public void mutate_path(ExecutionResult executionResult) {
 		double choice = Randomness.nextDouble();
-		logger.debug("Passed transitions: {}", executionResult.getExecutionTrace().getPassedTransitions());
-		//logger.debug("MUTATION: " + choice);
+		
 		if (choice < 0.33) {
 			insertSelfTransitionMutation();
 		} else if (choice < 0.33) {
 			deleteSelfTransitionMutation();
-	    // embedded in singleTransitionRemoval
-		//} else if (choice < 0.75) {
-		//	appendRandomTransitionMutation();
 		} else {
 			singleTransitionRemoval();
 		}
@@ -132,35 +239,28 @@ public class Mutator<
 	}
 	
 	
+	/**
+	 * Remove a random transition s1 -t-> s2 and search an alternative path from s1 to s2
+	 */
 	private void singleTransitionRemoval() {
 
+		// get the model and the function to compute all paths between two states
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
-
-		// It would be convenient to move path computing objects within the EFSM
-		//AllDirectedPaths<State, Transition> allPathsCalculator = new AllDirectedPaths<>(efsm.getBaseGraph());
-		//GraphMeasurer<State, Transition> graphMeasurer = new GraphMeasurer(efsm.getBaseGraph());
 		AllDirectedPaths<State, Transition> allPathsCalculator = efsm.getAllDirectedPathCalculator();
-		//GraphMeasurer<State, Transition> graphMeasurer = efsm.getGraphMeasurer();
-		
-		// Use the graph diameter as max path size to add: TOO slow
-		// Double graphDiameter = graphMeasurer.getDiameter();
-		// Integer newPathLength = graphDiameter.intValue()
 		
 		// Use the length of the path as a maximum length for the new subpath
 		// if the path has length less that 2, use 2
-		Integer newPathMaxLength = Integer.min(Integer.max(path.getLength(),minSubPathLenght),maxSubPathLenght);
+		//Integer newPathMaxLength = Integer.min(Integer.max(path.getLength(),minSubPathLenght),maxSubPathLenght);
 		
 		// Take a random transition in the path
 		Integer transitionToRemoveId = Randomness.nextInt(path.getLength());
 		Transition transitionToRemove = (Transition) path.getTransitionAt(transitionToRemoveId);
-
-
-			
+		
 		// first and last transition need to be treated separately
 		if (transitionToRemoveId >= 0 & transitionToRemoveId < path.getLength()-1) {
 			// Compute all path from src to the tgt of the removed transition
-			List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(transitionToRemove.getSrc(),
-					transitionToRemove.getTgt(), false, newPathMaxLength);
+			List<GraphPath<State, Transition>> allPath = 
+					allPathsCalculator.getAllPaths(transitionToRemove.getSrc(), transitionToRemove.getTgt(), false, maxSubPathLenght);
 			// A flag to check if the new subpath has been choosen
 			Boolean choosen = false;
 			while(!choosen & allPath.size() > 0) {
@@ -197,7 +297,7 @@ public class Mutator<
 			EFSMState newTgtState = (EFSMState) Randomness.choice(efsm.getStates());
 			// Compute all path from src of the removed transition to the new tgt
 			List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(transitionToRemove.getSrc(),
-					transitionToRemove.getTgt(), false, newPathMaxLength);
+					transitionToRemove.getTgt(), false, maxSubPathLenght);
 			// A flag to check if the new subpath has been choosen
 			Boolean choosen = false;
 			while (!choosen & allPath.size() > 0) {

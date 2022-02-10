@@ -141,7 +141,7 @@ public abstract class AbstractMOSA<
 			try {
 				if (Randomness.nextDouble() <= MBTProperties.CROSSOVER_RATE) {
 					crossoverFunction.crossOver(offspring1, offspring2);
-				} 
+				}
 			} catch (ConstructionFailedException e) {
 				logger.debug("CrossOver failed.");
 				continue;

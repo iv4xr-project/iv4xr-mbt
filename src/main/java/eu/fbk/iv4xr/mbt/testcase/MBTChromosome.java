@@ -211,4 +211,17 @@ public class MBTChromosome<
 			return "";
 		}
 	}
+	
+	
+	/**
+	 * Set changed status to @param changed
+	 * 
+	 * @param changed
+	 *            a boolean.
+	 */
+	@Override
+	public void setChanged(boolean changed) {
+		super.setChanged(changed);
+		testcase.setChanged(changed);
+	}
 }

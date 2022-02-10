@@ -183,7 +183,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 			path.append(trunk2);	
 		}
 		
-		 
+		// changed = true; 
 
 	}
 
@@ -203,7 +203,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		}else {
 			mutator.mutate(executionResult);
 		}
-		changed = true;
+		// changed = true;
 
 	}
 
