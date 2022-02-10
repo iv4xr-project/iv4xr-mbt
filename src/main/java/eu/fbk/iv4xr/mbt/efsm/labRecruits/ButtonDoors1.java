@@ -37,8 +37,8 @@ public class ButtonDoors1 {
 	public EFSMState d_1_p = new EFSMState("d1p");
 	public EFSMState d_2_m = new EFSMState("d2m");
 	public EFSMState d_2_p = new EFSMState("d2p");
-	public EFSMState d_3_m = new EFSMState("d3m");
-	public EFSMState d_3_p = new EFSMState("d3p");
+//	public EFSMState d_3_m = new EFSMState("d3m");
+//	public EFSMState d_3_p = new EFSMState("d3p");
 	public EFSMState d_T_m = new EFSMState("d3m");
 	public EFSMState d_T_p = new EFSMState("d3p");
 	
@@ -341,7 +341,8 @@ public class ButtonDoors1 {
 //		instance Button b0, b1, b2, b3;
 //		instance Door d1, d2, dT;
 		EFSMState[] buttons = {b_0, b_1, b_2, b_3};
-		EFSMState[] doors = {d_1_m, d_1_p, d_2_m, d_2_p, d_3_m, d_3_p, d_T_m, d_T_p };
+		//EFSMState[] doors = {d_1_m, d_1_p, d_2_m, d_2_p, d_3_m, d_3_p, d_T_m, d_T_p };
+		EFSMState[] doors = {d_1_m, d_1_p, d_2_m, d_2_p,  d_T_m, d_T_p };
 		Set<String>  doorNames = new HashSet<String>();
 		for (EFSMState d : doors) {
 			doorNames.add(d.getId().replace("_m", "").replace("_p", ""));
