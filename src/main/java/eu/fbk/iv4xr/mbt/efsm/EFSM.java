@@ -63,7 +63,6 @@ public  class EFSM<
 	protected final Context initialContext;
 	protected final State initialState;
 	protected final ListenableGraph<State, EFSMTransition> initialBaseGraph;
-	protected final PropertyChangeSupport pcs;
 	protected State curState;
 	protected Context curContext;
 	protected ListenableGraph<State, EFSMTransition> baseGraph;
@@ -122,7 +121,6 @@ public  class EFSM<
 		Graphs.addGraph(tmp, baseGraph);
 
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
-		this.pcs = new PropertyChangeSupport(this);
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 		
 		this.setTransitionsMap();
@@ -137,8 +135,6 @@ public  class EFSM<
 		this.curState = this.initialState = initialState;
 		this.baseGraph = base.baseGraph;
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
-		// we do not want to delegate any events of this to the original listeners
-		this.pcs = null;
 		
 		this.setTransitionsMap();
 	}
@@ -197,14 +193,8 @@ public  class EFSM<
 		for (EFSMTransition transition : baseGraph.outgoingEdgesOf(curState)) {
 			if (transition.getInParameter().equals(input) && transition.isFeasible(curContext)) {
 				EFSMConfiguration<State, Context> prevConfig = null;
-				if (pcs != null) {
-					prevConfig = getConfiguration();
-				}
 				curState = (State) transition.getTgt();
 				Set<OutParameter> output = transition.take(curContext);
-				if (pcs != null) {
-					pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
-				}
 				return output;
 			}
 		}
@@ -303,14 +293,6 @@ public  class EFSM<
 	public ListenableGraph<State, EFSMTransition> getBaseGraph() {
 		return baseGraph;
 	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		this.pcs.addPropertyChangeListener(listener);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		this.pcs.removePropertyChangeListener(listener);
-	}
 	
 	/**
 	 * This will track changes to the base graph but not configuration changes to
@@ -326,17 +308,10 @@ public  class EFSM<
 
 	public void forceConfiguration(EFSMConfiguration<State, Context> config, ListenableGraph<State, EFSMTransition> initialBaseGraph2) {
 		EFSMConfiguration<State, Context> prefConfig = null;
-		if (pcs != null) {
-			prefConfig = getConfiguration();
-		}
 		this.curState = (State) config.getState().clone();
 		this.curContext = (Context) config.getContext().clone();
-		if (pcs != null) {
-			// pass null as transition since there was no valid transition
-			this.pcs.firePropertyChange(PROP_CONFIGURATION, prefConfig, Pair.of(getConfiguration(), null));
-		}
-		//this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
-		//setTransitionsMap();
+		this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
+		setTransitionsMap();
 	}
 	  
 	/**
@@ -366,14 +341,8 @@ public  class EFSM<
 //		Transition transition = getTransition(transition1);
 		if (transition.isFeasible(curContext)) {
 			EFSMConfiguration<State, Context> prevConfig = null;
-			if (pcs != null) {
-				prevConfig = getConfiguration();
-			}
 			curState = transition.getTgt();
 			Set<OutParameter> output = transition.take(curContext);
-			if (pcs != null) {
-				pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
-			}
 			return output;
 		}
 
@@ -382,12 +351,6 @@ public  class EFSM<
 	 
 
 	private Transition getTransition(Transition transition) {
-		
-//		for (EFSMTransition t : getTransitons()) {
-//			if (t.equals(transition)) {
-//				return (Transition) t;
-//			}
-//		}
 		
 		Set<EFSMTransition> availableTransitions = (Set<EFSMTransition>)baseGraph.getAllEdges(transition.getSrc(), transition.getTgt());
 		if (availableTransitions.contains(transition)) {
@@ -409,14 +372,8 @@ public  class EFSM<
 		for (EFSMTransition transition : baseGraph.outgoingEdgesOf(curState)) {
 			if (transition.isFeasible(curContext) & transition.getTgt().equals(state)) {
 				EFSMConfiguration<State, Context> prevConfig = null;
-				if (pcs != null) {
-					prevConfig = getConfiguration();
-				}
 				curState = (State) transition.getTgt();
 				Set<OutParameter> output = transition.take(curContext);
-				if (pcs != null) {
-					pcs.firePropertyChange(PROP_CONFIGURATION, prevConfig, Pair.of(getConfiguration(), transition));
-				}
 				return output;
 			}
 		}
