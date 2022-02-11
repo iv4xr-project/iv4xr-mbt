@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,14 +14,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.Pair;
+
+import org.apache.commons.math3.stat.StatUtils;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphMetrics;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.ListenableGraph;
+import org.jgrapht.alg.scoring.AlphaCentrality;
+import org.jgrapht.alg.scoring.BetweennessCentrality;
+import org.jgrapht.alg.scoring.ClosenessCentrality;
 import org.jgrapht.alg.scoring.ClusteringCoefficient;
+import org.jgrapht.alg.scoring.Coreness;
+import org.jgrapht.alg.scoring.HarmonicCentrality;
+import org.jgrapht.alg.scoring.PageRank;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
 import org.jgrapht.alg.shortestpath.GraphMeasurer;
@@ -541,7 +552,10 @@ public  class EFSM<
 	}
 
 	public String getEfsmSummaryFeaures() {
-		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,Average Clustering Coefficient\n";
+		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,"+
+						  "Average Clustering Coefficient,Average Alpha Centrality,"+
+						  "Average Betweenness Centrality,Average Closeness Centrality,"+
+						  "Average Harmonic Centrality,Average Page Rank"+"\n";
 		
 		int n_vertex = initialBaseGraph.vertexSet().size();
 		int n_edges = initialBaseGraph.edgeSet().size();
@@ -554,13 +568,44 @@ public  class EFSM<
 		ClusteringCoefficient cf = new ClusteringCoefficient(this.initialBaseGraph);
 		double averageClusteringCoefficient = cf.getAverageClusteringCoefficient(); 
 		
+		AlphaCentrality ac = new AlphaCentrality(this.initialBaseGraph);
+		Collection<Double> acValues = ac.getScores().values();
+		Double[] acArray = acValues.toArray(new Double[acValues.size()]);
+		double acMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(acArray));
+			
+		BetweennessCentrality bc = new BetweennessCentrality<>(this.initialBaseGraph);
+		Collection<Double> bcValues = bc.getScores().values();
+		Double[] bcArray = bcValues.toArray(new Double[bcValues.size()]);
+		double bcMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(bcArray));
+		
+		ClosenessCentrality cc = new ClosenessCentrality<>(this.initialBaseGraph);
+		Collection<Double> ccValues = cc.getScores().values();
+		Double[] ccArray = ccValues.toArray(new Double[ccValues.size()]);
+		double ccMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(ccArray));
+	
+		HarmonicCentrality hc = new HarmonicCentrality<>(this.initialBaseGraph);
+		Collection<Double> hcValues = hc.getScores().values();
+		Double[] hcArray = hcValues.toArray(new Double[hcValues.size()]);
+		double hcMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(hcArray));
+		
+		PageRank pr = new PageRank<>(this.initialBaseGraph);
+		Collection<Double> prValues = pr.getScores().values();
+		Double[] prArray = prValues.toArray(new Double[prValues.size()]);
+		double prMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(prArray));
+		
+		
 		features += Integer.toString(n_vertex) + "," +
 					Integer.toString(n_edges)+","+
 					Integer.toString(n_vars)+","+
 					Double.toString(diameter)+","+
 					Integer.toString(girth)+","+
 					Double.toString(radius)+","+
-					Double.toString(averageClusteringCoefficient)+"\n";
+					Double.toString(averageClusteringCoefficient)+","+
+					Double.toString(acMean)+","+
+					Double.toString(bcMean)+","+
+					Double.toString(ccMean)+","+
+					Double.toString(hcMean)+","+
+					Double.toString(prMean)+"\n";
 		
 		return features;
 	}
