@@ -12,9 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointRelativePathCrossOver;
+import eu.fbk.iv4xr.mbt.coverage.StateCoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.ExecutionListener;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSM;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMFactory;
 //import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
@@ -62,8 +68,32 @@ class SinglePointRelativePathCrossOverTest {
 		AbstractTestSequence tc1 = (AbstractTestSequence)chromosome1.getTestcase();
 		AbstractTestSequence tc2 = (AbstractTestSequence)chromosome2.getTestcase();
 		assertTrue (((EFSMState) tc1.getPath().getStates().get(0)).getId().equalsIgnoreCase(((EFSMState) tc2.getPath().getStates().get(0)).getId()));
-		System.out.println("TC1: " + tc1.getPath().toDot());
-		System.out.println("TC2: " + tc2.getPath().toDot());
+		System.out.println("TC1: " + tc1.toString());
+		System.out.println("TC2: " + tc2.toString());
+
+		// set a goal
+		EFSMState goalState = new EFSMState("b_0");
+		StateCoverageGoal stateGoal = new StateCoverageGoal(goalState);
+		
+		// execute tc1
+		ExecutionListener tc1ExecutionListner = new EFSMTestExecutionListener(tc1, stateGoal);
+		EFSMTestExecutor.getInstance().addListner(tc1ExecutionListner);
+		ExecutionResult tc1ExecutionResult = EFSMTestExecutor.getInstance().executeTestcase(tc1);
+		ExecutionTrace tc1Trace = tc1ExecutionListner.getExecutionTrace();
+		tc1ExecutionResult.setExecutionTrace(tc1Trace);
+		tc1.setExecutionResult(tc1ExecutionResult);
+		EFSMTestExecutor.getInstance().removeListner(tc1ExecutionListner);
+		
+		// execute tc2
+		ExecutionListener tc2ExecutionListner = new EFSMTestExecutionListener(tc2, stateGoal);
+		EFSMTestExecutor.getInstance().addListner(tc2ExecutionListner);
+		ExecutionResult tc2ExecutionResult = EFSMTestExecutor.getInstance().executeTestcase(tc2);
+		ExecutionTrace tc2Trace = tc2ExecutionListner.getExecutionTrace();
+		tc2ExecutionResult.setExecutionTrace(tc2Trace);
+		tc2.setExecutionResult(tc2ExecutionResult);
+		EFSMTestExecutor.getInstance().removeListner(tc2ExecutionListner);
+		
+		
 		SinglePointRelativePathCrossOver crossoverFunction = new SinglePointRelativePathCrossOver();
 		try {
 			crossoverFunction.crossOver(chromosome1, chromosome2);

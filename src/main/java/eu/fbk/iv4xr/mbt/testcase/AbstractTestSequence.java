@@ -176,11 +176,21 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		AbstractTestSequence othertc = (AbstractTestSequence) other;
 		if (path.getTransitionAt(position1).equals(
 				(othertc.path.getTransitionAt(position2)))){
+			// the points correspond to a common transition
 			var trunk1 = path.subPath(0, position1);
 			var trunk2 = othertc.path.subPath(position2, other.getLength());
 			path.getModfiableTransitions().clear();
 			path.append(trunk1); 
 			path.append(trunk2);	
+		}else if (path.getTransitionAt(position1).getTgt().equals(
+				othertc.path.getTransitionAt(position2).getTgt())) {
+			// the points correspond to transitions with common tgt
+			var trunk1 = path.subPath(0, position1+1);
+			var trunk2 = othertc.path.subPath(position2+1, other.getLength());
+			path.getModfiableTransitions().clear();
+			path.append(trunk1); 
+			path.append(trunk2);	
+			
 		}
 		
 		// changed = true; 

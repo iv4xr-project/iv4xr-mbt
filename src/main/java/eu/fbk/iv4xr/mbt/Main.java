@@ -395,7 +395,7 @@ public class Main {
 			
 			FileUtils.writeByteArrayToFile(new File(modelFileName), EFSMFactory.getInstance().getOriginalEFSM());
 			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
-			FileUtils.writeStringToFile(featureFile, efsm.getEfsmSummaryFeaures(), Charset.defaultCharset());
+			FileUtils.writeStringToFile(featureFile, efsm.getEfsmSummaryFeatures(), Charset.defaultCharset());
 			// if csv is available
 			if (efsm.getEFSMString() != "") {
 				FileUtils.writeStringToFile(csvFile, efsm.getEFSMString(), Charset.defaultCharset());		

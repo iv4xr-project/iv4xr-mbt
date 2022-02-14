@@ -551,7 +551,7 @@ public  class EFSM<
 		this.dotString = dotString;
 	}
 
-	public String getEfsmSummaryFeaures() {
+	public String getEfsmSummaryFeatures() {
 		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,"+
 						  "Average Clustering Coefficient,Average Alpha Centrality,"+
 						  "Average Betweenness Centrality,Average Closeness Centrality,"+

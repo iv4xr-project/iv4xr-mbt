@@ -1,6 +1,7 @@
 package eu.fbk.iv4xr.mbt.algorithm.operators.crossover;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -82,37 +83,28 @@ public class ExtendedSinglePointRelativePathCrossOver extends CrossOverFunction 
 	}
 
 	
-	
+	/**
+	 * Get crossover point when both parents has some feasible prefix
+	 * @return
+	 */
 	private int[] getCrossoverPoints() {
 		int[] points = new int[2];
 		points[0] = -1;
 		points[1] = -1;
-		
-		
+			
 		EFSMPath tc1PassedPath = null;
-		EFSMPath tc1NotPassedPath = null;
 		EFSMPath tc2PassedPath = null;
-		EFSMPath tc2NotPassedPath = null;
 		
 		
 		// get feasible transitions of testcase1 and testcase2
 		if (parent1PassedTransitions > 0) {
 			tc1PassedPath = testcase1.getPath().subPath(0, parent1PassedTransitions );
-			// tc1_notPassedPath = testcase1.getPath().subPath(parent1PassedTransitions, parent1PathLength );
-			
-		}//else {
-		//	tc1_notPassedPath = testcase1.getPath();
-		//}
-		
+		}
 		if (parent2PassedTransitions > 0) {
 			tc2PassedPath = testcase2.getPath().subPath(0, parent2PassedTransitions );
-			//tc2_notPassedPath = testcase2.getPath().subPath(parent2PassedTransitions, parent2PathLength );
-			
-		}//else {
-		//	tc2_notPassedPath = testcase1.getPath();
-		//}
+		}
 		
-		
+		// use feasible prefixes to find crossover points 
 		if (tc1PassedPath != null & tc2PassedPath != null) {
 			
 			// find common states
@@ -122,34 +114,39 @@ public class ExtendedSinglePointRelativePathCrossOver extends CrossOverFunction 
 			if (commonStates.size() > 0) {
 				// find an exchange point
 				EFSMState crossoverState = (EFSMState) Randomness.choice(commonStates);
-				// identify transitions that corresponds to crossoverState
+				
+				// get ids of the transitions that end with crossover state
+				
 				List<EFSMTransition> tc1Transitions = tc1PassedPath.getTransitions();
-				EFSMTransition tc1Intersection = null;
+				Set<Integer> tc1Intersection = new LinkedHashSet<Integer>();
+				Integer tId = -1;
 				for(EFSMTransition t : tc1Transitions) {
+					tId += 1;
 					if (t.getTgt().equals(crossoverState)) {
-						tc1Intersection = t;
-						break;
+						tc1Intersection.add(tId);
 					}
 				}
-				if (tc1Intersection == null) {
-					tc1Intersection = tc1Transitions.get(0);
-				}
+				
 				
 				List<EFSMTransition> tc2Transitions = tc2PassedPath.getTransitions();
-				EFSMTransition tc2Intersection = null;
+				Set<Integer> tc2Intersection = new LinkedHashSet<Integer>();
+				tId = -1;
 				for(EFSMTransition t : tc2Transitions) {
+					tId += 1;
 					if (t.getTgt().equals(crossoverState)) {
-						tc2Intersection = t;
-						break;
+						tc2Intersection.add(tId);
 					}
 				}
-				if (tc2Intersection == null) {
-					tc2Intersection = tc2Transitions.get(0);
-				}
 				
-				points[0] = testcase1.getPath().getTransitions().indexOf(tc1Intersection);
-				points[1] = testcase2.getPath().getTransitions().indexOf(tc2Intersection);
+				if (tc1Intersection.size() > 0 && tc2Intersection.size() > 0) {
+					// choose t1 and t2
+					points[0] = Randomness.choice(tc1Intersection);
+					points[1] = Randomness.choice(tc2Intersection);
+				}//else {
+				//	System.out.println();
+				//}
 				
+
 			}
 		}
 		return points;

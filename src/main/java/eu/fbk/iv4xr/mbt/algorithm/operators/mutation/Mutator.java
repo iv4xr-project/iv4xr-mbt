@@ -176,35 +176,35 @@ public class Mutator<
 		// case passed transition are between 0 and path length
 		if (passedTransitions > 0 && passedTransitions < pathSize) {
 
-			// get first unfeasible transition
-			EFSMTransition firstUnfeasibleTransition = path.getTransitionAt(passedTransitions);
-			
-			// find an alternative path between the src and the tgt of the first unfeasible transition
-			
-			// find all paths between src and tgt of 
-			List<GraphPath> newPaths = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), firstUnfeasibleTransition.getTgt(), false, maxSubPathLenght);
-			List<GraphPath> zeroTran = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), efsm.getStates(), false, 0);
-			newPaths.removeAll(zeroTran);
-			
-			if (newPaths.size() > 1 ) {
-				EFSMPath head = path.subPath(0, passedTransitions);
-				GraphPath center = Randomness.choice(newPaths);
-				Path newPath = new Path<>();
-				//path.getModfiableTransitions().clear();
-				newPath.append(head);
-				newPath.append(new Path(center));
-				if (pathSize > passedTransitions + 1) {
-					// there is tail
-					EFSMPath tail = path.subPath(passedTransitions+1, pathSize);
-					newPath.append(tail);
-				}
-				path = newPath;
-			}
+//			// get first unfeasible transition
+//			EFSMTransition firstUnfeasibleTransition = path.getTransitionAt(passedTransitions);
+//			
+//			// find an alternative path between the src and the tgt of the first unfeasible transition
+//			
+//			// find all paths between src and tgt of 
+//			List<GraphPath> newPaths = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), firstUnfeasibleTransition.getTgt(), false, minSubPathLenght);
+//			List<GraphPath> zeroTran = allDirectedPathCalculator.getAllPaths(firstUnfeasibleTransition.getSrc(), efsm.getStates(), false, 0);
+//			newPaths.removeAll(zeroTran);
+//			
+//			if (newPaths.size() > 1 ) {
+//				EFSMPath head = path.subPath(0, passedTransitions);
+//				GraphPath center = Randomness.choice(newPaths);
+//				Path newPath = new Path<>();
+//				//path.getModfiableTransitions().clear();
+//				newPath.append(head);
+//				newPath.append(new Path(center));
+//				if (pathSize > passedTransitions + 1) {
+//					// there is tail
+//					EFSMPath tail = path.subPath(passedTransitions+1, pathSize);
+//					newPath.append(tail);
+//				}
+//				path = newPath;
+//			}
 			
 			// remove unfeasible subpath
-//			EFSMPath subPath = path.subPath(0, passedTransitions);
-//			path.getModfiableTransitions().clear();
-//			path.append(subPath);
+			EFSMPath subPath = path.subPath(0, passedTransitions);
+			path.getModfiableTransitions().clear();
+			path.append(subPath);
 			return;
 		}
 

@@ -99,7 +99,8 @@ public class RandomParameterLengthTestFactory<
 			model.transition(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
-			currentState = model.getConfiguration().getState(); // transition.getTgt();
+			//currentState = model.getConfiguration().getState(); // transition.getTgt();
+			currentState = transition.getTgt();
 			
 			// until maxLength is reached or final state is reached
 			len++;
