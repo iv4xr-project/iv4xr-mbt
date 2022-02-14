@@ -60,7 +60,7 @@ public class EFSMTestExecutionListener<
 
 	private static final Logger logger = LoggerFactory.getLogger(EFSMTestExecutor.class);
 	
-	private ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionTrace = null;
+	private ExecutionTrace executionTrace = null;
 	
 	private double pathApproachLevel = Double.MAX_VALUE;
 	private double pathBranchDistance = Double.MAX_VALUE;
@@ -81,6 +81,7 @@ public class EFSMTestExecutionListener<
 	private boolean targetInPath;
 	
 	private boolean currentGoalCovered = false;
+	private List<EFSMContext> contexts;
 	
 	// constant used in branch distance calculation
 	final static int K = 1;
@@ -97,8 +98,9 @@ public class EFSMTestExecutionListener<
 		
 		targetInPath = EFSMPathUtils.pathContainsTarget(path, goal);
 		
-		executionTrace = new ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
+		executionTrace = new ExecutionTrace();
 		pathLength = this.testcase.getLength();
+		contexts = new ArrayList<EFSMContext>();
 	}
 
 	/**
@@ -195,6 +197,7 @@ public class EFSMTestExecutionListener<
 		executionTrace.setTargetBranchDistance(normalize(targetBranchDistance));
 		
 		executionTrace.setPassedTransitions(passedTransitions);
+		executionTrace.setContexts(contexts);
 		
 		executionTrace.setSuccess(successful);
 	}
@@ -268,6 +271,10 @@ public class EFSMTestExecutionListener<
 			throw new RuntimeException("Unsupported target type: " + goal.toString());
 		}
 		
+		// add the context corresponding to the transition just executed to the trace
+		// get the current configuration from the model. At this point the context should contain the current context of execution
+		contexts.add(EFSMFactory.getInstance().getEFSM().getConfiguration().getContext().clone());
+				
 	}
 	
 	
@@ -448,7 +455,7 @@ public class EFSMTestExecutionListener<
 	 * @return the executionTrace
 	 */
 	@Override
-	public ExecutionTrace<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getExecutionTrace() {
+	public ExecutionTrace getExecutionTrace() {
 		return executionTrace;
 	}
 	

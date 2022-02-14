@@ -4,8 +4,10 @@
 package eu.fbk.iv4xr.mbt.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
@@ -23,21 +25,14 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class ExecutionTrace<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Serializable{
+public class ExecutionTrace implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3139864863859510093L;
-	private Collection<State> coveredStates = new HashSet<State>();
-	private Collection<Transition> coveredTransitions = new HashSet<Transition>();
+	private Collection<EFSMState> coveredStates = new HashSet<EFSMState>();
+	private Collection<EFSMTransition> coveredTransitions = new HashSet<EFSMTransition>();
 	private boolean currentGoalCovered;
 	
 	private double pathBranchDistance;
@@ -48,6 +43,7 @@ public class ExecutionTrace<
 	
 	private boolean success;
 	private int passedTransitions = -1;
+	private List<EFSMContext> contexts = new ArrayList<EFSMContext>();
 	
 	/**
 	 * 
@@ -59,28 +55,28 @@ public class ExecutionTrace<
 	/**
 	 * @return the coveredStates
 	 */
-	public Collection<State> getCoveredStates() {
+	public Collection<EFSMState> getCoveredStates() {
 		return coveredStates;
 	}
 
 	/**
 	 * @param coveredStates the coveredStates to set
 	 */
-	public void setCoveredStates(Collection<State> coveredStates) {
+	public void setCoveredStates(Collection<EFSMState> coveredStates) {
 		this.coveredStates = coveredStates;
 	}
 
 	/**
 	 * @return the coveredTransitions
 	 */
-	public Collection<Transition> getCoveredTransitions() {
+	public Collection<EFSMTransition> getCoveredTransitions() {
 		return coveredTransitions;
 	}
 
 	/**
 	 * @param coveredTransitions the coveredTransitions to set
 	 */
-	public void setCoveredTransitions(Collection<Transition> coveredTransitions) {
+	public void setCoveredTransitions(Collection<EFSMTransition> coveredTransitions) {
 		this.coveredTransitions = coveredTransitions;
 	}
 
@@ -178,14 +174,14 @@ public class ExecutionTrace<
 	
 	@Override
 	protected ExecutionTrace clone() {
-		ExecutionTrace copy = new ExecutionTrace<>();
+		ExecutionTrace copy = new ExecutionTrace();
 		if (coveredStates != null) {
-			for (State state : coveredStates) {
+			for (EFSMState state : coveredStates) {
 				copy.getCoveredStates().add(state.clone());
 			}
 		}
 		if (coveredTransitions != null) {
-			for (Transition transition : coveredTransitions) {
+			for (EFSMTransition transition : coveredTransitions) {
 				copy.getCoveredTransitions().add(transition.clone());
 			}
 		}
@@ -196,6 +192,25 @@ public class ExecutionTrace<
 		copy.setTargetApproachLevel(targetApproachLevel);
 		copy.setSuccess(success);
 		copy.setPassedTransitions(passedTransitions);
+		if (contexts != null) {
+			for (EFSMContext context : contexts) {
+				copy.getContexts().add(context.clone());
+			}
+		}
 		return copy;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public List<EFSMContext> getContexts() {
+		return contexts;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContexts(List<EFSMContext> contexts) {
+		this.contexts = contexts;
 	}
 }
