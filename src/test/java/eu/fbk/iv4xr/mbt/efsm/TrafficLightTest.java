@@ -24,7 +24,15 @@ public class TrafficLightTest {
 		
 		m.transition(null, tl.green);
 		assertTrue(m.curState.equals(tl.red));	
-		assertFalse(m.curState.equals(tl.green));	
+		assertFalse(m.curState.equals(tl.green));
+
+		//
+		
+		m.transition(null, tl.yellow);
+		assertTrue(m.curState.equals(tl.red));	
+		assertFalse(m.curState.equals(tl.yellow));
+		
+		
 		
 	}
 	
