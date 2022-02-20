@@ -64,6 +64,9 @@ public class Mutator<
 	 * @param executionResult
 	 */
 	public void mutate(ExecutionResult executionResult) {
+		if (this.pathSize != path.getLength()) {
+			this.pathSize = path.getLength();
+		}
 		// set the number of passed transitions
 		if (executionResult != null) {
 			// information about execution si available and can be used
@@ -89,7 +92,7 @@ public class Mutator<
 	 * Randomly choose a feasiblity aware mutation
 	 * @param executionResult
 	 */
-	public void mutate_feasible(ExecutionResult executionResult) {
+	private void mutate_feasible(ExecutionResult executionResult) {
 		//double choice = Randomness.nextDouble();
 		removeFirstNotFeasible(executionResult);
 	}
@@ -98,7 +101,7 @@ public class Mutator<
 	/**
 	 * try to remove the first not feasible transition
 	 */
-	public void removeFirstNotFeasible(ExecutionResult executionResult) {
+	private void removeFirstNotFeasible(ExecutionResult executionResult) {
 
 		// case of passedTransitions equals to 0
 		// no feasible transitions in the path so try to change the first one
@@ -139,7 +142,7 @@ public class Mutator<
 	 * Randomly choose a path mutation
 	 * @param executionResult
 	 */
-	public void mutate_path(ExecutionResult executionResult) {
+	private void mutate_path(ExecutionResult executionResult) {
 		double choice = Randomness.nextDouble();
 		
 		if (choice < 0.33) {
