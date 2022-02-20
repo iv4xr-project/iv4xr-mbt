@@ -43,6 +43,7 @@ public class ExecutionTrace implements Serializable{
 	
 	private boolean success;
 	private int passedTransitions = -1;
+	private int branchPointPassedTransitions = -1;
 	private List<EFSMContext> contexts = new ArrayList<EFSMContext>();
 	
 	/**
@@ -172,6 +173,14 @@ public class ExecutionTrace implements Serializable{
 		return this.passedTransitions;
 	}
 	
+	public int getBranchPointPassedTransitions() {
+		return branchPointPassedTransitions;
+	}
+
+	public void setBranchPointPassedTransitions(int branchPointPassedTransitions) {
+		this.branchPointPassedTransitions = branchPointPassedTransitions;
+	}
+
 	@Override
 	protected ExecutionTrace clone() {
 		ExecutionTrace copy = new ExecutionTrace();

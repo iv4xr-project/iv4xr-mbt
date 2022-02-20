@@ -12,6 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoalConstrainedTransitionCoverageGoal;
 import eu.fbk.iv4xr.mbt.coverage.KTransitionCoverageGoal;
@@ -45,7 +46,7 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
 import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
 
 /**
- * @author kifetew
+ * @author kifetew, prandi
  *
  */
 public class EFSMTestExecutionListener<
@@ -66,6 +67,7 @@ public class EFSMTestExecutionListener<
 	private double pathBranchDistance = Double.MAX_VALUE;
 	private int passedTransitions = 0;
 	private int pathLength;
+	private int branchPointPassedTransitions = -1;
 	
 	// number of transitions until the current target
 	private int distanceToTarget;
@@ -88,8 +90,9 @@ public class EFSMTestExecutionListener<
 	
 	public final static Double PENALITY1 = 100d;
 	public final static Double PENALITY2 = 1000d; //Double.MAX_VALUE;
+	
 	/**
-	 * 
+	 * Constructor take a test case and a coverage goal
 	 */
 	public EFSMTestExecutionListener(Testcase testcase, CoverageGoal testGoal) {
 		this.testcase = testcase;
@@ -103,71 +106,174 @@ public class EFSMTestExecutionListener<
 		contexts = new ArrayList<EFSMContext>();
 	}
 
-	/**
-	 * this method should handle the case where the path is valid but does not contain the target
-	 * @return
-	 */
-	private void _computeDistanceToTarget() {
-		double bd = Double.MAX_VALUE;
-		double al = 0;
-		
-		EFSMState target;
-		if (goal instanceof StateCoverageGoal) {
-			target = ((StateCoverageGoal)goal).getState();
-		}else if (goal instanceof TransitionCoverageGoal) {
-			target = ((TransitionCoverageGoal)goal).getTransition().getSrc();
-			al = 1;
-		}else {
-			throw new RuntimeException("Unsupported target type: " + goal);
-		}
-		
-		// get shortest paths
-		if (target.equals(path.getTgt())) {
-			// this case should happen only when the target is a transition, and that the end of the path is the same as the source of the target transition
-			// in this case, the al = 0, and bd should be calculated on the goal transition itself
-			if (! (goal instanceof TransitionCoverageGoal)) {
-				throw new RuntimeException("Path end and target beginning the same for target: " + goal.toString());
-			}else {
-				TransitionCoverageGoal targetTransition = (TransitionCoverageGoal)goal;
-				if (targetTransition.getTransition().getGuard() == null) {
-					bd = 0;
-				}else {
-					bd = computeBranchDistance(targetTransition.getTransition().getGuard().getGuard());
-					logger.debug("Guard1: {} BD: {}", targetTransition.getTransition().getGuard().getGuard().toDebugString(), bd);
-				}
-			}
-		}else {
-			List<EFSMPath> shortestPaths = new ArrayList<>();
-			Set sps = EFSMFactory.getInstance().getEFSM().getShortestPaths(path.getTgt(), target);
-			shortestPaths.addAll(sps);
-			
-			// approach level is +1 in case the target is a Transition 
-			al += shortestPaths.get(0).getLength();
-	
-			// calculate the minimum branch distance for the transitions outgoing from the end of the path
-			for (EFSMPath sp : shortestPaths) {
-				// compute branch distance for the first transition in the shortest path (outgoing from the last node of the path)
-				double d;
-				if (sp.getTransitionAt(0).getGuard() != null) {
-					d = computeBranchDistance(sp.getTransitionAt(0).getGuard().getGuard());
-				}else {
-					d = 0;
-				}
-				if (d < bd) {
-					bd = d;
-				}
-			}
-		}
-		targetApproachLevel = al;
-		targetBranchDistance = normalize(bd);
-		//System.err.println("TC: \n" + path.toString() + "\nTgt: " + goal.toString() + " : " + "AL: " + al + " BD: " + targetBranchDistance);
-	}
-
 	@Override
 	public void executionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor) {
 		
 	}
+	
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////////
+	//
+	// Code to compute target approach level
+	//
+	/////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Compute the shortest path between all the and the target of the goal
+	 * @return
+	 */
+	private double getTargetApproachLevel_MIN_SHORTEST_PATH() {
+		
+		EFSMState targetState;
+		Integer goalLength = 0;
+		// depending on the goal get the target state and the length of the goal
+		if (goal instanceof StateCoverageGoal) {
+			StateCoverageGoal sgoal = (StateCoverageGoal) goal;
+			targetState = sgoal.getState();
+		} else if (goal instanceof TransitionCoverageGoal) {
+			TransitionCoverageGoal sgoal = (TransitionCoverageGoal) goal;
+			targetState = sgoal.getTransition().getSrc();
+			goalLength = 1;
+		} else if (goal instanceof KTransitionCoverageGoal) {
+			KTransitionCoverageGoal sgoal = (KTransitionCoverageGoal) goal;
+			EFSMPath kTransition = sgoal.getKTransition();
+			targetState = kTransition.getSrc();
+			goalLength = kTransition.getLength();
+		} else if (goal instanceof CoverageGoalConstrainedTransitionCoverageGoal) {
+			CoverageGoalConstrainedTransitionCoverageGoal sgoal = (CoverageGoalConstrainedTransitionCoverageGoal) goal;
+			targetState = sgoal.getTransition().getSrc();
+			goalLength = 1;
+		} else {
+			throw new RuntimeException("Unsupported target type: " + goal.toString());
+		}
+	
+		// Ignore initial state?
+		// EFSMState initialState = EFSMFactory.getInstance().getEFSM().getInitialConfiguration().getState();
+		// double shortestPathDistance = EFSMFactory.getInstance().getEFSM().getShortestPathDistance(initialState, targetState);
+		double shortestPathDistance = Double.MAX_VALUE;
+		
+		// iterate over path
+		// TODO need to check if can be casted
+		AbstractTestSequence ats = (AbstractTestSequence) testcase;
+		for (int i = 0; i < passedTransitions; i++) {
+			EFSMState src = ats.getPath().getTransitionAt(i).getTgt();
+			double dist = EFSMFactory.getInstance().getEFSM().getShortestPathDistance(src, targetState);
+			if (dist < shortestPathDistance ) {
+				shortestPathDistance = dist;
+				branchPointPassedTransitions = i;
+			}		
+		}
+		
+		return shortestPathDistance + goalLength;
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private double getTargetApproachLevel_SHORTEST_PATH_FROM_LAST_FEASIBLE() {
+		
+		if (passedTransitions > 0) {
+			EFSMState targetState;
+			Integer goalLength = 0;
+			// depending on the goal get the target state and the length of the goal
+			if (goal instanceof StateCoverageGoal) {
+				StateCoverageGoal sgoal = (StateCoverageGoal) goal;
+				targetState = sgoal.getState();
+			} else if (goal instanceof TransitionCoverageGoal) {
+				TransitionCoverageGoal sgoal = (TransitionCoverageGoal) goal;
+				targetState = sgoal.getTransition().getSrc();
+				goalLength = 1;
+			} else if (goal instanceof KTransitionCoverageGoal) {
+				KTransitionCoverageGoal sgoal = (KTransitionCoverageGoal) goal;
+				EFSMPath kTransition = sgoal.getKTransition();
+				targetState = kTransition.getSrc();
+				goalLength = kTransition.getLength();
+			} else if (goal instanceof CoverageGoalConstrainedTransitionCoverageGoal) {
+				CoverageGoalConstrainedTransitionCoverageGoal sgoal = (CoverageGoalConstrainedTransitionCoverageGoal) goal;
+				targetState = sgoal.getTransition().getSrc();
+				goalLength = 1;
+			} else {
+				throw new RuntimeException("Unsupported target type: " + goal.toString());
+			}
+			AbstractTestSequence ats = (AbstractTestSequence) testcase;
+			EFSMTransition lastValidTransition = ats.getPath().getTransitionAt(passedTransitions-1);
+			branchPointPassedTransitions = passedTransitions-1;
+			double shortestPathDistance = EFSMFactory.getInstance().getEFSM().getShortestPathDistance(lastValidTransition.getTgt(), targetState);
+			return(shortestPathDistance+goalLength);
+		}else {
+			return PENALITY1;
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	//
+	// Code to compute target branch distance
+	//
+	/////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the branch distance of the shortest path identified by method getTargetApproachLevel
+	 * @return
+	 */
+	private double getTargetBranchDistance() {
+		
+		// if branchPointPassedTransitions < 0, the target is not reachable
+		double targetBranchDistance = PENALITY1;
+		
+		if (branchPointPassedTransitions > -1) {
+			EFSMState targetState;
+			if (goal instanceof StateCoverageGoal) {
+				StateCoverageGoal sgoal = (StateCoverageGoal) goal;
+				targetState = sgoal.getState();
+			} else if (goal instanceof TransitionCoverageGoal) {
+				TransitionCoverageGoal sgoal = (TransitionCoverageGoal) goal;
+				targetState = sgoal.getTransition().getSrc();
+			} else if (goal instanceof KTransitionCoverageGoal) {
+				KTransitionCoverageGoal sgoal = (KTransitionCoverageGoal) goal;
+				EFSMPath kTransition = sgoal.getKTransition();
+				targetState = kTransition.getSrc();;
+			} else if (goal instanceof CoverageGoalConstrainedTransitionCoverageGoal) {
+				CoverageGoalConstrainedTransitionCoverageGoal sgoal = (CoverageGoalConstrainedTransitionCoverageGoal) goal;
+				targetState = sgoal.getTransition().getSrc();
+			} else {
+				throw new RuntimeException("Unsupported target type: " + goal.toString());
+			}
+			
+			// get the shorted path between the branch point and the target
+			AbstractTestSequence ats = (AbstractTestSequence) testcase;
+			
+			// get the branch path using the shortest path
+			EFSMState branchState = ats.getPath().getTransitionAt(branchPointPassedTransitions).getTgt();				
+			Set<EFSMPath> shortestPaths = EFSMFactory.getInstance().getEFSM().getShortestPaths(branchState, targetState);
+			// check if a path to the target exists
+			if (shortestPaths.iterator().hasNext()) {
+				// take the context at branch point
+				EFSMContext branchContext = contexts.get(branchPointPassedTransitions);
+				// compute branch distance at branch point, using the first transition of the shortes path	
+				EFSMPath next = shortestPaths.iterator().next();
+				EFSMTransition firstTransition = next.getTransitionAt(0);
+				EFSMGuard guard = firstTransition.getGuard();
+				if (guard != null) {
+					Exp<Boolean> guardExpression = guard.getGuard();
+					// update guard expression with branch Context
+					guardExpression.update(branchContext.getContext());
+					targetBranchDistance = computeBranchDistance (guardExpression);					
+				}else {
+					targetBranchDistance = 0;
+				}			
+			}			
+		}
+		return targetBranchDistance;
+	}
+	
+	
+	/**
+	 * When the execution is finished compute all the components needed for fitness function
+	 */
 	@Override
 	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, boolean successful) {
 		
@@ -178,13 +284,37 @@ public class EFSMTestExecutionListener<
 			if (targetInPath) {
 				targetApproachLevel = 0d;
 				targetBranchDistance = 0d;
-			}else {
-				targetApproachLevel = PENALITY1;
-				targetBranchDistance = PENALITY1;
+			}else {		
+				// select target approach level function
+				switch (MBTProperties.TARGET_APPROACH_LEVEL) {
+				case NONE:
+					targetApproachLevel = PENALITY1;
+					break;
+				case MIN_SHORTEST_PATH:
+					targetApproachLevel = getTargetApproachLevel_MIN_SHORTEST_PATH();
+					break;
+				case SHORTEST_PATH_FROM_LAST_FEASIBLE:
+					targetApproachLevel = getTargetApproachLevel_SHORTEST_PATH_FROM_LAST_FEASIBLE();
+					break;
+				default:
+					throw new RuntimeException("Unsupported target approach level: " + MBTProperties.TARGET_APPROACH_LEVEL);
+				}
+
+				// select target branch distance function
+				switch (MBTProperties.TARGET_BRANCH_DISTANCE) {
+				case NONE:
+					targetBranchDistance = PENALITY1;
+					break;
+				case FIRST_BRANCH_GUARD:
+					targetBranchDistance = getTargetBranchDistance();
+				}
+				
 			}
 		}else {
 			// this case should already be handled when the transition failed (in transitionFinished())
 			//NOPE
+			//targetApproachLevel = getTargetApproachLevel();
+			//targetBranchDistance = getTargetBranchDistance();
 		}
 		
 		// write data into execution trace
@@ -197,6 +327,8 @@ public class EFSMTestExecutionListener<
 		executionTrace.setTargetBranchDistance(normalize(targetBranchDistance));
 		
 		executionTrace.setPassedTransitions(passedTransitions);
+		executionTrace.setBranchPointPassedTransitions(branchPointPassedTransitions);
+		
 		executionTrace.setContexts(contexts);
 		
 		executionTrace.setSuccess(successful);
@@ -459,5 +591,74 @@ public class EFSMTestExecutionListener<
 		return executionTrace;
 	}
 	
+	
+	/////////////////////////////////////////////////////////////////////////
+	//
+	// Some old code
+	//
+	/////////////////////////////////////////////////////////////////////////
+
+	
+	/**
+	 * this method should handle the case where the path is valid but does not contain the target
+	 * @return
+	 */
+	private void _computeDistanceToTarget() {
+		double bd = Double.MAX_VALUE;
+		double al = 0;
+		
+		EFSMState target;
+		if (goal instanceof StateCoverageGoal) {
+			target = ((StateCoverageGoal)goal).getState();
+		}else if (goal instanceof TransitionCoverageGoal) {
+			target = ((TransitionCoverageGoal)goal).getTransition().getSrc();
+			al = 1;
+		}else {
+			throw new RuntimeException("Unsupported target type: " + goal);
+		}
+		
+		// get shortest paths
+		if (target.equals(path.getTgt())) {
+			// this case should happen only when the target is a transition, and that the end of the path is the same as the source of the target transition
+			// in this case, the al = 0, and bd should be calculated on the goal transition itself
+			if (! (goal instanceof TransitionCoverageGoal)) {
+				throw new RuntimeException("Path end and target beginning the same for target: " + goal.toString());
+			}else {
+				TransitionCoverageGoal targetTransition = (TransitionCoverageGoal)goal;
+				if (targetTransition.getTransition().getGuard() == null) {
+					bd = 0;
+				}else {
+					bd = computeBranchDistance(targetTransition.getTransition().getGuard().getGuard());
+					logger.debug("Guard1: {} BD: {}", targetTransition.getTransition().getGuard().getGuard().toDebugString(), bd);
+				}
+			}
+		}else {
+			List<EFSMPath> shortestPaths = new ArrayList<>();
+			Set sps = EFSMFactory.getInstance().getEFSM().getShortestPaths(path.getTgt(), target);
+			shortestPaths.addAll(sps);
+			
+			// approach level is +1 in case the target is a Transition 
+			al += shortestPaths.get(0).getLength();
+	
+			// calculate the minimum branch distance for the transitions outgoing from the end of the path
+			for (EFSMPath sp : shortestPaths) {
+				// compute branch distance for the first transition in the shortest path (outgoing from the last node of the path)
+				double d;
+				if (sp.getTransitionAt(0).getGuard() != null) {
+					d = computeBranchDistance(sp.getTransitionAt(0).getGuard().getGuard());
+				}else {
+					d = 0;
+				}
+				if (d < bd) {
+					bd = d;
+				}
+			}
+		}
+		targetApproachLevel = al;
+		targetBranchDistance = normalize(bd);
+		//System.err.println("TC: \n" + path.toString() + "\nTgt: " + goal.toString() + " : " + "AL: " + al + " BD: " + targetBranchDistance);
+	}
+
+
 
 }

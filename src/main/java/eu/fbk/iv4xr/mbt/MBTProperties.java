@@ -79,6 +79,36 @@ public class MBTProperties {
 	/*
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
+	
+	/*
+	 * Parameters to control fitness function. 
+	 * Fitness function has four component: feasibility approach level, feasibility branch distance, 
+	 * target approach level, target branch distance
+	 */
+	public enum FeasibilityApproachLevel{
+		NUMBER_UNFEASBILE_TRANSITIONS, NONE;
+	}
+	@Parameter(key = "feasibility_approach_level", group = "Fitness function", description = "Feasibility approach level function")
+	public static FeasibilityApproachLevel FEASIBILITY_APPROACH_LEVEL = FeasibilityApproachLevel.NUMBER_UNFEASBILE_TRANSITIONS;
+	
+	public enum FeasibilityBranchDistance{
+		LAST_TRANSITION_GUARD, NONE;
+	}
+	@Parameter(key = "feasibility_branch_distance", group = "Fitness function", description = "Feasibility branch distance function")
+	public static FeasibilityBranchDistance FEASIBILITY_BRANCH_DISTANCE = FeasibilityBranchDistance.LAST_TRANSITION_GUARD;
+	
+	public enum TargetApproachLevel{
+		SHORTEST_PATH_FROM_LAST_FEASIBLE, MIN_SHORTEST_PATH, NONE; 
+	}
+	@Parameter(key = "target_approach_level", group = "Fitness function", description = "Target approach level function")
+	public static TargetApproachLevel TARGET_APPROACH_LEVEL = TargetApproachLevel.NONE;
+	
+	public enum TargetBranchDistance{
+		FIRST_BRANCH_GUARD, NONE;
+	}
+	@Parameter(key = "target_branch_distance", group = "Fitness function", description = "Target branch distance function")
+	public static TargetBranchDistance TARGET_BRANCH_DISTANCE = TargetBranchDistance.NONE;
+	
 
 	@Parameter(key = "sanity_check_fitness", group = "Search Algorithm", description = "Sanity check for fitness function, return random value")
 	public static boolean SANITY_CHECK_FITNESS = false;

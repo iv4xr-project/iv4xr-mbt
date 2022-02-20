@@ -38,6 +38,7 @@ import org.jgrapht.alg.shortestpath.GraphMeasurer;
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 
+import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 import eu.fbk.iv4xr.mbt.utils.VertexToIntegerMap;
 
@@ -121,6 +122,8 @@ public  class EFSM<
 					State initialState, 
 					Context initalContext,
 					EFSMParameterGenerator<InParameter> parameterSet) {
+		
+		// TODO try to not clone initial state
 		this.curState = this.initialState = initialState;
 		this.curContext = (Context) initalContext.clone();
 		this.initialContext = (Context) initalContext.clone();
@@ -131,6 +134,7 @@ public  class EFSM<
 		// final DirectedPseudograph<State, Transition> tmp = new DirectedPseudograph<>(null);
 		Graphs.addGraph(tmp, baseGraph);
 
+		// TODO do we need listtenable graph
 		this.baseGraph = new DefaultListenableGraph<State, EFSMTransition>(tmp, true);
 		this.initialBaseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)this.baseGraph);
 		
@@ -317,14 +321,46 @@ public  class EFSM<
 		return SerializationUtils.clone(this);
 	}
 
+	/** 
+	 * Reset EFSM to its initial state. The method uses clone method based on serialization and deserialization
+	 * and it is quite inefficient for large graphs
+	 * @param config
+	 * @param initialBaseGraph2
+	 */
 	public void forceConfiguration(EFSMConfiguration<State, Context> config, ListenableGraph<State, EFSMTransition> initialBaseGraph2) {
-		EFSMConfiguration<State, Context> prefConfig = null;
+		//EFSMConfiguration<State, Context> prefConfig = null;
 		this.curState = (State) config.getState().clone();
 		this.curContext = (Context) config.getContext().clone();
 		this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
 		setTransitionsMap();
 	}
-	  
+	
+	
+	/**
+	 * Reset EFSM based that only updates variables value in the context
+	 * @param config
+	 * @param initialBaseGraph2
+	 */
+	public void _forceConfiguration(EFSMConfiguration<State, Context> config, ListenableGraph<State, EFSMTransition> initialBaseGraph2) {
+		//EFSMConfiguration<State, Context> prefConfig = null;
+		this.curState = (State) config.getState().clone();
+		
+		// update variables in cur context with values in initial context
+		Set<String> contextVar = curContext.getContext().getHash().keySet();
+		
+		for(String varId: contextVar) {
+			
+			Var variable = initialContext.getContext().getVariable(varId);
+			curContext.getContext().update(varId, variable.getValue());
+			
+		}
+		
+		//this.curContext = (Context) config.getContext().clone();
+		//this.baseGraph = SerializationUtils.clone((DefaultListenableGraph<State, EFSMTransition>)initialBaseGraph2);
+		//setTransitionsMap();
+	}
+	
+	
 	/**
 	 * Save in a file to path. 
 	 * Parameter mode allow to specify the type of output 
