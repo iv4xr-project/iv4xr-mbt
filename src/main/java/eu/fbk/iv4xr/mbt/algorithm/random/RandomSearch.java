@@ -22,8 +22,13 @@
  */
 package eu.fbk.iv4xr.mbt.algorithm.random;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
+import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +48,9 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RandomSearch.class);
 
+	/** Boolean vector to indicate whether each test goal is covered or not. **/
+	protected Set<FitnessFunction<T>> uncoveredGoals = new LinkedHashSet<FitnessFunction<T>>();
+	
 	/**
 	 * <p>
 	 * Constructor for RandomSearch.
@@ -64,15 +72,28 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 	@Override
 	protected void evolve() {
 		T newChromosome = chromosomeFactory.getChromosome();
-		getFitnessFunction().getFitness(newChromosome);
-		notifyEvaluation(newChromosome);
-//		if (newChromosome.compareTo(getBestIndividual()) <= 0) {
-//			logger.info("New fitness: " + newChromosome.getFitness());
-//			population.set(0, newChromosome);
-//		}
+		calculateFitness(newChromosome);
+//		getFitnessFunction().getFitness(newChromosome);
+//		notifyEvaluation(newChromosome);
 		currentIteration++;
 	}
 
+	
+	/** {@inheritDoc} */
+	protected void calculateFitness(T c) {
+		for (FitnessFunction<T> fitnessFunction : this.fitnessFunctions) {
+			// evaluate only if the goal is uncovered?
+			if (uncoveredGoals.contains(fitnessFunction)) {
+				double value = fitnessFunction.getFitness(c);
+				if (value == 0.0) {
+					uncoveredGoals.remove(fitnessFunction);
+				}
+				notifyEvaluation(c);
+			}
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see org.evosuite.ga.GeneticAlgorithm#initializePopulation()
 	 */
@@ -89,9 +110,12 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 	/** {@inheritDoc} */
 	@Override
 	public void generateSolution() {
+		// keep track of covered goals
+		for (FitnessFunction<T> goal : fitnessFunctions) {
+			uncoveredGoals.add(goal);
+		}
+		
 		notifySearchStarted();
-		if (population.isEmpty())
-			initializePopulation();
 
 		currentIteration = 0;
 		while (!isFinished()) {
