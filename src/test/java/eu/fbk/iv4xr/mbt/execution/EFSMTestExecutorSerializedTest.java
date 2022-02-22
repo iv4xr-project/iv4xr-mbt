@@ -54,6 +54,7 @@ class EFSMTestExecutorSerializedTest {
 			assertFalse(result.isSuccess());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
+			fail();
 			e.printStackTrace();
 		}
 	}
