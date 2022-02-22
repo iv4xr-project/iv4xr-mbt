@@ -1,6 +1,7 @@
 package eu.fbk.iv4xr.mbt.efsm.exp;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class VarSet<T> implements Cloneable, Serializable {
 		}else {
 			throw new RuntimeException("Variabile id "+id+" is not present");
 		}
+	}
+	
+	public Collection<Var<T>> getAllVariables(){
+		return varSet.values();
 	}
 	
 	public void add(VarSet<T> addVarSet){

@@ -23,15 +23,7 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * @author kifetew
  *
  */
-public class PathCoverageGoal<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class PathCoverageGoal extends CoverageGoal{
 	
 		/**
 	 * 

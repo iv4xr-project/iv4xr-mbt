@@ -49,15 +49,7 @@ import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
  * @author kifetew, prandi
  *
  */
-public class EFSMTestExecutionListener<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		implements ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class EFSMTestExecutionListener implements ExecutionListener{
 
 	private static final Logger logger = LoggerFactory.getLogger(EFSMTestExecutor.class);
 	
@@ -107,7 +99,7 @@ public class EFSMTestExecutionListener<
 	}
 
 	@Override
-	public void executionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor) {
+	public void executionStarted(TestExecutor testExecutor) {
 		
 	}
 	
@@ -275,7 +267,7 @@ public class EFSMTestExecutionListener<
 	 * When the execution is finished compute all the components needed for fitness function
 	 */
 	@Override
-	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, boolean successful) {
+	public void executionFinished(TestExecutor testExecutor, boolean successful) {
 		
 		if (successful) { // path is valid
 			pathApproachLevel = 0d;
@@ -335,12 +327,12 @@ public class EFSMTestExecutionListener<
 	}
 
 	@Override
-	public void transitionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t) {
+	public void transitionStarted(TestExecutor testExecutor, EFSMTransition t) {
 		
 	}
 
 //	@Override
-	public void _transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+	public void _transitionFinished(TestExecutor testExecutor, EFSMTransition t, boolean successful) {
 		if (successful) {
 			passedTransitions ++;
 			executionTrace.getCoveredTransitions().add(t);
@@ -354,7 +346,7 @@ public class EFSMTestExecutionListener<
 			}
 		}else {
 			// compute branch distance of failing guard
-			Guard guard = t.getGuard();
+			EFSMGuard guard = t.getGuard();
 			Exp<Boolean> guardExpression = guard.getGuard();
 			double pathBD = computeBranchDistance (guardExpression);
 			logger.debug("Guard2: {} BD: {}", guardExpression.toDebugString(), pathBD);
@@ -388,7 +380,7 @@ public class EFSMTestExecutionListener<
 	 * @param successful
 	 */
 	@Override
-	public void transitionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+	public void transitionFinished(TestExecutor testExecutor, EFSMTransition t, boolean successful) {
 		
 		// depending on the goal use a different approach
 		if (goal instanceof StateCoverageGoal) {
@@ -410,7 +402,7 @@ public class EFSMTestExecutionListener<
 	}
 	
 	
-	private void transitionFinished_simpleUpdate(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean successful) {
+	private void transitionFinished_simpleUpdate(TestExecutor testExecutor, EFSMTransition t, boolean successful) {
 		if (successful) {
 			passedTransitions ++;
 			executionTrace.getCoveredTransitions().add(t);
@@ -424,7 +416,7 @@ public class EFSMTestExecutionListener<
 			}
 		}else {
 			// compute branch distance of failing guard
-			Guard guard = t.getGuard();
+			EFSMGuard guard = t.getGuard();
 			Exp<Boolean> guardExpression = guard.getGuard();
 			double pathBD = computeBranchDistance (guardExpression);
 			logger.debug("Guard2: {} BD: {}", guardExpression.toDebugString(), pathBD);
@@ -454,7 +446,7 @@ public class EFSMTestExecutionListener<
 	}
 
 	// is the transition just executed the current test target (or part of it)?
-	private boolean isCurrentTarget(Transition t) {
+	private boolean isCurrentTarget(EFSMTransition t) {
 		if (goal instanceof TransitionCoverageGoal) {
 			return t.equals(((TransitionCoverageGoal)goal).getTransition());
 		} else if (goal instanceof StateCoverageGoal) {

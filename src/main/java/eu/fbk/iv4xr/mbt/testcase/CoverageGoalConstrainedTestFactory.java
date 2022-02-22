@@ -37,22 +37,21 @@ import org.jgrapht.graph.GraphWalk;
  * @author kifetew
  *
  */
-public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParameter extends EFSMParameter, OutParameter extends EFSMParameter, Context extends EFSMContext, Operation extends EFSMOperation, Guard extends EFSMGuard, Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
-		implements TestFactory {
+public class CoverageGoalConstrainedTestFactory implements TestFactory {
 
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(CoverageGoalConstrainedTestFactory.class);
 
 	private int maxLength = MBTProperties.MAX_PATH_LENGTH;
-	EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = null;
-	CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal = null;
+	EFSM model = null;
+	CoverageGoal constrainingGoal = null;
 
 	/**
 	 * 
 	 */
 	public CoverageGoalConstrainedTestFactory(
-			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm,
-			CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal) {
+			EFSM efsm,
+			CoverageGoal constrainingGoal) {
 		model = efsm;
 		this.constrainingGoal = constrainingGoal;
 	}
@@ -61,7 +60,7 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 	 * 
 	 */
 	public CoverageGoalConstrainedTestFactory(
-			EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm, int max) {
+			EFSM efsm, int max) {
 		model = efsm;
 		maxLength = max;
 	}
@@ -73,7 +72,7 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 //		State currentState = (State)initialConfiguration.getState();
 //		
 //		
-		List<Transition> transitions = new LinkedList<Transition>();
+		List<EFSMTransition> transitions = new LinkedList<EFSMTransition>();
 //		//int len = 0;
 //		
 //		
@@ -132,7 +131,7 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 		// model.reset();
 
 		// build the test case
-		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
+		Testcase testcase = new AbstractTestSequence();
 		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.isConnected();
@@ -254,15 +253,15 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 	 * @param finalState
 	 * @return
 	 */
-	private List<Transition> fastGetTestCaseWithEnd(EFSMState finalState) {
+	private List<EFSMTransition> fastGetTestCaseWithEnd(EFSMState finalState) {
 	
 		// max lenght used in all path calculator
 		Integer allPathLength = 3;
 		
-		List<Transition> transitions = new LinkedList<Transition>();
+		List<EFSMTransition> transitions = new LinkedList<EFSMTransition>();
 		
 		EFSMState initialState = model.getInitialConfiguration().getState();
-		Set<State> states = model.getStates();
+		Set<EFSMState> states = model.getStates();
 		AllDirectedPaths allDirectedPathCalculator = model.getAllDirectedPathCalculator();
 		model.getShortestPathDistance(null, null);
 		
@@ -276,7 +275,7 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 			// check if it time to stop
 			if (stop) {
 				// check if the final state is reachable (shortest path are precomputed)
-				if (model.getStatesWithinSPDistance((State) currentState, allPathLength).contains(finalState)) {
+				if (model.getStatesWithinSPDistance((EFSMState) currentState, allPathLength).contains(finalState)) {
 					// take a random path to the final state
 					List finalPaths = allDirectedPathCalculator.getAllPaths(currentState, finalState, true,
 							allPathLength);
@@ -295,8 +294,8 @@ public class CoverageGoalConstrainedTestFactory<State extends EFSMState, InParam
 				currentState = transitions.get(transitions.size() - 1).getTgt();
 			} else {
 				// add a random transition
-				Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf((State) currentState);
-				Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+				Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf((EFSMState) currentState);
+				EFSMTransition transition = (EFSMTransition) Randomness.choice(outgoingTransitions);
 				transitions.add(transition);
 				currentState = transition.getTgt();
 			}

@@ -21,15 +21,7 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * @author kifetew
  *
  */
-public abstract class CoverageGoal<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends FitnessFunction<Chromosome> {
+public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 		
 	protected double W_BD = 1;
 	protected double W_AL = 1;
@@ -43,7 +35,7 @@ public abstract class CoverageGoal<
 	public double getShortestDistanceToTarget(Path path, EFSMState target) {
 		double shortestDistance = Double.MAX_VALUE;
 		for (Object s : path.getStates()) {
-			State source = (State)s;
+			EFSMState source = (EFSMState)s;
 			double d = EFSMFactory.getInstance().getEFSM().getShortestPathDistance(source, target);
 			if (d < shortestDistance) {
 				shortestDistance = d;

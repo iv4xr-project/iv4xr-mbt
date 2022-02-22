@@ -93,7 +93,7 @@ public class LabRecruitsButtonDoors1 {
 		
 		// save to dot 
 		//EFSMDotExporter exp = new EFSMDotExporter<>(m);
-		EFSMExporter exp = new EFSMExporter<>(m);
+		EFSMExporter exp = new EFSMExporter(m);
 		exp.writeOut(Paths.get("data/button_doors_1.dot"),"dot");
 		exp.writeOut(Paths.get("data/button_doors_1.xml"),"gml");
 	}

@@ -43,15 +43,7 @@ import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
  * @author kifetew
  *
  */
-public class StateCoverageGoal<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
-		CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class StateCoverageGoal extends CoverageGoal {
 
 	/**
 	 * 
@@ -66,7 +58,7 @@ public class StateCoverageGoal<
 	/**
 	 * 
 	 */
-	public StateCoverageGoal(State s) {
+	public StateCoverageGoal(EFSMState s) {
 		state = s;
 	}
 
@@ -77,8 +69,7 @@ public class StateCoverageGoal<
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
-					new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
+			ExecutionListener executionListner = new EFSMTestExecutionListener(testcase, this);
 //			testExecutor.reset();
 			EFSMTestExecutor.getInstance().addListner(executionListner);
 			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);

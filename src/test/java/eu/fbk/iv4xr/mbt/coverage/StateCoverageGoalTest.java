@@ -70,7 +70,7 @@ class StateCoverageGoalTest {
 		assertNotNull(mFactory);
 		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
-		TestFactory testFactory = new RandomLengthTestFactory<>(efsm);
+		TestFactory testFactory = new RandomLengthTestFactory(efsm);
 		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();

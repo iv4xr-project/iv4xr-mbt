@@ -21,38 +21,30 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class CoverageGoalConstrainedTransitionCoverageGoalFactory<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		implements CoverageGoalFactory<CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> {
+public class CoverageGoalConstrainedTransitionCoverageGoalFactory
+		implements CoverageGoalFactory {
 
-	List<CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> coverageGoals = new ArrayList<CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>>();
-	CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal;
+	List<CoverageGoalConstrainedTransitionCoverageGoal> coverageGoals = new ArrayList<CoverageGoalConstrainedTransitionCoverageGoal>();
+	CoverageGoal constrainingGoal;
 	/**
 	 * 
 	 */
-	public CoverageGoalConstrainedTransitionCoverageGoalFactory(CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal) {
+	public CoverageGoalConstrainedTransitionCoverageGoalFactory(CoverageGoal constrainingGoal) {
 		this.constrainingGoal = constrainingGoal;
 		// build the list of coverage goals
-		EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = EFSMFactory.getInstance().getEFSM();
+		EFSM model = EFSMFactory.getInstance().getEFSM();
 		Set<EFSMTransition> transitions = model.getTransitons();
 		if (transitions == null || transitions.isEmpty()) {
 			throw new RuntimeException("Something wrong with the model: " + MBTProperties.SUT_EFSM + ". No transitions.");
 		}
 		for (EFSMTransition transition : transitions) {
-			CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> goal = 
-						new CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>((Transition) transition, constrainingGoal);
+			CoverageGoalConstrainedTransitionCoverageGoal goal = new CoverageGoalConstrainedTransitionCoverageGoal( transition, constrainingGoal);
 			coverageGoals.add(goal);
 		}
 	}
 
 	@Override
-	public List<CoverageGoalConstrainedTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getCoverageGoals() {
+	public List<CoverageGoalConstrainedTransitionCoverageGoal> getCoverageGoals() {
 		return coverageGoals;
 	}
 

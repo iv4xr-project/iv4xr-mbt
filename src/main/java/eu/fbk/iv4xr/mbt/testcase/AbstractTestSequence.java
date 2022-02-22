@@ -24,14 +24,13 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
  * @author kifetew
  *
  */
-public class AbstractTestSequence<State extends EFSMState, InParameter extends EFSMParameter, OutParameter extends EFSMParameter, Context extends EFSMContext, Operation extends EFSMOperation, Guard extends EFSMGuard, Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
-		implements Testcase {
+public class AbstractTestSequence implements Testcase {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6113600146777909496L;
-	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
+	private Path path;
 	private boolean valid = false;
 	private double fitness = 0d;
 	private boolean changed = true;
@@ -56,14 +55,14 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	/**
 	 * @return the path
 	 */
-	public Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath() {
+	public Path getPath() {
 		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path) {
+	public void setPath(Path path) {
 		this.path = path;
 		mutator = new Mutator(path);
 	}
@@ -130,7 +129,7 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> clone = new AbstractTestSequence<>();
+		AbstractTestSequence clone = new AbstractTestSequence();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);

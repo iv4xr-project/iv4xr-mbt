@@ -20,7 +20,7 @@ public class KTransitionCoverageGoalFactoryTest {
 		MBTProperties.K_TRANSITION_SIZE = 3;
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		
-		KTransitionCoverageGoalFactory goalFactory = new KTransitionCoverageGoalFactory<>();
+		KTransitionCoverageGoalFactory goalFactory = new KTransitionCoverageGoalFactory();
 		assertNotNull(goalFactory);
 		List coverageGoals = goalFactory.getCoverageGoals();
 		assertFalse(coverageGoals.isEmpty());
@@ -33,7 +33,7 @@ public class KTransitionCoverageGoalFactoryTest {
 		MBTProperties.K_TRANSITION_SIZE = 3;
 		EFSMFactory factory = EFSMFactory.getInstance(true);
 		
-		KTransitionCoverageGoalFactory goalFactory = new KTransitionCoverageGoalFactory<>();
+		KTransitionCoverageGoalFactory goalFactory = new KTransitionCoverageGoalFactory();
 		assertNotNull(goalFactory);
 		List coverageGoals = goalFactory.getCoverageGoals();
 		assertFalse(coverageGoals.isEmpty());

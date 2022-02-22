@@ -24,18 +24,10 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * @author kifetew
  *
  */
-public abstract class TestExecutor<
-		State extends EFSMState,
-		InParameter extends EFSMParameter,
-		OutParameter extends EFSMParameter,
-		Context extends EFSMContext,
-		Operation extends EFSMOperation,
-		Guard extends EFSMGuard,
-		Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
+public abstract class TestExecutor {
 
-	protected EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm;
-	protected transient Set<ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> listners = 
-				new HashSet<ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>>();
+	protected EFSM efsm;
+	protected transient Set<ExecutionListener> listners =  new HashSet<ExecutionListener>();
 	/**
 	 * 
 	 */

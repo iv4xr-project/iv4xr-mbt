@@ -61,7 +61,7 @@ class TransitionCoverageGoalTest {
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
 		mFactory = EFSMFactory.getInstance(true);
 		model = mFactory.getEFSM();
-		testFactory = new RandomLengthTestFactory<>(model);
+		testFactory = new RandomLengthTestFactory(model);
 		assertNotNull(testFactory);
 		cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
@@ -81,15 +81,15 @@ class TransitionCoverageGoalTest {
 	
 	@Test
 	void testGetFitnessInvalidPathTargetPresent() {
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		path.append(model.getTransition("t_14"));  // dtm -> dtp
 		t.setPath(path);
 		
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		EFSMTransition trans = model.getTransition("t_14");
 		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
@@ -102,15 +102,15 @@ class TransitionCoverageGoalTest {
 	
 	@Test
 	void testGetFitnessInvalidPathTargetNotPresent() {
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		path.append(model.getTransition("t_14"));  // dtm -> dtp
 		t.setPath(path);
 		
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		EFSMTransition trans = model.getTransition("t_30");
 		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
@@ -123,14 +123,14 @@ class TransitionCoverageGoalTest {
 	
 	@Test
 	void testGetFitnessValidPathTargetPresent() {
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		t.setPath(path);
 		
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		EFSMTransition trans = model.getTransition("t_4");
 		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);
@@ -143,14 +143,14 @@ class TransitionCoverageGoalTest {
 
 	@Test
 	void testGetFitnessValidPathTargetNotPresent() {
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		t.setPath(path);
 		
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		EFSMTransition trans = model.getTransition("t_30");
 		TransitionCoverageGoal goal = new TransitionCoverageGoal(trans);

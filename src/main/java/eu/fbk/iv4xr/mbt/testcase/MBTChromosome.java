@@ -26,15 +26,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class MBTChromosome<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends ExecutableChromosome {
+public class MBTChromosome extends ExecutableChromosome {
 	
 	/**
 	 * 

@@ -19,21 +19,15 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public interface ExecutionListener<State extends EFSMState,
-		InParameter extends EFSMParameter,
-		OutParameter extends EFSMParameter,
-		Context extends EFSMContext,
-		Operation extends EFSMOperation,
-		Guard extends EFSMGuard,
-		Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
+public interface ExecutionListener {
 	
-	public void executionStarted(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor);
+	public void executionStarted(TestExecutor testExecutor);
 	
-	public void executionFinished(TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, boolean success);
+	public void executionFinished(TestExecutor testExecutor, boolean success);
 	
-	public void transitionStarted (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t);
+	public void transitionStarted (TestExecutor testExecutor, EFSMTransition t);
 	
-	public void transitionFinished (TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> testExecutor, Transition t, boolean success);
+	public void transitionFinished (TestExecutor testExecutor, EFSMTransition t, boolean success);
 
 	public ExecutionTrace getExecutionTrace();
 }

@@ -1136,7 +1136,7 @@ public class LabRecruitsRandomEFSM {
 				for (int j = 0; j < room.size(); j++) {
 					if (room.get(i).equals(room.get(j)))  {
 						if (getStateType(room.get(i)).equals(StateType.Button)) {
-							EFSMTransition toggle = new EFSMTransition<>();
+							EFSMTransition toggle = new EFSMTransition();
 							toggle.setInParameter(inputParToggle);	
 							if (buttonDoorsMap.containsKey(room.get(i))){
 								List<Assign> doorTriggers = new ArrayList<>();
@@ -1149,7 +1149,7 @@ public class LabRecruitsRandomEFSM {
 							labRecruitsBuilder.withTransition(room.get(i), room.get(i),toggle);
 						}
 					}else {
-						EFSMTransition explore = new EFSMTransition<>();
+						EFSMTransition explore = new EFSMTransition();
 						explore.setInParameter(inputParExplore);
 						labRecruitsBuilder.withTransition(room.get(i), room.get(j), explore);
 				//		labRecruitsBuilder.withTransition(room.get(i), room.get(j), new LabRecruitsFreeTravelTransition());
@@ -1179,12 +1179,12 @@ public class LabRecruitsRandomEFSM {
 			doorsList.add(d_p);
 			
 			// add transition and guards connecting the doors 
-			EFSMTransition explore_d_m_d_p = new EFSMTransition<>();
+			EFSMTransition explore_d_m_d_p = new EFSMTransition();
 			explore_d_m_d_p.setGuard(doorsGuardMap.get(edge));
 			explore_d_m_d_p.setInParameter(inputParExplore);
 			labRecruitsBuilder.withTransition(d_m,d_p,explore_d_m_d_p);
 			
-			EFSMTransition explore_d_p_d_m = new EFSMTransition<>();
+			EFSMTransition explore_d_p_d_m = new EFSMTransition();
 			explore_d_p_d_m.setGuard(doorsGuardMap.get(edge));
 			explore_d_p_d_m.setInParameter(inputParExplore);
 			labRecruitsBuilder.withTransition(d_p,d_m,explore_d_p_d_m);
@@ -1193,10 +1193,10 @@ public class LabRecruitsRandomEFSM {
 			Vector<EFSMState> sourceRoom = doorsGraph.getEdgeSource(edge);
 			// connect d_m with each button in the source room
 			for(int i =0; i < sourceRoom.size(); i++) {
-				EFSMTransition explore1 = new EFSMTransition<>();
+				EFSMTransition explore1 = new EFSMTransition();
 				explore1.setInParameter(inputParExplore);
 				labRecruitsBuilder.withTransition(sourceRoom.get(i), d_m, explore1);
-				EFSMTransition explore2 = new EFSMTransition<>();
+				EFSMTransition explore2 = new EFSMTransition();
 				explore2.setInParameter(inputParExplore);
 				labRecruitsBuilder.withTransition(d_m,sourceRoom.get(i), explore2);
 			}
@@ -1205,10 +1205,10 @@ public class LabRecruitsRandomEFSM {
 			// check if target room is different to the source room
 			if (!targetRoom.equals(sourceRoom)) {
 				for(int i =0; i < targetRoom.size(); i++) {
-					EFSMTransition explore1 = new EFSMTransition<>();
+					EFSMTransition explore1 = new EFSMTransition();
 					explore1.setInParameter(inputParExplore);
 					labRecruitsBuilder.withTransition(targetRoom.get(i), d_p, explore1);
-					EFSMTransition explore2 = new EFSMTransition<>();
+					EFSMTransition explore2 = new EFSMTransition();
 					explore2.setInParameter(inputParExplore);
 					labRecruitsBuilder.withTransition(d_p,targetRoom.get(i), explore2);
 				}
@@ -1249,10 +1249,10 @@ public class LabRecruitsRandomEFSM {
 			for (int i = 0; i < localDoorList.size(); i++)
 				for (int j = 0; j < localDoorList.size(); j++) {
 					if (i != j) {
-						EFSMTransition explore1 = new EFSMTransition<>();
+						EFSMTransition explore1 = new EFSMTransition();
 						explore1.setInParameter(inputParExplore);
 						labRecruitsBuilder.withTransition(localDoorList.get(i), localDoorList.get(j), explore1);
-						//EFSMTransition explore2 = new EFSMTransition<>();
+						//EFSMTransition explore2 = new EFSMTransition();
 						//explore2.setInParameter(inputParExplore);
 						//labRecruitsBuilder.withTransition(localDoorList.get(j), localDoorList.get(i), explore2);
 					}

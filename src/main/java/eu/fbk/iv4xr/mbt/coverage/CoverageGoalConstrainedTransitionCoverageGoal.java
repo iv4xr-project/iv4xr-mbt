@@ -42,15 +42,7 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * @author kifetew
  *
  */
-public class CoverageGoalConstrainedTransitionCoverageGoal<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class CoverageGoalConstrainedTransitionCoverageGoal extends CoverageGoal {
 	
 		/**
 	 * 
@@ -60,16 +52,16 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(CoverageGoalConstrainedTransitionCoverageGoal.class);
 
-	private Transition transition;
-	private CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal;
+	private EFSMTransition transition;
+	private CoverageGoal constrainingGoal;
 
 	private final double GOAL_CONSTRAINT_PENALITY = 100;
 	
 	/**
 	 * 
 	 */
-	public CoverageGoalConstrainedTransitionCoverageGoal(Transition trans, 
-			CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> constrainingGoal) {
+	public CoverageGoalConstrainedTransitionCoverageGoal(EFSMTransition trans, 
+			CoverageGoal constrainingGoal) {
 		transition = trans;
 		this.constrainingGoal = constrainingGoal;
 	}
@@ -81,8 +73,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
-						new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
+			ExecutionListener executionListner = new EFSMTestExecutionListener(testcase, this);
 			EFSMTestExecutor.getInstance().addListner(executionListner);
 			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
 			// get trace from the listner
@@ -123,7 +114,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal<
 	/**
 	 * @return the transition
 	 */
-	public Transition getTransition() {
+	public EFSMTransition getTransition() {
 		return transition;
 	}
 

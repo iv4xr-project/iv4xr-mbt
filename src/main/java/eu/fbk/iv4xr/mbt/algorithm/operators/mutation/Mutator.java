@@ -27,14 +27,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 
-public class Mutator<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements Serializable, Cloneable {
+public class Mutator implements Serializable, Cloneable {
 
 	/**
 	 * 
@@ -162,7 +155,7 @@ public class Mutator<
 
 		// get the model and the function to compute all paths between two states
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
-		AllDirectedPaths<State, Transition> allPathsCalculator = efsm.getAllDirectedPathCalculator();
+		AllDirectedPaths<EFSMState, EFSMTransition> allPathsCalculator = efsm.getAllDirectedPathCalculator();
 		
 		// Use the length of the path as a maximum length for the new subpath
 		// if the path has length less that 2, use 2
@@ -170,12 +163,12 @@ public class Mutator<
 		
 		// Take a random transition in the path
 		Integer transitionToRemoveId = Randomness.nextInt(path.getLength());
-		Transition transitionToRemove = (Transition) path.getTransitionAt(transitionToRemoveId);
+		EFSMTransition transitionToRemove = (EFSMTransition) path.getTransitionAt(transitionToRemoveId);
 		
 		// first and last transition need to be treated separately
 		if (transitionToRemoveId >= 0 & transitionToRemoveId < path.getLength()-1) {
 			// Compute all path from src to the tgt of the removed transition
-			List<GraphPath<State, Transition>> allPath = 
+			List<GraphPath< EFSMState, EFSMTransition>> allPath = 
 					allPathsCalculator.getAllPaths(transitionToRemove.getSrc(), transitionToRemove.getTgt(), false, maxSubPathLenght);
 			// A flag to check if the new subpath has been choosen
 			Boolean choosen = false;
@@ -212,7 +205,7 @@ public class Mutator<
 			// select a	new target
 			EFSMState newTgtState = (EFSMState) Randomness.choice(efsm.getStates());
 			// Compute all path from src of the removed transition to the new tgt
-			List<GraphPath<State, Transition>> allPath = allPathsCalculator.getAllPaths(transitionToRemove.getSrc(),
+			List<GraphPath<EFSMState, EFSMTransition>> allPath = allPathsCalculator.getAllPaths(transitionToRemove.getSrc(),
 					transitionToRemove.getTgt(), false, maxSubPathLenght);
 			// A flag to check if the new subpath has been choosen
 			Boolean choosen = false;
@@ -241,7 +234,7 @@ public class Mutator<
 		// find a self transition and remove it
 		Set<Integer> indices = new HashSet<Integer>();
 		for (int i = 0; i < path.getLength(); i++) {
-			Transition t = (Transition) path.getTransitionAt(i);
+			EFSMTransition t = (EFSMTransition) path.getTransitionAt(i);
 			if (t.isSelfTransition()) {
 				indices.add(i);
 			}
@@ -258,9 +251,9 @@ public class Mutator<
 
 		// from the model, get all possible self transitions (states)
 		EFSM model = EFSMFactory.getInstance().getEFSM();
-		Map<State, Transition> selfTransitionStates = new HashMap<>();
+		Map<EFSMState, EFSMTransition> selfTransitionStates = new HashMap<>();
 		for (Object o : model.getTransitons()) {
-			Transition t = (Transition) o;
+			EFSMTransition t = (EFSMTransition) o;
 			if (t.isSelfTransition()) {
 				selfTransitionStates.put(t.getSrc(), t);
 			}
@@ -270,10 +263,10 @@ public class Mutator<
 		selfTransitionStates.keySet().retainAll(path.getStates());
 
 		// choose one at random
-		State state = Randomness.choice(selfTransitionStates.keySet());
+		EFSMState state = Randomness.choice(selfTransitionStates.keySet());
 
 		int index = -1;
-		for (Transition t : (List<Transition>)path.getTransitions()) {
+		for (EFSMTransition t : (List<EFSMTransition>)path.getTransitions()) {
 			if (t.getSrc().equals(state)) {
 				index = path.getTransitions().indexOf(t);
 				break;
@@ -289,7 +282,7 @@ public class Mutator<
 		}
 
 		// insert the new transition
-		path.getModfiableTransitions().add(index, (Transition) selfTransitionStates.get(state).clone());
+		path.getModfiableTransitions().add(index, (EFSMTransition) selfTransitionStates.get(state).clone());
 
 	}
 	
@@ -305,8 +298,8 @@ public class Mutator<
 	 */
 	private void appendRandomTransitionMutation() {
 		EFSMState lastState = path.getTgt();
-		Set<Transition> potentialTransitions = EFSMFactory.getInstance().getEFSM().transitionsOutOf(lastState);
-		Transition t = (Transition) Randomness.choice(potentialTransitions);
+		Set<EFSMTransition> potentialTransitions = EFSMFactory.getInstance().getEFSM().transitionsOutOf(lastState);
+		EFSMTransition t = (EFSMTransition) Randomness.choice(potentialTransitions);
 		path.append(t);
 	}
 	

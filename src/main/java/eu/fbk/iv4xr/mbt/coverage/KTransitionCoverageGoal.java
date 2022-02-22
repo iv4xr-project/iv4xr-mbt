@@ -34,22 +34,14 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * Represents a sequence of K transitions, where K >= 2
  * K is defined in MBTProperties by parameter k_transition_size
  */
-public class KTransitionCoverageGoal<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends CoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class KTransitionCoverageGoal extends CoverageGoal {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6341416548064403719L;
 	
-	// It is conveniet to use a path for a kTransition goal
+	// It is convenient to use a path for a kTransition goal
 	private EFSMPath kTransition;
 	
 	/**
@@ -68,8 +60,7 @@ public class KTransitionCoverageGoal<
 			MBTChromosome chromosome = (MBTChromosome)individual;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> executionListner = 
-					new EFSMTestExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition>(testcase, this);
+			ExecutionListener executionListner = new EFSMTestExecutionListener(testcase, this);
 //			testExecutor.reset();
 			EFSMTestExecutor.getInstance().addListner(executionListner);
 			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);

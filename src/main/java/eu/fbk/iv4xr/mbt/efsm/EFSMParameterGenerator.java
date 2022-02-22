@@ -2,7 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 
 import java.io.Serializable;
 
-public abstract class EFSMParameterGenerator<T extends EFSMParameter> implements Cloneable, Serializable {
+public abstract class EFSMParameterGenerator implements Cloneable, Serializable {
 	
 	/**
 	 * 
@@ -12,6 +12,6 @@ public abstract class EFSMParameterGenerator<T extends EFSMParameter> implements
 	public EFSMParameterGenerator() {		
 	}
 	
-	public abstract T getRandom();
+	public abstract EFSMParameter getRandom();
 
 }

@@ -62,15 +62,7 @@ import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
  *
  * @param <T>
  */
-public abstract class AbstractMOSA<
-	T extends Chromosome,
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends GeneticAlgorithm<T> {
+public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorithm<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 

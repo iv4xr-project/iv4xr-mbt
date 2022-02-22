@@ -60,7 +60,7 @@ public class KTransitionCoverageGoalTest {
 		MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1";		
 		mFactory = EFSMFactory.getInstance(true);
 		model = mFactory.getEFSM();
-		testFactory = new RandomLengthTestFactory<>(model);
+		testFactory = new RandomLengthTestFactory(model);
 		assertNotNull(testFactory);
 		cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
@@ -71,18 +71,18 @@ public class KTransitionCoverageGoalTest {
 	public void testGetFitnessInvalidPathTargetPresent() {
 		
 		// define test case
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		path.append(model.getTransition("t_14"));  // dtm -> dtp
 		t.setPath(path);
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		
 		// define goal
-		List targetTransitions = new ArrayList();
+		List<EFSMTransition> targetTransitions = new ArrayList<EFSMTransition>();
 		targetTransitions.add(model.getTransition("t_7"));
 		targetTransitions.add(model.getTransition("t_4"));	
 		GraphPath graphTarget = new GraphWalk(model.getBaseGraph(), new EFSMState("b1"), new EFSMState("d3m"), targetTransitions, 1 );
@@ -101,19 +101,19 @@ public class KTransitionCoverageGoalTest {
 	@Test
 	void testGetFitnessInvalidPathTargetNotPresent() {
 		// define test case: path invalid because d_1 is closed (b_1 is not pressed)
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0")); // b0 -> b1
 		path.append(model.getTransition("t_6")); // b1 -> d_1_m
 		path.append(model.getTransition("t_10")); // d_1_m -> d_1_p
 		path.append(model.getTransition("t_17")); // d_1_p -> b_2
 		path.append(model.getTransition("t_20")); // b_2 -> b_2
 		t.setPath(path);
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 
 		// define goal: go from b1 to d1m and then to b0
-		List targetTransitions = new ArrayList();
+		List<EFSMTransition> targetTransitions = new ArrayList<EFSMTransition>();
 		targetTransitions.add(model.getTransition("t_6")); // b1 -> d_1_m
 		targetTransitions.add(model.getTransition("t_8")); // d_1_m -> b_0
 		GraphPath graphTarget = new GraphWalk(model.getBaseGraph(), new EFSMState("b1"), new EFSMState("b0"),
@@ -132,18 +132,18 @@ public class KTransitionCoverageGoalTest {
 	@Test
 	void testGetFitnessValidPathTargetPresent() {
 		// define test case
-		AbstractTestSequence t = new AbstractTestSequence<>();
-		Path path = new Path<>();
+		AbstractTestSequence t = new AbstractTestSequence();
+		Path path = new Path();
 		path.append(model.getTransition("t_0"));  // b0 -> b1
 		path.append(model.getTransition("t_7"));  // b1 -> b1
 		path.append(model.getTransition("t_4"));  // b1 -> dtm
 		path.append(model.getTransition("t_12"));  // dtm -> d1m
 		t.setPath(path);
-		MBTChromosome c = new MBTChromosome<>();
+		MBTChromosome c = new MBTChromosome();
 		c.setTestcase(t);
 		
 		// define goal
-		List targetTransitions = new ArrayList();
+		List<EFSMTransition> targetTransitions = new ArrayList<EFSMTransition>();
 		targetTransitions.add(model.getTransition("t_7"));
 		targetTransitions.add(model.getTransition("t_4"));	
 		GraphPath graphTarget = new GraphWalk(model.getBaseGraph(), new EFSMState("b1"), new EFSMState("d3m"), targetTransitions, 1 );

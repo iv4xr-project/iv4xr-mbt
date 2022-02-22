@@ -24,15 +24,8 @@ import eu.fbk.iv4xr.mbt.testcase.Testcase;
  * @author kifetew
  *
  */
-public class EFSMTestExecutor<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends TestExecutor<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class EFSMTestExecutor 
+		extends TestExecutor {
 	
 	private static EFSMTestExecutor instance = null;
 	
@@ -92,11 +85,11 @@ public class EFSMTestExecutor<
 		return result;
 	}
 
-	private boolean applyTransitions(List<Transition> transitions) {
+	private boolean applyTransitions(List<EFSMTransition> transitions) {
 		boolean success = true;
-		for (Transition t : transitions) {
+		for (EFSMTransition t : transitions) {
 			notifyTransitionStarted(t);
-			Set<OutParameter> output = efsm.transition(t);
+			Set<EFSMParameter> output = efsm.transition(t);
 			if (output == null) {
 				success = false;
 			}	
@@ -109,28 +102,28 @@ public class EFSMTestExecutor<
 	}
 
 	private void notifyExecutionFinished(boolean success) {
-		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+		for (ExecutionListener listner: listners) {
 			listner.executionFinished(this, success);
 		}
 		
 	}
 
 	private void notifyExecutionStarted() {
-		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+		for (ExecutionListener listner: listners) {
 			listner.executionStarted(this);
 		}
 		
 	}
 	
-	private void notifyTransitionStarted(Transition t) {
-		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+	private void notifyTransitionStarted(EFSMTransition t) {
+		for (ExecutionListener listner: listners) {
 			listner.transitionStarted(this, t);
 		}
 		
 	}
 	
-	private void notifyTransitionFinished(Transition t, boolean success) {
-		for (ExecutionListener<State, InParameter, OutParameter, Context, Operation, Guard, Transition> listner: listners) {
+	private void notifyTransitionFinished(EFSMTransition t, boolean success) {
+		for (ExecutionListener listner: listners) {
 			listner.transitionFinished(this, t, success);
 		}
 		

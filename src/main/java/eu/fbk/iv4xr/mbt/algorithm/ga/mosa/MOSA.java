@@ -53,16 +53,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  * @param <T>
  */
-public class MOSA<
-	T extends Chromosome,
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
-		AbstractMOSA<T,State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 
@@ -142,7 +133,7 @@ public class MOSA<
 			remain = 0;
 		} // if
 		currentIteration++;
-		logger.debug("N. fronts = "+ranking.getNumberOfSubfronts());
+		logger.debug("\nN. fronts = "+ranking.getNumberOfSubfronts());
 		logger.debug("1* front size = "+ranking.getSubfront(0).size());
 		logger.debug("2* front size = "+ranking.getSubfront(1).size());
 		logger.debug("Covered goals = "+this.archive.size());

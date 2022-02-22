@@ -13,6 +13,7 @@ import org.evosuite.ga.Chromosome;
 import org.jgrapht.GraphPath;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+import org.jgrapht.graph.DirectedPseudograph;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -43,44 +44,36 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @param <Guard>
  * @param <Transition>
  */
-public class KTransitionCoverageGoalFactory<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		implements CoverageGoalFactory<KTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> {
+public class KTransitionCoverageGoalFactory implements CoverageGoalFactory<KTransitionCoverageGoal> {
 
-	private List<KTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> coverageGoals = 
-			new ArrayList<KTransitionCoverageGoal<State,InParameter,OutParameter,Context,Operation,Guard,Transition>>();
+	private List<KTransitionCoverageGoal> coverageGoals = new ArrayList<KTransitionCoverageGoal>();
+	
 	/**
 	 * Build the set of k transition coverage goals
 	 */
 	public KTransitionCoverageGoalFactory() {
 		// get the model from the factory
-		EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = EFSMFactory.getInstance().getEFSM();	
+		EFSM model = EFSMFactory.getInstance().getEFSM();	
 		// get the graph
-		ListenableGraph<State, EFSMTransition> baseGraph = model.getBaseGraph();
+		DirectedPseudograph<EFSMState, EFSMTransition> baseGraph = model.getBaseGraph();
 		// All direct path computation
-		AllDirectedPaths<State, Transition> allDirectedPathCalculator = model.getAllDirectedPathCalculator();
+		AllDirectedPaths<EFSMState, EFSMTransition> allDirectedPathCalculator = model.getAllDirectedPathCalculator();
 		
-		Set<State> vertexSet = baseGraph.vertexSet();
+		Set<EFSMState> vertexSet = baseGraph.vertexSet();
 		
 		// iterate over states
-		for(State s: vertexSet) {
+		for(EFSMState s: vertexSet) {
 			// get all >=k path from s
-			Set<State> sourceSet = new LinkedHashSet<>();
+			Set<EFSMState> sourceSet = new LinkedHashSet<>();
 			sourceSet.add(s);
-			List<GraphPath<State, Transition>> allPaths = allDirectedPathCalculator.getAllPaths(sourceSet, vertexSet, false, MBTProperties.K_TRANSITION_SIZE);
+			List<GraphPath<EFSMState, EFSMTransition>> allPaths = allDirectedPathCalculator.getAllPaths(sourceSet, vertexSet, false, MBTProperties.K_TRANSITION_SIZE);
 			// filter path with length less than k and transform into a KTransitionCoverageGoal
-			for(GraphPath<State, Transition> path : allPaths ) {
+			for(GraphPath<EFSMState, EFSMTransition> path : allPaths ) {
 				if (path.getLength() != MBTProperties.K_TRANSITION_SIZE) {
 					continue;
 				}
-				EFSMPath efsmPath = new EFSMPath<>(path);
-				KTransitionCoverageGoal<State,InParameter,OutParameter,Context,Operation,Guard,Transition> goal = new KTransitionCoverageGoal<>(efsmPath);
+				EFSMPath efsmPath = new EFSMPath(path);
+				KTransitionCoverageGoal goal = new KTransitionCoverageGoal(efsmPath);
 				coverageGoals.add(goal);	
 			}
 		}	
@@ -88,7 +81,7 @@ public class KTransitionCoverageGoalFactory<
 	
 	
 	@Override
-	public List<KTransitionCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getCoverageGoals() {
+	public List<KTransitionCoverageGoal> getCoverageGoals() {
 		return coverageGoals;
 	}
 

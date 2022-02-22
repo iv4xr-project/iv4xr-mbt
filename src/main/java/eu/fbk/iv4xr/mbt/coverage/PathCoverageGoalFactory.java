@@ -33,17 +33,10 @@ import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
  * @author kifetew
  *
  */
-public class PathCoverageGoalFactory<State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-	implements CoverageGoalFactory<PathCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> {
+public class PathCoverageGoalFactory implements CoverageGoalFactory {
 
 //	private TreeSingleSourcePathsImpl<State, EFSMTransition> pathFactory; 
-	private EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = EFSMFactory.getInstance().getEFSM();
+	private EFSM model = EFSMFactory.getInstance().getEFSM();
 	
 	/**
 	 * 
@@ -65,7 +58,7 @@ public class PathCoverageGoalFactory<State extends EFSMState,
 //	}
 
 	@Override
-	public List<PathCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> getCoverageGoals() {
+	public List<PathCoverageGoal> getCoverageGoals() {
 		//State targetVertex = model.getInitialConfiguration().getState();
 //		List<PathCoverageGoal<State, InParameter, OutParameter, Context, Operation, Guard, Transition>> goals = new ArrayList<>();
 //		for (State targetVertex : model.getStates()) {
