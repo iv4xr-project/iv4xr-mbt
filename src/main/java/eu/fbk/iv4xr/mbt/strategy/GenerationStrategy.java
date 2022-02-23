@@ -13,7 +13,6 @@ import org.evosuite.ga.stoppingconditions.MaxTimeStoppingCondition;
 import org.evosuite.ga.stoppingconditions.StoppingCondition;
 import org.evosuite.ga.stoppingconditions.ZeroFitnessStoppingCondition;
 
-import eu.fbk.iv4xr.mbt.ProgressMeter;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
@@ -24,9 +23,6 @@ public abstract class GenerationStrategy {
 
 	public abstract SuiteChromosome generateTests();
 	
-	/** There should only be one */
-	private final ProgressMeter progressMonitor = new ProgressMeter();
-
 	/** There should only be one */
 	protected ZeroFitnessStoppingCondition zeroFitness = new ZeroFitnessStoppingCondition();
 	

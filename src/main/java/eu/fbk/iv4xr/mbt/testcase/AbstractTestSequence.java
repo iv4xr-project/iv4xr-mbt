@@ -38,7 +38,7 @@ public class AbstractTestSequence implements Testcase {
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
 	
-	private ExecutionResult executionResult;
+//	private ExecutionResult executionResult;
 
 	private Mutator mutator;
 
@@ -138,7 +138,7 @@ public class AbstractTestSequence implements Testcase {
 		for (FitnessFunction<?> goal : coveredGoals) {
 			clone.addCoveredGoal(goal);
 		}
-		clone.setExecutionResult(executionResult.clone());
+//		clone.setExecutionResult(executionResult.clone());
 		return clone;
 	}
 
@@ -200,7 +200,7 @@ public class AbstractTestSequence implements Testcase {
 	}
 
 	@Override
-	public void mutate() {
+	public void mutate(ExecutionResult executionResult) {
 		// System.err.println("BEFORE: " + path);
 		// if (Randomness.nextBoolean()) {
 		// insertSelfTransitionMutation ();
@@ -239,13 +239,13 @@ public class AbstractTestSequence implements Testcase {
 		return coveredGoals.contains(goal);
 	}
 
-	public void setExecutionResult(ExecutionResult executionResult) {
-		this.executionResult = executionResult;
-	}
-	
-	public ExecutionResult getExecutionResult() {
-		return this.executionResult;
-	}
+//	public void setExecutionResult(ExecutionResult executionResult) {
+//		this.executionResult = executionResult;
+//	}
+//	
+//	public ExecutionResult getExecutionResult() {
+//		return this.executionResult;
+//	}
 
 	/**
 	 * @return the changed

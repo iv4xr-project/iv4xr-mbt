@@ -81,7 +81,8 @@ class StateCoverageGoalTest {
 		System.out.println("Chromosome: ("+chromosome.getTestcase().isValid()+") \n" + chromosome.toString());
 		double fitness = stateGoal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 95d);
+		double expectedFitness = 1048.499000999001;
+		assertTrue(Double.compare(fitness, expectedFitness) == 0 );
 	}
 
 }

@@ -33,6 +33,7 @@ public class MBTChromosome extends ExecutableChromosome {
 	 */
 	private static final long serialVersionUID = -3211675659294418756L;
 	private Testcase testcase;
+	private eu.fbk.iv4xr.mbt.execution.ExecutionResult executionResult;
 	/** Secondary objectives used during ranking */
 	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
 	
@@ -43,6 +44,14 @@ public class MBTChromosome extends ExecutableChromosome {
 		testcase = new AbstractTestSequence();
 	}
 
+	public eu.fbk.iv4xr.mbt.execution.ExecutionResult getExecutionResult() {
+		return executionResult;
+	}
+	
+	public void setExecutionResult(eu.fbk.iv4xr.mbt.execution.ExecutionResult result) {
+		executionResult = result;
+	}
+	
 	@Override
 	protected void copyCachedResults(ExecutableChromosome other) {
 		// TODO Auto-generated method stub
@@ -60,6 +69,7 @@ public class MBTChromosome extends ExecutableChromosome {
 		MBTChromosome clone = new MBTChromosome();
 		try {
 			clone.setTestcase(testcase.clone());
+			clone.setExecutionResult(executionResult.clone());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getCause());
@@ -118,7 +128,7 @@ public class MBTChromosome extends ExecutableChromosome {
 
 	@Override
 	public void mutate() {
-		testcase.mutate();
+		testcase.mutate(executionResult);
 		testcase.clearCoveredGoals();
 		setChanged(true);
 	}

@@ -6,37 +6,16 @@ package eu.fbk.iv4xr.mbt.coverage;
 import java.util.Collections;
 
 import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.FitnessFunction;
-import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
-//import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-//import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-//import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-
-
-import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
-import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
-import eu.fbk.iv4xr.mbt.execution.ExecutionListener;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.ExecutionTrace;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testcase.Path;
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
 
 /**
  * @author kifetew
@@ -67,42 +46,34 @@ public class CoverageGoalConstrainedTransitionCoverageGoal extends CoverageGoal 
 	}
 
 	@Override
-	public double getFitness(Chromosome individual) {
+	public double getFitness(Chromosome test, ExecutionResult executionResult) {
 		double fitness = -1;
-		if (individual instanceof MBTChromosome) {
-			MBTChromosome chromosome = (MBTChromosome)individual;
+		if (test instanceof MBTChromosome) {
+			MBTChromosome chromosome = (MBTChromosome)test;
 			AbstractTestSequence testcase = (AbstractTestSequence) chromosome.getTestcase();
 			
-			ExecutionListener executionListner = new EFSMTestExecutionListener(testcase, this);
-			EFSMTestExecutor.getInstance().addListner(executionListner);
-			ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(testcase);
-			// get trace from the listner
-			ExecutionTrace trace = executionListner.getExecutionTrace();
-
-			// add trace to result
-			executionResult.setExecutionTrace(trace);
+			ExecutionTrace trace = executionResult.getExecutionTrace();
 			
-			if (MBTProperties.SANITY_CHECK_FITNESS) {
-				fitness = Randomness.nextDouble();
+			// trivial case
+			if (executionResult.isSuccess() && testContainsGoal(testcase)) {
+				fitness = 0d;
 			}else {
-				// overall fintess is simply the sum of both fitnesses
 				double feasibilityFitness = W_AL * trace.getPathApproachLevel() + W_BD * trace.getPathBranchDistance();
-				double targetFitness = W_AL * trace.getTargetApproachLevel() + W_BD * trace.getTargetBranchDistance();
+				double targetFitness = W_AL * computeTargetApproachLevel(testcase, executionResult, testContainsGoal(testcase)) + 
+						W_BD * computeTargetBranchDistance(testcase, executionResult, testContainsGoal(testcase));
 				fitness = feasibilityFitness + targetFitness;
-				
-				// does the individual respect the coverageGoal constraint? if no apply penality
-				if (!respectsCoverageGoalConstraint(testcase)) {
-					fitness += GOAL_CONSTRAINT_PENALITY;
-					executionResult.setSuccess(false);
-				}
 			}
-			testcase.setExecutionResult(executionResult);
-			EFSMTestExecutor.getInstance().removeListner(executionListner);
-			updateCollateralCoverage(individual, executionResult);
-			logger.debug("Individual ({}): {} \nFitness: {}", executionResult.isSuccess(), individual.toString(), fitness);
+			
+			// does the individual respect the coverageGoal constraint? if no apply penality
+			if (!respectsCoverageGoalConstraint(testcase)) {
+				fitness += GOAL_CONSTRAINT_PENALITY;
+				executionResult.setSuccess(false);
+				testcase.setValid(false);
+			}
+			updateCollateralCoverage(test, executionResult);
 		}
-		individual.setChanged(false);
-		updateIndividual(this, individual, fitness);
+		test.setChanged(false);
+		updateIndividual(this, test, fitness);
 		return fitness;
 	}
 	

@@ -71,26 +71,22 @@ class SinglePointRelativePathCrossOverTest {
 		System.out.println("TC1: " + tc1.toString());
 		System.out.println("TC2: " + tc2.toString());
 
-		// set a goal
-		EFSMState goalState = new EFSMState("b_0");
-		StateCoverageGoal stateGoal = new StateCoverageGoal(goalState);
-		
 		// execute tc1
-		ExecutionListener tc1ExecutionListner = new EFSMTestExecutionListener(tc1, stateGoal);
+		ExecutionListener tc1ExecutionListner = new EFSMTestExecutionListener(tc1);
 		EFSMTestExecutor.getInstance().addListner(tc1ExecutionListner);
 		ExecutionResult tc1ExecutionResult = EFSMTestExecutor.getInstance().executeTestcase(tc1);
 		ExecutionTrace tc1Trace = tc1ExecutionListner.getExecutionTrace();
 		tc1ExecutionResult.setExecutionTrace(tc1Trace);
-		tc1.setExecutionResult(tc1ExecutionResult);
+		chromosome1.setExecutionResult(tc1ExecutionResult);
 		EFSMTestExecutor.getInstance().removeListner(tc1ExecutionListner);
 		
 		// execute tc2
-		ExecutionListener tc2ExecutionListner = new EFSMTestExecutionListener(tc2, stateGoal);
+		ExecutionListener tc2ExecutionListner = new EFSMTestExecutionListener(tc2);
 		EFSMTestExecutor.getInstance().addListner(tc2ExecutionListner);
 		ExecutionResult tc2ExecutionResult = EFSMTestExecutor.getInstance().executeTestcase(tc2);
 		ExecutionTrace tc2Trace = tc2ExecutionListner.getExecutionTrace();
 		tc2ExecutionResult.setExecutionTrace(tc2Trace);
-		tc2.setExecutionResult(tc2ExecutionResult);
+		chromosome2.setExecutionResult(tc2ExecutionResult);
 		EFSMTestExecutor.getInstance().removeListner(tc2ExecutionListner);
 		
 		

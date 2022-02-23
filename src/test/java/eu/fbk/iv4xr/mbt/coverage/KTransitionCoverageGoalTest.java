@@ -47,8 +47,8 @@ public class KTransitionCoverageGoalTest {
 	TestFactory testFactory;
 	RandomLengthTestChromosomeFactory<MBTChromosome> cFactory;
 	
-	double PENALITY1 = EFSMTestExecutionListener.PENALITY1;
-	double PENALITY2 = EFSMTestExecutionListener.PENALITY2;
+	double PENALITY1 = CoverageGoal.PENALITY1;
+	double PENALITY2 = CoverageGoal.PENALITY2;
 	
 
 	@BeforeEach

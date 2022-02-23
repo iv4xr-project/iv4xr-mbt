@@ -10,16 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 /**
  * @author kifetew
@@ -33,13 +25,9 @@ public class ExecutionTrace implements Serializable{
 	private static final long serialVersionUID = 3139864863859510093L;
 	private Collection<EFSMState> coveredStates = new HashSet<EFSMState>();
 	private Collection<EFSMTransition> coveredTransitions = new HashSet<EFSMTransition>();
-	private boolean currentGoalCovered;
 	
 	private double pathBranchDistance;
 	private double pathApproachLevel;
-	
-	private double targetBranchDistance;
-	private double targetApproachLevel;
 	
 	private boolean success;
 	private int passedTransitions = -1;
@@ -123,48 +111,6 @@ public class ExecutionTrace implements Serializable{
 		this.pathApproachLevel = pathApproachLevel;
 	}
 
-	/**
-	 * @return the targetBranchDistance
-	 */
-	public double getTargetBranchDistance() {
-		return targetBranchDistance;
-	}
-
-	/**
-	 * @param targetBranchDistance the targetBranchDistance to set
-	 */
-	public void setTargetBranchDistance(double targetBranchDistance) {
-		this.targetBranchDistance = targetBranchDistance;
-	}
-
-	/**
-	 * @return the targetApproachLevel
-	 */
-	public double getTargetApproachLevel() {
-		return targetApproachLevel;
-	}
-
-	/**
-	 * @param targetApproachLevel the targetApproachLevel to set
-	 */
-	public void setTargetApproachLevel(double targetApproachLevel) {
-		this.targetApproachLevel = targetApproachLevel;
-	}
-
-	/**
-	 * @return the currentGoalCovered
-	 */
-	public boolean isCurrentGoalCovered() {
-		return currentGoalCovered;
-	}
-
-	/**
-	 * @param currentGoalCovered the currentGoalCovered to set
-	 */
-	public void setCurrentGoalCovered(boolean currentGoalCovered) {
-		this.currentGoalCovered = currentGoalCovered;
-	}
-
 	public void setPassedTransitions(int passedTransitions) {
 		this.passedTransitions = passedTransitions;
 	}
@@ -194,11 +140,8 @@ public class ExecutionTrace implements Serializable{
 				copy.getCoveredTransitions().add(transition.clone());
 			}
 		}
-		copy.setCurrentGoalCovered(currentGoalCovered);
 		copy.setPathBranchDistance(pathBranchDistance);
 		copy.setPathApproachLevel(pathApproachLevel);
-		copy.setTargetBranchDistance(targetBranchDistance);
-		copy.setTargetApproachLevel(targetApproachLevel);
 		copy.setSuccess(success);
 		copy.setPassedTransitions(passedTransitions);
 		if (contexts != null) {

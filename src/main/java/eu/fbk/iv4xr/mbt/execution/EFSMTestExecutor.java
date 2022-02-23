@@ -4,18 +4,11 @@
 package eu.fbk.iv4xr.mbt.execution;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
-
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
@@ -29,25 +22,15 @@ public class EFSMTestExecutor
 	
 	private static EFSMTestExecutor instance = null;
 	
-	private EFSM clone;
-	
 	public static EFSMTestExecutor getInstance() {
 		if (instance == null) {
 			instance = new EFSMTestExecutor();
 		}
 		return instance;
 	}
-	
-//	/**
-//	 * 
-//	 */
-//	private EFSMTestExecutor(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
-//		this.efsm = efsm;
-//	}
 
 	private EFSMTestExecutor() {
 		this.efsm = EFSMFactory.getInstance().getEFSM();
-		this.clone = SerializationUtils.clone(this.efsm);
 	}
 
 	// TODO only for debugging purposes, to be disabled
@@ -68,17 +51,7 @@ public class EFSMTestExecutor
 		//populate the result here...
 		result.setSuccess(success);
 		testcase.setValid(success);
-		
-		// TODO DEBUG
-//		if (success) {
-//			Map<Transition, Integer> evenCounts = tc.getPath().selfTransitionCounts();
-//			if (!evenCounts.isEmpty()) {
-//				System.out.println("check individual");
-//				System.out.println(testcase);
-//				System.out.println(evenCounts.toString());
-//			}
-//		}
-		
+
 		notifyExecutionFinished(success);
 		reset();
 		assert tc.getPath().getSrc().getId().equalsIgnoreCase(efsm.getInitialConfiguration().getState().getId());
@@ -138,9 +111,6 @@ public class EFSMTestExecutor
 	@Override
 	public boolean reset() {
 		efsm.reset();
-		
-		// This also works, but is slower
-		//efsm = SerializationUtils.clone(this.clone);
 		return true;
 	}
 

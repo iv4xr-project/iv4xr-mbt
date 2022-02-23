@@ -48,8 +48,8 @@ public class ExtendedSinglePointRelativePathCrossOver extends CrossOverFunction 
 		// set feasible data
 		testcase1 = (AbstractTestSequence) parent1.getTestcase();
 		testcase2 = (AbstractTestSequence) parent2.getTestcase();
-		parent1PassedTransitions = testcase1.getExecutionResult().getExecutionTrace().getPassedTransitions();
-		parent2PassedTransitions = testcase2.getExecutionResult().getExecutionTrace().getPassedTransitions();
+		parent1PassedTransitions = parent1.getExecutionResult().getExecutionTrace().getPassedTransitions();
+		parent2PassedTransitions = parent2.getExecutionResult().getExecutionTrace().getPassedTransitions();
 		parent1PathLength = testcase1.getLength();
 		parent2PathLength = testcase2.getLength();
 		

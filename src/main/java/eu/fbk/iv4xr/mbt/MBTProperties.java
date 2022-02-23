@@ -20,9 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.Properties.DoubleValue;
-import org.evosuite.Properties.Parameter;
-import org.evosuite.Properties.RankingType;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
 import org.evosuite.utils.LoggingUtils;

@@ -7,20 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.evosuite.utils.Randomness;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
-import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMPath;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
@@ -35,10 +29,10 @@ public class Mutator implements Serializable, Cloneable {
 	private static final long serialVersionUID = 8353952869532319217L;
 	protected static final Logger logger = LoggerFactory.getLogger(Mutator.class);
 	private Path path;
-	private Integer pathSize;
-	private Integer minSubPathLenght = 2;
-	private Integer maxSubPathLenght = 5;
-	private Integer passedTransitions = 0;
+	private int pathSize;
+	private int minSubPathLenght = 2;
+	private int maxSubPathLenght = 5;
+	private int passedTransitions = 0;
 	
 	public Mutator(Path path) {
 		this.path = path;

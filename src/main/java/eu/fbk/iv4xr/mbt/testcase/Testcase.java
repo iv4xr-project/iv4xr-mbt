@@ -10,6 +10,8 @@ import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.testcase.TestFitnessFunction;
 
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
+
 /**
  * @author kifetew
  *
@@ -25,6 +27,7 @@ public interface Testcase extends Comparable<Testcase>, Serializable, Cloneable 
 	
 	public double getFitness ();
 
+//	public ExecutionResult getExecutionResult();
 
 	public Testcase clone()  throws CloneNotSupportedException;
 	
@@ -39,7 +42,7 @@ public interface Testcase extends Comparable<Testcase>, Serializable, Cloneable 
 	public void crossOver(Testcase other, int position1, int position2);
 
 
-	public void mutate();
+	public void mutate(ExecutionResult executionResult);
 	
 	/**
 	 * Remove all covered goals
