@@ -14,52 +14,61 @@ public class TrafficLightTest {
 	public void testModel_1() {
 		TrafficLight tl = new TrafficLight();
 		EFSM m = tl.getModel();
-		
-		
-		
-		/*public static assertInRange(String message, float expected, float delta, float actual) {
-			   if (delta < 0) {
-			     delta = -delta;
-			   }
-			   if (actual < expected - delta)
-			     Assert.fail(message + actual + " is less than " + expected + " - " + delta);
-			   if (actual > expected + delta) 
-			     Assert.fail(message + actual + " is more than " + expected + " + " + delta);
-			}*/
-		
-		
-		//assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==1);
-		
+			
 		assertTrue(m.curState.equals(tl.red));	
-		//for (int i = 0; i < 60; i++) {
-			//m.transition(null, tl.red);
-			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);
-		//}
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);
 		
 		m.transition(null, tl.green);
 		assertTrue(m.curState.equals(tl.red));	
 		assertFalse(m.curState.equals(tl.green));
-		
-		//for (int i = 0; i < 60; i++) {
-			m.transition(null, tl.green);
-			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);
-		//}
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
 		
 		m.transition(null, tl.yellow);
 		assertTrue(m.curState.equals(tl.red));	
 		assertFalse(m.curState.equals(tl.yellow));
-		
-		
-		//for (int i = 0; i < 5; i++) {
-			m.transition(null, tl.yellow);
-			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=5);
-		//}
-		
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);	
 	}
 	
 	
 
-	
+	@Test
+	public void testModel_2() {
+		TrafficLight tl = new TrafficLight();
+		EFSM m = tl.getModel();
+		
+		assertTrue(m.curState.equals(tl.red));	
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
+		
+		for (int i = 0; i < 60; i++) {
+			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
+			m.transition(null, tl.red);
+		}
+		
+		assertTrue(m.curState.equals(tl.red));			
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==60);
+				
+		m.transition(null, tl.green);
+		assertTrue(m.curState.equals(tl.green));	
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
+
+				
+		for (int i = 0; i < 60; i++) {
+			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
+			m.transition(null, tl.green);
+		}
+//		
+//		m.transition(null, tl.yellow);
+//		assertTrue(m.curState.equals(tl.red));	
+//		assertFalse(m.curState.equals(tl.yellow));
+//		
+//		
+//		//for (int i = 0; i < 5; i++) {
+//			m.transition(null, tl.yellow);
+//			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=5);
+//		//}
+//		
+	}
 
 	
 }
