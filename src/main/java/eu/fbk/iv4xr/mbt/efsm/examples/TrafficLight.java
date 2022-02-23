@@ -5,12 +5,14 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMBuilder;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
+import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
@@ -53,12 +55,45 @@ public class TrafficLight {
 	// count greater or equal 60
 	BoolOr countGreatEqThanSixty = new BoolOr(countGreatThanSixty, countEqualSixty);
 	// count less than 60
-	BoolNot countLessThatSixty = new BoolNot(countGreatEqThanSixty);
+	BoolNot countLessThanSixty = new BoolNot(countGreatEqThanSixty);
 	
+	// Constant 5
+	
+	Const<Integer> five = new Const<Integer>(5);
+	// count greater that 5
+	IntGreat countGreatThanFive =  new IntGreat(count, five);
+	// count equal 5
+	IntEq countEqualFive =  new IntEq(count, five);
+	// count greater or equal 5
+	BoolOr countGreatEqThanFive = new BoolOr(countGreatThanFive, countEqualFive);
+	// count less than 5
+	BoolNot countLessThanFive = new BoolNot(countGreatEqThanFive);
+	
+	 
+	// Pedestrian
+	
+	Const<Integer> pendingSixty = new Const<Integer>(60);
+	// count greater that 60
+	IntGreat p_countGreatThanSixty =  new IntGreat(count, pendingSixty);
+	// count equal 60
+	IntEq p_countEqualSixty =  new IntEq(count, pendingSixty);
+	// count greater or equal 60
+	BoolOr p_countGreatEqThanSixty = new BoolOr(p_countGreatThanSixty, p_countEqualSixty);
+	// count less than 60
+	BoolNot p_countLessThanSixty = new BoolNot(p_countGreatEqThanSixty);
+	
+	BoolAnd checkPoint = new BoolAnd(countLessThanSixty,p_countLessThanSixty);
+	
+	
+	// Green is less than 60 and pedestrian is less than 60 //
+	BoolOr pending_status_less = new BoolOr(p_countLessThanSixty,countLessThanSixty);
 	
 	// define transition guards
 	EFSMGuard guardCountGreatEqThanSixty = new EFSMGuard(countGreatEqThanSixty);
-	EFSMGuard guardCountLessThanSixty = new EFSMGuard(countLessThatSixty);
+	EFSMGuard guardCountLessThanSixty = new EFSMGuard(countLessThanSixty);
+	
+	EFSMGuard guardCountGreatEqThanFive = new EFSMGuard(countGreatEqThanFive);
+	EFSMGuard guardCountLessThanFive = new EFSMGuard(countLessThanFive);
 	
 	// define transition operations
 	EFSMOperation operationIncCount = new EFSMOperation(incCount);
@@ -88,6 +123,35 @@ public class TrafficLight {
 		t_1.setGuard(guardCountGreatEqThanSixty);  
 		t_1.setOp(operationResetCount);
 		
+
+		
+		
+		// t_2 : yellow -> yellow # increment count
+		EFSMTransition t_2 = new EFSMTransition<>();
+		t_2.setGuard(guardCountLessThanFive);
+		t_2.setOp(operationIncCount);
+		
+		// t_3 : yellow -> red 
+		EFSMTransition t_3 = new EFSMTransition<>();
+		t_3.setGuard(guardCountGreatEqThanFive);  
+		t_3.setOp(operationResetCount);
+		
+		
+		// t4: green -> green
+		
+		EFSMTransition t_4 = new EFSMTransition<>();
+
+		t_4.setGuard(guardCountLessThanSixty);  
+		t_4.setOp(operationResetCount);
+		
+		// t5: green -> yellow
+		
+		EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard> t_5 = new EFSMTransition<>();
+		t_5.setGuard(guardCountGreatEqThanSixty);  
+		t_5.setOp(operationResetCount);
+		
+		
+		
 		/*
 		 * EFSM declaration
 		 */
@@ -104,6 +168,8 @@ public class TrafficLight {
 	    trafficLightEFSM = trafficLightEFSMBuilder
 	    		.withTransition(red, red, t_0)
 	    		.withTransition(red, green, t_1)
+	    		.withTransition(yellow, yellow, t_2)
+	    		.withTransition(yellow, red, t_3)
 	    		.build(red, tlContext, lrParameterGenerator);
 	    
 	    return(trafficLightEFSM);
