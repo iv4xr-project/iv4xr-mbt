@@ -175,6 +175,7 @@ public class TrafficLight {
 	    		.withTransition(red, green, t_1)
 	    		.withTransition(yellow, yellow, t_2)
 	    		.withTransition(yellow, red, t_3)
+	    		.withTransition(green, green, t_4)
 	    		.build(red, tlContext, lrParameterGenerator);
 	    
 	    return(trafficLightEFSM);
