@@ -96,8 +96,13 @@ public class TrafficLight {
 	EFSMGuard guardCountLessThanFive = new EFSMGuard(countLessThanFive);
 	
 	// define transition operations
-	EFSMOperation operationIncCount = new EFSMOperation(incCount);
-	EFSMOperation operationResetCount = new EFSMOperation(resetCount);
+	EFSMOperation operationIncCount_red = new EFSMOperation(incCount);
+	EFSMOperation operationIncCount_green = new EFSMOperation(incCount);
+	EFSMOperation operationIncCount_yellow = new EFSMOperation(incCount);
+	
+	EFSMOperation operationResetCount_red = new EFSMOperation(resetCount);
+	EFSMOperation operationResetCount_green = new EFSMOperation(resetCount);
+	EFSMOperation operationResetCount_yellow = new EFSMOperation(resetCount);
 	
 	// inputs and outputs
 	// input are local to transitions 
@@ -116,12 +121,12 @@ public class TrafficLight {
 		// t_0 : red -> red # increment count
 		EFSMTransition t_0 = new EFSMTransition<>();
 		t_0.setGuard(guardCountLessThanSixty);
-		t_0.setOp(operationIncCount);
+		t_0.setOp(operationIncCount_red);
 		
 		// t_1 : red -> green 
 		EFSMTransition t_1 = new EFSMTransition<>();
 		t_1.setGuard(guardCountGreatEqThanSixty);  
-		t_1.setOp(operationResetCount);
+		t_1.setOp(operationResetCount_red);
 		
 
 		
@@ -129,26 +134,26 @@ public class TrafficLight {
 		// t_2 : yellow -> yellow # increment count
 		EFSMTransition t_2 = new EFSMTransition<>();
 		t_2.setGuard(guardCountLessThanFive);
-		t_2.setOp(operationIncCount);
+		t_2.setOp(operationIncCount_yellow);
 		
 		// t_3 : yellow -> red 
 		EFSMTransition t_3 = new EFSMTransition<>();
 		t_3.setGuard(guardCountGreatEqThanFive);  
-		t_3.setOp(operationResetCount);
+		t_3.setOp(operationResetCount_yellow);
 		
 		
 		// t4: green -> green
 		
 		EFSMTransition t_4 = new EFSMTransition<>();
 
-		t_4.setGuard(guardCountLessThanSixty);  
-		t_4.setOp(operationResetCount);
+		//t_4.setGuard(guardCountLessThanSixty);  
+		t_4.setOp(operationIncCount_green);
 		
 		// t5: green -> yellow
 		
-		EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard> t_5 = new EFSMTransition<>();
+	/*	EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard> t_5 = new EFSMTransition<>();
 		t_5.setGuard(guardCountGreatEqThanSixty);  
-		t_5.setOp(operationResetCount);
+		t_5.setOp(operationResetCount_green);*/
 		
 		
 		
