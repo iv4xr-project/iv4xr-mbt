@@ -69,7 +69,9 @@ public class MBTChromosome extends ExecutableChromosome {
 		MBTChromosome clone = new MBTChromosome();
 		try {
 			clone.setTestcase(testcase.clone());
-			clone.setExecutionResult(executionResult.clone());
+			if (executionResult != null) {
+				clone.setExecutionResult(executionResult.clone());
+			}
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getCause());

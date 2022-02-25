@@ -293,8 +293,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		// FIXXME
 		GeneticAlgorithm<T> ga = getGeneticAlgorithm(factory);
 
-		if (Properties.NEW_STATISTICS)
-			ga.addListener(new StatisticsListener());
+		// MBT has its own statistics tracker
+//		if (Properties.NEW_STATISTICS)
+//			ga.addListener(new StatisticsListener());
 
 		// How to select candidates for reproduction
 		SelectionFunction<T> selectionFunction = getSelectionFunction();

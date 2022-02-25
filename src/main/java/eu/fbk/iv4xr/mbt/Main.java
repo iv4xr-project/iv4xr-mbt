@@ -94,6 +94,10 @@ public class Main {
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
 		logger.info(coverageTracker.getStatistics());
 		
+		// print final coverage
+		System.out.println();
+		System.out.println("Final coverage: " + coverageTracker.getCoverage()*100 + "%");
+		
 		// if enabled, print uncovered goals
 		if (org.evosuite.Properties.PRINT_MISSED_GOALS) {
 			List<FitnessFunction<MBTChromosome>> uncoveredGoals = coverageTracker.getUncoveredGoals();
@@ -411,25 +415,6 @@ public class Main {
 		}
 	}
 
-	/**
-	 * TODO should no longer be necessary, options can now be passed as commandline arguments -Doption=value
-	 */
-	private void setProperties () {
-//		MBTProperties.SEARCH_BUDGET = 500;
-//		MBTProperties.LR_mean_buttons = 1;
-//		MBTProperties.LR_n_buttons = 20;
-//		MBTProperties.LR_n_doors = 10 ;
-//		MBTProperties.SUT_EFSM = "labrecruits.random_default";
-//		MBTProperties.LR_seed = 370327;
-		
-		
-		MBTProperties.LR_seed = 325439;
-		MBTProperties.LR_mean_buttons = 0.5;
-		MBTProperties.LR_n_buttons = 40;
-		MBTProperties.LR_n_doors = 28;
-	}
-	
-
 	
 	/**
 	 * TODO add proper optios here
@@ -631,7 +616,8 @@ public class Main {
 				MBTProperties.getInstance().setValue(propertyName, propertyValue);
 				
 			} catch (Exception e) {
-				LoggingUtils.getEvoLogger().error("Invalid value for property " + propertyName+": "+propertyValue+". Exception "+e.getMessage(),e);
+				//LoggingUtils.getEvoLogger().error("Invalid value for property " + propertyName+": "+propertyValue+". Exception "+e.getMessage(),e);
+				System.err.println("Invalid value for property " + propertyName + ": " + propertyValue);
 			}
             try {
             	//Do this also for Evosuite global properties, if they exsits
