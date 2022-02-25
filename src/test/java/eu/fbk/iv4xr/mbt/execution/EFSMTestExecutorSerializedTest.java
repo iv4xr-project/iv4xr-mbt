@@ -6,7 +6,12 @@ package eu.fbk.iv4xr.mbt.execution;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
@@ -45,7 +50,20 @@ class EFSMTestExecutorSerializedTest {
 	}
 
 	private String getLocalFilePath(String resourceName) {
-		return this.getClass().getClassLoader().getResource(resourceName).getPath();
+		
+		URL resource = this.getClass().getClassLoader().getResource(resourceName);
+		URI uri = null;
+		try {
+			uri = new URI(resource.toString());
+		} catch (URISyntaxException e) {
+			fail();
+			e.printStackTrace();
+		}
+		return uri.getPath();
+		
+		//return this.getClass().getClassLoader().getResource(resourceName).getPath();
+		
+		
 	}
 
 }
