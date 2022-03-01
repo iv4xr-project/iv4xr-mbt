@@ -957,6 +957,19 @@ public class MBTProperties {
 				}
 
 				f.set(this, criteria);
+			} else if (f.getType().getComponentType().equals(SecondaryObjective.class)) {
+				if (value.trim().isEmpty()) {
+					SecondaryObjective[] sos = {};
+					f.set(this, sos);
+				}else {
+					String[] values = value.split(":");
+					SecondaryObjective[] sos = new SecondaryObjective[values.length];
+					int pos = 0;
+					for (String stringValue : values) {
+						sos[pos++] = Enum.valueOf(SecondaryObjective.class, stringValue.toUpperCase());
+					}
+					f.set(this, sos);
+				}
 			}
 		} else {
 			f.set(null, value);
