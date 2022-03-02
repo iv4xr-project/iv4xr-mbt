@@ -581,9 +581,12 @@ public  class EFSM implements Cloneable, Serializable{
 
 	public String getEfsmSummaryFeatures() {
 		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,"+
-						  "Average Clustering Coefficient,Average Alpha Centrality,"+
-						  "Average Betweenness Centrality,Average Closeness Centrality,"+
-						  "Average Harmonic Centrality,Average Page Rank"+"\n";
+						  "Average Clustering Coefficient,"+
+						  "Average Alpha Centrality,"+
+						  "Average Betweenness Centrality,"+
+						  "Average Closeness Centrality,"+
+						  "Average Harmonic Centrality,"+
+						  "Average Page Rank"+"\n";
 		
 		//int n_vertex = initialBaseGraph.vertexSet().size();
 		//int n_edges = initialBaseGraph.edgeSet().size();
@@ -596,8 +599,13 @@ public  class EFSM implements Cloneable, Serializable{
 		int girth = GraphMetrics.getGirth(this.baseGraph);
 		double radius = GraphMetrics.getRadius(this.baseGraph);
 		
+		//ClusteringCoefficient cf = new ClusteringCoefficient(this.baseGraph);
+		//double averageClusteringCoefficient = cf.getAverageClusteringCoefficient(); 
+		
 		ClusteringCoefficient cf = new ClusteringCoefficient(this.baseGraph);
-		double averageClusteringCoefficient = cf.getAverageClusteringCoefficient(); 
+		Collection<Double> cfValues = cf.getScores().values();
+		Double[] cfArray = cfValues.toArray(new Double[cfValues.size()]);
+		double cfMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(cfArray));
 		
 		AlphaCentrality ac = new AlphaCentrality(this.baseGraph);
 		Collection<Double> acValues = ac.getScores().values();
@@ -631,7 +639,7 @@ public  class EFSM implements Cloneable, Serializable{
 					Double.toString(diameter)+","+
 					Integer.toString(girth)+","+
 					Double.toString(radius)+","+
-					Double.toString(averageClusteringCoefficient)+","+
+					Double.toString(cfMean)+","+
 					Double.toString(acMean)+","+
 					Double.toString(bcMean)+","+
 					Double.toString(ccMean)+","+
