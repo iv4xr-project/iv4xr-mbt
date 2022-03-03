@@ -3,6 +3,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,8 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
-
-
+import org.apache.commons.math3.stat.descriptive.summary.Sum;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphMetrics;
 import org.jgrapht.GraphPath;
@@ -581,12 +581,12 @@ public  class EFSM implements Cloneable, Serializable{
 
 	public String getEfsmSummaryFeatures() {
 		String features = "n States,n Transitions,n Variables,Diameter,Girth,Radius,"+
-						  "Average Clustering Coefficient,"+
-						  "Average Alpha Centrality,"+
-						  "Average Betweenness Centrality,"+
-						  "Average Closeness Centrality,"+
-						  "Average Harmonic Centrality,"+
-						  "Average Page Rank"+"\n";
+						  "Mean Clustering Coefficient,SD Clustering Coefficient,Min Clustering Coefficient,Max Clustering Coefficient,Sum Clustering Coefficient,"+
+						  "Mean Alpha Centrality,SD Alpha Centrality,Min Alpha Centrality,Max Alpha Centrality,Sum Alpha Centrality,"+
+						  "Mean Betweenness Centrality,SD Betweenness Centrality,Min Betweenness Centrality,Max Betweenness Centrality,Sum Betweenness Centrality,"+
+						  "Mean Closeness Centrality,SD Closeness Centrality,Min Closeness Centrality,Max Closeness Centrality,Sum Closeness Centrality,"+
+						  "Mean Harmonic Centrality,SD Harmonic Centrality,Min Harmonic Centrality,Max Harmonic Centrality,Sum Harmonic Centrality,"+
+						  "Mean Page Rank,SD Page Rank,Min Page Rank,Max Page Rank,Sum Page Rank"+"\n";
 		
 		//int n_vertex = initialBaseGraph.vertexSet().size();
 		//int n_edges = initialBaseGraph.edgeSet().size();
@@ -602,35 +602,79 @@ public  class EFSM implements Cloneable, Serializable{
 		//ClusteringCoefficient cf = new ClusteringCoefficient(this.baseGraph);
 		//double averageClusteringCoefficient = cf.getAverageClusteringCoefficient(); 
 		
+		Sum apacheSum = new Sum();
+		
 		ClusteringCoefficient cf = new ClusteringCoefficient(this.baseGraph);
 		Collection<Double> cfValues = cf.getScores().values();
 		Double[] cfArray = cfValues.toArray(new Double[cfValues.size()]);
 		double cfMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(cfArray));
+		double cfVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(cfArray));
+		double cfSd = Math.sqrt(cfVariance);
+		double cfMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(cfArray));
+		double cfMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(cfArray));
+		//double cfSum = Arrays.stream(cfArray).sum();
+		double cfSum = apacheSum.evaluate(ArrayUtils.toPrimitive(cfArray));
+		
+		
 		
 		AlphaCentrality ac = new AlphaCentrality(this.baseGraph);
 		Collection<Double> acValues = ac.getScores().values();
 		Double[] acArray = acValues.toArray(new Double[acValues.size()]);
 		double acMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(acArray));
+		double acVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(acArray));
+		double acSd = Math.sqrt(acVariance);
+		double acMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(acArray));
+		double acMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(acArray));
+		//double acSum = Arrays.stream(acArray).sum();
+		double acSum = apacheSum.evaluate(ArrayUtils.toPrimitive(acArray));
+		
+		
 			
 		BetweennessCentrality bc = new BetweennessCentrality<>(this.baseGraph);
 		Collection<Double> bcValues = bc.getScores().values();
 		Double[] bcArray = bcValues.toArray(new Double[bcValues.size()]);
 		double bcMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(bcArray));
+		double bcVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(bcArray));
+		double bcSd = Math.sqrt(bcVariance);
+		double bcMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(bcArray));
+		double bcMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(bcArray));
+		//double acSum = Arrays.stream(acArray).sum();
+		double bcSum = apacheSum.evaluate(ArrayUtils.toPrimitive(bcArray));		
 		
 		ClosenessCentrality cc = new ClosenessCentrality<>(this.baseGraph);
 		Collection<Double> ccValues = cc.getScores().values();
 		Double[] ccArray = ccValues.toArray(new Double[ccValues.size()]);
 		double ccMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(ccArray));
+		double ccVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(ccArray));
+		double ccSd = Math.sqrt(ccVariance);
+		double ccMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(ccArray));
+		double ccMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(ccArray));
+		//double acSum = Arrays.stream(acArray).sum();
+		double ccSum = apacheSum.evaluate(ArrayUtils.toPrimitive(ccArray));		
 	
 		HarmonicCentrality hc = new HarmonicCentrality<>(this.baseGraph);
 		Collection<Double> hcValues = hc.getScores().values();
 		Double[] hcArray = hcValues.toArray(new Double[hcValues.size()]);
 		double hcMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(hcArray));
+		double hcVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(hcArray));
+		double hcSd = Math.sqrt(hcVariance);
+		double hcMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(hcArray));
+		double hcMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(hcArray));
+		//double acSum = Arrays.stream(acArray).sum();
+		double hcSum = apacheSum.evaluate(ArrayUtils.toPrimitive(hcArray));		
+		
 		
 		PageRank pr = new PageRank<>(this.baseGraph);
 		Collection<Double> prValues = pr.getScores().values();
 		Double[] prArray = prValues.toArray(new Double[prValues.size()]);
 		double prMean = org.apache.commons.math3.stat.StatUtils.mean(ArrayUtils.toPrimitive(prArray));
+		double prVariance = org.apache.commons.math3.stat.StatUtils.variance(ArrayUtils.toPrimitive(prArray));
+		double prSd = Math.sqrt(prVariance);
+		double prMin = org.apache.commons.math3.stat.StatUtils.min(ArrayUtils.toPrimitive(prArray));
+		double prMax = org.apache.commons.math3.stat.StatUtils.max(ArrayUtils.toPrimitive(prArray));
+		//double acSum = Arrays.stream(acArray).sum();
+		double prSum = apacheSum.evaluate(ArrayUtils.toPrimitive(prArray));		
+		
 		
 		
 		features += Integer.toString(n_vertex) + "," +
@@ -640,12 +684,37 @@ public  class EFSM implements Cloneable, Serializable{
 					Integer.toString(girth)+","+
 					Double.toString(radius)+","+
 					Double.toString(cfMean)+","+
+					Double.toString(cfSd)+","+
+					Double.toString(cfMin)+","+
+					Double.toString(cfMax)+","+
+					Double.toString(cfSum)+","+		
 					Double.toString(acMean)+","+
+					Double.toString(acSd)+","+
+					Double.toString(acMin)+","+
+					Double.toString(acMax)+","+
+					Double.toString(acSum)+","+			
 					Double.toString(bcMean)+","+
+					Double.toString(bcSd)+","+
+					Double.toString(bcMin)+","+
+					Double.toString(bcMax)+","+
+					Double.toString(bcSum)+","+						
 					Double.toString(ccMean)+","+
+					Double.toString(ccSd)+","+
+					Double.toString(ccMin)+","+
+					Double.toString(ccMax)+","+
+					Double.toString(ccSum)+","+	
 					Double.toString(hcMean)+","+
-					Double.toString(prMean)+"\n";
-		
+					Double.toString(hcSd)+","+
+					Double.toString(hcMin)+","+
+					Double.toString(hcMax)+","+
+					Double.toString(hcSum)+","+					
+					Double.toString(prMean)+","+
+					Double.toString(prSd)+","+
+					Double.toString(prMin)+","+
+					Double.toString(prMax)+","+
+					Double.toString(prSum)+"\n";
+					
+					
 		return features;
 	}
 
