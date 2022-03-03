@@ -28,6 +28,8 @@ public class TrafficLightTest {
 		assertTrue(m.curState.equals(tl.red));	
 		assertFalse(m.curState.equals(tl.yellow));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);	
+		
+		
 	}
 	
 	
@@ -57,6 +59,7 @@ public class TrafficLightTest {
 			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
 			m.transition(null, tl.green);
 		}
+		
 //		
 //		m.transition(null, tl.yellow);
 //		assertTrue(m.curState.equals(tl.red));	

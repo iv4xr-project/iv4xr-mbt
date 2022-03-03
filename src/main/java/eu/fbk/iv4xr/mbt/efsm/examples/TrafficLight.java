@@ -11,6 +11,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
+import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
@@ -72,25 +73,27 @@ public class TrafficLight {
 	 
 	// Pedestrian
 	
-	Const<Integer> pendingSixty = new Const<Integer>(60);
+	Const<Boolean> pedestrian = new Const<Boolean>(true);
 	// count greater that 60
-	IntGreat p_countGreatThanSixty =  new IntGreat(count, pendingSixty);
+	//IntGreat p_countGreatThanSixty =  new IntGreat(count, pendingSixty);
 	// count equal 60
-	IntEq p_countEqualSixty =  new IntEq(count, pendingSixty);
+	//IntEq p_countEqualSixty =  new IntEq(count, pendingSixty);
 	// count greater or equal 60
-	BoolOr p_countGreatEqThanSixty = new BoolOr(p_countGreatThanSixty, p_countEqualSixty);
+	//BoolOr p_countGreatEqThanSixty = new BoolOr(p_countGreatThanSixty, p_countEqualSixty);
 	// count less than 60
-	BoolNot p_countLessThanSixty = new BoolNot(p_countGreatEqThanSixty);
-	
-	BoolAnd checkPoint = new BoolAnd(countLessThanSixty,p_countLessThanSixty);
+	//BoolNot p_countLessThanSixty = new BoolNot(p_countGreatEqThanSixty);
+	BoolAnd checkPoint = new BoolAnd(countLessThanSixty,pedestrian);
 	
 	
 	// Green is less than 60 and pedestrian is less than 60 //
-	BoolOr pending_status_less = new BoolOr(p_countLessThanSixty,countLessThanSixty);
+	//BoolOr pending_status_less = new BoolOr(p_countLessThanSixty,countLessThanSixty);
 	
 	// define transition guards
 	EFSMGuard guardCountGreatEqThanSixty = new EFSMGuard(countGreatEqThanSixty);
 	EFSMGuard guardCountLessThanSixty = new EFSMGuard(countLessThanSixty);
+	
+	
+	EFSMGuard pending_check = new EFSMGuard(checkPoint);
 	
 	EFSMGuard guardCountGreatEqThanFive = new EFSMGuard(countGreatEqThanFive);
 	EFSMGuard guardCountLessThanFive = new EFSMGuard(countLessThanFive);
@@ -151,9 +154,10 @@ public class TrafficLight {
 		
 		// t5: green -> yellow
 		
-	/*	EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard> t_5 = new EFSMTransition<>();
-		t_5.setGuard(guardCountGreatEqThanSixty);  
-		t_5.setOp(operationResetCount_green);*/
+	EFSMTransition  t_5 = new EFSMTransition<>();
+		t_5.setGuard(pending_check);
+		t_5.setGuard(guardCountLessThanSixty);  
+		t_5.setOp(operationResetCount_green);
 		
 		
 		
@@ -176,6 +180,7 @@ public class TrafficLight {
 	    		.withTransition(yellow, yellow, t_2)
 	    		.withTransition(yellow, red, t_3)
 	    		.withTransition(green, green, t_4)
+	    		.withTransition(green, yellow, t_5)
 	    		.build(red, tlContext, lrParameterGenerator);
 	    
 	    return(trafficLightEFSM);
