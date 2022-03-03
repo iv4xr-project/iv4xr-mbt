@@ -7,7 +7,7 @@ public abstract class BinaryOp<T> implements Exp<T> {
 	 */
 	private static final long serialVersionUID = -192971772488798547L;
 	
-	protected Exp<?> parameter1;
+	private Exp<?> parameter1;
 	private Exp<?> parameter2;
 	
 	public BinaryOp(Exp<?> parameter1, Exp<?> parameter2){

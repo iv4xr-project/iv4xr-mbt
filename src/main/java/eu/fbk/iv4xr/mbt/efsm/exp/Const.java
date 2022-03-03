@@ -13,14 +13,6 @@ public class Const<T> implements Exp<T> {
 		this.value = value;
 	}
 
-	public Const(int i) {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public Const(boolean i) {
-		// TODO Auto-generated constructor stub
-	}
-
 	public T getVal() {
 		return value;
 	}

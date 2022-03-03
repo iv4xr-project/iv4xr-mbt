@@ -156,7 +156,7 @@ public class TrafficLight {
 		
 	EFSMTransition  t_5 = new EFSMTransition<>();
 		t_5.setGuard(pending_check);
-		t_5.setGuard(guardCountLessThanSixty);  
+		//t_5.setGuard(guardCountLessThanSixty);  
 		t_5.setOp(operationResetCount_green);
 		
 		
