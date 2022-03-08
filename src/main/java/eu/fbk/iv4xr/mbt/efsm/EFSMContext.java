@@ -6,6 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.efsm.exp.AssignSet;
+import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 
@@ -26,6 +27,7 @@ public class EFSMContext implements Cloneable, Serializable  {
 		for(Var v : vars ) {
 			context.put(v);
 		}	
+		
 	}
 	
 	@Override

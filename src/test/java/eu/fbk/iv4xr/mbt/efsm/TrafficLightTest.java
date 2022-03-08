@@ -10,6 +10,10 @@ import junit.framework.Assert;
 
 public class TrafficLightTest {
 
+
+
+
+
 	@Test
 	public void testModel_1() {
 		TrafficLight tl = new TrafficLight();
@@ -24,10 +28,20 @@ public class TrafficLightTest {
 		assertFalse(m.curState.equals(tl.green));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
 		
+		
+		// Pedestrian Test Part
+		m.transition(null, tl.green);
+		assertTrue(m.curState.equals(tl.red));
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);	
+		assertTrue(tl.pedestrian.getVal());	
+		
+		
 		m.transition(null, tl.yellow);
 		assertTrue(m.curState.equals(tl.red));	
 		assertFalse(m.curState.equals(tl.yellow));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);	
+		
+		
 		
 		
 	}
@@ -60,18 +74,12 @@ public class TrafficLightTest {
 			m.transition(null, tl.green);
 		}
 		
-//		
-//		m.transition(null, tl.yellow);
-//		assertTrue(m.curState.equals(tl.red));	
-//		assertFalse(m.curState.equals(tl.yellow));
-//		
-//		
-//		//for (int i = 0; i < 5; i++) {
-//			m.transition(null, tl.yellow);
-//			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=5);
-//		//}
-//		
+		assertTrue(m.curState.equals(tl.green));
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);	
+		assertTrue(tl.pedestrian.getVal());	
+		m.transition(null, tl.yellow);
+		
 	}
-
-	
 }
+	
+

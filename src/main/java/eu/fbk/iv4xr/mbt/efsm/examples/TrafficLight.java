@@ -39,7 +39,9 @@ public class TrafficLight {
 	
 	// context 
 	public Var<Integer> count = new Var<Integer>("count", 0);
-
+	
+	public Const<Boolean> pedestrian = new Const<Boolean>(true);
+	
 	EFSMContext tlContext = new EFSMContext(count);
 	
 	// operation increment count
@@ -73,7 +75,9 @@ public class TrafficLight {
 	 
 	// Pedestrian
 	
-	Const<Boolean> pedestrian = new Const<Boolean>(true);
+	//Const<Boolean> pedestrian = new Const<Boolean>(true);
+	
+	
 	// count greater that 60
 	//IntGreat p_countGreatThanSixty =  new IntGreat(count, pendingSixty);
 	// count equal 60
@@ -152,11 +156,10 @@ public class TrafficLight {
 		//t_4.setGuard(guardCountLessThanSixty);  
 		t_4.setOp(operationIncCount_green);
 		
-		// t5: green -> yellow
+		// t5: green -> yellow with pending
 		
 	EFSMTransition  t_5 = new EFSMTransition<>();
-		t_5.setGuard(pending_check);
-		//t_5.setGuard(guardCountLessThanSixty);  
+		t_5.setGuard(pending_check); 
 		t_5.setOp(operationResetCount_green);
 		
 		
@@ -171,7 +174,7 @@ public class TrafficLight {
 		
 	    
 	    // parameter generator
-	    // TODO Fix for traffic light
+
 	    LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 	    
 	    trafficLightEFSM = trafficLightEFSMBuilder
@@ -181,7 +184,7 @@ public class TrafficLight {
 	    		.withTransition(yellow, red, t_3)
 	    		.withTransition(green, green, t_4)
 	    		.withTransition(green, yellow, t_5)
-	    		.build(red, tlContext, lrParameterGenerator);
+	    		.build(red,tlContext, lrParameterGenerator);
 	    
 	    return(trafficLightEFSM);
 	}
