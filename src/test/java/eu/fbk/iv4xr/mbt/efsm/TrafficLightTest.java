@@ -33,7 +33,11 @@ public class TrafficLightTest {
 		m.transition(null, tl.green);
 		assertTrue(m.curState.equals(tl.red));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);	
+<<<<<<< Updated upstream
 		assertTrue(tl.pedestrian.getVal());	
+=======
+		//assertTrue(tl.pedestrian.getVal());	
+>>>>>>> Stashed changes
 		
 		
 		m.transition(null, tl.yellow);
@@ -41,12 +45,18 @@ public class TrafficLightTest {
 		assertFalse(m.curState.equals(tl.yellow));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);	
 		
+<<<<<<< Updated upstream
 		
 		
 		
 	}
 	
 	
+=======
+				
+	}
+
+>>>>>>> Stashed changes
 
 	@Test
 	public void testModel_2() {
@@ -73,11 +83,32 @@ public class TrafficLightTest {
 			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
 			m.transition(null, tl.green);
 		}
+<<<<<<< Updated upstream
 		
 		assertTrue(m.curState.equals(tl.green));
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);	
 		assertTrue(tl.pedestrian.getVal());	
 		m.transition(null, tl.yellow);
+=======
+	
+		// green to pending
+		assertTrue(m.curState.equals(tl.green));
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);
+		assertTrue((Boolean)m.curContext.getContext().getVariable("pedestrian").getValue()==true);		
+		m.transition(null, tl.pending);
+		
+		// pending to pending
+		/*assertTrue(m.curState.equals(tl.pending));
+		for (int i = 1; i < 61; i++) {
+			assertTrue((Integer)m.curContext.getContext().getVariable("pedestrian").getValue()==i);
+			m.transition(null, tl.pending);
+		}*/
+		
+		//pending to yellow
+		//assertTrue(m.curState.equals(tl.pending));
+		//assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==60);
+		//m.transition(null, tl.yellow);
+>>>>>>> Stashed changes
 		
 	}
 }
