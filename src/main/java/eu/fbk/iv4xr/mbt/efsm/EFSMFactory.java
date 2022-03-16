@@ -91,7 +91,7 @@ public class EFSMFactory {
 				efsm = randomGenerator.getEFMS();
 				efsm.setShortestPathsBetweenStates();
 				efsm.setEFMSString(randomGenerator.get_csv());
-				efsm.setAnmlString(randomGenerator.getAnml());
+				//efsm.setAnmlString(randomGenerator.getAnml());
 				efsm.setDotString(randomGenerator.getEFSMAsDot());
 			//	efsm.setEFSMStringRemoveMutations(randomGenerator.getRemoveMutations());
 			//	efsm.setEFSMStringAddMutations(randomGenerator.getAddMutations());

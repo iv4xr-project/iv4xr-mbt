@@ -3,45 +3,36 @@
  */
 package eu.fbk.iv4xr.mbt.execution;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMParameter;
-//import eu.fbk.iv4xr.mbt.efsm4j.EFSMState;
-//import eu.fbk.iv4xr.mbt.efsm4j.IEFSMContext;
-//import eu.fbk.iv4xr.mbt.efsm4j.Transition;
 
 /**
  * @author kifetew
  *
  */
-public class ExecutionTrace<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> {
+public class ExecutionTrace implements Serializable{
 	
-	private Collection<State> coveredStates = new HashSet<State>();
-	private Collection<Transition> coveredTransitions = new HashSet<Transition>();
-	private boolean currentGoalCovered;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3139864863859510093L;
+	private Collection<EFSMState> coveredStates = new HashSet<EFSMState>();
+	private Collection<EFSMTransition> coveredTransitions = new HashSet<EFSMTransition>();
 	
 	private double pathBranchDistance;
 	private double pathApproachLevel;
 	
-	private double targetBranchDistance;
-	private double targetApproachLevel;
-	
 	private boolean success;
+	private int passedTransitions = -1;
+	private int branchPointPassedTransitions = -1;
+	private List<EFSMContext> contexts = new ArrayList<EFSMContext>();
 	
 	/**
 	 * 
@@ -53,28 +44,28 @@ public class ExecutionTrace<
 	/**
 	 * @return the coveredStates
 	 */
-	public Collection<State> getCoveredStates() {
+	public Collection<EFSMState> getCoveredStates() {
 		return coveredStates;
 	}
 
 	/**
 	 * @param coveredStates the coveredStates to set
 	 */
-	public void setCoveredStates(Collection<State> coveredStates) {
+	public void setCoveredStates(Collection<EFSMState> coveredStates) {
 		this.coveredStates = coveredStates;
 	}
 
 	/**
 	 * @return the coveredTransitions
 	 */
-	public Collection<Transition> getCoveredTransitions() {
+	public Collection<EFSMTransition> getCoveredTransitions() {
 		return coveredTransitions;
 	}
 
 	/**
 	 * @param coveredTransitions the coveredTransitions to set
 	 */
-	public void setCoveredTransitions(Collection<Transition> coveredTransitions) {
+	public void setCoveredTransitions(Collection<EFSMTransition> coveredTransitions) {
 		this.coveredTransitions = coveredTransitions;
 	}
 
@@ -120,46 +111,58 @@ public class ExecutionTrace<
 		this.pathApproachLevel = pathApproachLevel;
 	}
 
-	/**
-	 * @return the targetBranchDistance
-	 */
-	public double getTargetBranchDistance() {
-		return targetBranchDistance;
+	public void setPassedTransitions(int passedTransitions) {
+		this.passedTransitions = passedTransitions;
+	}
+
+	public int getPassedTransitions() {
+		return this.passedTransitions;
+	}
+	
+	public int getBranchPointPassedTransitions() {
+		return branchPointPassedTransitions;
+	}
+
+	public void setBranchPointPassedTransitions(int branchPointPassedTransitions) {
+		this.branchPointPassedTransitions = branchPointPassedTransitions;
+	}
+
+	@Override
+	protected ExecutionTrace clone() {
+		ExecutionTrace copy = new ExecutionTrace();
+		if (coveredStates != null) {
+			for (EFSMState state : coveredStates) {
+				copy.getCoveredStates().add(state.clone());
+			}
+		}
+		if (coveredTransitions != null) {
+			for (EFSMTransition transition : coveredTransitions) {
+				copy.getCoveredTransitions().add(transition.clone());
+			}
+		}
+		copy.setPathBranchDistance(pathBranchDistance);
+		copy.setPathApproachLevel(pathApproachLevel);
+		copy.setSuccess(success);
+		copy.setPassedTransitions(passedTransitions);
+		if (contexts != null) {
+			for (EFSMContext context : contexts) {
+				copy.getContexts().add(context.clone());
+			}
+		}
+		return copy;
 	}
 
 	/**
-	 * @param targetBranchDistance the targetBranchDistance to set
+	 * @return the context
 	 */
-	public void setTargetBranchDistance(double targetBranchDistance) {
-		this.targetBranchDistance = targetBranchDistance;
+	public List<EFSMContext> getContexts() {
+		return contexts;
 	}
 
 	/**
-	 * @return the targetApproachLevel
+	 * @param context the context to set
 	 */
-	public double getTargetApproachLevel() {
-		return targetApproachLevel;
+	public void setContexts(List<EFSMContext> contexts) {
+		this.contexts = contexts;
 	}
-
-	/**
-	 * @param targetApproachLevel the targetApproachLevel to set
-	 */
-	public void setTargetApproachLevel(double targetApproachLevel) {
-		this.targetApproachLevel = targetApproachLevel;
-	}
-
-	/**
-	 * @return the currentGoalCovered
-	 */
-	public boolean isCurrentGoalCovered() {
-		return currentGoalCovered;
-	}
-
-	/**
-	 * @param currentGoalCovered the currentGoalCovered to set
-	 */
-	public void setCurrentGoalCovered(boolean currentGoalCovered) {
-		this.currentGoalCovered = currentGoalCovered;
-	}
-
 }

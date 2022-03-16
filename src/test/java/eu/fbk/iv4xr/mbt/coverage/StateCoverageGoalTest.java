@@ -70,7 +70,7 @@ class StateCoverageGoalTest {
 		assertNotNull(mFactory);
 		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
-		TestFactory testFactory = new RandomLengthTestFactory<>(efsm);
+		TestFactory testFactory = new RandomLengthTestFactory(efsm);
 		RandomLengthTestChromosomeFactory<MBTChromosome> cFactory = new RandomLengthTestChromosomeFactory<MBTChromosome>(testFactory);
 		assertNotNull(cFactory);
 		MBTChromosome chromosome = (MBTChromosome) cFactory.getChromosome();
@@ -81,7 +81,8 @@ class StateCoverageGoalTest {
 		System.out.println("Chromosome: ("+chromosome.getTestcase().isValid()+") \n" + chromosome.toString());
 		double fitness = stateGoal.getFitness(chromosome);
 		System.out.println("Fitness: " + fitness);
-		assertTrue(fitness == 95d);
+		double expectedFitness = 1048.499000999001;
+		assertTrue(Double.compare(fitness, expectedFitness) == 0 );
 	}
 
 }

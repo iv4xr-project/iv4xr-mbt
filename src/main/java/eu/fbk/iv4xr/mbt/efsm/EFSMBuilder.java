@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 
 
 
@@ -27,25 +28,17 @@ import com.google.common.base.Preconditions;
  *
  */
 
-public class EFSMBuilder<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter,Context, Operation, Guard>,
-	EFSM extends eu.fbk.iv4xr.mbt.efsm.EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition>>
+public class EFSMBuilder
 {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(EFSMBuilder.class);
-	protected final Graph<State, EFSMTransition> base;
+	protected final DirectedPseudograph<EFSMState, EFSMTransition> base;
 	private final Class<EFSM> efsmTypeClass;
 	
 	public EFSMBuilder(Class<EFSM> efsmTypeClass) {
 		
 		
-		this(efsmTypeClass, new DirectedPseudograph<State, EFSMTransition>(EFSMTransition.class));
+		this(efsmTypeClass, new DirectedPseudograph<EFSMState, EFSMTransition>(EFSMTransition.class));
 		
 	    //this(efsmTypeClass, new DirectedPseudograph<>(EFSMTransition.class));
 		//this(efsmTypeClass, new DirectedPseudograph<>(null));
@@ -62,24 +55,24 @@ public class EFSMBuilder<
 		this(efsmTypeClass, base.getBaseGraph());
 	}
 	
-	private EFSMBuilder(Class<EFSM> efsmTypeClass, Graph<State, EFSMTransition> base) {
+	private EFSMBuilder(Class<EFSM> efsmTypeClass, DirectedPseudograph<EFSMState, EFSMTransition> base) {
 		this.efsmTypeClass = efsmTypeClass;
 		this.base = base;
 	}
 
-	public EFSMBuilder<State, InParameter, OutParameter, Context,  Operation, Guard, Transition, EFSM> withEFSM(EFSM s) {
+	public EFSMBuilder withEFSM(EFSM s) {
 		Preconditions.checkNotNull(s);
 		Graphs.addGraph(base, s.getBaseGraph());
 		return this;
 	}
 
-	public EFSMBuilder<State, InParameter, OutParameter, Context, Operation, Guard, Transition, EFSM> withState(State... s) {
+	public EFSMBuilder withState(EFSMState... s) {
 		Preconditions.checkNotNull(s);
 		Graphs.addAllVertices(base, Arrays.asList(s));
 		return this;
 	}
 	
-	public EFSMBuilder<State, InParameter, OutParameter, Context, Operation, Guard, Transition, EFSM> withTransition(State src, State tgt, Transition t) {
+	public EFSMBuilder withTransition(EFSMState src, EFSMState tgt, EFSMTransition t) {
 		t.setSrc(src);
 		t.setTgt(tgt);
 
@@ -94,13 +87,13 @@ public class EFSMBuilder<
 		return this;
 	}
 	
-	public EFSMBuilder<State, InParameter, OutParameter, Context, Operation, Guard, Transition, EFSM> replaceTransition(Transition old, Transition newT) {
+	public EFSMBuilder replaceTransition(EFSMTransition old, EFSMTransition newT) {
 		Preconditions.checkArgument(base.containsEdge(old), "Transition to replace does not exist in EFSM");
 
 		base.removeEdge(old);
 
-		final State src = old.getSrc();
-		final State tgt = old.getTgt();
+		final EFSMState src = old.getSrc();
+		final EFSMState tgt = old.getTgt();
 
 		newT.setSrc(src);
 		newT.setTgt(tgt);
@@ -109,49 +102,62 @@ public class EFSMBuilder<
 		return this;
 	}
 	
-	public EFSM build(State initialState, Context initialContext,
-			EFSMParameterGenerator<InParameter> parameterGenerator) {
+	public EFSM build(
+			EFSMState initialState, 
+			EFSMContext initialContext,
+			EFSMParameterGenerator parameterGenerator) {
 		Preconditions.checkNotNull(initialState);
 		Preconditions.checkNotNull(initialContext);
-		try {
-			Constructor<EFSM> constructor = getConstructor(initialState, initialContext, parameterGenerator);
-			if (constructor == null) {
-				throw new RuntimeException("No constructor found");
-			}
-			constructor.setAccessible(true);
-			return constructor.newInstance(base, initialState, initialContext, parameterGenerator);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+		Preconditions.checkNotNull(parameterGenerator);
+		
+		return new EFSM(base, initialState, initialContext, parameterGenerator);
 
-	private Constructor<EFSM> getConstructor(State initialState, Context initialContext,
-			EFSMParameterGenerator<InParameter> parameterGenerator) {
-		for (Constructor<?> constructor : efsmTypeClass.getDeclaredConstructors()) {
-			Class<?>[] parameterTypes = constructor.getParameterTypes();
-			if (parameterTypes.length != 4) {
-				continue;
-			}
-
-			final TypeVariable<Class<EFSM>>[] typeParameters = efsmTypeClass.getTypeParameters();
-
-
-			if (parameterTypes[0].isAssignableFrom(base.getClass())
-					&& parameterTypes[1].isAssignableFrom(initialState.getClass())
-					&& parameterTypes[2].isAssignableFrom(initialContext.getClass())
-					&& parameterTypes[3].isAssignableFrom(parameterGenerator.getClass())) {
-				return (Constructor<EFSM>) constructor;
-			}
-
-		}
-		return null;
 	}
 	
-	public Set<EFSMTransition> incomingTransitionsOf(State s) {
+	
+//	public EFSM _build(EFSMState initialState, EFSMContext initialContext,
+//			EFSMParameterGenerator<EFSMParameter> parameterGenerator) {
+//		Preconditions.checkNotNull(initialState);
+//		Preconditions.checkNotNull(initialContext);
+//		try {
+//			Constructor<EFSM> constructor = getConstructor(initialState, initialContext, parameterGenerator);
+//			if (constructor == null) {
+//				throw new RuntimeException("No constructor found");
+//			}
+//			constructor.setAccessible(true);
+//			return constructor.newInstance(base, initialState, initialContext, parameterGenerator);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+
+//	private Constructor<EFSM> getConstructor(EFSMState initialState, EFSMContext initialContext,
+//			EFSMParameterGenerator<InParameter> parameterGenerator) {
+//		for (Constructor<?> constructor : efsmTypeClass.getDeclaredConstructors()) {
+//			Class<?>[] parameterTypes = constructor.getParameterTypes();
+//			if (parameterTypes.length != 4) {
+//				continue;
+//			}
+//
+//			final TypeVariable<Class<EFSM>>[] typeParameters = efsmTypeClass.getTypeParameters();
+//
+//
+//			if (parameterTypes[0].isAssignableFrom(base.getClass())
+//					&& parameterTypes[1].isAssignableFrom(initialState.getClass())
+//					&& parameterTypes[2].isAssignableFrom(initialContext.getClass())
+//					&& parameterTypes[3].isAssignableFrom(parameterGenerator.getClass())) {
+//				return (Constructor<EFSM>) constructor;
+//			}
+//
+//		}
+//		return null;
+//	}
+	
+	public Set<EFSMTransition> incomingTransitionsOf(EFSMState s) {
 		return base.incomingEdgesOf(s);
 	}
 
-	public Set<EFSMTransition> outgoingTransitionsOf(State s) {
+	public Set<EFSMTransition> outgoingTransitionsOf(EFSMState s) {
 		return base.outgoingEdgesOf(s);
 	}
 	

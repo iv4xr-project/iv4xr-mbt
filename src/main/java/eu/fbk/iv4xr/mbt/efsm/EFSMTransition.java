@@ -26,14 +26,7 @@ import eu.fbk.iv4xr.mbt.utils.EqualsWithNulls;
  *
  */
 
-public class EFSMTransition<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard> 
-		implements Cloneable, Serializable{
+public class EFSMTransition implements Cloneable, Serializable{
 
 	/**
 	 * 
@@ -44,12 +37,12 @@ public class EFSMTransition<
 	 * 
 	 */
 	private String id;
-	private State src;
-	private State tgt;
-	private Operation op;
-	private Guard guard;
-	private InParameter inParameter;
-	private OutParameter outParameter;
+	private EFSMState src;
+	private EFSMState tgt;
+	private EFSMOperation op;
+	private EFSMGuard guard;
+	private EFSMParameter inParameter;
+	private EFSMParameter outParameter;
 	
 	//MersenneTwister random = new MersenneTwister();
 	
@@ -59,7 +52,8 @@ public class EFSMTransition<
 	 *  Maybe this could be made safer.
 	 */
 	
-	public EFSMTransition(String id, Operation op, Guard guard, InParameter inParameter, OutParameter outParameter) {
+	public EFSMTransition(String id, EFSMOperation op, EFSMGuard guard, EFSMParameter inParameter, 
+			EFSMParameter outParameter) {
 		this.id = id;
 		this.op = op;
 		this.guard = guard;
@@ -88,19 +82,19 @@ public class EFSMTransition<
 	 * Setter and getter
 	 */
 	
-	public State getSrc() {
+	public EFSMState getSrc() {
 		return src;
 	}
 
-	protected void setSrc(State src) {
+	protected void setSrc(EFSMState src) {
 		this.src = src;
 	}
 
-	public State getTgt() {
+	public EFSMState getTgt() {
 		return tgt;
 	}
 
-	protected void setTgt(State tgt) {
+	protected void setTgt(EFSMState tgt) {
 		this.tgt = tgt;
 	}
 	
@@ -108,35 +102,35 @@ public class EFSMTransition<
 	 * Setter are public
 	 */
 	
-	public Operation getOp() {
+	public EFSMOperation getOp() {
 		return op;
 	}
 	
-	public void setOp(Operation op) {
+	public void setOp(EFSMOperation op) {
 		this.op = op;
 	}
 	
-	public Guard getGuard() {
+	public EFSMGuard getGuard() {
 		return guard;
 	}
 	
-	public void setGuard(Guard guard) {
+	public void setGuard(EFSMGuard guard) {
 		this.guard = guard;
 	}
 	
-	public InParameter getInParameter() {
+	public EFSMParameter getInParameter() {
 		return inParameter;
 	}
 	
-	public void setInParameter(InParameter inParameter) {
+	public void setInParameter(EFSMParameter inParameter) {
 		this.inParameter = inParameter;
 	}
 	
-	public OutParameter getOutParameter() {
+	public EFSMParameter getOutParameter() {
 		return outParameter;
 	}
 	
-	public void setOutParameter(OutParameter outParameter) {
+	public void setOutParameter(EFSMParameter outParameter) {
 		this.outParameter = outParameter;
 	}
 	
@@ -151,7 +145,7 @@ public class EFSMTransition<
 	 * @param context
 	 * @return
 	 */
-	public boolean isFeasible(Context context) {
+	public boolean isFeasible(EFSMContext context) {
 		
 		// if no guard return true
 		if (this.guard == null) {
@@ -187,8 +181,8 @@ public class EFSMTransition<
 	 * @param context
 	 * @return A set of output values
 	 */
-	public Set<OutParameter> take(Context contex) {
-		Set<OutParameter> apply = operation(this.inParameter, contex, this.op);
+	public Set<EFSMParameter> take(EFSMContext contex) {
+		Set<EFSMParameter> apply = operation(this.inParameter, contex, this.op);
 
 		if (apply == null) {
 			return Collections.emptySet();
@@ -208,7 +202,7 @@ public class EFSMTransition<
 	 * @return An (potentially empty) set of output values or null if the transition
 	 *         is infeasible.
 	 */
-	public Set<OutParameter> tryTake(Context context) {
+	public Set<EFSMParameter> tryTake(EFSMContext context) {
 		if (isFeasible(context)) {
 			return take(context);
 		} else {
@@ -220,7 +214,7 @@ public class EFSMTransition<
 	/*
 	 * To implement
 	 */
-	protected Set<OutParameter> operation(InParameter input, Context context, Operation op){
+	protected Set<EFSMParameter> operation(EFSMParameter input, EFSMContext context, EFSMOperation op){
 	
 		if (op != null) {
 			LinkedHashMap tmp = op.getAssignments().getHash();
@@ -252,7 +246,7 @@ public class EFSMTransition<
 	 */
 	@Override
 	public EFSMTransition clone() {	
-		EFSMTransition copy = new EFSMTransition<EFSMState, EFSMParameter, EFSMParameter, EFSMContext, EFSMOperation, EFSMGuard>(id, op, guard, inParameter, outParameter);
+		EFSMTransition copy = new EFSMTransition(id, op, guard, inParameter, outParameter);
 		copy.src = src;
 		copy.tgt = tgt;
 		return copy;

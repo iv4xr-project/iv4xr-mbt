@@ -1,6 +1,7 @@
 package eu.fbk.iv4xr.mbt.efsm;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -32,7 +33,17 @@ public class EFSMContext implements Cloneable, Serializable  {
 	
 	@Override
 	public EFSMContext clone() {	
-		return SerializationUtils.clone(this);
+		//return SerializationUtils.clone(this);
+		
+		// get all variables in the context
+		Collection allVariables = context.getAllVariables();
+
+		// create a new context but keeping the same variables
+		Var[] allVariablesArray = (Var[]) allVariables.toArray(new Var[allVariables.size()]);
+		EFSMContext newContext = new EFSMContext(allVariablesArray);
+		
+		return newContext;
+
 	}
 
 	public VarSet getContext() {

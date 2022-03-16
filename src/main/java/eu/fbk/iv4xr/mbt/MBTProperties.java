@@ -20,9 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.Properties.DoubleValue;
-import org.evosuite.Properties.Parameter;
-import org.evosuite.Properties.RankingType;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
 import org.evosuite.utils.LoggingUtils;
@@ -79,6 +76,36 @@ public class MBTProperties {
 	/*
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
+	
+	/*
+	 * Parameters to control fitness function. 
+	 * Fitness function has four component: feasibility approach level, feasibility branch distance, 
+	 * target approach level, target branch distance
+	 */
+	public enum FeasibilityApproachLevel{
+		NUMBER_UNFEASBILE_TRANSITIONS, NONE;
+	}
+	@Parameter(key = "feasibility_approach_level", group = "Fitness function", description = "Feasibility approach level function")
+	public static FeasibilityApproachLevel FEASIBILITY_APPROACH_LEVEL = FeasibilityApproachLevel.NUMBER_UNFEASBILE_TRANSITIONS;
+	
+	public enum FeasibilityBranchDistance{
+		LAST_TRANSITION_GUARD, NONE;
+	}
+	@Parameter(key = "feasibility_branch_distance", group = "Fitness function", description = "Feasibility branch distance function")
+	public static FeasibilityBranchDistance FEASIBILITY_BRANCH_DISTANCE = FeasibilityBranchDistance.LAST_TRANSITION_GUARD;
+	
+	public enum TargetApproachLevel{
+		SHORTEST_PATH_FROM_LAST_FEASIBLE, MIN_SHORTEST_PATH, NONE; 
+	}
+	@Parameter(key = "target_approach_level", group = "Fitness function", description = "Target approach level function")
+	public static TargetApproachLevel TARGET_APPROACH_LEVEL = TargetApproachLevel.NONE;
+	
+	public enum TargetBranchDistance{
+		FIRST_BRANCH_GUARD, NONE;
+	}
+	@Parameter(key = "target_branch_distance", group = "Fitness function", description = "Target branch distance function")
+	public static TargetBranchDistance TARGET_BRANCH_DISTANCE = TargetBranchDistance.NONE;
+	
 
 	@Parameter(key = "sanity_check_fitness", group = "Search Algorithm", description = "Sanity check for fitness function, return random value")
 	public static boolean SANITY_CHECK_FITNESS = false;
@@ -286,6 +313,10 @@ public class MBTProperties {
 	public static ModelCriterion[] MODELCRITERION = new ModelCriterion[] {
 		ModelCriterion.TRANSITION //, ModelCriterion.STATE
 	};
+	
+	
+	@Parameter(key = "k_transition_size", group = "Search Algorithm", description = "Model coverage criterion")
+	public static int K_TRANSITION_SIZE = 3;
 	
 	// MOSA PROPERTIES
 	public enum RankingType {
@@ -926,6 +957,19 @@ public class MBTProperties {
 				}
 
 				f.set(this, criteria);
+			} else if (f.getType().getComponentType().equals(SecondaryObjective.class)) {
+				if (value.trim().isEmpty()) {
+					SecondaryObjective[] sos = {};
+					f.set(this, sos);
+				}else {
+					String[] values = value.split(":");
+					SecondaryObjective[] sos = new SecondaryObjective[values.length];
+					int pos = 0;
+					for (String stringValue : values) {
+						sos[pos++] = Enum.valueOf(SecondaryObjective.class, stringValue.toUpperCase());
+					}
+					f.set(this, sos);
+				}
 			}
 		} else {
 			f.set(null, value);

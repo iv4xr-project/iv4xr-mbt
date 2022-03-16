@@ -30,7 +30,7 @@ import eu.iv4xr.framework.extensions.ltl.BasicModelChecker;
 public class MCTest {
 	
 	
-	//@Test
+	@Test
 	public void test1() {
 		EFSM anLRmodel = (new ButtonDoors1()).getModel() ;
 		

@@ -4,27 +4,26 @@ import java.io.Serializable;
 
 import com.google.common.base.Objects;
 
-public class EFSMConfiguration<State extends EFSMState, Context extends EFSMContext> 
-	implements Cloneable, Serializable {
+public class EFSMConfiguration  implements Cloneable, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7881380032384648823L;
 
-	private final State curState;
-	private final Context context;
+	private final EFSMState curState;
+	private final EFSMContext context;
 
-	public EFSMConfiguration(State curState, Context context) {
+	public EFSMConfiguration(EFSMState curState,EFSMContext context) {
 	    this.curState = curState;
 	    this.context = context;
 	  }
 
-	public State getState() {
+	public EFSMState getState() {
 		return curState;
 	}
 
-	public Context getContext() {
+	public EFSMContext getContext() {
 		return context;
 	}
 

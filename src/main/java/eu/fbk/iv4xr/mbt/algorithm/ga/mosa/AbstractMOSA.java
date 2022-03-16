@@ -62,15 +62,7 @@ import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
  *
  * @param <T>
  */
-public abstract class AbstractMOSA<
-	T extends Chromosome,
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends GeneticAlgorithm<T> {
+public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorithm<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 
@@ -132,11 +124,16 @@ public abstract class AbstractMOSA<
 			}
 			T offspring1 = (T) parent1.clone();
 			T offspring2 = (T) parent2.clone();
+			
+			// assume unchanged at first
+			offspring1.setChanged(false);
+			offspring2.setChanged(false);
+			
 			// apply crossover 
 			try {
 				if (Randomness.nextDouble() <= MBTProperties.CROSSOVER_RATE) {
 					crossoverFunction.crossOver(offspring1, offspring2);
-				} 
+				}
 			} catch (ConstructionFailedException e) {
 				logger.debug("CrossOver failed.");
 				continue;

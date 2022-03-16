@@ -28,24 +28,17 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class RandomLengthTestFactory<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> implements TestFactory {
+public class RandomLengthTestFactory implements TestFactory {
 	
 	/** Constant <code>logger</code> */
 	protected static final Logger logger = LoggerFactory.getLogger(RandomLengthTestFactory.class);
 	
 	private int maxLength = MBTProperties.MAX_PATH_LENGTH;
-	EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> model = null;
+	EFSM model = null;
 	/**
 	 * 
 	 */
-	public RandomLengthTestFactory(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm) {
+	public RandomLengthTestFactory(EFSM efsm) {
 		model = efsm;
 	}
 
@@ -53,7 +46,7 @@ public class RandomLengthTestFactory<
 	/**
 	 * 
 	 */
-	public RandomLengthTestFactory(EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm, int max) {
+	public RandomLengthTestFactory(EFSM efsm, int max) {
 		model = efsm;
 		maxLength = max;
 	}
@@ -61,11 +54,11 @@ public class RandomLengthTestFactory<
 	@Override
 	public Testcase getTestcase() {
 		int randomLength = Randomness.nextInt(maxLength) + 1;
-		EFSMConfiguration<State, Context> initialConfiguration = model.getInitialConfiguration();
-		State currentState = (State)initialConfiguration.getState();
+		EFSMConfiguration initialConfiguration = model.getInitialConfiguration();
+		EFSMState currentState = (EFSMState)initialConfiguration.getState();
 		
 		
-		List<Transition> transitions = new LinkedList<Transition>();
+		List<EFSMTransition> transitions = new LinkedList<EFSMTransition>();
 		int len = 0;
 		
 		// loop until random length reached or current state has not outgoing transitions (finalInParameter?)
@@ -73,7 +66,7 @@ public class RandomLengthTestFactory<
 			Set<EFSMTransition> outgoingTransitions = model.transitionsOutOf(currentState);
 			
 			// pick one transition at random and add it to path
-			Transition transition = (Transition) Randomness.choice(outgoingTransitions);
+			EFSMTransition transition = (EFSMTransition) Randomness.choice(outgoingTransitions);
 			transitions.add(transition);
 			
 			// take the state at the end of the chosen transition, and repeat
@@ -85,7 +78,7 @@ public class RandomLengthTestFactory<
 		//model.reset();
 		
 		// build the test case
-		Testcase testcase = new AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition>();
+		Testcase testcase = new AbstractTestSequence();
 		Path path = new Path (transitions);
 		((AbstractTestSequence)testcase).setPath(path);
 		assert path.isConnected();

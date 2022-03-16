@@ -18,24 +18,27 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
 /**
  * @author kifetew
  *
  */
-public class AbstractTestSequence<State extends EFSMState, InParameter extends EFSMParameter, OutParameter extends EFSMParameter, Context extends EFSMContext, Operation extends EFSMOperation, Guard extends EFSMGuard, Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>
-		implements Testcase {
+public class AbstractTestSequence implements Testcase {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6113600146777909496L;
-	private Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path;
+	private Path path;
 	private boolean valid = false;
 	private double fitness = 0d;
+	private boolean changed = true;
 
 	/** Coverage goals this test covers */
 	private transient Set<FitnessFunction<?>> coveredGoals = new LinkedHashSet<FitnessFunction<?>>();
+	
+//	private ExecutionResult executionResult;
 
 	private Mutator mutator;
 
@@ -52,14 +55,14 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	/**
 	 * @return the path
 	 */
-	public Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> getPath() {
+	public Path getPath() {
 		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path<State, InParameter, OutParameter, Context, Operation, Guard, Transition> path) {
+	public void setPath(Path path) {
 		this.path = path;
 		mutator = new Mutator(path);
 	}
@@ -126,14 +129,16 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 
 	@Override
 	public Testcase clone() throws CloneNotSupportedException {
-		AbstractTestSequence<State, InParameter, OutParameter, Context, Operation, Guard, Transition> clone = new AbstractTestSequence<>();
+		AbstractTestSequence clone = new AbstractTestSequence();
 		clone.setPath((Path) path.clone());
 		clone.setFitness(fitness);
 		clone.setValid(valid);
+		clone.setChanged(changed);
 		clone.coveredGoals = new HashSet<FitnessFunction<?>>();
 		for (FitnessFunction<?> goal : coveredGoals) {
 			clone.addCoveredGoal(goal);
 		}
+//		clone.setExecutionResult(executionResult.clone());
 		return clone;
 	}
 
@@ -170,19 +175,32 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		AbstractTestSequence othertc = (AbstractTestSequence) other;
 		if (path.getTransitionAt(position1).equals(
 				(othertc.path.getTransitionAt(position2)))){
+			// the points correspond to a common transition
 			var trunk1 = path.subPath(0, position1);
 			var trunk2 = othertc.path.subPath(position2, other.getLength());
 			path.getModfiableTransitions().clear();
 			path.append(trunk1); 
 			path.append(trunk2);	
+		}else if (path.getTransitionAt(position1).getTgt().equals(
+				othertc.path.getTransitionAt(position2).getTgt())) {
+			// the points correspond to transitions with common tgt
+			var trunk1 = path.subPath(0, position1+1);
+			path.getModfiableTransitions().clear();
+			path.append(trunk1); 
+			if (position2+1 < other.getLength()) {
+				var trunk2 = othertc.path.subPath(position2+1, other.getLength());
+				path.append(trunk2);
+			}
+	
+			
 		}
 		
-		 
+		// changed = true; 
 
 	}
 
 	@Override
-	public void mutate() {
+	public void mutate(ExecutionResult executionResult) {
 		// System.err.println("BEFORE: " + path);
 		// if (Randomness.nextBoolean()) {
 		// insertSelfTransitionMutation ();
@@ -190,7 +208,14 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 		// deleteSelfTransitionMutation ();
 		// }
 		// System.err.println("AFTER: " + path);
-		mutator.mutate();
+		
+		// if the individual has changed but not evaluated, do not pass its execution result
+		if (changed) {
+			mutator.mutate(null);
+		}else {
+			mutator.mutate(executionResult);
+		}
+		// changed = true;
 
 	}
 
@@ -212,5 +237,29 @@ public class AbstractTestSequence<State extends EFSMState, InParameter extends E
 	@Override
 	public boolean isGoalCovered(FitnessFunction goal) {
 		return coveredGoals.contains(goal);
+	}
+
+//	public void setExecutionResult(ExecutionResult executionResult) {
+//		this.executionResult = executionResult;
+//	}
+//	
+//	public ExecutionResult getExecutionResult() {
+//		return this.executionResult;
+//	}
+
+	/**
+	 * @return the changed
+	 */
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	/**
+	 * @param changed the changed to set
+	 */
+	@Override
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 }

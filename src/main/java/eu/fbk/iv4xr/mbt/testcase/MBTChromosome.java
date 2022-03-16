@@ -26,21 +26,14 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class MBTChromosome<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> 
-		extends ExecutableChromosome {
+public class MBTChromosome extends ExecutableChromosome {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3211675659294418756L;
 	private Testcase testcase;
+	private eu.fbk.iv4xr.mbt.execution.ExecutionResult executionResult;
 	/** Secondary objectives used during ranking */
 	private static final List<SecondaryObjective<MBTChromosome>> secondaryObjectives = new ArrayList<>();
 	
@@ -51,6 +44,14 @@ public class MBTChromosome<
 		testcase = new AbstractTestSequence();
 	}
 
+	public eu.fbk.iv4xr.mbt.execution.ExecutionResult getExecutionResult() {
+		return executionResult;
+	}
+	
+	public void setExecutionResult(eu.fbk.iv4xr.mbt.execution.ExecutionResult result) {
+		executionResult = result;
+	}
+	
 	@Override
 	protected void copyCachedResults(ExecutableChromosome other) {
 		// TODO Auto-generated method stub
@@ -68,6 +69,9 @@ public class MBTChromosome<
 		MBTChromosome clone = new MBTChromosome();
 		try {
 			clone.setTestcase(testcase.clone());
+			if (executionResult != null) {
+				clone.setExecutionResult(executionResult.clone());
+			}
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getCause());
@@ -126,7 +130,7 @@ public class MBTChromosome<
 
 	@Override
 	public void mutate() {
-		testcase.mutate();
+		testcase.mutate(executionResult);
 		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
@@ -210,5 +214,18 @@ public class MBTChromosome<
 		}else {
 			return "";
 		}
+	}
+	
+	
+	/**
+	 * Set changed status to @param changed
+	 * 
+	 * @param changed
+	 *            a boolean.
+	 */
+	@Override
+	public void setChanged(boolean changed) {
+		super.setChanged(changed);
+		testcase.setChanged(changed);
 	}
 }

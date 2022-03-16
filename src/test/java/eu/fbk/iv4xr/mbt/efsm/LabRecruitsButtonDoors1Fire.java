@@ -98,7 +98,7 @@ public class LabRecruitsButtonDoors1Fire {
 		//EFSMDotExporter exp = new EFSMDotExporter<>(m);
 		//exp.writeOut(Paths.get("data/button_doors_1_fire.dot"));
 		
-		EFSMExporter exp = new EFSMExporter<>(m);
+		EFSMExporter exp = new EFSMExporter(m);
 		exp.writeOut(Paths.get("data/button_doors_1_fire.dot"),"dot");
 		exp.writeOut(Paths.get("data/button_doors_1_fire.xml"),"gml");
 	}

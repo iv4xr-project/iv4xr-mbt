@@ -14,7 +14,7 @@ public class EFSMTransitionMapTest {
 		EFSMState b_3 = new EFSMState("b_3");
 		
 		
-		EFSMTransition t_1 = new EFSMTransition<>();
+		EFSMTransition t_1 = new EFSMTransition();
 
 		
 	}
