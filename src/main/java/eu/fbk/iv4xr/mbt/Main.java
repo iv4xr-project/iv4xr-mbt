@@ -84,11 +84,14 @@ public class Main {
 		
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 
-		// write tests to disk
-		writeTests (solution, coverageTracker.getCoverageMap());
+		if (!line.hasOption("silent_mode")) {
+			// write tests to disk
+			writeTests (solution, coverageTracker.getCoverageMap());
+		}
 		
 		// write model on disk
-		writeModel();
+		writeModel(line);
+		
 		
 		// write statistics to disk
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
@@ -376,10 +379,13 @@ public class Main {
 	/**
 	 * Save EFSM model
 	 */
-	public void writeModel() {
+	public void writeModel(CommandLine line) {
 		String modelFolderName = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId + File.separator + "Model";
 		File modelFolder = new File (modelFolderName);
 		modelFolder.mkdirs();
+		
+		
+			
 		
 		String modelFileName = modelFolderName + File.separator + "EFSM_model.ser";
 		String levelFileName = modelFolderName + File.separator + "LabRecruits_level.csv";
@@ -392,9 +398,10 @@ public class Main {
 		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 		try {
-			
-			TestSerializationUtils.saveEFSM(efsm, modelFileName);
-			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			if (!line.hasOption("silent_mode")) {
+				TestSerializationUtils.saveEFSM(efsm, modelFileName);
+				FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			}
 			FileUtils.writeStringToFile(featureFile, efsm.getEfsmSummaryFeatures(), Charset.defaultCharset());
 			// if csv is available
 			if (efsm.getEFSMString() != "") {
@@ -464,7 +471,7 @@ public class Main {
 		Option mosa = Option.builder("sbt")
 				.argName("sbt")
 				.type(String.class)
-				.desc("Search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
+				.desc("search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
 				.build();
 		
 		Option tamer = Option.builder("planning")
@@ -473,6 +480,12 @@ public class Main {
 				.desc("planning based test generation strategy")
 				.build();
 		
+		Option silent = Option.builder("silent_mode")
+				.argName("silent_mode")
+				.type(String.class)
+				.desc("save only execution statistics. Model and tests are not dumpped on disc")
+				.build();
+				
 		Option property   = Option.builder("D")
 				.numberOfArgs(2)
 				.argName("property=value")
@@ -495,6 +508,7 @@ public class Main {
 		options.addOption(mosa);
 		options.addOption(random);
 		options.addOption(tamer);
+		options.addOption(silent);
 		options.addOption(property);
 		return options;
 	}
