@@ -160,6 +160,8 @@ public class MBTProperties {
 	
 	public static String STATISTICS_DIR_NAME = "statistics";
 	
+	public static String STATISTICS_DIR () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME; };
+	
 	public static String STATISTICS_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "statistics.csv"; }
 	
 	public static String EXECUTIONSTATISTICS_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "execution_statistics.csv";}

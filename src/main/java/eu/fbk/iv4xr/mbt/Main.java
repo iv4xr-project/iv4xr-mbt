@@ -292,7 +292,7 @@ public class Main {
 	 */
 	private void writeStatistics(String statistics, String statisticsHeader, String fileName) {
 		// make sure stats folder exists
-		File statsFolder = new File (MBTProperties.STATISTICS_DIR_NAME);
+		File statsFolder = new File (MBTProperties.STATISTICS_DIR());
 		if (!statsFolder.exists()) {
 			statsFolder.mkdirs();
 		}
@@ -539,6 +539,9 @@ public class Main {
 		 * -tests_dir: folder containing the serialized test cases
 		 */
 		if (line.hasOption("exec_on_sut")) {
+			
+			setGlobalProperties (line);
+			
 			String sutExecutableDir = "";
 			String sutExecutable = "";
 			String testsDir = "";
