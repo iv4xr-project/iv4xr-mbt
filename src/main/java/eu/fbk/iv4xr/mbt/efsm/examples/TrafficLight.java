@@ -63,7 +63,7 @@ public class TrafficLight {
 	// count greater or equal 60
 	BoolOr countGreatEqThanSixty = new BoolOr(countGreatThanSixty, countEqualSixty);
 	// count less than 60
-	BoolNot countLessThanSixty = new BoolNot(countGreatEqThanSixty);
+	BoolNot countLessThanSixty = new BoolNot(countGreatThanSixty);
 	
 	// constant 5
 	Const<Integer> five = new Const<Integer>(5);
