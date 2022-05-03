@@ -12,11 +12,14 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
+
 /**
  * @author kifetew
  *
  */
-public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<TestSuiteChromosome> {
+public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<MBTSuiteChromosome> {
 
 	/**
 	 * 
@@ -28,21 +31,21 @@ public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<Tes
 
 	
 	/** Factory to manipulate and generate method sequences */
-	protected ChromosomeFactory<TestChromosome> testChromosomeFactory;
+	protected ChromosomeFactory<MBTChromosome> testChromosomeFactory;
 
 	/**
 	 * <p>Constructor for TestSuiteChromosomeFactory.</p>
 	 */
-	public RandomLengthSuiteChromosomeFactory() {
-		testChromosomeFactory = new RandomLengthTestFactory();
-	}
+//	public RandomLengthSuiteChromosomeFactory() {
+//		testChromosomeFactory = null; //new RandomLengthTestChromosomeFactory<MBTChromosome>();
+//	}
 
 	/**
 	 * <p>Constructor for TestSuiteChromosomeFactory.</p>
 	 *
 	 * @param testFactory a {@link org.evosuite.ga.ChromosomeFactory} object.
 	 */
-	public RandomLengthSuiteChromosomeFactory(ChromosomeFactory<TestChromosome> testFactory) {
+	public RandomLengthSuiteChromosomeFactory(ChromosomeFactory<MBTChromosome> testFactory) {
 		testChromosomeFactory = testFactory;
 	}
 
@@ -51,23 +54,22 @@ public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<Tes
 	 *
 	 * @param factory a {@link org.evosuite.ga.ChromosomeFactory} object.
 	 */
-	public void setTestFactory(ChromosomeFactory<TestChromosome> factory) {
+	public void setTestFactory(ChromosomeFactory<MBTChromosome> factory) {
 		testChromosomeFactory = factory;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public TestSuiteChromosome getChromosome() {
+	public MBTSuiteChromosome getChromosome() {
 
-		TestSuiteChromosome chromosome = new TestSuiteChromosome(
-				testChromosomeFactory);
-		chromosome.clearTests();
+		MBTSuiteChromosome chromosome = new MBTSuiteChromosome(testChromosomeFactory);
+		//chromosome.clearTests();
 
 		int numTests = Randomness.nextInt(Properties.MIN_INITIAL_TESTS,
 		                                  Properties.MAX_INITIAL_TESTS + 1);
 
 		for (int i = 0; i < numTests; i++) {
-			TestChromosome test = testChromosomeFactory.getChromosome();
+			MBTChromosome test = testChromosomeFactory.getChromosome();
 			chromosome.addTest(test);
 		}
 		return chromosome;

@@ -100,21 +100,26 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
 		fitnessEvaluations++;
-		MBTChromosome chromosome = (MBTChromosome)arg0;
-		if (chromosome.getTestcase().isValid()) {
-			feasiblePaths++;
-			boolean newGoalCovered = false;
-			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
-				if (Double.compare(entry.getValue(), 0d) == 0 && coverageMap.containsKey(entry.getKey())) {
-					updateCoverageMap (chromosome, entry.getKey());
-					newGoalCovered = true;
+		if (arg0 instanceof MBTChromosome) {
+			MBTChromosome chromosome = (MBTChromosome)arg0;
+			if (chromosome.getTestcase().isValid()) {
+				feasiblePaths++;
+				boolean newGoalCovered = false;
+				for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
+					if (Double.compare(entry.getValue(), 0d) == 0 && coverageMap.containsKey(entry.getKey())) {
+						updateCoverageMap (chromosome, entry.getKey());
+						newGoalCovered = true;
+					}
+				}
+				if (newGoalCovered) {
+					coveredGoals = getCoveredGoals();
+					assert (coveredGoals <= totalGoals);
+					coverage = (double)coveredGoals / totalGoals;
 				}
 			}
-			if (newGoalCovered) {
-				coveredGoals = getCoveredGoals();
-				assert (coveredGoals <= totalGoals);
-				coverage = (double)coveredGoals / totalGoals;
-			}
+		}else if (arg0 instanceof MBTSuiteChromosome) {
+			MBTSuiteChromosome chromosome = (MBTSuiteChromosome)arg0;
+			//
 		}
 		
 		// time to take statistics snapshot
