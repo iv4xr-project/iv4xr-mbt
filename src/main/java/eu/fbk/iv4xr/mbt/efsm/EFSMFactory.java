@@ -3,7 +3,7 @@ package eu.fbk.iv4xr.mbt.efsm;
 import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm.examples.TrafficLightModel;
+import eu.fbk.iv4xr.mbt.efsm.examples.TrafficLight;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
@@ -51,7 +51,7 @@ public class EFSMFactory {
 			efsm.setShortestPathsBetweenStates();
 			break;
 		case "traffic_light":
-			TrafficLightModel tlModel = new TrafficLightModel();
+			TrafficLight tlModel = new TrafficLight();
 			efsm = tlModel.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
