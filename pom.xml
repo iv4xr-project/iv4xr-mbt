@@ -192,17 +192,16 @@
         </dependency-->
 		
 		
-		<dependency>
-            <groupId>com.github.iv4xr-project</groupId>
-            <artifactId>aplib</artifactId>
-            <!-- <version>1.4.2</version>-->
-			<version>1.2.4</version>
-        </dependency>
+	<dependency>
+	    <groupId>com.github.iv4xr-project</groupId>
+	    <artifactId>aplib</artifactId>
+	    <version>1.4.2</version>
+	</dependency>
 
-		<dependency>
+	<dependency>
 		    <groupId>com.github.iv4xr-project</groupId>
 		    <artifactId>iv4xr-se-plugin</artifactId>
-		    <version>v0.6.0</version>
+		    <version>mesh-crash-fix-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
