@@ -34,6 +34,7 @@ import org.evosuite.ga.metaheuristics.mulambda.MuPlusLambdaEA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusLambdaLambdaGA;
 import org.evosuite.ga.metaheuristics.mulambda.OnePlusOneEA;
 import org.evosuite.ga.operators.crossover.CrossOverFunction;
+import org.evosuite.ga.operators.crossover.SinglePointRelativeCrossOver;
 import org.evosuite.ga.operators.selection.BinaryTournamentSelectionCrowdedComparison;
 import org.evosuite.ga.operators.selection.FitnessProportionateSelection;
 //import org.evosuite.ga.operators.selection.RandomKSelection;
@@ -56,6 +57,7 @@ import org.evosuite.utils.ResourceController;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
+import eu.fbk.iv4xr.mbt.MBTProperties.Strategy;
 import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.MOSA;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.ExtendedSinglePointRelativePathCrossOver;
 import eu.fbk.iv4xr.mbt.algorithm.operators.crossover.SinglePointPathCrossOver;
@@ -271,19 +273,23 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 	}
 	
 	protected CrossOverFunction getCrossoverFunction() {
-		switch (MBTProperties.CROSSOVER_FUNCTION) {
-		case SINGLEPOINTFIXED:
-			return new SinglePointPathCrossOver();
-		case SINGLEPOINTRELATIVE:
-			return new SinglePointRelativePathCrossOver();
-		case SINGLEPOINT:
-			return new SinglePointPathCrossOver();
-		case EXTENDEDSINGLEPOINTRELATIVE:
-			return new ExtendedSinglePointRelativePathCrossOver();	
-		default:
-			throw new RuntimeException("Unknown crossover function: "
-			        + Properties.CROSSOVER_FUNCTION);
-		}
+		if (MBTProperties.STRATEGY == Strategy.SUITE) {
+			return new SinglePointRelativeCrossOver();
+		}else {
+			switch (MBTProperties.CROSSOVER_FUNCTION) {
+				case SINGLEPOINTFIXED:
+					return new SinglePointPathCrossOver();
+				case SINGLEPOINTRELATIVE:
+					return new SinglePointRelativePathCrossOver();
+				case SINGLEPOINT:
+					return new SinglePointPathCrossOver();
+				case EXTENDEDSINGLEPOINTRELATIVE:
+					return new ExtendedSinglePointRelativePathCrossOver();	
+				default:
+					throw new RuntimeException("Unknown crossover function: "
+					        + Properties.CROSSOVER_FUNCTION);
+				}
+			}
 	}
 
 	@Override

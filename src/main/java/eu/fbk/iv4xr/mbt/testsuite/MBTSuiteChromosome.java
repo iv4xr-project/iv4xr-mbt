@@ -26,20 +26,8 @@ public class MBTSuiteChromosome extends SuiteChromosome {
 	}
 	
 	@Override
-	public double getFitness() {
-		if (tests.isEmpty()) {
-			return Double.MAX_VALUE;
-		}
-		double fitness = 0;
-		for (MBTChromosome test : tests) {
-			fitness += test.getFitness();
-		}
-		return fitness;
-	}
-	
-	@Override
 	public Chromosome clone() {
-		MBTSuiteChromosome copy = new MBTSuiteChromosome();
+		MBTSuiteChromosome copy = new MBTSuiteChromosome(this.testChromosomeFactory);
 		for (MBTChromosome test : tests) {
 			copy.addTest((MBTChromosome) test.clone());
 		}

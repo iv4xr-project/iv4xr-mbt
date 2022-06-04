@@ -26,7 +26,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 public class SearchBasedStrategyTest {
 
 	@Test
-	public void testGenerateTests() {
+	public void testGenerateConstrainedTests() {
 		// Model criterion should be STATE
 		MBTProperties.MODELCRITERION = new ModelCriterion[] {
 				ModelCriterion.STATE 
@@ -54,8 +54,26 @@ public class SearchBasedStrategyTest {
 			AbstractTestSequence testcase = (AbstractTestSequence) chr.getTestcase();
 			System.out.println("Fitness: "+testcase.getFitness());
 			System.out.println(testcase.toString());
-			
+			assertTrue(testcase.getPath().getStates().contains(gf0));
 		}
 		
+	}
+	
+	@Test
+	public void testGenerateTests() {
+		MBTProperties.SUT_EFSM = "labrecruits.random_large";
+		MBTProperties.MODELCRITERION = new ModelCriterion[] {
+				ModelCriterion.TRANSITION 
+		};
+		
+		SearchBasedStrategy strategy = new SearchBasedStrategy<>();
+		SuiteChromosome suite = strategy.generateTests();
+		List<MBTChromosome> generatedTests = suite.getTestChromosomes();
+		System.out.println("\nGenerated "+generatedTests.size()+" test cases");
+		for(MBTChromosome chr : generatedTests) {
+			AbstractTestSequence testcase = (AbstractTestSequence) chr.getTestcase();
+			System.out.println("Fitness: "+testcase.getFitness());
+			System.out.println(testcase.toString());
+		}
 	}
 }

@@ -71,13 +71,14 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 			return getFitness (mbtTest, result);
 		}else if (test instanceof MBTSuiteChromosome) {
 			MBTSuiteChromosome mbtSuite = (MBTSuiteChromosome)test;
-//			for (MBTChromosome mbtTest : mbtSuite.getTestChromosomes()) {
-//				ExecutionResult result = mbtTest.getExecutionResult();
-//				if (result == null || mbtTest.isChanged()) {
-//					result = runTest (mbtTest.getTestcase());
-//					mbtTest.setExecutionResult(result);
-//				}
-//			}
+			for (MBTChromosome mbtTest : mbtSuite.getTestChromosomes()) {
+				ExecutionResult result = mbtTest.getExecutionResult();
+				if (result == null || mbtTest.isChanged()) {
+					result = runTest (mbtTest.getTestcase());
+					mbtTest.setExecutionResult(result);
+				}
+				getFitness(mbtTest, result);
+			}
 			return mbtSuite.getFitness();
 		}else {
 			throw new RuntimeException("Unsupported chromosome type: " + test.getClass().getName());
