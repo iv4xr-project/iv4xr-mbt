@@ -61,13 +61,14 @@ public class BasicLoadTest {
 		var tactics = new TacticLib();
 
 		GoalStructure testingTask = SEQ(
-        		goals.agentAtPosition(
-        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
-        				0.05f, 
-        				tactics.doNothing()),
-				//goals.blockOfTypeExists(blockType.getType(), tactics.buildBlock(blockType.getType())),
-				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -23.946253f), 16f, 0.1f,
-						tactics.moveForward()));
+//        		goals.agentAtPosition(
+//        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
+//        				0.05f, 
+//        				tactics.doNothing()),
+				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -24.395466f), 16f, 0.1f,
+						tactics.moveForward()),
+				goals.blockOfTypeExists(blockType.getType(), tactics.buildBlock(blockType.getType()))
+				);
 
 		testAgent.setGoal(testingTask);
 
@@ -96,6 +97,12 @@ public class BasicLoadTest {
 		while (testingTask.getStatus().inProgress() && i <= 1500) {
 			testAgent.update();
 			System.out.println(i + " " + myAgentState.getAgentId());
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			i++;
 		}
 //        
