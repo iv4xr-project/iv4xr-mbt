@@ -41,6 +41,7 @@ import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
+import eu.fbk.iv4xr.mbt.strategy.WholesuiteStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -72,6 +73,10 @@ public class Main {
 		
 		if (line.hasOption("planning")) {
 			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
+		}
+		
+		if (line.hasOption("wholesuite")) {
+			generationStrategy = new WholesuiteStrategy<MBTChromosome>();
 		}
 		
 		// set parameters in MBTProperties and Properties
@@ -468,6 +473,12 @@ public class Main {
 				.desc("random test generation strategy")
 				.build();
 		
+		Option wholesuite = Option.builder("wholesuite")
+				.argName("wholesuite")
+				.type(String.class)
+				.desc("WholeSuite test generation strategy")
+				.build();
+		
 		Option mosa = Option.builder("sbt")
 				.argName("sbt")
 				.type(String.class)
@@ -506,6 +517,7 @@ public class Main {
 		options.addOption(agentName);
 		options.addOption(maxCycles);
 		options.addOption(mosa);
+		options.addOption(wholesuite);
 		options.addOption(random);
 		options.addOption(tamer);
 		options.addOption(silent);
