@@ -10,11 +10,11 @@ import java.util.Set;
 import org.junit.Test;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.cps.BeamNgModelGenerator;
+import eu.fbk.iv4xr.mbt.efsm.cps.Direction;
+import eu.fbk.iv4xr.mbt.efsm.cps.NineStates;
+import eu.fbk.iv4xr.mbt.efsm.cps.OneState;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.BeamNgModelGenerator;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.Direction;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.NineStates;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.OneState;
 
 public class SBST2022Test {
 

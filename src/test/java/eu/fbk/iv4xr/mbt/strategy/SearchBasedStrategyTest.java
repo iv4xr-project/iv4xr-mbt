@@ -14,7 +14,7 @@ import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.TestToPoints;
+import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -66,7 +66,7 @@ public class SearchBasedStrategyTest {
 				ModelCriterion.TRANSITION
 		};
 		
-		MBTProperties.SUT_EFSM = "beamng_model";
+		MBTProperties.SUT_EFSM = "cps.beamng_model";
 		
 		EFSMFactory mFactory = EFSMFactory.getInstance(true);
 		assertNotNull(mFactory);

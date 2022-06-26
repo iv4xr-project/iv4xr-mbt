@@ -3,13 +3,13 @@ package eu.fbk.iv4xr.mbt.efsm;
 import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm.cps.BeamNgModelGenerator;
+import eu.fbk.iv4xr.mbt.efsm.cps.NineStates;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.BeamNgModelGenerator;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.NineStates;
 
 
 /**
@@ -51,12 +51,12 @@ public class EFSMFactory {
 			efsm = bdfwd.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "sbst2022.nine_states":
+		case "cps.nine_states":
 			NineStates nineStates = new NineStates();
 			efsm = nineStates.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "beamng_model":
+		case "cps.beamng_model":
 			BeamNgModelGenerator modelGenerator = new BeamNgModelGenerator();
 			efsm = modelGenerator.getModel();
 			efsm.setShortestPathsBetweenStates();

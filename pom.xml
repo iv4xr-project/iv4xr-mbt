@@ -62,7 +62,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>eu.fbk.iv4xr.mbt.SBSTMain</mainClass>
+							<mainClass>eu.fbk.iv4xr.mbt.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

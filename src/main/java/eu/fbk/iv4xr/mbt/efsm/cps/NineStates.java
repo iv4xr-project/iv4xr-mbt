@@ -1,4 +1,4 @@
-package eu.fbk.iv4xr.mbt.efsm.sbst2022;
+package eu.fbk.iv4xr.mbt.efsm.cps;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMBuilder;

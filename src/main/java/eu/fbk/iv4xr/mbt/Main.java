@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
-import eu.fbk.iv4xr.mbt.efsm.sbst2022.TestToPoints;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
@@ -345,10 +345,15 @@ public class Main {
 				FileUtils.writeStringToFile(dotFile, coveredGoals + testAsDot, Charset.defaultCharset());
 				FileUtils.writeStringToFile(txtFile, coveredGoals + testAsText, Charset.defaultCharset());
 				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
-				// SBST competition specific
-				List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
-				String pointsCsv = pointsToCsv(points);
-				FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
+				// ADS specific
+				// TODO handle better, maybe a parameter?
+				try {
+					List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
+					String pointsCsv = pointsToCsv(points);
+					FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

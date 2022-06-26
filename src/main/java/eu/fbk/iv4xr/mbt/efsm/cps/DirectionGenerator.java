@@ -1,4 +1,4 @@
-package eu.fbk.iv4xr.mbt.efsm.sbst2022;
+package eu.fbk.iv4xr.mbt.efsm.cps;
 
 import org.evosuite.utils.Randomness;
 
