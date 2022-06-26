@@ -153,8 +153,8 @@ public class HashingTest {
 		EFSMContext context = new EFSMContext(d_1, d_2, d_T);
 		
 		// clone and check
-		EFSMConfiguration<EFSMState, EFSMContext> conf1 = new EFSMConfiguration<EFSMState, EFSMContext>(d_1_m, context);
-		EFSMConfiguration<EFSMState, EFSMContext> conf2 = SerializationUtils.clone(conf1);
+		EFSMConfiguration conf1 = new EFSMConfiguration(d_1_m, context);
+		EFSMConfiguration conf2 = SerializationUtils.clone(conf1);
 		
 		int hashCode1 = conf1.hashCode();
 		int hashCode2 = conf2.hashCode();
@@ -165,7 +165,7 @@ public class HashingTest {
 		// use another variable for door1 but with the same name and value
 		Var<Boolean> d_1p = new Var<Boolean>("door1", false);
 		EFSMContext context2 = new EFSMContext(d_1p, d_2, d_T);
-		EFSMConfiguration<EFSMState, EFSMContext> conf3 = new EFSMConfiguration<EFSMState, EFSMContext>(d_1_m, context2);
+		EFSMConfiguration conf3 = new EFSMConfiguration(d_1_m, context2);
 
 		int hashCode3 = conf3.hashCode();
 		assertTrue(conf1.equals(conf3));	
@@ -173,7 +173,7 @@ public class HashingTest {
 		
 		// use another state but with the same value
 		EFSMState d_1_m_p = new EFSMState("d1m");
-		EFSMConfiguration<EFSMState, EFSMContext> conf4 = new EFSMConfiguration<EFSMState, EFSMContext>(d_1_m_p, context);
+		EFSMConfiguration conf4 = new EFSMConfiguration(d_1_m_p, context);
 
 		int hashCode4 = conf4.hashCode();
 		assertTrue(conf1.equals(conf4));	

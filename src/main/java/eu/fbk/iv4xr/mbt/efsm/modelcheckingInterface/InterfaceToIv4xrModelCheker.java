@@ -2,13 +2,19 @@ package eu.fbk.iv4xr.mbt.efsm.modelcheckingInterface;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMConfiguration;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
+import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
+import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 import eu.iv4xr.framework.extensions.ltl.IExplorableState;
 import eu.iv4xr.framework.extensions.ltl.IState;
@@ -44,28 +50,91 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 	 */
 	public InterfaceToIv4xrModelCheker(EFSM efsm) {
 		this.efsm = efsm ;
+		this.reset();
 	}
 	
+//	@Override
+//	public void reset() {
+//		var state = new InterfaceToIv4xrModelCheker.EFSMStateWrapper(InterfaceToIv4xrModelCheker.cloneEFSMconfiguration(efsm.getInitialConfiguration())) ;
+//		history.clear();
+//		history.add(state) ;
+//	}
+
+	/**
+	 * To properly reset
+	 * - reset the model
+	 * - create new state
+	 * - snapshot state and save in history
+	 * 
+	 */
 	@Override
 	public void reset() {
-		var state = new InterfaceToIv4xrModelCheker.EFSMStateWrapper(InterfaceToIv4xrModelCheker.cloneEFSMconfiguration(efsm.getInitialConfiguration())) ;
+		// Reset the model set the values of the context variables to their initial value
+		// The guards and the operations on the EFSM transitions as a reference to the
+		// variable in the context and are updated "by construction"
+		efsm.reset();
+		
+		// To save the initial state in history a deep copy of the context is needed
+		// otherwise the variable in the history would be the same of the current context variables
+		// and will be updated after each transition
+		EFSMConfiguration currentConfiguration = efsm.getConfiguration();
+
+		EFSMContext currenctContextClone = SerializationUtils.clone( currentConfiguration.getContext() );
+		// clone a state is not a problem as it is only a label
+		EFSMState currentStateClone = currentConfiguration.getState().clone();
+		// create a new configuration that has to be save in the history
+		EFSMConfiguration saveConfiguration = new EFSMConfiguration(currentStateClone, currenctContextClone);
+		
+
+		var state = new InterfaceToIv4xrModelCheker.EFSMStateWrapper(saveConfiguration);
 		history.clear();
-		history.add(state) ;
+		history.add(state);
 	}
+	
+	
+//	@Override
+//	public EFSMStateWrapper getCurrentState() {
+//		return history.get(0) ;
+//	}
 
+	
+	/**
+	 *  Get the current state from the EFMS to keep the references between context and transitions
+	 */
 	@Override
-	public IExplorableState getCurrentState() {
-		return history.get(0) ;
+	public EFSMStateWrapper getCurrentState() {
+		return new InterfaceToIv4xrModelCheker.EFSMStateWrapper(efsm.getConfiguration());
 	}
+	
+	
+//	@Override
+//	public boolean backTrackToPreviousState() {
+//		if(history.size() == 1) {
+//			// should contain at least one element!
+//			return false ;			
+//		}
+//		history.remove(0) ;
+//		return true ;
+//	}
 
+	/**
+	 * Remove the first element from history and updated the efsm context with the values
+	 * in the new first element of the history
+	 */
 	@Override
 	public boolean backTrackToPreviousState() {
-		if(history.isEmpty()) 
-			return false ;
+		if(history.size() == 1) {
+			// should contain at least one element!
+			return false ;			
+		}
 		history.remove(0) ;
+		
+		EFSMConfiguration newEfsmConf = history.get(0).conf;
+		efsm.forceConfiguration(newEfsmConf);
+	
 		return true ;
 	}
-
+	
 	@Override
 	public List<ITransition> availableTransitions() {
 		Set<EFSMTransition> trans = efsm.getTransitons() ;
@@ -81,14 +150,78 @@ public class InterfaceToIv4xrModelCheker implements ITargetModel{
 		return enabledTransitions ;
 	}
 
+//	@Override
+//	public void execute(ITransition tr) {
+//		InterfaceToIv4xrModelCheker.EFSMTransitionWrapper tr_ = (InterfaceToIv4xrModelCheker.EFSMTransitionWrapper) tr;
+//		InterfaceToIv4xrModelCheker.EFSMStateWrapper currentState = (InterfaceToIv4xrModelCheker.EFSMStateWrapper) getCurrentState()
+//				.clone();
+//
+//		// System.out.println(">>>> TRANS: " + tr_.tr) ;
+//		// System.out.println(" from: " + currentState.showState()) ;
+//
+//		// The assignment-part of an EFSM-transition keeps a pointer to the target-variables of the assignment.
+//		// Since we keep cloning configurations, we need to first sync the values of these variables
+//		// with their values according to the current configuration :
+//
+//		// No more needed withnew EFSM
+////		if (tr_.tr.getOp() != null && tr_.tr.getOp().getAssignments() != null) {
+////			// get the assignments of this transition:
+////			var assignments = tr_.tr.getOp().getAssignments().getHash();
+////			EFSMContext ctx = currentState.conf.getContext();
+////			// Sync the values of their target-vars with the context:
+////			for (var asg : assignments.entrySet()) {
+////				var asg_ = (Map.Entry<String,Assign>) asg;
+////				String vname = asg_.getKey();
+////				Assign A = asg_.getValue();
+////				Var v = ctx.getContext().getVariable(vname);
+////				if (v != null) {
+////					A.getVariable().setValue(v.getValue());
+////				}
+////			}
+////		}
+//
+//		// execute the transition:
+//		tr_.tr.take(currentState.conf.getContext());
+//		
+//		// get the new state:
+//		EFSMConfiguration newState = new EFSMConfiguration(tr_.tr.getTgt(), currentState.conf.getContext());
+//		// System.out.println(" to : " + new
+//		// InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState).showState()) ;
+//		history.add(0, new InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState));
+//	}
+	
+	
+	
+	/** 
+	 * Execute the transition in the EFSM and then save in history a snapshot
+	 * of the current state and context
+	 */
 	@Override
 	public void execute(ITransition tr) {
-		InterfaceToIv4xrModelCheker.EFSMTransitionWrapper tr_ = (InterfaceToIv4xrModelCheker.EFSMTransitionWrapper) tr ;
-		InterfaceToIv4xrModelCheker.EFSMStateWrapper currentState = (InterfaceToIv4xrModelCheker.EFSMStateWrapper) getCurrentState().clone() ;
-		tr_.tr.take(currentState.conf.getContext()) ;
-		EFSMConfiguration newState = new EFSMConfiguration(tr_.tr.getTgt(),currentState.conf.getContext()) ;
-		history.add(0,new InterfaceToIv4xrModelCheker.EFSMStateWrapper(newState)) ;	
+		InterfaceToIv4xrModelCheker.EFSMTransitionWrapper tr_ = (InterfaceToIv4xrModelCheker.EFSMTransitionWrapper) tr;
+
+		// execute the transition
+		Set<EFSMParameter> output = efsm.transition(tr_.tr);
+		if (output == null) {
+			throw new RuntimeException("Cannot execute transition "+tr_.tr.toString());
+
+		}	
+		
+		// get a snapshot of the new state
+		EFSMConfiguration currentConfiguration = efsm.getConfiguration();
+
+		EFSMContext currenctContextClone = SerializationUtils.clone( currentConfiguration.getContext() );
+		// clone a state is not a problem as it is only a label
+		EFSMState currentStateClone = currentConfiguration.getState().clone();
+		// create a new configuration that has to be save in the history
+		EFSMConfiguration saveConfiguration = new EFSMConfiguration(currentStateClone, currenctContextClone);
+		
+
+		var state = new InterfaceToIv4xrModelCheker.EFSMStateWrapper(saveConfiguration);
+		history.add(0,state);
+		
 	}
+	
 	
 	public static EFSMConfiguration cloneEFSMconfiguration(EFSMConfiguration conf) {
 		return  new EFSMConfiguration(conf.getState().clone(),conf.getContext().clone()) ; 

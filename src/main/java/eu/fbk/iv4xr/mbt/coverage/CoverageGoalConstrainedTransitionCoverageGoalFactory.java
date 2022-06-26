@@ -16,14 +16,16 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class TransitionCoverageGoalFactory implements CoverageGoalFactory {
+public class CoverageGoalConstrainedTransitionCoverageGoalFactory
+		implements CoverageGoalFactory {
 
-	List<TransitionCoverageGoal> coverageGoals = new ArrayList<TransitionCoverageGoal>();
-
+	List<CoverageGoalConstrainedTransitionCoverageGoal> coverageGoals = new ArrayList<CoverageGoalConstrainedTransitionCoverageGoal>();
+	CoverageGoal constrainingGoal;
 	/**
 	 * 
 	 */
-	public TransitionCoverageGoalFactory() {
+	public CoverageGoalConstrainedTransitionCoverageGoalFactory(CoverageGoal constrainingGoal) {
+		this.constrainingGoal = constrainingGoal;
 		// build the list of coverage goals
 		EFSM model = EFSMFactory.getInstance().getEFSM();
 		Set<EFSMTransition> transitions = model.getTransitons();
@@ -31,14 +33,13 @@ public class TransitionCoverageGoalFactory implements CoverageGoalFactory {
 			throw new RuntimeException("Something wrong with the model: " + MBTProperties.SUT_EFSM + ". No transitions.");
 		}
 		for (EFSMTransition transition : transitions) {
-			TransitionCoverageGoal goal = 
-						new TransitionCoverageGoal (transition);
+			CoverageGoalConstrainedTransitionCoverageGoal goal = new CoverageGoalConstrainedTransitionCoverageGoal( transition, constrainingGoal);
 			coverageGoals.add(goal);
 		}
 	}
 
 	@Override
-	public List<TransitionCoverageGoal> getCoverageGoals() {
+	public List<CoverageGoalConstrainedTransitionCoverageGoal> getCoverageGoals() {
 		return coverageGoals;
 	}
 

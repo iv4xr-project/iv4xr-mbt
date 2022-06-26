@@ -7,7 +7,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 
 // TODO Not used but need to be defined for serialization
-public class DirectionGenerator extends EFSMParameterGenerator<EFSMParameter> {
+public class DirectionGenerator extends EFSMParameterGenerator {
 
 	/**
 	 * 

@@ -44,7 +44,7 @@ class EFSMPathTest {
 		assertNotNull(factory);
 		model = factory.getEFSM();
 		assertNotNull(model);
-		testFactory = new RandomLengthTestFactory<>(model);
+		testFactory = new RandomLengthTestFactory(model);
 		assertNotNull(testFactory);
 	}
 

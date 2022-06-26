@@ -45,7 +45,7 @@ public class LRFPAlgo extends
 	}
 
 	@Override
-	public List<? extends EFSMPath> getPaths(
+	public List<EFSMPath> getPaths(
 			EFSMConfiguration config, EFSMState tgt) {
 		// TODO Auto-generated method stub
 		return null;

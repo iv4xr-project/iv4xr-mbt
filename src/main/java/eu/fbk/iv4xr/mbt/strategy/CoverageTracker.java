@@ -301,4 +301,27 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	public String getStatisticsHeader () {
 		return STATISTICS_HEADER;
 	}
+	
+	/**
+	 * returns a list of all uncovered goals
+	 * @return
+	 */
+	public List<FitnessFunction<MBTChromosome>> getUncoveredGoals (){
+		List<FitnessFunction<MBTChromosome>> uncoveredGoals = new ArrayList<>();
+		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+			if (entry.getValue() == null) {
+				uncoveredGoals.add(entry.getKey());
+			}
+		}
+		return uncoveredGoals;
+	}
+	
+	/**
+	 * returns a map containing each coverage goal as key and the corresponding chromosome that covers it as value.
+	 * if a coverage goal is not covered by any chromosome, the corresponding value will be null.
+	 * @return
+	 */
+	public Map<FitnessFunction<MBTChromosome>, MBTChromosome> getCoverageMap (){
+		return coverageMap;
+	}
 }

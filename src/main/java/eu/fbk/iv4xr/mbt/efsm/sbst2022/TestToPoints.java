@@ -30,9 +30,9 @@ OutParameter extends EFSMParameter,
 Context extends EFSMContext,
 Operation extends EFSMOperation,
 Guard extends EFSMGuard,
-Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>>{
+Transition extends EFSMTransition>{
 
-	protected EFSM<State, InParameter, OutParameter, Context, Operation, Guard, Transition> efsm;
+	protected EFSM efsm;
 	private static TestToPoints instance = null;
 	
 	public static TestToPoints getInstance() {
@@ -76,9 +76,9 @@ Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Ope
 //				Precision.round((double)efsm.getInitialConfiguration().getContext().getContext().getVariable(x).getValue(),3), 
 //				Precision.round((double)efsm.getInitialConfiguration().getContext().getContext().getVariable(y).getValue(),3)));
 		boolean success = true;
-		List<Transition> transitions = tc.getPath().getTransitions();
-		for (Transition t : transitions) {
-			Set<OutParameter> output = efsm.transition(t);
+		List<EFSMTransition> transitions = tc.getPath().getTransitions();
+		for (EFSMTransition t : transitions) {
+			Set<EFSMParameter> output = efsm.transition(t);
 			if (output == null) {
 				success = false;
 			}	

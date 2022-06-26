@@ -165,22 +165,22 @@ public class OneState {
 		 */
 		
 		// from start
-		EFSMTransition t_north = new EFSMTransition<>();
+		EFSMTransition t_north = new EFSMTransition();
 		t_north.setInParameter(parNorthDirection);
 		t_north.setGuard(is_valid_coords_north);
 		t_north.setOp(move_north);
 		
-		EFSMTransition t_south = new EFSMTransition<>();
+		EFSMTransition t_south = new EFSMTransition();
 		t_south.setInParameter(parSouthDirection);
 		t_south.setGuard(is_valid_coords_south);
 		t_south.setOp(move_south);
 		
-		EFSMTransition t_east = new EFSMTransition<>();
+		EFSMTransition t_east = new EFSMTransition();
 		t_east.setInParameter(parEastDirection);
 		t_east.setGuard(is_valid_coords_east);
 		t_east.setOp(move_east);
 		
-		EFSMTransition t_west = new EFSMTransition<>();
+		EFSMTransition t_west = new EFSMTransition();
 		t_west.setInParameter(parWestDirection);
 		t_west.setGuard(is_valid_coords_west);
 		t_west.setOp(move_west);
@@ -194,7 +194,6 @@ public class OneState {
 		 * parameter generator
 		 */
 		DirectionGenerator parGenerator = new DirectionGenerator();
-		
 	
 	
 	    EFSMBuilder sbstBuilder = new EFSMBuilder(EFSM.class);

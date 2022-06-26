@@ -13,13 +13,11 @@ import org.jgrapht.nio.IntegerIdProvider;
 //import org.jgrapht.io.IntegerComponentNameProvider;
 
 /** @author Manuel Benz created on 24.02.18 */
-public class EFSMDotExporter<
-	State extends EFSMState, 
-	Transition extends EFSMTransition> {
+public class EFSMDotExporter {
 	
   private final EFSM efsm;
-  private final Function<State, String> stateLabeler;
-  private final Function<Transition, String> edgeLabeler;
+  private final Function<EFSMState, String> stateLabeler;
+  private final Function<EFSMTransition, String> edgeLabeler;
 
   public EFSMDotExporter(EFSM efsm) {
     this(efsm, Object::toString, Object::toString);
@@ -27,8 +25,8 @@ public class EFSMDotExporter<
 
   public EFSMDotExporter(
       EFSM efsm,
-      Function<State, String> stateLabeler,
-      Function<Transition, String> edgeLabeler) {
+      Function<EFSMState, String> stateLabeler,
+      Function<EFSMTransition, String> edgeLabeler) {
     this.efsm = efsm;
     this.stateLabeler = stateLabeler;
     this.edgeLabeler = edgeLabeler;

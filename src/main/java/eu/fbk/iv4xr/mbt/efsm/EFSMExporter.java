@@ -21,6 +21,7 @@ import org.evosuite.ga.stoppingconditions.MaxGenerationStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxStatementsStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxTestsStoppingCondition;
 import org.evosuite.ga.stoppingconditions.MaxTimeStoppingCondition;
+import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.graphml.GraphMLExporter;
 
@@ -33,17 +34,17 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.levelGenerator.Layout;
 
 
 /** @author Manuel Benz created on 24.02.18 */
-public class EFSMExporter<State extends EFSMState, Transition extends EFSMTransition> {
+public class EFSMExporter {
 
 	private final EFSM efsm;
-	private final Function<State, String> stateLabeler;
-	private final Function<Transition, String> edgeLabeler;
+	private final Function<EFSMState, String> stateLabeler;
+	private final Function<EFSMTransition, String> edgeLabeler;
 
 	public EFSMExporter(EFSM efsm) {
 		this(efsm, Object::toString, Object::toString);
 	}
 
-	public EFSMExporter(EFSM efsm, Function<State, String> stateLabeler, Function<Transition, String> edgeLabeler) {
+	public EFSMExporter(EFSM efsm, Function<EFSMState, String> stateLabeler, Function<EFSMTransition, String> edgeLabeler) {
 		this.efsm = efsm;
 		this.stateLabeler = stateLabeler;
 		this.edgeLabeler = edgeLabeler;
@@ -77,12 +78,13 @@ public class EFSMExporter<State extends EFSMState, Transition extends EFSMTransi
 	 * save efsm graph to graphml
 	 */
 	private void writeGML(Path outFile) throws FileNotFoundException, IOException {
-		GraphMLExporter<Vector<EFSMState>, Integer> gExporter = new GraphMLExporter();
+		GraphMLExporter<EFSMState, EFSMTransition> gExporter = new GraphMLExporter<EFSMState, EFSMTransition>();
 		gExporter.setExportEdgeWeights(true);
 		gExporter.setExportEdgeLabels(true);
 		gExporter.setExportVertexLabels(true);
 		Writer file = new FileWriter(outFile.toString());
-		gExporter.exportGraph(efsm.getBaseGraph(), file);
+		DirectedPseudograph<EFSMState, EFSMTransition> baseGraph = efsm.getBaseGraph();
+		gExporter.exportGraph(baseGraph, file);
 	}
 	
 	

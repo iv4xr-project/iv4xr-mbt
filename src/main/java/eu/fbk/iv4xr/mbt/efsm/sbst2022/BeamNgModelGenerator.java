@@ -282,7 +282,7 @@ public class BeamNgModelGenerator {
 			// for each street lenght
 			for (int step : streetLengthSteps) {
 				// create a transition
-				EFSMTransition t_start_s = new EFSMTransition<>();
+				EFSMTransition t_start_s = new EFSMTransition();
 				// get the guard
 				EFSMGuard canMove = canMove(angle, step);
 				t_start_s.setGuard(canMove);
@@ -309,7 +309,7 @@ public class BeamNgModelGenerator {
 				}
 				for (int step : streetLengthSteps) {
 					// create a transition
-					EFSMTransition t_s_targetState = new EFSMTransition<>();
+					EFSMTransition t_s_targetState = new EFSMTransition();
 					// get the guard
 					EFSMGuard canMove = canMove(a, step);
 					t_s_targetState.setGuard(canMove);

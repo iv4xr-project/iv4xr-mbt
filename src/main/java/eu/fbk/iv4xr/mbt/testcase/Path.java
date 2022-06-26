@@ -24,29 +24,21 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class Path<
-	State extends EFSMState,
-	InParameter extends EFSMParameter,
-	OutParameter extends EFSMParameter,
-	Context extends EFSMContext,
-	Operation extends EFSMOperation,
-	Guard extends EFSMGuard,
-	Transition extends EFSMTransition<State, InParameter, OutParameter, Context, Operation, Guard>> extends 
-		EFSMPath<State, InParameter, OutParameter, Context, Operation, Guard, Transition> {
+public class Path extends EFSMPath {
 	
 	public Path() {
 		super();
 	}
 
-	public Path(List<Transition> transitions) {
+	public Path(List<EFSMTransition> transitions) {
 		super(transitions);
 	}
 
-	public Path(Transition... transitions) {
+	public Path(EFSMTransition... transitions) {
 		super(Arrays.asList(transitions));
 	}
 	
-	public Path(GraphPath<State, Transition> basePath) {
+	public Path(GraphPath<EFSMState, EFSMTransition> basePath) {
 	    super(basePath.getEdgeList());
 	}
 
@@ -68,7 +60,7 @@ public class Path<
 		if (transitions != null) {
 			string += "digraph g {\n";
 			for (int i = 0; i < transitions.size(); i++) {
-				Transition t = transitions.get(i);
+				EFSMTransition t = transitions.get(i);
 				String label = t.getInParameter() + "/" + t.getGuard() + "/" + t.getOp() + "/" + t.getOutParameter();
 				string += "\"" + t.getSrc() + "\" -> \"" + t.getTgt() + "\" [label = \"" + (i+1) + "-" + label + "\"];\n";				
 			}
@@ -82,7 +74,7 @@ public class Path<
 	public String toString() {
 		String string = "";
 		if (transitions != null) {
-			for (Transition t : transitions) {
+			for (EFSMTransition t : transitions) {
 				string += t.toString() + "\n";
 			}
 		}
@@ -92,10 +84,10 @@ public class Path<
 	/**
 	 * debug method to count number of self transitions in the test
 	 */
-	public Map<Transition, Integer> selfTransitionCounts (){
-		Map<Transition, Integer> counts = new HashMap<>(); 
+	public Map<EFSMTransition, Integer> selfTransitionCounts (){
+		Map<EFSMTransition, Integer> counts = new HashMap<>(); 
 		for (Object t : transitions) {
-			Transition tr = ((Transition)t);
+			EFSMTransition tr = ((EFSMTransition)t);
 			if (tr.isSelfTransition()) { // && tr.getSrc().getId().equalsIgnoreCase("b0")) {
 				if (!counts.containsKey(tr)) {
 					counts.put(tr, 0);
@@ -103,10 +95,10 @@ public class Path<
 				counts.put(tr, counts.get(tr)+1);
 			}
 		}
-		Iterator<Entry<Transition, Integer>> entryIterator = counts.entrySet().iterator();
+		Iterator<Entry<EFSMTransition, Integer>> entryIterator = counts.entrySet().iterator();
 //		for (Entry<Transition, Integer> entry : counts.entrySet()) {
 		while (entryIterator.hasNext()) {
-			Entry<Transition, Integer> entry = entryIterator.next();
+			Entry<EFSMTransition, Integer> entry = entryIterator.next();
 			if (entry.getValue() % 2 == 1) {
 				entryIterator.remove();
 				System.out.println("Odd count removed");

@@ -20,9 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.evosuite.Properties.DoubleValue;
-import org.evosuite.Properties.Parameter;
-import org.evosuite.Properties.RankingType;
 import org.evosuite.classpath.ClassPathHandler;
 import org.evosuite.utils.FileIOUtils;
 import org.evosuite.utils.LoggingUtils;
@@ -79,6 +76,36 @@ public class MBTProperties {
 	/*
 	 * Public parameters, follow definitions in Properties.java in Evosuite
 	 */
+	
+	/*
+	 * Parameters to control fitness function. 
+	 * Fitness function has four component: feasibility approach level, feasibility branch distance, 
+	 * target approach level, target branch distance
+	 */
+	public enum FeasibilityApproachLevel{
+		NUMBER_UNFEASBILE_TRANSITIONS, NONE;
+	}
+	@Parameter(key = "feasibility_approach_level", group = "Fitness function", description = "Feasibility approach level function")
+	public static FeasibilityApproachLevel FEASIBILITY_APPROACH_LEVEL = FeasibilityApproachLevel.NUMBER_UNFEASBILE_TRANSITIONS;
+	
+	public enum FeasibilityBranchDistance{
+		LAST_TRANSITION_GUARD, NONE;
+	}
+	@Parameter(key = "feasibility_branch_distance", group = "Fitness function", description = "Feasibility branch distance function")
+	public static FeasibilityBranchDistance FEASIBILITY_BRANCH_DISTANCE = FeasibilityBranchDistance.LAST_TRANSITION_GUARD;
+	
+	public enum TargetApproachLevel{
+		SHORTEST_PATH_FROM_LAST_FEASIBLE, MIN_SHORTEST_PATH, NONE; 
+	}
+	@Parameter(key = "target_approach_level", group = "Fitness function", description = "Target approach level function")
+	public static TargetApproachLevel TARGET_APPROACH_LEVEL = TargetApproachLevel.NONE;
+	
+	public enum TargetBranchDistance{
+		FIRST_BRANCH_GUARD, NONE;
+	}
+	@Parameter(key = "target_branch_distance", group = "Fitness function", description = "Target branch distance function")
+	public static TargetBranchDistance TARGET_BRANCH_DISTANCE = TargetBranchDistance.NONE;
+	
 
 	@Parameter(key = "sanity_check_fitness", group = "Search Algorithm", description = "Sanity check for fitness function, return random value")
 	public static boolean SANITY_CHECK_FITNESS = false;
@@ -88,7 +115,7 @@ public class MBTProperties {
 	public static boolean SHOW_PROGRESS = true;
 	
 	@Parameter(key = "random_seed", group = "Search Algorithm", description = "Random number seed for MBT")
-	public static long RANDOM_SEED = 123456778;
+	public static Long RANDOM_SEED = null;
 	
 	@Parameter(key = "sut_efsm", group = "Search Algorithm", description = "ID of the EFSM for the current SUT")
 	public static String SUT_EFSM = "labrecruits.random_default"; // "labrecruits.buttons_doors_fire"; // 
@@ -102,8 +129,11 @@ public class MBTProperties {
 	public static int MAX_PATH_LENGTH = 100;
 	
 	public enum TestFactory{
-		RANDOM_LENGTH, RANDOM_LENGTH_PARAMETER;
+		RANDOM_LENGTH, RANDOM_LENGTH_PARAMETER, RANDOM_LENGTH_FIX_TARGET;
 	}
+	
+	@Parameter(key = "state_target", group = "Search Algorithm", description = "Reuired and state of the solution")
+	public static String STATE_TARGET = null;
 	
 	@Parameter(key = "test_factory", group = "Search Algorithm", description = "Test factory")
 	public static TestFactory TEST_FACTORY = TestFactory.RANDOM_LENGTH;
@@ -129,6 +159,8 @@ public class MBTProperties {
 	
 	
 	public static String STATISTICS_DIR_NAME = "statistics";
+	
+	public static String STATISTICS_DIR () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME; };
 	
 	public static String STATISTICS_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "statistics.csv"; }
 	
@@ -276,13 +308,17 @@ public class MBTProperties {
 	
 	
 	public enum ModelCriterion {
-		STATE, TRANSITION, KTRANSITION, PATH
+		STATE, TRANSITION, KTRANSITION, PATH, TRANSITION_FIX_END_STATE
 	}
 	
 	@Parameter(key = "modelcriterion", group = "Search Algorithm", description = "Model coverage criterion")
 	public static ModelCriterion[] MODELCRITERION = new ModelCriterion[] {
 		ModelCriterion.TRANSITION //, ModelCriterion.STATE
 	};
+	
+	
+	@Parameter(key = "k_transition_size", group = "Search Algorithm", description = "Model coverage criterion")
+	public static int K_TRANSITION_SIZE = 3;
 	
 	// MOSA PROPERTIES
 	public enum RankingType {
@@ -402,6 +438,13 @@ public class MBTProperties {
 	public static int beamng_max_street_length = 28;
 	@Parameter(key = "beamng_street_chunck_length", group = "BeamNG", description = "Step increment between min and max street lenght")
 	public static int beamng_street_chunck_length = 5;
+	
+	public enum GoalConstraintOnTestFactory{
+		ENDS_WITH_STATE, STARTS_WITH_STATE, CONTAINS_STATE, EXCLUDES_STATE
+	}
+	
+	@Parameter(key = "goal_constraint_on_test_factory", group = "Search Algorithm", description = "Model coverage criterion")
+	public static GoalConstraintOnTestFactory GOAL_CONSTRAINT_ON_TEST_FACTORY = GoalConstraintOnTestFactory.ENDS_WITH_STATE;
 	
 	/**
 	 * Get all parameters that are available
@@ -961,6 +1004,19 @@ public class MBTProperties {
 				}
 
 				f.set(this, criteria);
+			} else if (f.getType().getComponentType().equals(SecondaryObjective.class)) {
+				if (value.trim().isEmpty()) {
+					SecondaryObjective[] sos = {};
+					f.set(this, sos);
+				}else {
+					String[] values = value.split(":");
+					SecondaryObjective[] sos = new SecondaryObjective[values.length];
+					int pos = 0;
+					for (String stringValue : values) {
+						sos[pos++] = Enum.valueOf(SecondaryObjective.class, stringValue.toUpperCase());
+					}
+					f.set(this, sos);
+				}
 			}
 		} else {
 			f.set(null, value);
