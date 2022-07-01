@@ -8,6 +8,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
+import eu.fbk.iv4xr.mbt.efsm.spaceEngineering.SingleBlockWeldingAndGrinding;
 
 
 /**
@@ -47,6 +48,11 @@ public class EFSMFactory {
 		case "labrecruits.buttons_doors_fire_with_death":
 			ButtonDoors1FireWithDeath bdfwd = new ButtonDoors1FireWithDeath();
 			efsm = bdfwd.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "se.weld_and_grind":
+			SingleBlockWeldingAndGrinding sbwad = new SingleBlockWeldingAndGrinding();
+			efsm = sbwad.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		default:

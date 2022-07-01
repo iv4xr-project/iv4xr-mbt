@@ -60,14 +60,30 @@ public class BasicLoadTest {
 		var goals = new GoalBuilder();
 		var tactics = new TacticLib();
 
+		
+		
 		GoalStructure testingTask = SEQ(
-//        		goals.agentAtPosition(
-//        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
-//        				0.05f, 
-//        				tactics.doNothing()),
+        		goals.agentAtPosition(
+        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
+        				0.05f, 
+        				tactics.doNothing()),
 				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -24.395466f), 16f, 0.1f,
 						tactics.moveForward()),
-				goals.blockOfTypeExists(blockType.getType(), tactics.buildBlock(blockType.getType()))
+        		goals.blockOfTypeExists(
+        				blockType.getType(), 
+        				tactics.buildBlock(blockType.getType()))//,
+//				goals.lastBuiltBlockIntegrityIsBelow(0.1,
+//						SEQ(tactics.equip(grinderLocation),
+//							tactics.sleep(50),
+//							tactics.startUsingTool())),
+//				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+//									    tactics.sleep(50))),
+//				goals.lastBuiltBlockIntegrityIsAbove(1.0,
+//						SEQ(tactics.equip(welderLocation),
+//							tactics.sleep(50),
+//							tactics.startUsingTool())),
+//				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+//					    tactics.sleep(50)))
 				);
 
 		testAgent.setGoal(testingTask);
@@ -82,7 +98,7 @@ public class BasicLoadTest {
 		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
 
 		try {
-			Thread.sleep(500);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,9 +112,11 @@ public class BasicLoadTest {
 		var i = 0;
 		while (testingTask.getStatus().inProgress() && i <= 1500) {
 			testAgent.update();
-			System.out.println(i + " " + myAgentState.getAgentId());
+			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
+			myAgentState.worldmodel().position.toString() + " " +
+			testingTask.showGoalStructureStatus());
 			try {
-				Thread.sleep(10);
+				Thread.sleep(5);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
