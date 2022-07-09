@@ -15,6 +15,8 @@ import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
+import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -46,6 +48,8 @@ public class SearchBasedStrategyTest {
 		Set<String> targetSet = new HashSet<>();
 		targetSet.add("gf0");
 		
+		EFSMTestExecutor.getInstance().resetEFSM();
+		
 		SearchBasedStrategy sbStrategy = new SearchBasedStrategy<>();
 		SuiteChromosome generatedTests = sbStrategy.generateTests(targetSet);
 		List<MBTChromosome> testChromosomes = generatedTests.getTestChromosomes();
@@ -72,6 +76,8 @@ public class SearchBasedStrategyTest {
 		assertNotNull(mFactory);
 		EFSM efsm = mFactory.getEFSM();
 		assertNotNull (efsm);
+		
+		EFSMTestExecutor.getInstance().resetEFSM();
 		
 		SearchBasedStrategy sbStrategy = new SearchBasedStrategy<>();
 		SuiteChromosome generatedTests = sbStrategy.generateTests();
