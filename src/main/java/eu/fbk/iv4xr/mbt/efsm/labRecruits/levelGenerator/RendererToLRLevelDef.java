@@ -71,6 +71,7 @@ public class RendererToLRLevelDef {
 	static final String floorCode = "f" ;
 	static final String wallCode = "w" ;
 	static final String startLayerCode = "|" ;
+	static final String fireCode = "f:dhf";
 	
 	static String buttonCode(String id) {
 		return "f:b^" + id ;
@@ -271,6 +272,9 @@ public class RendererToLRLevelDef {
 	    		map[1][y] = wallCode ;
 	    		if(layerNr==0) {
 	    			map[0][y-1] = doorCode(door.ID,Direction.WEST) ;
+	    			if (door.hasFire()) {
+	    				map[1][y-1] = fireCode;	
+	    			}
 	    		}
 	    		else if (layerNr==2) map[0][y-1] = wallCode ;
 	    		break ;
@@ -281,6 +285,9 @@ public class RendererToLRLevelDef {
 	    		map[eastBorder-1][y] = wallCode ;
 	    		if(layerNr==0) {
 	    			map[eastBorder][y-1] = doorCode(door.ID,Direction.EAST) ;
+	    			if (door.hasFire()) {
+	    				map[eastBorder-1][y-1] = fireCode;
+	    			}
 	    		}
 	    		else if(layerNr==2) map[eastBorder][y-1] = wallCode ;
 	    		break ;
@@ -291,6 +298,9 @@ public class RendererToLRLevelDef {
 			    map[x][northBorder-1] = wallCode ;
 			    if(layerNr==0) {
 			    	map[x-1][northBorder] = doorCode(door.ID,Direction.NORTH) ;		
+			    	if (door.hasFire()) {
+	    				map[x-1][northBorder-1] = fireCode;
+	    			}
 			    }
 			    else if(layerNr==2) map[x-1][northBorder] = wallCode ;
 			    break ;
@@ -299,7 +309,10 @@ public class RendererToLRLevelDef {
 			    map[x][0] = wallCode ;
 			    map[x][1] = wallCode ;
 			    if(layerNr==0) {
-			    	map[x-1][0] = doorCode(door.ID,Direction.SOUTH) ;		
+			    	map[x-1][0] = doorCode(door.ID,Direction.SOUTH) ;	
+			    	if (door.hasFire()) {
+	    				map[x-1][1] = fireCode;
+	    			}
 			    }
 			    else if(layerNr==2) map[x-1][0] = wallCode ;
 	    }
