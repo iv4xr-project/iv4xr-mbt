@@ -382,8 +382,12 @@ public class MBTProperties {
 	 * Parameters to add fire to Lab Recruits
 	 */
 	
-	@Parameter(key = "LR_n_fires", group = "Lab Recruits", description = "Total number of fires in the level")
-	public static int LR_n_fires = 4;
+	@Parameter(key = "LR_n_door_fires", group = "Lab Recruits", description = "Total number of doors guarded by a fire in the level")
+	public static int LR_n_door_fires = 0;
+	
+	@Parameter(key = "LR_n_room_fires", group = "Lab Recruits", description = "Total fires in all rooms of the level")
+	public static int LR_n_room_fires = 0;
+	
 	
 	// Fire has a private random seed to allow having the same lavel layout with diffrent fire distribution
 	@Parameter(key = "LR_fire_seed", group = "Lab Recruits", description = "Seed for adding fire in Lab Recruits random level generation")

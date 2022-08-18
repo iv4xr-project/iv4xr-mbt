@@ -199,6 +199,12 @@ public class RendererToLRLevelDef {
 				map[loc.fst][loc.snd] = goalFlagCode(gf.ID) ;
 				spots.remove(loc) ;
 			}
+			
+			for(Fire f : R.fires) {
+				Pair<Integer,Integer> loc = spots.get(rnd.nextInt(spots.size())) ;
+				map[loc.fst][loc.snd] = fireCode ;
+				spots.remove(loc) ;
+			}
 		}
 		// placing a separator every 3 rooms?
 		if(R.buttons.size()>1 && R.ID % 3 == 1) {

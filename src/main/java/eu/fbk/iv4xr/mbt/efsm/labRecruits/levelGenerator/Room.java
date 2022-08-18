@@ -24,9 +24,18 @@ public class Room extends WalledStructure {
 	List<Pair<Corridor,Direction>> connections  = new LinkedList<>() ;
 	List<Button> buttons = new LinkedList<>() ;
 	List<GoalFlag> goalFlags = new LinkedList<GoalFlag>();
+	List<Fire> fires = new LinkedList<Fire>();
 	Agent agent = null ;
 	
 	public Room(int id) { ID = id ; }
+	
+	public Fire addFire(Fire f) {
+		fires.add(f); return f;
+	}
+	
+	public Fire addFire() {
+		return addFire(new Fire());
+	}
 	
 	public GoalFlag addGoalFlag(GoalFlag GF) {
 		goalFlags.add(GF) ; return GF ; 

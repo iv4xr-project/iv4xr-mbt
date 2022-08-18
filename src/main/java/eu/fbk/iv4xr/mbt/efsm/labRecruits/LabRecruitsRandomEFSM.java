@@ -109,8 +109,11 @@ public class LabRecruitsRandomEFSM {
 	// Number of flags
 	private int nGoalFlags = MBTProperties.LR_n_goalFlags;
 	
+	// Number of fires distributed rooms of the level
+	private int nRoomFires = MBTProperties.LR_n_room_fires;
+	
 	// Number of doors with fire
-	private int nDoorsWithFire = MBTProperties.LR_n_fires;
+	private int nDoorsWithFire = MBTProperties.LR_n_door_fires;
 	
 	// random number generator (using Mersenne Twister rng) 
 	private RandomDataGenerator rndGenerator = new RandomDataGenerator(new MersenneTwister(seed));
@@ -161,7 +164,7 @@ public class LabRecruitsRandomEFSM {
 			if (nGoalFlags > 0) {
 			 	roomSet = addGoalFlags(roomSet);
 			}
-					
+			
 			// the number of rooms are not predefined
 			// int nRooms = roomSet.size(); // not needed?
 			// connect rooms with doors
@@ -238,7 +241,7 @@ public class LabRecruitsRandomEFSM {
 		}
 		
 	}
-	
+		
 
 	// NOTE: parameters are in MBTProperties and we could avoid changing them,
 	//       but we keep for testing purposes
@@ -1365,7 +1368,16 @@ public class LabRecruitsRandomEFSM {
 			csvRooms.add(room);
 			GraphRoomToCsvRoom.put(doorsGraphState, roomId);
 			roomId = roomId + 1;
-			
+		}
+		
+		// iterate over the number of total number of fires 
+		if (nRoomFires > 0) {
+			int nConsumedFire = 0;
+			while(nConsumedFire < nRoomFires) {
+				Room room = (Room) fireRndGenerator.nextSample(csvRooms, 1)[0];
+				room.addFire();
+				nConsumedFire++;
+			}
 		}
 		
 		// iterate over door graph edges (doors)
