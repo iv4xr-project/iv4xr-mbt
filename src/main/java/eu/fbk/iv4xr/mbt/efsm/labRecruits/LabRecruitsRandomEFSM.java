@@ -90,6 +90,9 @@ public class LabRecruitsRandomEFSM {
 	// Random seed to generate level layout
 	private long seed = MBTProperties.LR_seed;
 	
+	// Random seed to add fire
+	private long fireSeed = MBTProperties.LR_fire_seed;
+	
 	// Total number of buttons
 	private int nButtons = MBTProperties.LR_n_buttons;
 	
@@ -106,8 +109,17 @@ public class LabRecruitsRandomEFSM {
 	// Number of flags
 	private int nGoalFlags = MBTProperties.LR_n_goalFlags;
 	
+	// Number of fires distributed rooms of the level
+	private int nRoomFires = MBTProperties.LR_n_room_fires;
+	
+	// Number of doors with fire
+	private int nDoorsWithFire = MBTProperties.LR_n_door_fires;
+	
 	// random number generator (using Mersenne Twister rng) 
 	private RandomDataGenerator rndGenerator = new RandomDataGenerator(new MersenneTwister(seed));
+	
+	// random number generator for fire
+	private RandomDataGenerator fireRndGenerator = new RandomDataGenerator(new MersenneTwister(fireSeed));
 	
 	// door graph
 	private Pseudograph<Vector<EFSMState>,Integer>  doorsGraph = new Pseudograph<>(Integer.class);
@@ -124,8 +136,10 @@ public class LabRecruitsRandomEFSM {
 	
 	
 	// map from doors to the set of activating button
-	HashMap<Integer, Set<EFSMState>> doorButtonsMap;
+	private HashMap<Integer, Set<EFSMState>> doorButtonsMap;
 	
+	// set containing the doors with associated fire
+	private Set<Integer> doorsWithFire = new HashSet<>();
 
 	// store mutants of the csv version of the level
 	// mutant where a link between a door and a button is removed
@@ -157,6 +171,19 @@ public class LabRecruitsRandomEFSM {
 			// the problem is equivalent to the creation of a connected graph
 			this.doorsGraph = generatePlanarDoorsGraph(roomSet);
 	
+			// add fire to doors, if needed
+			if (nDoorsWithFire > 0) {
+				int nEffectiveDoors = doorsGraph.edgeSet().size();
+				int nAvailableDoors = doorsGraph.edgeSet().size();
+				while(nAvailableDoors > 0 && doorsWithFire.size() < nDoorsWithFire ) {
+					int nextInt = fireRndGenerator.nextInt(0, nEffectiveDoors-1);
+					if (!doorsWithFire.contains(nextInt)) {
+						doorsWithFire.add(nextInt);
+						nAvailableDoors--;
+					}
+				}
+			}
+
 			
 			// compute the embedding, if possible
 			// if the graph is not planar it is not possible to generate csv
@@ -214,7 +241,7 @@ public class LabRecruitsRandomEFSM {
 		}
 		
 	}
-	
+		
 
 	// NOTE: parameters are in MBTProperties and we could avoid changing them,
 	//       but we keep for testing purposes
@@ -1341,7 +1368,16 @@ public class LabRecruitsRandomEFSM {
 			csvRooms.add(room);
 			GraphRoomToCsvRoom.put(doorsGraphState, roomId);
 			roomId = roomId + 1;
-			
+		}
+		
+		// iterate over the number of total number of fires 
+		if (nRoomFires > 0) {
+			int nConsumedFire = 0;
+			while(nConsumedFire < nRoomFires) {
+				Room room = (Room) fireRndGenerator.nextSample(csvRooms, 1)[0];
+				room.addFire();
+				nConsumedFire++;
+			}
 		}
 		
 		// iterate over door graph edges (doors)
@@ -1358,7 +1394,10 @@ public class LabRecruitsRandomEFSM {
 			
 			Corridor corridor = Corridor.connect( csvRooms.get(GraphRoomToCsvRoom.get(source)) , csvRooms.get(GraphRoomToCsvRoom.get(dest)) );
 			Door door = corridor.guard("door"+doorsGraphEdge.toString());
-						
+			if (doorsWithFire.contains(doorsGraphEdge)){
+				door.setFire();
+			}
+			
 			//Iterator<String> doorsGraphButtonsIterator = doorsGraphButtons.iterator();
 			//while(doorsGraphButtonsIterator.hasNext()) {			
 			//	door.operatedBy(buttonDoorMap.get(doorsGraphButtonsIterator.next()));

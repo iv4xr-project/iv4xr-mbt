@@ -378,6 +378,26 @@ public class MBTProperties {
 	@Parameter(key = "LR_generation_mode", group = "Lab Recruits", description = "Number of rooms")
 	public static LR_random_mode LR_generation_mode = LR_random_mode.N_ROOMS_DEPENDENT;
 	
+	/**
+	 * Parameters to add fire to Lab Recruits
+	 */
+	
+	@Parameter(key = "LR_n_door_fires", group = "Lab Recruits", description = "Total number of doors guarded by a fire in the level")
+	public static int LR_n_door_fires = 0;
+	
+	@Parameter(key = "LR_n_room_fires", group = "Lab Recruits", description = "Total fires in all rooms of the level")
+	public static int LR_n_room_fires = 0;
+	
+	
+	// Fire has a private random seed to allow having the same lavel layout with diffrent fire distribution
+	@Parameter(key = "LR_fire_seed", group = "Lab Recruits", description = "Seed for adding fire in Lab Recruits random level generation")
+	public static long LR_fire_seed = 9888;
+	
+	
+	@Parameter(key = "LR_fire_in model", group = "Lab Recruits", description = "Flag to check if need to be added also to model")
+	public static boolean LR_fire_in_model = false;
+	
+	
 	
 	/**
 	 * Number of maximum tries to generate a randoma level
