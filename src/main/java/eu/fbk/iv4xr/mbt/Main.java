@@ -345,15 +345,20 @@ public class Main {
 				FileUtils.writeStringToFile(dotFile, coveredGoals + testAsDot, Charset.defaultCharset());
 				FileUtils.writeStringToFile(txtFile, coveredGoals + testAsText, Charset.defaultCharset());
 				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
-				// ADS specific
-				// TODO handle better, maybe a parameter?
-				try {
-					List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
-					String pointsCsv = pointsToCsv(points);
-					FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
-				}catch (Exception e) {
-					e.printStackTrace();
+				
+				// BeamNG specific
+				
+				if (MBTProperties.SUT_EFSM.toString().contains("beamng")) {
+					try {
+						List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
+						String pointsCsv = pointsToCsv(points);
+						FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+				
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -456,38 +461,10 @@ public class Main {
 	public static Options getCommandLineOptions() {
 		Options options = new Options();
 
+		// print help
 		Option help = new Option("help", "print this message");
 
-		Option execOnSut = Option.builder("exec_on_sut")
-				.argName("exec_on_sut")
-				.type(String.class)
-				.desc("execute tests on the actual system under test")
-				.build();
-		
-		Option mutationAnalysis = Option.builder("mutation_analysis")
-				.argName("mutation_analysis")
-				.type(String.class)
-				.desc("execute mutation analysis on the actual system under test." 
-						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
-						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
-				.build();
-		
-		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Path to the SUT executable");
-		executableDir.setArgs(1);
-		
-		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Path to the SUT executable, .csv file in case of LabRecruites");
-		sutExecutable.setArgs(1);
-		
-		Option agentName = new Option("agent_name", "agent_name", true, "Name of the agent in the level, defaults to 'Agent1'");
-		agentName.setArgs(1);
-		
-		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to the tests to be executed");
-		testsDir.setArgs(1);
-		
-		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal");
-		maxCycles.setArgs(1);
-		
-		
+		// select generation engine
 		Option random = Option.builder("random")
 				.argName("random")
 				.type(String.class)
@@ -506,6 +483,44 @@ public class Main {
 				.desc("planning based test generation strategy")
 				.build();
 		
+		
+		// Lab Recruits execution of tests option
+		Option execOnSut = Option.builder("exec_on_sut")
+				.argName("exec_on_sut")
+				.type(String.class)
+				.desc("execute tests on the actual system under test")
+				.build();
+		
+		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Lab Recruits: path to the gym folder");
+		executableDir.setArgs(1);
+		
+		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Lab Recruits: path to the level csv file");
+		sutExecutable.setArgs(1);
+		
+		Option agentName = new Option("agent_name", "agent_name", true, "Lab Recruits: name of the agent in the level, defaults to 'Agent1'");
+		agentName.setArgs(1);
+		
+		Option testsDir = new Option("tests_dir", "tests_dir", true, "Lab Recruits: path to folder containing tests to be executed");
+		testsDir.setArgs(1);
+		
+		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Lab Recruits: maximum number of cycles for executing a goal");
+		maxCycles.setArgs(1);
+		
+		
+		
+		Option mutationAnalysis = Option.builder("mutation_analysis")
+				.argName("mutation_analysis")
+				.type(String.class)
+				.desc("execute mutation analysis on the actual system under test." 
+						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
+						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
+				.build();
+		
+		
+		
+		
+		
+		
 		Option silent = Option.builder("silent_mode")
 				.argName("silent_mode")
 				.type(String.class)
@@ -523,19 +538,28 @@ public class Main {
 				.build();
 
 		
-		options.addOption(help);
+		options.addOption(mosa);
+		options.addOption(random);
+		options.addOption(tamer);
+		
 		options.addOption(execOnSut);
-		options.addOption(mutationAnalysis);
 		options.addOption(executableDir);
 		options.addOption(sutExecutable);
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
-		options.addOption(mosa);
-		options.addOption(random);
-		options.addOption(tamer);
+		
+		options.addOption(mutationAnalysis);
+		
 		options.addOption(silent);
 		options.addOption(property);
+		
+		options.addOption(help);
+		
+		
+		
+		
+		
 		return options;
 	}
 	
@@ -684,7 +708,13 @@ public class Main {
 			logger.info("Performing requested operation ...");
 			if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("MBT", options);
+				// Do not sort				
+				formatter.setOptionComparator(null);
+				// Header and footer strings
+				 String header = "Evolutionary Model Based Testing\n\n";
+				 String footer = "\nPlease report issues at https://github.com/iv4xr-project/iv4xr-mbt/issues";
+				 
+				formatter.printHelp("EvoMBT",header, options, footer , false);
 			}else {
 				main.execute(line, options);
 			}

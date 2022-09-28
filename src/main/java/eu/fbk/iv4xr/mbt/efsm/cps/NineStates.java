@@ -27,8 +27,8 @@ public class NineStates {
 	 */
 	public Integer step = 20;
 	
-	public Integer initial_x_coord = 20;
-	public Integer initial_y_coord = 20;
+	public Integer initial_x_coord = 40;
+	public Integer initial_y_coord = 40;
 	
 	public Integer min_x_coord = 20;
 	public Integer min_y_coord = 20;

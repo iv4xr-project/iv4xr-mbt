@@ -51,12 +51,12 @@ public class EFSMFactory {
 			efsm = bdfwd.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "cps.nine_states":
+		case "cps.beamng_nine_states":
 			NineStates nineStates = new NineStates();
 			efsm = nineStates.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "cps.beamng_model":
+		case "cps.beamng_custom_model":
 			BeamNgModelGenerator modelGenerator = new BeamNgModelGenerator();
 			efsm = modelGenerator.getModel();
 			efsm.setShortestPathsBetweenStates();

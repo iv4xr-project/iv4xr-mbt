@@ -70,7 +70,7 @@ public class SearchBasedStrategyTest {
 				ModelCriterion.TRANSITION
 		};
 		
-		MBTProperties.SUT_EFSM = "cps.beamng_model";
+		MBTProperties.SUT_EFSM = "cps.beamng_custom_model";
 		
 		EFSMFactory mFactory = EFSMFactory.getInstance(true);
 		assertNotNull(mFactory);

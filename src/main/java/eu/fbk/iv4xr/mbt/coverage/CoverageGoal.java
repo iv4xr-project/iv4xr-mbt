@@ -25,8 +25,11 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
+import eu.fbk.iv4xr.mbt.efsm.exp.enumerator.EnumEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleLess;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutionListener;
@@ -383,6 +386,9 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 		// identify by case
 		if (guardExpression instanceof BoolEq) {
 			d = ((BoolEq)guardExpression).eval().getVal()?0:K;
+		}else if(guardExpression instanceof EnumEq) {
+			EnumEq equality = ((EnumEq)guardExpression);
+			d = equality.eval().getVal()?0:K;			
 		}else if (guardExpression instanceof IntEq) {
 			IntEq equality = ((IntEq)guardExpression);
 			Const<?> val1 = equality.getParameter1().eval();
@@ -393,6 +399,16 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 			Const<?> val1 = greater.getParameter1().eval();
 			Const<?> val2 = greater.getParameter2().eval();
 			d = getGreaterThanDistance (val1, val2);
+		}else if (guardExpression instanceof IntLess) {
+			IntLess lesser = ((IntLess)guardExpression);
+			Const<?> val1 = lesser.getParameter1().eval();
+			Const<?> val2 = lesser.getParameter2().eval();
+			d = getGreaterThanDistance (val1, val2);
+		}else if (guardExpression instanceof DoubleEq) {
+			DoubleEq equality = ((DoubleEq)guardExpression);
+			Const<?> val1 = equality.getParameter1().eval();
+			Const<?> val2 = equality.getParameter2().eval();
+			d = getEqualityDistance (val1, val2);
 		}else if (guardExpression instanceof DoubleGreat){
 			DoubleGreat greater = ((DoubleGreat)guardExpression);
 			Const<?> val1 = greater.getParameter1().eval();
