@@ -5,6 +5,7 @@ import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.cps.BeamNgModelGenerator;
 import eu.fbk.iv4xr.mbt.efsm.cps.NineStates;
+import eu.fbk.iv4xr.mbt.efsm.examples.TrafficLight;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
@@ -59,6 +60,11 @@ public class EFSMFactory {
 		case "cps.beamng_custom_model":
 			BeamNgModelGenerator modelGenerator = new BeamNgModelGenerator();
 			efsm = modelGenerator.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "examples.traffic_light":
+			TrafficLight trafficLight = new TrafficLight();
+			efsm = trafficLight.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		default:

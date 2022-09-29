@@ -111,7 +111,7 @@ public class Layout {
 	}
 	
 	Pair<Integer,Integer> find(Room struct) {
-		System.out.println();
+		//System.out.println();
 		for (int w=0; w<width; w++) {
 			for (int h=0; h<height; h++) {
 				if (layout[w][h] == null) continue ;
@@ -734,7 +734,7 @@ public class Layout {
 		rnd.setSeed(MBTProperties.LR_seed);
 		int maxNumberOfRetries = 30 ;
 		for (int k=0; k<maxNumberOfRetries; k++) {
-			System.err.println("## drawLayoutWithRetries " + k) ;
+			// System.err.println("## drawLayoutWithRetries " + k) ;
 			// clearing the rooms' connection (side effect from prev. iteration :|
 			for (Room R : rooms) {
 				R.clearConnectionsDirections();

@@ -73,17 +73,13 @@ public class Main {
 		}
 		
 		if (line.hasOption("planning")) {
-			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
+			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();			
 		}
 		
 		// set parameters in MBTProperties and Properties
 		setGlobalProperties (line);
-		
-		
 		MBTProperties.SessionId = "" + System.currentTimeMillis();
-		
-		SuiteChromosome solution = generationStrategy.generateTests();
-		
+		SuiteChromosome solution = generationStrategy.generateTests();	
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 
 		if (!line.hasOption("silent_mode")) {
@@ -93,7 +89,6 @@ public class Main {
 		
 		// write model on disk
 		writeModel(line);
-		
 		
 		// write statistics to disk
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
@@ -266,7 +261,6 @@ public class Main {
 		/*
 		 * Save statistics about mutation analysis
 		 */
-		
 		String mutStatHeader = "run_id,  n_tests, n_mutants, n_killed_mutants, wild_type_sut, test_folder\n";
 		
 		String mutStat =  run_id+ ",";
@@ -279,11 +273,7 @@ public class Main {
 		}else {
 			mutStat = mutStat + "\n";
 		}
-		
-		
-		
-		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE());
-		
+		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE());	
 	}
 	
 	/**
@@ -415,9 +405,6 @@ public class Main {
 		File modelFolder = new File (modelFolderName);
 		modelFolder.mkdirs();
 		
-		
-			
-		
 		String modelFileName = modelFolderName + File.separator + "EFSM_model.ser";
 		String levelFileName = modelFolderName + File.separator + "LabRecruits_level.csv";
 		String modelDotFileName = modelFolderName + File.separator + "EFSM_model.dot";
@@ -455,7 +442,7 @@ public class Main {
 
 	
 	/**
-	 * TODO add proper optios here
+	 * TODO add proper options here
 	 * @return
 	 */
 	public static Options getCommandLineOptions() {
@@ -477,12 +464,11 @@ public class Main {
 				.desc("search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
 				.build();
 		
-		Option tamer = Option.builder("planning")
-				.argName("planning")
-				.type(String.class)
-				.desc("planning based test generation strategy")
-				.build();
-		
+//		Option tamer = Option.builder("planning")
+//				.argName("planning")
+//				.type(String.class)
+//				.desc("planning based test generation strategy")
+//				.build();
 		
 		// Lab Recruits execution of tests option
 		Option execOnSut = Option.builder("exec_on_sut")
@@ -540,7 +526,7 @@ public class Main {
 		
 		options.addOption(mosa);
 		options.addOption(random);
-		options.addOption(tamer);
+		// options.addOption(tamer);
 		
 		options.addOption(execOnSut);
 		options.addOption(executableDir);
@@ -711,8 +697,8 @@ public class Main {
 				// Do not sort				
 				formatter.setOptionComparator(null);
 				// Header and footer strings
-				 String header = "Evolutionary Model Based Testing\n\n";
-				 String footer = "\nPlease report issues at https://github.com/iv4xr-project/iv4xr-mbt/issues";
+				String header = "Evolutionary Model Based Testing\n\n";
+				String footer = "\nPlease report issues at https://github.com/iv4xr-project/iv4xr-mbt/issues";
 				 
 				formatter.printHelp("EvoMBT",header, options, footer , false);
 			}else {
