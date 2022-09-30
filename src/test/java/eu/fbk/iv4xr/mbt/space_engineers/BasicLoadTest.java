@@ -26,7 +26,7 @@ public class BasicLoadTest {
 	@Test
 	public void loadBasicLevel() {
 
-		String worldId = "simple-place-grind-torch-with-tools";
+		String worldId = "amaze";
 		String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 
 		var blockType = DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock");
@@ -63,27 +63,27 @@ public class BasicLoadTest {
 		
 		
 		GoalStructure testingTask = SEQ(
-        		goals.agentAtPosition(
-        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
-        				0.05f, 
-        				tactics.doNothing()),
-				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -24.395466f), 16f, 0.1f,
-						tactics.moveForward()),
+//        		goals.agentAtPosition(
+//        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
+//        				0.05f, 
+//        				tactics.doNothing()),
+//				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -24.395466f), 16f, 0.1f,
+//						tactics.moveForward()),
         		goals.blockOfTypeExists(
         				blockType.getType(), 
-        				tactics.buildBlock(blockType.getType()))//,
-//				goals.lastBuiltBlockIntegrityIsBelow(0.1,
-//						SEQ(tactics.equip(grinderLocation),
-//							tactics.sleep(50),
-//							tactics.startUsingTool())),
-//				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-//									    tactics.sleep(50))),
-//				goals.lastBuiltBlockIntegrityIsAbove(1.0,
-//						SEQ(tactics.equip(welderLocation),
-//							tactics.sleep(50),
-//							tactics.startUsingTool())),
-//				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-//					    tactics.sleep(50)))
+        				tactics.buildBlock(blockType.getType())),
+				goals.lastBuiltBlockIntegrityIsBelow(0.5,
+						SEQ(tactics.equip(grinderLocation),
+							tactics.sleep(50),
+							tactics.startUsingTool())),
+				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+									    tactics.sleep(50))),
+				goals.lastBuiltBlockIntegrityIsAbove(0.7,
+						SEQ(tactics.equip(welderLocation),
+							tactics.sleep(50),
+							tactics.startUsingTool())),
+				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+					    tactics.sleep(50)))
 				);
 
 		testAgent.setGoal(testingTask);
@@ -110,7 +110,7 @@ public class BasicLoadTest {
 
 		// Run the agent and update in the loop.
 		var i = 0;
-		while (testingTask.getStatus().inProgress() && i <= 1500) {
+		while (testingTask.getStatus().inProgress() && i <= 20) {
 			testAgent.update();
 			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
 			myAgentState.worldmodel().position.toString() + " " +

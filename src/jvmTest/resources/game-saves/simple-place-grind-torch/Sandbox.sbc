@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <MyObjectBuilder_Checkpoint xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <CurrentSector x="0" y="0" z="0" />
-  <ElapsedGameTime>76331040000</ElapsedGameTime>
+  <ElapsedGameTime>82040320000</ElapsedGameTime>
   <SessionName>simple place-grind-torch</SessionName>
   <SpectatorPosition>
-    <Position x="38.487743935691469" y="76.279640155102271" z="7.5428447517924688" />
-    <Forward x="-0.268589824" y="-0.619030952" z="-0.738010943" />
+    <Position x="38.487743935691476" y="76.279640155102257" z="7.54284475179247" />
+    <Forward x="-0.268589854" y="-0.619030952" z="-0.738010943" />
     <Up x="-0.422749758" y="0.7641882" z="-0.4871335" />
     <Orientation>
       <X>-0.301384658</X>
-      <Y>0.200404137</Y>
+      <Y>0.200404152</Y>
       <Z>0.164539352</Z>
       <W>0.9175687</W>
     </Orientation>
@@ -21,8 +21,10 @@
   <ControlledObject>133936737378954547</ControlledObject>
   <Password />
   <Description />
-  <LastSaveTime>2021-02-04T17:56:24.8817317+01:00</LastSaveTime>
+  <LastSaveTime>2022-05-05T12:08:32.9965217+02:00</LastSaveTime>
   <SpectatorDistance>3.9730525</SpectatorDistance>
+  <WorkshopId xsi:nil="true" />
+  <WorkshopId1 xsi:nil="true" />
   <CharacterToolbar>
     <ToolbarType>Character</ToolbarType>
     <SelectedSlot xsi:nil="true" />
@@ -37,15 +39,15 @@
       <Slot>
         <Index>1</Index>
         <Item />
-        <Data xsi:type="MyObjectBuilder_ToolbarItemWeapon">
-          <DefinitionId Type="MyObjectBuilder_PhysicalGunObject" Subtype="Welder4Item" />
+        <Data xsi:type="MyObjectBuilder_ToolbarItemCubeBlock">
+          <DefinitionId Type="MyObjectBuilder_CubeBlock" Subtype="LargeHeavyBlockArmorBlock" />
         </Data>
       </Slot>
       <Slot>
         <Index>2</Index>
         <Item />
-        <Data xsi:type="MyObjectBuilder_ToolbarItemWeapon">
-          <DefinitionId Type="MyObjectBuilder_PhysicalGunObject" Subtype="AngleGrinder4Item" />
+        <Data xsi:type="MyObjectBuilder_ToolbarItemCubeBlock">
+          <DefinitionId Type="MyObjectBuilder_Cockpit" Subtype="LargeBlockCockpitSeat" />
         </Data>
       </Slot>
       <Slot>
@@ -98,8 +100,9 @@
       <item>
         <Key>133936737378954547</Key>
         <Value>
-          <ClientId>76561198032075104</ClientId>
+          <ClientId>0</ClientId>
           <SerialId>0</SerialId>
+          <HashedId>17672938780896032101</HashedId>
         </Value>
       </item>
     </dictionary>
@@ -114,6 +117,7 @@
     <OnlineMode>OFFLINE</OnlineMode>
     <MaxPlayers>4</MaxPlayers>
     <MaxFloatingObjects>56</MaxFloatingObjects>
+    <TotalBotLimit>32</TotalBotLimit>
     <MaxBackupSaves>5</MaxBackupSaves>
     <MaxGridSize>0</MaxGridSize>
     <MaxBlocksPerPlayer>0</MaxBlocksPerPlayer>
@@ -183,7 +187,7 @@
     <EnableTurretsFriendlyFire>false</EnableTurretsFriendlyFire>
     <EnableSubgridDamage>false</EnableSubgridDamage>
     <SyncDistance>3000</SyncDistance>
-    <ExperimentalMode>false</ExperimentalMode>
+    <ExperimentalMode>true</ExperimentalMode>
     <AdaptiveSimulationQuality>true</AdaptiveSimulationQuality>
     <EnableVoxelHand>true</EnableVoxelHand>
     <RemoveOldIdentitiesH>0</RemoveOldIdentitiesH>
@@ -225,13 +229,26 @@
     <MaxPlanets>99</MaxPlanets>
     <OffensiveWordsFiltering>false</OffensiveWordsFiltering>
     <AdjustableMaxVehicleSpeed>true</AdjustableMaxVehicleSpeed>
+    <EnableMatchComponent>false</EnableMatchComponent>
+    <PreMatchDuration>0</PreMatchDuration>
+    <MatchDuration>0</MatchDuration>
+    <PostMatchDuration>0</PostMatchDuration>
+    <EnableFriendlyFire>true</EnableFriendlyFire>
+    <EnableTeamBalancing>false</EnableTeamBalancing>
+    <CharacterSpeedMultiplier>1</CharacterSpeedMultiplier>
+    <EnableRecoil>true</EnableRecoil>
+    <EnvironmentDamageMultiplier>1</EnvironmentDamageMultiplier>
+    <EnableGamepadAimAssist>false</EnableGamepadAimAssist>
+    <BackpackDespawnTimer>5</BackpackDespawnTimer>
+    <EnableFactionPlayerNames>false</EnableFactionPlayerNames>
+    <EnableTeamScoreCounters>true</EnableTeamScoreCounters>
   </Settings>
   <ScriptManagerData>
     <variables>
       <dictionary />
     </variables>
   </ScriptManagerData>
-  <AppVersion>1197075</AppVersion>
+  <AppVersion>1201000</AppVersion>
   <Factions>
     <Factions>
       <MyObjectBuilder_Faction>
@@ -257,6 +274,9 @@
         <IconColor x="0" y="0" z="0" />
         <FactionIcon>Textures\FactionLogo\PirateIcon.dds</FactionIcon>
         <TransferedPCUDelta>0</TransferedPCUDelta>
+        <Score>0</Score>
+        <ObjectivePercentageCompleted>0</ObjectivePercentageCompleted>
+        <FactionIconWorkshopId xsi:nil="true" />
       </MyObjectBuilder_Faction>
     </Factions>
     <Players>
@@ -272,8 +292,9 @@
     <Requests />
     <PlayerToFactionsVis>
       <MyObjectBuilder_FactionsVisEntry>
-        <PlayerId>76561198032075104</PlayerId>
+        <PlayerId>0</PlayerId>
         <SerialId>0</SerialId>
+        <IdentityId>144115188075855879</IdentityId>
         <DiscoveredFactions>
           <long>244085396038544169</long>
         </DiscoveredFactions>
@@ -281,25 +302,21 @@
     </PlayerToFactionsVis>
   </Factions>
   <Mods />
-  <PromotedUsers>
-    <dictionary />
-  </PromotedUsers>
-  <CreativeTools />
   <Scenario Type="MyObjectBuilder_ScenarioDefinition" Subtype="EasyStart1" />
   <RespawnCooldowns />
   <Identities>
     <MyObjectBuilder_Identity>
       <IdentityId>144115188075855879</IdentityId>
-      <DisplayName>Chavyneebslod</DisplayName>
+      <DisplayName>KOM</DisplayName>
       <CharacterEntityId>133936737378954547</CharacterEntityId>
       <Model>Default_Astronaut</Model>
-      <ColorMask x="0.575" y="0.167133212" z="0.18923834" />
+      <ColorMask x="1" y="0" z="0" />
       <BlockLimitModifier>0</BlockLimitModifier>
-      <LastLoginTime>2021-02-04T17:55:17.4433424+01:00</LastLoginTime>
+      <LastLoginTime>2022-05-05T11:58:36.7464892+02:00</LastLoginTime>
       <SavedCharacters>
         <long>133936737378954547</long>
       </SavedCharacters>
-      <LastLogoutTime>2021-02-04T17:56:24.8817317+01:00</LastLogoutTime>
+      <LastLogoutTime>2022-05-05T12:08:32.9965217+02:00</LastLogoutTime>
       <RespawnShips />
       <LastDeathPosition xsi:nil="true" />
       <ActiveContracts />
@@ -310,7 +327,7 @@
       <DisplayName>Space Pirates</DisplayName>
       <CharacterEntityId>0</CharacterEntityId>
       <BlockLimitModifier>0</BlockLimitModifier>
-      <LastLoginTime>2021-02-04T17:55:17.4493282+01:00</LastLoginTime>
+      <LastLoginTime>2022-05-05T11:58:37.6584585+02:00</LastLoginTime>
       <SavedCharacters />
       <LastLogoutTime>0001-01-01T00:00:00</LastLogoutTime>
       <RespawnShips />
@@ -324,11 +341,12 @@
     <dictionary>
       <item>
         <Key>
-          <ClientId>76561198032075104</ClientId>
+          <ClientId>0</ClientId>
           <SerialId>0</SerialId>
+          <HashedId>17672938780896032101</HashedId>
         </Key>
         <Value>
-          <DisplayName>Chavyneebslod</DisplayName>
+          <DisplayName>KOM</DisplayName>
           <IdentityId>144115188075855879</IdentityId>
           <Connected>true</Connected>
           <ForceRealPlayer>false</ForceRealPlayer>
@@ -346,15 +364,15 @@
               <Slot>
                 <Index>1</Index>
                 <Item />
-                <Data xsi:type="MyObjectBuilder_ToolbarItemWeapon">
-                  <DefinitionId Type="MyObjectBuilder_PhysicalGunObject" Subtype="Welder4Item" />
+                <Data xsi:type="MyObjectBuilder_ToolbarItemCubeBlock">
+                  <DefinitionId Type="MyObjectBuilder_CubeBlock" Subtype="LargeHeavyBlockArmorBlock" />
                 </Data>
               </Slot>
               <Slot>
                 <Index>2</Index>
                 <Item />
-                <Data xsi:type="MyObjectBuilder_ToolbarItemWeapon">
-                  <DefinitionId Type="MyObjectBuilder_PhysicalGunObject" Subtype="AngleGrinder4Item" />
+                <Data xsi:type="MyObjectBuilder_ToolbarItemCubeBlock">
+                  <DefinitionId Type="MyObjectBuilder_Cockpit" Subtype="LargeBlockCockpitSeat" />
                 </Data>
               </Slot>
               <Slot>
@@ -475,7 +493,11 @@
               <Z>-0.13</Z>
             </Vector3>
           </BuildColorSlots>
+          <CreativeToolsEnabled>false</CreativeToolsEnabled>
+          <RemoteAdminSettings>0</RemoteAdminSettings>
+          <PromoteLevel>None</PromoteLevel>
           <BuildColorSlot>0</BuildColorSlot>
+          <IsWildlifeAgent>false</IsWildlifeAgent>
         </Value>
       </item>
     </dictionary>
@@ -491,7 +513,7 @@
       <AdditionalPaths />
       <CampaignPaths />
       <CampaignModFolderName />
-      <Language>English</Language>
+      <Language>en-US</Language>
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SharedStorageComponent">
       <BoolStorage>
@@ -593,7 +615,7 @@
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SectorWeatherComponent">
       <BaseSunDirection x="0.339467347" y="0.709795356" z="-0.617213368" />
-      <SunDirectionNormalized x="-0.007834123" y="0.6596988" z="-0.751489341" />
+      <SunDirectionNormalized x="-0.455898345" y="0.454338819" z="-0.765332043" />
       <WeatherPlanetData />
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SessionComponentAssetModifiers" />
@@ -627,6 +649,11 @@
       <AnalysisPerFactionCurrency />
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SessionComponentGameInventory" />
+    <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SessionComponentMatch">
+      <State>3</State>
+      <RemainingTimeInMinutes>0</RemainingTimeInMinutes>
+      <IsRunning>true</IsRunning>
+    </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_MySessionComponentPanels" />
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SessionComponentReplay">
       <EntityReplayData />
@@ -645,24 +672,18 @@
           <MultilineData>
             <Completed>false</Completed>
             <IsObjective>false</IsObjective>
-            <Data>Changing your point of view can be useful in many situations.</Data>
+            <Data>Hello, Engineer! My name is Good.bot. I am an AI teacher that helps you by offering directions. Let's get you started! You can access useful information in the help screen.</Data>
             <CharactersDisplayed>-1</CharactersDisplayed>
           </MultilineData>
           <MultilineData>
             <Completed>false</Completed>
             <IsObjective>true</IsObjective>
-            <Data>Toggle [V] to switch between first and third person view.</Data>
-            <CharactersDisplayed>-1</CharactersDisplayed>
-          </MultilineData>
-          <MultilineData>
-            <Completed>false</Completed>
-            <IsObjective>true</IsObjective>
-            <Data>Use [ALT + Mouse Wheel] to adjust the distance of third person view.</Data>
+            <Data>Press [F1] to open help screen.</Data>
             <CharactersDisplayed>-1</CharactersDisplayed>
           </MultilineData>
         </LineData>
-        <Title>Good.bot: Camera</Title>
-        <Visible>true</Visible>
+        <Title>Good.bot: Introduction</Title>
+        <Visible>false</Visible>
         <IsUsedByVisualScripting>false</IsUsedByVisualScripting>
       </Questlog>
       <ExclusiveHighlights>
@@ -672,7 +693,7 @@
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_AntennaSessionComponent" />
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_EnvironmentBotSpawningSystem">
-      <TimeSinceLastEventInMs>72500</TimeSinceLastEventInMs>
+      <TimeSinceLastEventInMs>67133</TimeSinceLastEventInMs>
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_TradingManager" />
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_CoordinateSystem">
@@ -711,7 +732,20 @@
       <OverallBalance>20000</OverallBalance>
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_NeutralShipSpawner">
-      <ShipsInProgress />
+      <ShipsInProgress>
+        <ShipTimePair>
+          <EntityIds>
+            <long>96285133896499001</long>
+          </EntityIds>
+          <TimeTicks>97941760000</TimeTicks>
+        </ShipTimePair>
+        <ShipTimePair>
+          <EntityIds>
+            <long>116945897547754405</long>
+          </EntityIds>
+          <TimeTicks>97944480000</TimeTicks>
+        </ShipTimePair>
+      </ShipsInProgress>
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_PirateAntennas">
       <PiratesIdentity>144115188075855880</PiratesIdentity>
@@ -741,7 +775,4 @@
     <string>Models\Cubes\Large\Armor\SquarePlate.mwm</string>
   </VicinityArmorModelsCache>
   <VicinityVoxelCache />
-  <RemoteAdminSettings>
-    <dictionary />
-  </RemoteAdminSettings>
 </MyObjectBuilder_Checkpoint>

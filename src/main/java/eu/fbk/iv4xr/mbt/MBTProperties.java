@@ -378,6 +378,26 @@ public class MBTProperties {
 	@Parameter(key = "LR_generation_mode", group = "Lab Recruits", description = "Number of rooms")
 	public static LR_random_mode LR_generation_mode = LR_random_mode.N_ROOMS_DEPENDENT;
 	
+	/**
+	 * Parameters to add fire to Lab Recruits
+	 */
+	
+	@Parameter(key = "LR_n_door_fires", group = "Lab Recruits", description = "Total number of doors guarded by a fire in the level")
+	public static int LR_n_door_fires = 0;
+	
+	@Parameter(key = "LR_n_room_fires", group = "Lab Recruits", description = "Total fires in all rooms of the level")
+	public static int LR_n_room_fires = 0;
+	
+	
+	// Fire has a private random seed to allow having the same lavel layout with diffrent fire distribution
+	@Parameter(key = "LR_fire_seed", group = "Lab Recruits", description = "Seed for adding fire in Lab Recruits random level generation")
+	public static long LR_fire_seed = 9888;
+	
+	
+	@Parameter(key = "LR_fire_in model", group = "Lab Recruits", description = "Flag to check if need to be added also to model")
+	public static boolean LR_fire_in_model = false;
+	
+	
 	
 	/**
 	 * Number of maximum tries to generate a randoma level
@@ -393,6 +413,51 @@ public class MBTProperties {
 	@Parameter(key = "SessionId", group = "Runtime", description = "String that identify an experiment")
 	public static String SessionId = "default_session";
 	
+	/**
+	 * BeamNG model generator for <a href="URL#https://sbst22.github.io/tools/">SBST 2022 Tool Competition</a> 
+	 */
+	
+	/**
+	 * Field size parameters
+	 */
+	@Parameter(key = "beamng_min_x_coord", group = "BeamNG", description = "Minimum x coordinate")
+	public static double beamng_min_x_coord = 20d;
+	@Parameter(key = "beamng_min_y_coord", group = "BeamNG", description = "Minimum y coordinate")
+	public static double beamng_min_y_coord = 20d;
+	@Parameter(key = "beamng_max_x_coord", group = "BeamNG", description = "Maximum x coordinate")
+	public static double beamng_max_x_coord = 180d;
+	@Parameter(key = "beamng_max_y_coord", group = "BeamNG", description = "Maximum y coordinate")
+	public static double beamng_max_y_coord = 180d;
+	
+	/**
+	 * Initial position
+	 */
+	@Parameter(key = "beamng_initial_x_coord", group = "BeamNG", description = "Initial x coordinate")
+	public static double beamng_initial_x_coord = 60d;
+	@Parameter(key = "beamng_initial_y_coord", group = "BeamNG", description = "Initial y coordinate")
+	public static double beamng_initial_y_coord = 60d;
+	
+	/**
+	 * Number of possible directions. The minimum angle for a curve will be 360 divided by the number of possible directions
+	 */
+	@Parameter(key = "beamng_n_directions", group = "BeamNG", description = "Number of possible direction tha car can take.")
+	public static int beamng_n_directions = 8;
+	
+	/**
+	 * Maximum angle for a curve
+	 */
+	@Parameter(key = "beamng_max_angle", group = "BeamNG", description = "Maximum angle for a curve")
+	public static double beamng_max_angle = 45d;
+	
+	/**
+	 * Street length
+	 */
+	@Parameter(key = "beamng_min_street_length", group = "BeamNG", description = "Mimimum length of a street piece.")
+	public static int beamng_min_street_length = 20;
+	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
+	public static int beamng_max_street_length = 28;
+	@Parameter(key = "beamng_street_chunck_length", group = "BeamNG", description = "Step increment between min and max street lenght")
+	public static int beamng_street_chunck_length = 5;
 	
 	public enum GoalConstraintOnTestFactory{
 		ENDS_WITH_STATE, STARTS_WITH_STATE, CONTAINS_STATE, EXCLUDES_STATE

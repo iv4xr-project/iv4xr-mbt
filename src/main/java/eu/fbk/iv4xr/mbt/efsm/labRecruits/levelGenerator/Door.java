@@ -10,6 +10,7 @@ public class Door {
 	String ID ;
 	boolean initialState = false ; // by default closed
 	public Door(String id) { this.ID = id ; }
+	private boolean hasFire = false;
 	
 	public void operatedBy(Button ... buttons) {
 		//for(var B : buttons) {
@@ -17,4 +18,13 @@ public class Door {
 			B.associatedDoors.add(this) ;
 		}
 	}
+	
+	public void setFire() {
+		this.hasFire = true;
+	}
+	
+	public boolean hasFire() {
+		return hasFire;
+	}
+	
 }
