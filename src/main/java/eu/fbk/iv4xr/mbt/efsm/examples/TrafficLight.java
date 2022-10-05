@@ -71,7 +71,7 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	// count greater or equal 60
 	BoolOr countGreatEqThanSixty = new BoolOr(countGreatThanSixty, countEqualSixty);
 	// count less than 60
-	BoolNot countLessThanSixty = new BoolNot(countGreatThanSixty);
+	BoolNot countLessThanSixty = new BoolNot(countGreatEqThanSixty);
 	
 	// constant 5
 	Const<Integer> five = new Const<Integer>(5);
@@ -143,17 +143,15 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 		t_4.setInParameter(new EFSMParameter(t4In));
 		// guard
 		t_4.setGuard(new EFSMGuard(countLessThanSixtyAndPedestrian));
+		t_4.setOp(new EFSMOperation(incCount));
+		// t_4.setOp(new EFSMOperation(resetCount));
 		
-		t_4.setOp(new EFSMOperation(resetCount));
-		
-		Var<Enum> t4Out = new Var<Enum>("signal", outSignal.sigP);
-		t_4.setOutParameter(new EFSMParameter(t4Out));
+		// Var<Enum> t4Out = new Var<Enum>("signal", outSignal.sigP);
+		// t_4.setOutParameter(new EFSMParameter(t4Out));
 		
 		// no operation and no output
 		
-		
-		
-		
+				
 		// t_5 : yellow -> yellow # increment count
 		EFSMTransition t_5 = new EFSMTransition();
 		t_5.setGuard(new EFSMGuard(countLessThanFive));
