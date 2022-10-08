@@ -38,6 +38,11 @@ public class EFSMTestExecutor
 		this.efsm = efsm;
 	}
 	
+	public void resetEFSM() {
+		this.efsm = EFSMFactory.getInstance().getEFSM();
+	}
+	
+	
 	@Override
 	public ExecutionResult executeTestcase(Testcase testcase) {
 		notifyExecutionStarted();

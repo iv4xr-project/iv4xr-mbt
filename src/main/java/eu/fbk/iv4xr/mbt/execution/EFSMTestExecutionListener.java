@@ -114,7 +114,7 @@ public class EFSMTestExecutionListener implements ExecutionListener{
 		contexts.add(EFSMFactory.getInstance().getEFSM().getConfiguration().getContext().clone());
 				
 	}
-	
+
 	/**
 	 * @return the executionTrace
 	 */
