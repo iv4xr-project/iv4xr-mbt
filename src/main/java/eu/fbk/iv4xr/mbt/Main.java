@@ -505,15 +505,6 @@ public class Main {
 				.desc("WholeSuite test generation strategy")
 				.build();
 		
-		Option mosa = Option.builder("sbt")
-				.argName("sbt")
-				.type(String.class)
-				.desc("execute mutation analysis on the actual system under test." 
-						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
-						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
-				.build();
-		
-		
 		Option mutationAnalysis = Option.builder("mutation_analysis")
 				.argName("mutation_analysis")
 				.type(String.class)
@@ -542,6 +533,7 @@ public class Main {
 
 		
 		options.addOption(mosa);
+		options.addOption(wholesuite);
 		options.addOption(random);
 		// options.addOption(tamer);
 		
@@ -551,10 +543,6 @@ public class Main {
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
-		options.addOption(mosa);
-		options.addOption(wholesuite);
-		options.addOption(random);
-		options.addOption(tamer);
 		options.addOption(mutationAnalysis);
 		options.addOption(silent);
 		options.addOption(property);
