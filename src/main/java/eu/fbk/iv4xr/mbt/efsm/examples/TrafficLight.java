@@ -182,14 +182,14 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 		
 		
 		
-		//// The model and the associated builder
+		// The model and the associated builder
 		EFSM trafficLightEFSM;
 
 		EFSMBuilder trafficLightEFSMBuilder = new EFSMBuilder(EFSM.class);
 
 		// parameter generator 
 		// FIXME
-		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
+		TrafficLightParameterGenerator parameterGenerator = new TrafficLightParameterGenerator();
 		
 		
 		trafficLightEFSM = trafficLightEFSMBuilder
@@ -202,7 +202,7 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	    		.withTransition(yellow, red, t_6)
 	    		.withTransition(pending, pending, t_7)
 	    		.withTransition(pending, yellow, t_8)
-	    		.build(red,tlContext, lrParameterGenerator);
+	    		.build(red,tlContext, parameterGenerator);
 	    
 	    return(trafficLightEFSM);
 	}

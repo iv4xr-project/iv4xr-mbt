@@ -36,7 +36,7 @@ public class SingleBlockWeldingAndGrinding {
 	public EFSMState block_not_exists = new EFSMState("block_not_exists");
 	
 	// variable represent block points, initial value is 100
-	public Var<Integer> block_energy = new Var<Integer>("block_energy", 100);
+	public Var<Integer> block_energy = new Var<Integer>("block_energy", 0);
 	
 	public EFSM getModel() {
 		
@@ -135,7 +135,7 @@ public class SingleBlockWeldingAndGrinding {
 		EFSMBuilder singleBlockWeldingAndGrindingEFSMBuilder = new EFSMBuilder(EFSM.class);
 
 		
-	    LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
+		SEParameterGenerator seParameterGenerator = new SEParameterGenerator();
 
 	    
 
@@ -147,7 +147,7 @@ public class SingleBlockWeldingAndGrinding {
 	    		.withTransition(block_exists, block_exists, t3)
 	    		.withTransition(block_exists, block_not_exists, t4)
 	    		.withTransition(block_not_exists, block_exists, t5)
-	    		.build(block_exists, ctx, lrParameterGenerator);
+	    		.build(block_not_exists, ctx, seParameterGenerator);
 	    
 	    return singleBlockWeldingAndGrindingEFSM;
 		

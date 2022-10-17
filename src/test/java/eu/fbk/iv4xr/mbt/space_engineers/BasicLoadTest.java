@@ -4,6 +4,7 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import environments.SeAgentState;
@@ -11,6 +12,7 @@ import environments.SeEnvironment;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.spatial.Vec3;
+import nl.uu.cs.aplib.mainConcepts.Environment;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import spaceEngineers.controller.ContextControllerWrapper;
 import spaceEngineers.controller.SpaceEngineers;
@@ -23,10 +25,23 @@ import spaceEngineers.model.ToolbarLocation;
 
 public class BasicLoadTest {
 
+	private void sleep(int i) {
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	//@Ignore
 	@Test
+	// Need SE ready
 	public void loadBasicLevel() {
 
-		String worldId = "amaze";
+		//String worldId = "amaze";
+		String worldId = "simple-place-grind-torch";
 		String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 
 		var blockType = DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock");
@@ -46,7 +61,7 @@ public class BasicLoadTest {
 		var controllerWrapper = new ContextControllerWrapper(proxyBuilder.localhost(agentId), context);
 
 		var theEnv = new SeEnvironment(worldId, controllerWrapper);
-		theEnv.loadWorld();
+		//theEnv.loadWorld();
 
 		var dataCollector = new TestDataCollector();
 
@@ -60,7 +75,25 @@ public class BasicLoadTest {
 		var goals = new GoalBuilder();
 		var tactics = new TacticLib();
 
-		
+	
+		// We load the scenario.
+		theEnv.loadWorld();
+		sleep(10000);
+		// Setup block in the toolbar.
+		controllerWrapper.getItems().setToolbarItem(blockType, blockLocation);
+		// Setup welder in the toolbar.new
+		controllerWrapper.getItems().setToolbarItem(welder, welderLocation);
+		// Setup grinder in the toolbar.
+		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
+
+	
+
+		// We observe for new blocks once, so that current blocks are not going to be
+		// considered "new".
+		theEnv.observeForNewBlocks();
+		sleep(1000);
+
+	
 		
 		GoalStructure testingTask = SEQ(
 //        		goals.agentAtPosition(
@@ -74,54 +107,34 @@ public class BasicLoadTest {
         				tactics.buildBlock(blockType.getType())),
 				goals.lastBuiltBlockIntegrityIsBelow(0.5,
 						SEQ(tactics.equip(grinderLocation),
-							tactics.sleep(50),
+							tactics.sleep(500),
 							tactics.startUsingTool())),
 				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-									    tactics.sleep(50))),
+									    tactics.sleep(500))),
 				goals.lastBuiltBlockIntegrityIsAbove(0.7,
 						SEQ(tactics.equip(welderLocation),
-							tactics.sleep(50),
+							tactics.sleep(500),
 							tactics.startUsingTool())),
 				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-					    tactics.sleep(50)))
+					    tactics.sleep(500)))
 				);
 
 		testAgent.setGoal(testingTask);
 
-		// We load the scenario.
-		theEnv.loadWorld();
-		// Setup block in the toolbar.
-		controllerWrapper.getItems().setToolbarItem(blockType, blockLocation);
-		// Setup welder in the toolbar.new
-		controllerWrapper.getItems().setToolbarItem(welder, welderLocation);
-		// Setup grinder in the toolbar.
-		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// We observe for new blocks once, so that current blocks are not going to be
-		// considered "new".
-		theEnv.observeForNewBlocks();
-
+		
 		// Run the agent and update in the loop.
 		var i = 0;
-		while (testingTask.getStatus().inProgress() && i <= 20) {
+		while (testingTask.getStatus().inProgress() && i <= 100) {
+			sleep(200);
 			testAgent.update();
 			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
 			myAgentState.worldmodel().position.toString() + " " +
-			testingTask.showGoalStructureStatus());
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			testingTask.showGoalStructureStatus());			
 			i++;
+			
+			Environment env = testAgent.env();
+			
+			System.out.println();
 		}
 //        
 //        // Print results.
@@ -131,6 +144,9 @@ public class BasicLoadTest {
 //        for(GoalStructure gs : subgoals){
 //        	assertTrue(gs.getStatus().success());
 //        }
+		sleep(10000);
+		theEnv.loadWorld();
+		sleep(10000);
 
 	}
 }
