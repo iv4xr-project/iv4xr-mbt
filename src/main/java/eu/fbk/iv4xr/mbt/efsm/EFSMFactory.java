@@ -25,10 +25,6 @@ public class EFSMFactory {
 	private static EFSMFactory instance;
 	protected EFSM efsm;
 	
-	// a copy of the original model to be used only for serializing the original model to file
-	// MUST not be modified
-	private EFSM originalEfsm;
-	
 	/**
 	 * Factory that depending on the SUT return the appropriate model
 	 */
@@ -116,7 +112,6 @@ public class EFSMFactory {
 			//	efsm.setEFSMStringRemoveMutations(randomGenerator.getRemoveMutations());
 			//	efsm.setEFSMStringAddMutations(randomGenerator.getAddMutations());
 				
-				originalEfsm = SerializationUtils.clone(efsm);
 			}else {
 				// is the EFSM name a class name? if so try to instantiate it
 				try {
@@ -155,10 +150,6 @@ public class EFSMFactory {
 	
 	public EFSM getEFSM() {
 		return efsm;
-	}
-	
-	public byte[] getOriginalEFSM() {
-		return SerializationUtils.serialize(originalEfsm);
 	}
 	
 }
