@@ -142,10 +142,7 @@ public class TrafficLight {
 		t_4.setOutParameter(new EFSMParameter(t4Out));
 		
 		// no operation and no output
-		
-		
-		
-		
+				
 		// t_5 : yellow -> yellow # increment count
 		EFSMTransition t_5 = new EFSMTransition();
 		t_5.setGuard(new EFSMGuard(countLessThanFive));

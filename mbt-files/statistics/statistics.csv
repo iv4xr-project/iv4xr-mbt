@@ -1,0 +1,5 @@
+id, sut, goals, covered_goals, coverage, tests, budget, consumed_budget, fitness_evaluations, feasible_paths, feasible_rate, algorithm, criteria, random_seed, lr_seed
+1662456927947,traffic_light,5,5,1.0,5,60,1,6652,767,0.11530366806975345,MOSA,TRANSITION,null,123
+1662457192946,traffic_light,5,5,1.0,5,60,0,6879,913,0.1327227794737607,MOSA,TRANSITION,null,123
+1662457259783,labrecruits.buttons_doors_1,30,30,1.0,23,60,6,234864,29564,0.1258771033449145,MOSA,TRANSITION,null,123
+1663325951720,labrecruits.buttons_doors_1,30,30,1.0,21,60,2,30103,3775,0.1254027837757034,MOSA,TRANSITION,null,123

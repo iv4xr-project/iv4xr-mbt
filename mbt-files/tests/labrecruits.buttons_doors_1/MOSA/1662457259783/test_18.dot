@@ -1,0 +1,15 @@
+# Total number of goals covered by this test: 1
+# b2 --> d1p
+
+digraph g {
+"b0" -> "d3m" [label = "1-explore[EXPLORE];/null/null/null"];
+"d3m" -> "b1" [label = "2-explore[EXPLORE];/null/null/null"];
+"b1" -> "b1" [label = "3-toggle[TOGGLE];/null/door1[false]:=!(door1[false]); /null"];
+"b1" -> "d1m" [label = "4-explore[EXPLORE];/null/null/null"];
+"d1m" -> "d1p" [label = "5-explore[EXPLORE];/door1[false]/null/null"];
+"d1p" -> "b2" [label = "6-explore[EXPLORE];/null/null/null"];
+"b2" -> "d1p" [label = "7-explore[EXPLORE];/null/null/null"];
+"d1p" -> "d1m" [label = "8-explore[EXPLORE];/door1[false]/null/null"];
+"d1m" -> "d1p" [label = "9-explore[EXPLORE];/door1[false]/null/null"];
+"d1p" -> "d1m" [label = "10-explore[EXPLORE];/door1[false]/null/null"];
+}
