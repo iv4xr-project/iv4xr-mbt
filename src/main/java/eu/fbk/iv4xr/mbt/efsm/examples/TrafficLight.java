@@ -6,6 +6,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
@@ -28,7 +29,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
  *
  */
 
-public class TrafficLight {
+public class TrafficLight implements EFSMProvider {
 	
 public enum outSignal{ sigR, sigG, sigY, sigP };
 	
