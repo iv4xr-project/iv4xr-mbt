@@ -15,6 +15,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
+import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
@@ -42,7 +43,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleSum;
  * @author prandi
  *
  */
-public class BeamNgModelGenerator {
+public class BeamNgModelGenerator implements EFSMProvider {
 	
 	// Field definition
 	
