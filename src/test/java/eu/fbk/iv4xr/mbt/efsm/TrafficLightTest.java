@@ -47,7 +47,7 @@ public class TrafficLightTest {
 		assertTrue(m.curState.equals(tl.red));	
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
 		
-		for (int i = 0; i < 60; i++) {
+		for (int i = 0; i < 61; i++) {
 			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
 			m.transition(null, tl.red);
 		}
@@ -62,7 +62,7 @@ public class TrafficLightTest {
 		assertTrue(m.curState.equals(tl.green));	
 		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
 		
-		for (int i = 0; i < 60; i++) {
+		for (int i = 0; i < 40; i++) {
 			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
 			m.transition(null, tl.green);
 		}
@@ -79,10 +79,9 @@ public class TrafficLightTest {
 		
 		/*pending --> pending */
 		assertTrue(m.curState.equals(tl.pending));
-		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==0);
-		
-		for (int i = 0; i < 60; i++) {
-			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i);
+				
+		for (int i = 0; i < 20; i++) {
+			assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()==i+41);
 			m.transition(null, tl.pending);
 		}
 		
@@ -114,7 +113,7 @@ public class TrafficLightTest {
 		
 		/*yellow --> red */
 		assertTrue(m.curState.equals(tl.yellow));			
-		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=60);
+		assertTrue((Integer)m.curContext.getContext().getVariable("count").getValue()<=5);
 		m.transition(null, tl.red);
 
 		

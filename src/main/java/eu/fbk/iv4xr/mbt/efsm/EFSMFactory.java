@@ -1,5 +1,7 @@
 package eu.fbk.iv4xr.mbt.efsm;
 
+import java.lang.reflect.Method;
+
 import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
@@ -23,10 +25,6 @@ public class EFSMFactory {
 
 	private static EFSMFactory instance;
 	protected EFSM efsm;
-	
-	// a copy of the original model to be used only for serializing the original model to file
-	// MUST not be modified
-	private EFSM originalEfsm;
 	
 	/**
 	 * Factory that depending on the SUT return the appropriate model
@@ -120,9 +118,23 @@ public class EFSMFactory {
 			//	efsm.setEFSMStringRemoveMutations(randomGenerator.getRemoveMutations());
 			//	efsm.setEFSMStringAddMutations(randomGenerator.getAddMutations());
 				
-				originalEfsm = SerializationUtils.clone(efsm);
 			}else {
-				throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
+				// is the EFSM name a class name? if so try to instantiate it
+				try {
+					Class<?> clazz = Class.forName(MBTProperties.SUT_EFSM);
+					Object object = clazz.getDeclaredConstructor().newInstance();
+					Method method = clazz.getDeclaredMethod("getModel");
+					
+					if (method != null) {
+						Object ret = method.invoke(object);
+						efsm = (EFSM)ret;
+						efsm.setShortestPathsBetweenStates();
+					}else {
+						throw new RuntimeException("Unable to get the EFSM model from the provided class: " + MBTProperties.SUT_EFSM);
+					}
+				}catch (Exception e) {
+					throw new RuntimeException("Unrecognized SUT: " + MBTProperties.SUT_EFSM);
+				}
 			}
 		}
 	}
@@ -144,10 +156,6 @@ public class EFSMFactory {
 	
 	public EFSM getEFSM() {
 		return efsm;
-	}
-	
-	public byte[] getOriginalEFSM() {
-		return SerializationUtils.serialize(originalEfsm);
 	}
 	
 }
