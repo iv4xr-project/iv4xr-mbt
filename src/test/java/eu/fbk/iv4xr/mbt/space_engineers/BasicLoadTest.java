@@ -5,6 +5,7 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import java.util.Map;
 
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import environments.SeAgentState;
@@ -35,8 +36,8 @@ public class BasicLoadTest {
 
 	}
 	
-	//@Ignore
-	@Test
+	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	//@Test
 	// Need SE ready
 	public void loadBasicLevel() {
 
