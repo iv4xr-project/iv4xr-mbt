@@ -23,6 +23,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.utils.LoggingUtils;
 import org.evosuite.utils.Randomness;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
@@ -71,24 +73,22 @@ public class Main {
 		}
 		
 		if (line.hasOption("planning")) {
-			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();
+			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();			
 		}
 		
 		// set parameters in MBTProperties and Properties
 		setGlobalProperties (line);
-		
-		
 		MBTProperties.SessionId = "" + System.currentTimeMillis();
-		
-		SuiteChromosome solution = generationStrategy.generateTests();
-		
+		SuiteChromosome solution = generationStrategy.generateTests();	
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 
-		// write tests to disk
-		writeTests (solution, coverageTracker.getCoverageMap());
+		if (!line.hasOption("silent_mode")) {
+			// write tests to disk
+			writeTests (solution, coverageTracker.getCoverageMap());
+		}
 		
 		// write model on disk
-		writeModel();
+		writeModel(line);
 		
 		// write statistics to disk
 		writeStatistics (coverageTracker.getStatistics(), coverageTracker.getStatisticsHeader(),MBTProperties.STATISTICS_FILE());
@@ -261,7 +261,6 @@ public class Main {
 		/*
 		 * Save statistics about mutation analysis
 		 */
-		
 		String mutStatHeader = "run_id,  n_tests, n_mutants, n_killed_mutants, wild_type_sut, test_folder\n";
 		
 		String mutStat =  run_id+ ",";
@@ -274,11 +273,7 @@ public class Main {
 		}else {
 			mutStat = mutStat + "\n";
 		}
-		
-		
-		
-		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE());
-		
+		writeStatistics(mutStat, mutStatHeader, MBTProperties.MUTATION_STATISTIC_FILE());	
 	}
 	
 	/**
@@ -289,7 +284,7 @@ public class Main {
 	 */
 	private void writeStatistics(String statistics, String statisticsHeader, String fileName) {
 		// make sure stats folder exists
-		File statsFolder = new File (MBTProperties.STATISTICS_DIR_NAME);
+		File statsFolder = new File (MBTProperties.STATISTICS_DIR());
 		if (!statsFolder.exists()) {
 			statsFolder.mkdirs();
 		}
@@ -327,9 +322,11 @@ public class Main {
 			String dotFileName = testFolder + File.separator + "test_" + count + ".dot";
 			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
 			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
+			String csvFileName = testFolder + File.separator + "test_" + count + ".csv";
 			File dotFile = new File (dotFileName);
 			File txtFile = new File (txtFileName);
-			
+			File csvFile = new File (csvFileName);
+			AbstractTestSequence abstractTestSequence = (AbstractTestSequence)testCase.getTestcase();
 			// get the list of goals covered by this individual
 			String coveredGoals = getGoveredGoalsAsComment (coverageMap, testCase);
 			try {
@@ -338,6 +335,20 @@ public class Main {
 				FileUtils.writeStringToFile(dotFile, coveredGoals + testAsDot, Charset.defaultCharset());
 				FileUtils.writeStringToFile(txtFile, coveredGoals + testAsText, Charset.defaultCharset());
 				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
+				
+				// BeamNG specific
+				
+				if (MBTProperties.SUT_EFSM.toString().contains("beamng")) {
+					try {
+						List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
+						String pointsCsv = pointsToCsv(points);
+						FileUtils.writeStringToFile(csvFile, pointsCsv, Charset.defaultCharset());
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -345,6 +356,19 @@ public class Main {
 			count++;
 		}
 		
+	}
+
+	/**
+	 * format the list of Pairs to csv entries and return them as string
+	 * @param points
+	 * @return
+	 */
+	private String pointsToCsv(List<Pair<Integer, Integer>> points) {
+		StringBuffer buffer = new StringBuffer();
+		for (Pair<Integer, Integer> point : points) {
+			buffer.append(point.toString("%1$s,%2$s") + "\n");
+		}
+		return buffer.toString();
 	}
 
 	/**
@@ -376,7 +400,7 @@ public class Main {
 	/**
 	 * Save EFSM model
 	 */
-	public void writeModel() {
+	public void writeModel(CommandLine line) {
 		String modelFolderName = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId + File.separator + "Model";
 		File modelFolder = new File (modelFolderName);
 		modelFolder.mkdirs();
@@ -392,9 +416,10 @@ public class Main {
 		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
 		try {
-			
-			TestSerializationUtils.saveEFSM(efsm, modelFileName);
-			FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			if (!line.hasOption("silent_mode")) {
+				TestSerializationUtils.saveEFSM(efsm, modelFileName);
+				FileUtils.writeStringToFile(dotFile, efsm.getDotString(), Charset.defaultCharset());
+			}
 			FileUtils.writeStringToFile(featureFile, efsm.getEfsmSummaryFeatures(), Charset.defaultCharset());
 			// if csv is available
 			if (efsm.getEFSMString() != "") {
@@ -417,44 +442,16 @@ public class Main {
 
 	
 	/**
-	 * TODO add proper optios here
+	 * TODO add proper options here
 	 * @return
 	 */
 	public static Options getCommandLineOptions() {
 		Options options = new Options();
 
+		// print help
 		Option help = new Option("help", "print this message");
 
-		Option execOnSut = Option.builder("exec_on_sut")
-				.argName("exec_on_sut")
-				.type(String.class)
-				.desc("execute tests on the actual system under test")
-				.build();
-		
-		Option mutationAnalysis = Option.builder("mutation_analysis")
-				.argName("mutation_analysis")
-				.type(String.class)
-				.desc("execute mutation analysis on the actual system under test." 
-						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
-						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
-				.build();
-		
-		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Path to the SUT executable");
-		executableDir.setArgs(1);
-		
-		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Path to the SUT executable, .csv file in case of LabRecruites");
-		sutExecutable.setArgs(1);
-		
-		Option agentName = new Option("agent_name", "agent_name", true, "Name of the agent in the level, defaults to 'Agent1'");
-		agentName.setArgs(1);
-		
-		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to the tests to be executed");
-		testsDir.setArgs(1);
-		
-		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal");
-		maxCycles.setArgs(1);
-		
-		
+		// select generation engine
 		Option random = Option.builder("random")
 				.argName("random")
 				.type(String.class)
@@ -464,15 +461,58 @@ public class Main {
 		Option mosa = Option.builder("sbt")
 				.argName("sbt")
 				.type(String.class)
-				.desc("Search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
+				.desc("search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
 				.build();
 		
-		Option tamer = Option.builder("planning")
-				.argName("planning")
+//		Option tamer = Option.builder("planning")
+//				.argName("planning")
+//				.type(String.class)
+//				.desc("planning based test generation strategy")
+//				.build();
+		
+		// Lab Recruits execution of tests option
+		Option execOnSut = Option.builder("exec_on_sut")
+				.argName("exec_on_sut")
 				.type(String.class)
-				.desc("planning based test generation strategy")
+				.desc("execute tests on the actual system under test")
 				.build();
 		
+		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Lab Recruits: path to the gym folder");
+		executableDir.setArgs(1);
+		
+		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Lab Recruits: path to the level csv file");
+		sutExecutable.setArgs(1);
+		
+		Option agentName = new Option("agent_name", "agent_name", true, "Lab Recruits: name of the agent in the level, defaults to 'Agent1'");
+		agentName.setArgs(1);
+		
+		Option testsDir = new Option("tests_dir", "tests_dir", true, "Lab Recruits: path to folder containing tests to be executed");
+		testsDir.setArgs(1);
+		
+		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Lab Recruits: maximum number of cycles for executing a goal");
+		maxCycles.setArgs(1);
+		
+		
+		
+		Option mutationAnalysis = Option.builder("mutation_analysis")
+				.argName("mutation_analysis")
+				.type(String.class)
+				.desc("execute mutation analysis on the actual system under test." 
+						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
+						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
+				.build();
+		
+		
+		
+		
+		
+		
+		Option silent = Option.builder("silent_mode")
+				.argName("silent_mode")
+				.type(String.class)
+				.desc("save only execution statistics. Model and tests are not dumpped on disc")
+				.build();
+				
 		Option property   = Option.builder("D")
 				.numberOfArgs(2)
 				.argName("property=value")
@@ -484,18 +524,28 @@ public class Main {
 				.build();
 
 		
-		options.addOption(help);
+		options.addOption(mosa);
+		options.addOption(random);
+		// options.addOption(tamer);
+		
 		options.addOption(execOnSut);
-		options.addOption(mutationAnalysis);
 		options.addOption(executableDir);
 		options.addOption(sutExecutable);
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
-		options.addOption(mosa);
-		options.addOption(random);
-		options.addOption(tamer);
+		
+		options.addOption(mutationAnalysis);
+		
+		options.addOption(silent);
 		options.addOption(property);
+		
+		options.addOption(help);
+		
+		
+		
+		
+		
 		return options;
 	}
 	
@@ -525,6 +575,9 @@ public class Main {
 		 * -tests_dir: folder containing the serialized test cases
 		 */
 		if (line.hasOption("exec_on_sut")) {
+			
+			setGlobalProperties (line);
+			
 			String sutExecutableDir = "";
 			String sutExecutable = "";
 			String testsDir = "";
@@ -641,7 +694,13 @@ public class Main {
 			logger.info("Performing requested operation ...");
 			if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("MBT", options);
+				// Do not sort				
+				formatter.setOptionComparator(null);
+				// Header and footer strings
+				String header = "Evolutionary Model Based Testing\n\n";
+				String footer = "\nPlease report issues at https://github.com/iv4xr-project/iv4xr-mbt/issues";
+				 
+				formatter.printHelp("EvoMBT",header, options, footer , false);
 			}else {
 				main.execute(line, options);
 			}

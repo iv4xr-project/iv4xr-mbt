@@ -115,4 +115,87 @@ public class CoverageGoalConstrainedTransitionCoverageGoalTest {
 		//assertTrue(count == 6);
 	}
 
+	@Test
+	public void testLargeWithFire() {
+		
+
+		// Define a labrectuits random model
+		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		
+		// Set parameters of the model
+		MBTProperties.LR_seed = 2142877334;
+		MBTProperties.LR_mean_buttons = 0.5;
+		MBTProperties.LR_n_buttons = 50;
+		MBTProperties.LR_n_doors = 40;
+		MBTProperties.LR_n_goalFlags = 20;
+		
+		MBTProperties.LR_n_door_fires = 10;
+		
+		MBTProperties.LR_n_room_fires = 20;
+		
+		// Set criterion
+		MBTProperties.MODELCRITERION = new ModelCriterion[] {
+			ModelCriterion.TRANSITION_FIX_END_STATE 
+		};
+		MBTProperties.TEST_FACTORY = MBTProperties.TestFactory.RANDOM_LENGTH_FIX_TARGET;
+				
+		// Set Target state
+		String targetState = "gf12";
+		MBTProperties.STATE_TARGET = targetState;
+				
+		// Search budget in seconds
+		MBTProperties.SEARCH_BUDGET = 30;
+				
+		Properties.RANDOM_SEED = 1234L;
+		Randomness.getInstance();
+		
+		// check that target state exists
+		EFSM efsm = EFSMFactory.getInstance().getEFSM();
+		assertTrue(efsm.getStates().contains(new EFSMState(targetState)));
+		
+		
+		// Generate result
+		GenerationStrategy generationStrategy = new SearchBasedStrategy<MBTChromosome>();
+		SuiteChromosome solution = generationStrategy.generateTests();
+		
+		// Output folder
+		String testFolder = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + System.currentTimeMillis();
+		File testsFolder = new File (testFolder);
+		testsFolder.mkdirs();
+		
+		int count = 0;
+		for (MBTChromosome testCase : solution.getTestChromosomes()) {
+			count++;
+			//System.out.println(count);
+			AbstractTestSequence testSequence = (AbstractTestSequence)testCase.getTestcase();
+			// check that the last state is target state
+			EFSMTransition lastTranstion = testSequence.getPath().getTransitionAt(testSequence.getPath().getLength()-1);
+			assertTrue(lastTranstion.getTgt().equals(new EFSMState(targetState)));
+			// check that the target state appears only once in the solution
+			assertTrue(Collections.frequency(testSequence.getPath().getStates(), new EFSMState(targetState)) == 1);
+			
+			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
+			File txtFile = new File (txtFileName);
+			try {
+				FileUtils.writeStringToFile(txtFile, testCase.getTestcase().toString(), Charset.defaultCharset());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		// level as csv file
+		String txtFileName = testFolder + File.separator + "LR_level"  + ".csv";
+		File txtFile = new File (txtFileName);
+		try {
+			FileUtils.writeStringToFile(txtFile, efsm.getEFSMString(), Charset.defaultCharset());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 }

@@ -5,6 +5,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
+import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
@@ -20,7 +21,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 
 
 
-public class ButtonDoors1 {
+public class ButtonDoors1 implements EFSMProvider {
 	
 	/*
 	 *  States

@@ -1,0 +1,2395 @@
+<?xml version="1.0"?>
+<MyObjectBuilder_Sector xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Position>
+    <X>0</X>
+    <Y>0</Y>
+    <Z>0</Z>
+  </Position>
+  <SectorEvents>
+    <Events>
+      <MyObjectBuilder_GlobalEventBase>
+        <SubtypeName>SpawnCargoShip</SubtypeName>
+        <Enabled>false</Enabled>
+        <ActivationTimeMs>2781658</ActivationTimeMs>
+      </MyObjectBuilder_GlobalEventBase>
+      <MyObjectBuilder_GlobalEventBase>
+        <SubtypeName>MeteorWave</SubtypeName>
+        <Enabled>false</Enabled>
+        <ActivationTimeMs>4908760</ActivationTimeMs>
+      </MyObjectBuilder_GlobalEventBase>
+    </Events>
+  </SectorEvents>
+  <AppVersion>1201000</AppVersion>
+  <Environment>
+    <SunAzimuth>-0.5028429</SunAzimuth>
+    <SunElevation>0.7892078</SunElevation>
+    <SunIntensity>0</SunIntensity>
+    <FogMultiplier>0</FogMultiplier>
+    <FogDensity>0.003</FogDensity>
+    <FogColor x="0" y="0" z="0" />
+    <EnvironmentDefinition Type="MyObjectBuilder_EnvironmentDefinition" Subtype="Default" />
+  </Environment>
+  <VoxelHandVolumeChanged>0</VoxelHandVolumeChanged>
+  <SectorObjects>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_CubeGrid">
+      <SubtypeName />
+      <EntityId>80094167037765786</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>80094167037765786</Name>
+      <PositionAndOrientation>
+        <Position x="27.766737475789341" y="11.108135342363312" z="9.22584523127989" />
+        <Forward x="-0.0264357179" y="0.9986652" z="-0.0443697572" />
+        <Up x="-0.5152915" y="-0.0516472161" z="-0.8554572" />
+        <Orientation>
+          <X>0.19408156</X>
+          <Y>-0.6634361</Y>
+          <Z>0.698681653</Z>
+          <W>0.184468955</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <GridSizeEnum>Large</GridSizeEnum>
+      <CubeBlocks>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CargoContainer">
+          <SubtypeName>LargeBlockSmallContainer</SubtypeName>
+          <EntityId>123672895481384252</EntityId>
+          <Name>123672895481384252</Name>
+          <IntegrityPercent>0.892230153</IntegrityPercent>
+          <BlockOrientation Forward="Forward" Up="Right" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <ConstructionStockpile>
+            <Items xsi:type="MyObjectBuilder_StockpileItem">
+              <Amount>22</Amount>
+              <PhysicalContent xsi:type="MyObjectBuilder_Ore">
+                <SubtypeName>Scrap</SubtypeName>
+              </PhysicalContent>
+            </Items>
+          </ConstructionStockpile>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>15.625</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ShipConnector">
+          <SubtypeName>Connector</SubtypeName>
+          <EntityId>105884222511324581</EntityId>
+          <Name>105884222511324581</Name>
+          <Min x="-1" y="0" z="0" />
+          <BlockOrientation Forward="Left" Up="Backward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <DeformationRatio>0.5</DeformationRatio>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>8</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>10</FramesFromLastTrigger>
+                  <TimerTickInFrames>80</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <ConnectedEntityId>89454600882051751</ConnectedEntityId>
+          <MasterToSlaveTransform>
+            <Position x="9.15243163035484E-06" y="2.2835488380223978E-06" z="-2.6575284004211426" />
+            <Forward x="-4.27328537E-08" y="1.06143858E-07" z="0.9999999" />
+            <Up x="0.05177995" y="0.998658538" z="-1.03788764E-07" />
+            <Orientation>
+              <X>0.0258986615</X>
+              <Y>0.999664545</Y>
+              <Z>-5.25007735E-08</Z>
+              <W>2.27337562E-08</W>
+            </Orientation>
+          </MasterToSlaveTransform>
+          <Strength>1</Strength>
+          <MasterToSlaveGrid>
+            <OrientationOffset>
+              <X>-0.486883223</X>
+              <Y>0.51278156</Y>
+              <Z>0.4868827</Z>
+              <W>0.5127816</W>
+            </OrientationOffset>
+            <PositionOffset>
+              <X>5.397476E-05</X>
+              <Y>5.112048E-05</Y>
+              <Z>-5.15751648</Z>
+            </PositionOffset>
+            <OrientationAsVector>
+              <X>-0.486883223</X>
+              <Y>0.51278156</Y>
+              <Z>0.4868827</Z>
+              <W>0.5127816</W>
+            </OrientationAsVector>
+          </MasterToSlaveGrid>
+          <IsMaster>true</IsMaster>
+          <TradingEnabled>false</TradingEnabled>
+          <AutoUnlockTime>0</AutoUnlockTime>
+          <TimeOfConnection>0</TimeOfConnection>
+          <IsParkingEnabled>true</IsParkingEnabled>
+          <IsPowerTransferOverrideEnabled>false</IsPowerTransferOverrideEnabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="-1" />
+          <IntegrityPercent>0.9506154</IntegrityPercent>
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <ConstructionStockpile>
+            <Items xsi:type="MyObjectBuilder_StockpileItem">
+              <Amount>16</Amount>
+              <PhysicalContent xsi:type="MyObjectBuilder_Ore">
+                <SubtypeName>Scrap</SubtypeName>
+              </PhysicalContent>
+            </Items>
+          </ConstructionStockpile>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="-2" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="-3" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+          <SubtypeName>LargeBlockSmallThrust</SubtypeName>
+          <EntityId>108121638404562482</EntityId>
+          <Name>108121638404562482</Name>
+          <Min x="-2" y="0" z="-3" />
+          <BlockOrientation Forward="Left" Up="Backward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame100</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>100</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+          <SubtypeName>LargeBlockSmallThrust</SubtypeName>
+          <EntityId>110536526551678910</EntityId>
+          <Name>110536526551678910</Name>
+          <Min x="1" y="0" z="-3" />
+          <BlockOrientation Forward="Right" Up="Up" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame100</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>100</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Gyro">
+          <SubtypeName>LargeBlockGyro</SubtypeName>
+          <EntityId>128121070055876394</EntityId>
+          <Name>128121070055876394</Name>
+          <Min x="-1" y="0" z="-4" />
+          <BlockOrientation Forward="Down" Up="Forward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <GyroOverride>true</GyroOverride>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Reactor">
+          <SubtypeName>LargeBlockSmallGenerator</SubtypeName>
+          <EntityId>101791538860615131</EntityId>
+          <Name>101791538860615131</Name>
+          <Min x="0" y="0" z="-4" />
+          <BlockOrientation Forward="Left" Up="Forward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items>
+                    <MyObjectBuilder_InventoryItem>
+                      <Amount>19230.052734</Amount>
+                      <PhysicalContent xsi:type="MyObjectBuilder_Ingot">
+                        <SubtypeName>Uranium</SubtypeName>
+                      </PhysicalContent>
+                      <ItemId>0</ItemId>
+                    </MyObjectBuilder_InventoryItem>
+                  </Items>
+                  <nextItemId>1</nextItemId>
+                  <Volume>1</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame100</TimerType>
+                  <FramesFromLastTrigger>800</FramesFromLastTrigger>
+                  <TimerTickInFrames>900</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <Capacity>19230.0527</Capacity>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="-5" />
+          <ColorMaskHSV x="0.9027778" y="0.2" z="0.55" />
+          <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ShipConnector">
+          <SubtypeName>Connector</SubtypeName>
+          <EntityId>103807833987241029</EntityId>
+          <Name>103807833987241029</Name>
+          <Min x="1" y="0" z="0" />
+          <BlockOrientation Forward="Right" Up="Forward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <DeformationRatio>0.5</DeformationRatio>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>8</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>40</FramesFromLastTrigger>
+                  <TimerTickInFrames>80</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <MasterToSlaveTransform xsi:nil="true" />
+          <Strength>1</Strength>
+          <MasterToSlaveGrid xsi:nil="true" />
+          <IsMaster>true</IsMaster>
+          <TradingEnabled>false</TradingEnabled>
+          <AutoUnlockTime>0</AutoUnlockTime>
+          <TimeOfConnection>0</TimeOfConnection>
+          <IsParkingEnabled>true</IsParkingEnabled>
+          <IsPowerTransferOverrideEnabled>false</IsPowerTransferOverrideEnabled>
+        </MyObjectBuilder_CubeBlock>
+      </CubeBlocks>
+      <Skeleton>
+        <BoneInfo>
+          <BonePosition x="1" y="0" z="0" />
+          <BoneOffset x="127" y="127" z="121" />
+        </BoneInfo>
+        <BoneInfo>
+          <BonePosition x="1" y="1" z="0" />
+          <BoneOffset x="127" y="127" z="121" />
+        </BoneInfo>
+      </Skeleton>
+      <ConveyorLines>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="-1" y="0" z="0" />
+          <StartDirection>Right</StartDirection>
+          <EndPosition x="0" y="0" z="0" />
+          <EndDirection>Left</EndDirection>
+          <Sections />
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="0" y="0" z="0" />
+          <StartDirection>Right</StartDirection>
+          <EndPosition x="1" y="0" z="0" />
+          <EndDirection>Left</EndDirection>
+          <Sections />
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+      </ConveyorLines>
+      <DisplayName>Large Grid 5786</DisplayName>
+      <DestructibleBlocks>true</DestructibleBlocks>
+      <IsRespawnGrid>false</IsRespawnGrid>
+      <LocalCoordSys>0</LocalCoordSys>
+      <TargetingTargets />
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_Character">
+      <SubtypeName>Default_Astronaut</SubtypeName>
+      <EntityId>126721578110661209</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>126721578110661209</Name>
+      <PositionAndOrientation>
+        <Position x="38.990138981702032" y="12.35243292315681" z="2.5764856645647707" />
+        <Forward x="0.87524277" y="-0.000260780973" z="-0.4836837" />
+        <Up x="0.0003631238" y="0.99999994" z="0.000117929492" />
+        <Orientation>
+          <X>-4.14638125E-05</X>
+          <Y>-0.508092642</Y>
+          <Z>-0.000186339283</Z>
+          <W>0.8613024</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <ComponentContainer>
+        <Components>
+          <ComponentData>
+            <TypeId>MyEntityStatComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_CharacterStatComponent">
+              <Stats>
+                <MyObjectBuilder_EntityStat>
+                  <SubtypeName>SpaceCharacterHealth</SubtypeName>
+                  <Value>1</Value>
+                  <MaxValue>1</MaxValue>
+                  <StatRegenAmountMultiplier>1</StatRegenAmountMultiplier>
+                  <StatRegenAmountMultiplierDuration>0</StatRegenAmountMultiplierDuration>
+                </MyObjectBuilder_EntityStat>
+              </Stats>
+              <ScriptNames>
+                <string>SpaceStatEffect</string>
+              </ScriptNames>
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyAssetModifierComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_AssetModifierComponent">
+              <AssetModifiers />
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyInventoryBase</TypeId>
+            <Component xsi:type="MyObjectBuilder_Inventory">
+              <Items>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>AngleGrinderItem</SubtypeName>
+                    <GunEntity xsi:type="MyObjectBuilder_AngleGrinder">
+                      <SubtypeName>AngleGrinder</SubtypeName>
+                      <EntityId>127102196229729133</EntityId>
+                      <PersistentFlags>None</PersistentFlags>
+                    </GunEntity>
+                  </PhysicalContent>
+                  <ItemId>0</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>HandDrillItem</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>1</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>WelderItem</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>2</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>30</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>SteelPlate</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>3</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>5</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Computer</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>4</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Display</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>5</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>4</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Motor</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>6</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>3</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Medical</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>7</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>2</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Construction</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>8</ItemId>
+                </MyObjectBuilder_InventoryItem>
+              </Items>
+              <nextItemId>9</nextItemId>
+              <Volume>0.4</Volume>
+              <Mass>9223372036854.775807</Mass>
+              <MaxItemCount>2147483647</MaxItemCount>
+              <Size xsi:nil="true" />
+              <InventoryFlags />
+              <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+            </Component>
+          </ComponentData>
+        </Components>
+      </ComponentContainer>
+      <CharacterModel>Default_Astronaut</CharacterModel>
+      <Inventory>
+        <Items>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>AngleGrinderItem</SubtypeName>
+              <GunEntity xsi:type="MyObjectBuilder_AngleGrinder">
+                <SubtypeName>AngleGrinder</SubtypeName>
+                <EntityId>127102196229729133</EntityId>
+                <PersistentFlags>None</PersistentFlags>
+              </GunEntity>
+            </PhysicalContent>
+            <ItemId>0</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>HandDrillItem</SubtypeName>
+            </PhysicalContent>
+            <ItemId>1</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>WelderItem</SubtypeName>
+            </PhysicalContent>
+            <ItemId>2</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>30</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>SteelPlate</SubtypeName>
+            </PhysicalContent>
+            <ItemId>3</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>5</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>Computer</SubtypeName>
+            </PhysicalContent>
+            <ItemId>4</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>Display</SubtypeName>
+            </PhysicalContent>
+            <ItemId>5</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>4</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>Motor</SubtypeName>
+            </PhysicalContent>
+            <ItemId>6</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>3</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>Medical</SubtypeName>
+            </PhysicalContent>
+            <ItemId>7</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>2</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_Component">
+              <SubtypeName>Construction</SubtypeName>
+            </PhysicalContent>
+            <ItemId>8</ItemId>
+          </MyObjectBuilder_InventoryItem>
+        </Items>
+        <nextItemId>9</nextItemId>
+        <Volume>0.4</Volume>
+        <Mass>9223372036854.775807</Mass>
+        <MaxItemCount>2147483647</MaxItemCount>
+        <Size xsi:nil="true" />
+        <InventoryFlags />
+        <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+      </Inventory>
+      <Battery>
+        <CurrentCapacity>6.93988432E-06</CurrentCapacity>
+        <RegenEffects />
+      </Battery>
+      <LightEnabled>false</LightEnabled>
+      <UsingLadder xsi:nil="true" />
+      <HeadAngle x="-10.1658373" y="0" />
+      <LinearVelocity x="0" y="0" z="0" />
+      <AutoenableJetpackDelay>0</AutoenableJetpackDelay>
+      <JetpackEnabled>false</JetpackEnabled>
+      <ColorMaskHSV x="1" y="0" z="0" />
+      <LootingCounter>0</LootingCounter>
+      <DisplayName>KOM</DisplayName>
+      <IsInFirstPersonView>true</IsInFirstPersonView>
+      <EnableBroadcasting>true</EnableBroadcasting>
+      <OxygenLevel>0.8140359</OxygenLevel>
+      <EnvironmentOxygenLevel>0</EnvironmentOxygenLevel>
+      <StoredGases>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Hydrogen" />
+          <FillLevel>1</FillLevel>
+        </StoredGas>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Oxygen" />
+          <FillLevel>0.8140359</FillLevel>
+        </StoredGas>
+      </StoredGases>
+      <EnabledComponents>
+        <string>RagdollComponent</string>
+        <string>InventorySpawnComponent</string>
+      </EnabledComponents>
+      <NeedsOxygenFromSuit>false</NeedsOxygenFromSuit>
+      <OwningPlayerIdentityId>144115188075855883</OwningPlayerIdentityId>
+      <IsPersistenceCharacter>true</IsPersistenceCharacter>
+      <IsStartingCharacterForLobby>false</IsStartingCharacterForLobby>
+      <RelativeDampeningEntity>0</RelativeDampeningEntity>
+      <UsingLadderInfo xsi:nil="true" />
+      <EnableBroadcastingPlayerToggle>true</EnableBroadcastingPlayerToggle>
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_Character">
+      <SubtypeName>Default_Astronaut_Female</SubtypeName>
+      <EntityId>90515782840819280</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>90515782840819280</Name>
+      <PositionAndOrientation>
+        <Position x="45.005637088128253" y="-38.972411046537815" z="9.1372359520506059" />
+        <Forward x="0.194398567" y="0.9427121" z="0.271114469" />
+        <Up x="-0.893958449" y="0.28403613" z="-0.3466435" />
+        <Orientation>
+          <X>-0.381866127</X>
+          <Y>0.699811041</Y>
+          <Z>-0.460608482</Z>
+          <W>-0.390234</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <ComponentContainer>
+        <Components>
+          <ComponentData>
+            <TypeId>MyEntityStatComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_CharacterStatComponent">
+              <Stats>
+                <MyObjectBuilder_EntityStat>
+                  <SubtypeName>SpaceCharacterHealth</SubtypeName>
+                  <Value>1</Value>
+                  <MaxValue>1</MaxValue>
+                  <StatRegenAmountMultiplier>1</StatRegenAmountMultiplier>
+                  <StatRegenAmountMultiplierDuration>0</StatRegenAmountMultiplierDuration>
+                </MyObjectBuilder_EntityStat>
+              </Stats>
+              <ScriptNames>
+                <string>SpaceStatEffect</string>
+              </ScriptNames>
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyAssetModifierComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_AssetModifierComponent">
+              <AssetModifiers />
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyInventoryBase</TypeId>
+            <Component xsi:type="MyObjectBuilder_Inventory">
+              <Items />
+              <nextItemId>0</nextItemId>
+              <Volume>0.4</Volume>
+              <Mass>9223372036854.775807</Mass>
+              <MaxItemCount>2147483647</MaxItemCount>
+              <Size xsi:nil="true" />
+              <InventoryFlags />
+              <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+            </Component>
+          </ComponentData>
+        </Components>
+      </ComponentContainer>
+      <CharacterModel>Default_Astronaut_Female</CharacterModel>
+      <Inventory>
+        <Items />
+        <nextItemId>0</nextItemId>
+        <Volume>0.4</Volume>
+        <Mass>9223372036854.775807</Mass>
+        <MaxItemCount>2147483647</MaxItemCount>
+        <Size xsi:nil="true" />
+        <InventoryFlags />
+        <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+      </Inventory>
+      <Battery>
+        <CurrentCapacity>0</CurrentCapacity>
+        <RegenEffects />
+      </Battery>
+      <LightEnabled>false</LightEnabled>
+      <UsingLadder xsi:nil="true" />
+      <HeadAngle x="0" y="0" />
+      <LinearVelocity x="0" y="0" z="0" />
+      <AutoenableJetpackDelay>0</AutoenableJetpackDelay>
+      <JetpackEnabled>true</JetpackEnabled>
+      <ColorMaskHSV x="0.283333331" y="-0.8" z="0.55" />
+      <LootingCounter>0</LootingCounter>
+      <DisplayName>[V01t45 Yognaut]</DisplayName>
+      <IsInFirstPersonView>true</IsInFirstPersonView>
+      <EnableBroadcasting>false</EnableBroadcasting>
+      <OxygenLevel>0</OxygenLevel>
+      <EnvironmentOxygenLevel>0</EnvironmentOxygenLevel>
+      <StoredGases>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Hydrogen" />
+          <FillLevel>0.998124242</FillLevel>
+        </StoredGas>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Oxygen" />
+          <FillLevel>0</FillLevel>
+        </StoredGas>
+      </StoredGases>
+      <MovementState>Flying</MovementState>
+      <EnabledComponents>
+        <string>InventorySpawnComponent</string>
+        <string>RagdollComponent</string>
+      </EnabledComponents>
+      <NeedsOxygenFromSuit>false</NeedsOxygenFromSuit>
+      <OwningPlayerIdentityId>144115188075855881</OwningPlayerIdentityId>
+      <IsPersistenceCharacter>true</IsPersistenceCharacter>
+      <IsStartingCharacterForLobby>false</IsStartingCharacterForLobby>
+      <RelativeDampeningEntity>0</RelativeDampeningEntity>
+      <UsingLadderInfo xsi:nil="true" />
+      <EnableBroadcastingPlayerToggle>true</EnableBroadcastingPlayerToggle>
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_VoxelMap">
+      <SubtypeName />
+      <EntityId>90126435721049839</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>90126435721049839</Name>
+      <PositionAndOrientation>
+        <Position x="-20" y="-110" z="-60" />
+        <Forward x="-0" y="-0" z="-1" />
+        <Up x="0" y="1" z="0" />
+        <Orientation>
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <W>1</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <ContentChanged>false</ContentChanged>
+      <BoulderPlanetId xsi:nil="true" />
+      <BoulderSectorId xsi:nil="true" />
+      <BoulderItemId xsi:nil="true" />
+      <CreatedByUser>true</CreatedByUser>
+      <StorageName>BaseAsteroid</StorageName>
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_Character">
+      <SubtypeName>Default_Astronaut</SubtypeName>
+      <EntityId>126379272801165279</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>126379272801165279</Name>
+      <PositionAndOrientation>
+        <Position x="38.642395998555251" y="12.325351476434662" z="1.2956022928628996" />
+        <Forward x="0.999509931" y="-0.000173748733" z="-0.0313001275" />
+        <Up x="0.000178139831" y="1" z="0.000137501978" />
+        <Orientation>
+          <X>-1.26192E-05</X>
+          <Y>-0.695952535</Y>
+          <Z>-0.000111807451</Z>
+          <W>0.7180878</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <ComponentContainer>
+        <Components>
+          <ComponentData>
+            <TypeId>MyEntityStatComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_CharacterStatComponent">
+              <Stats>
+                <MyObjectBuilder_EntityStat>
+                  <SubtypeName>SpaceCharacterHealth</SubtypeName>
+                  <Value>1</Value>
+                  <MaxValue>1</MaxValue>
+                  <StatRegenAmountMultiplier>1</StatRegenAmountMultiplier>
+                  <StatRegenAmountMultiplierDuration>0</StatRegenAmountMultiplierDuration>
+                </MyObjectBuilder_EntityStat>
+              </Stats>
+              <ScriptNames>
+                <string>SpaceStatEffect</string>
+              </ScriptNames>
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyAssetModifierComponent</TypeId>
+            <Component xsi:type="MyObjectBuilder_AssetModifierComponent">
+              <AssetModifiers />
+            </Component>
+          </ComponentData>
+          <ComponentData>
+            <TypeId>MyInventoryBase</TypeId>
+            <Component xsi:type="MyObjectBuilder_Inventory">
+              <Items>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>AngleGrinderItem</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>0</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>HandDrillItem</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>1</ItemId>
+                </MyObjectBuilder_InventoryItem>
+                <MyObjectBuilder_InventoryItem>
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+                    <SubtypeName>WelderItem</SubtypeName>
+                  </PhysicalContent>
+                  <ItemId>2</ItemId>
+                </MyObjectBuilder_InventoryItem>
+              </Items>
+              <nextItemId>3</nextItemId>
+              <Volume>0.4</Volume>
+              <Mass>9223372036854.775807</Mass>
+              <MaxItemCount>2147483647</MaxItemCount>
+              <Size xsi:nil="true" />
+              <InventoryFlags />
+              <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+            </Component>
+          </ComponentData>
+        </Components>
+      </ComponentContainer>
+      <CharacterModel>Default_Astronaut</CharacterModel>
+      <Inventory>
+        <Items>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>AngleGrinderItem</SubtypeName>
+            </PhysicalContent>
+            <ItemId>0</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>HandDrillItem</SubtypeName>
+            </PhysicalContent>
+            <ItemId>1</ItemId>
+          </MyObjectBuilder_InventoryItem>
+          <MyObjectBuilder_InventoryItem>
+            <Amount>1</Amount>
+            <PhysicalContent xsi:type="MyObjectBuilder_PhysicalGunObject">
+              <SubtypeName>WelderItem</SubtypeName>
+            </PhysicalContent>
+            <ItemId>2</ItemId>
+          </MyObjectBuilder_InventoryItem>
+        </Items>
+        <nextItemId>3</nextItemId>
+        <Volume>0.4</Volume>
+        <Mass>9223372036854.775807</Mass>
+        <MaxItemCount>2147483647</MaxItemCount>
+        <Size xsi:nil="true" />
+        <InventoryFlags />
+        <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+      </Inventory>
+      <Battery>
+        <CurrentCapacity>9.377945E-06</CurrentCapacity>
+        <RegenEffects />
+      </Battery>
+      <LightEnabled>false</LightEnabled>
+      <UsingLadder xsi:nil="true" />
+      <HeadAngle x="2.98023224E-08" y="0" />
+      <LinearVelocity x="0" y="0" z="0" />
+      <AutoenableJetpackDelay>0</AutoenableJetpackDelay>
+      <JetpackEnabled>false</JetpackEnabled>
+      <ColorMaskHSV x="1" y="0" z="0" />
+      <LootingCounter>0</LootingCounter>
+      <DisplayName>Tom</DisplayName>
+      <IsInFirstPersonView>true</IsInFirstPersonView>
+      <EnableBroadcasting>true</EnableBroadcasting>
+      <OxygenLevel>0.9597427</OxygenLevel>
+      <EnvironmentOxygenLevel>0</EnvironmentOxygenLevel>
+      <StoredGases>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Hydrogen" />
+          <FillLevel>1</FillLevel>
+        </StoredGas>
+        <StoredGas>
+          <Id Type="MyObjectBuilder_GasProperties" Subtype="Oxygen" />
+          <FillLevel>0.9597427</FillLevel>
+        </StoredGas>
+      </StoredGases>
+      <MovementState>Falling</MovementState>
+      <EnabledComponents>
+        <string>RagdollComponent</string>
+        <string>InventorySpawnComponent</string>
+      </EnabledComponents>
+      <NeedsOxygenFromSuit>false</NeedsOxygenFromSuit>
+      <OwningPlayerIdentityId>144115188075855884</OwningPlayerIdentityId>
+      <IsPersistenceCharacter>true</IsPersistenceCharacter>
+      <IsStartingCharacterForLobby>false</IsStartingCharacterForLobby>
+      <RelativeDampeningEntity>0</RelativeDampeningEntity>
+      <UsingLadderInfo xsi:nil="true" />
+      <EnableBroadcastingPlayerToggle>true</EnableBroadcastingPlayerToggle>
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_CubeGrid">
+      <SubtypeName />
+      <EntityId>95033804335074179</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>95033804335074179</Name>
+      <PositionAndOrientation>
+        <Position x="46.323711257771336" y="11.102849092594015" z="0.96666469154276946" />
+        <Forward x="0.856607437" y="-0.000248290045" z="-0.5159687" />
+        <Up x="0.5159687" y="-0.000132351284" z="0.856607437" />
+        <Orientation>
+          <X>0.347808361</X>
+          <Y>-0.347915173</Y>
+          <Z>-0.6157073</Z>
+          <W>0.6155395</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <GridSizeEnum>Large</GridSizeEnum>
+      <CubeBlocks>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Assembler">
+          <SubtypeName>LargeAssembler</SubtypeName>
+          <EntityId>83486326199165536</EntityId>
+          <Name>83486326199165536</Name>
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_InventoryAggregate">
+                  <InventoryId>Inventory</InventoryId>
+                  <Inventories>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>4</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanReceive</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>4</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanSend</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                  </Inventories>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>40</FramesFromLastTrigger>
+                  <TimerTickInFrames>60</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <UseConveyorSystem>false</UseConveyorSystem>
+          <NextItemId>6</NextItemId>
+          <CurrentProgress>0</CurrentProgress>
+          <DisassembleEnabled>false</DisassembleEnabled>
+          <RepeatAssembleEnabled>false</RepeatAssembleEnabled>
+          <RepeatDisassembleEnabled>false</RepeatDisassembleEnabled>
+          <SlaveEnabled>false</SlaveEnabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Refinery">
+          <SubtypeName>LargeRefinery</SubtypeName>
+          <EntityId>116774754594563095</EntityId>
+          <Name>116774754594563095</Name>
+          <Min x="-4" y="-1" z="0" />
+          <BlockOrientation Forward="Down" Up="Left" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_InventoryAggregate">
+                  <InventoryId>Inventory</InventoryId>
+                  <Inventories>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>7.5</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanReceive</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>7.5</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanSend</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                  </Inventories>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>60</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <UseConveyorSystem>false</UseConveyorSystem>
+          <NextItemId>23</NextItemId>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Reactor">
+          <SubtypeName>LargeBlockSmallGenerator</SubtypeName>
+          <EntityId>104599708703460176</EntityId>
+          <Name>104599708703460176</Name>
+          <Min x="-1" y="1" z="0" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items>
+                    <MyObjectBuilder_InventoryItem>
+                      <Amount>19229.720654</Amount>
+                      <PhysicalContent xsi:type="MyObjectBuilder_Ingot">
+                        <SubtypeName>Uranium</SubtypeName>
+                      </PhysicalContent>
+                      <ItemId>0</ItemId>
+                    </MyObjectBuilder_InventoryItem>
+                  </Items>
+                  <nextItemId>1</nextItemId>
+                  <Volume>1</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame100</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>900</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <Capacity>19229.72</Capacity>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_GravityGenerator">
+          <SubtypeName />
+          <EntityId>92616244186086506</EntityId>
+          <Name>92616244186086506</Name>
+          <Min x="-2" y="1" z="0" />
+          <BlockOrientation Forward="Down" Up="Left" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <FieldSize x="150" y="150" z="150" />
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ConveyorConnector">
+          <SubtypeName>ConveyorTubeCurved</SubtypeName>
+          <EntityId>140710885187493138</EntityId>
+          <Name>140710885187493138</Name>
+          <Min x="0" y="0" z="-1" />
+          <BlockOrientation Forward="Up" Up="Forward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ConveyorConnector">
+          <SubtypeName>ConveyorTubeCurved</SubtypeName>
+          <EntityId>85352294099622132</EntityId>
+          <Name>85352294099622132</Name>
+          <Min x="-1" y="0" z="-1" />
+          <BlockOrientation Forward="Down" Up="Forward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="1" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="2" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="3" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="4" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="5" />
+          <IntegrityPercent>0.7487808</IntegrityPercent>
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <ConstructionStockpile>
+            <Items xsi:type="MyObjectBuilder_StockpileItem">
+              <Amount>96</Amount>
+              <PhysicalContent xsi:type="MyObjectBuilder_Ore">
+                <SubtypeName>Scrap</SubtypeName>
+              </PhysicalContent>
+            </Items>
+          </ConstructionStockpile>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ShipConnector">
+          <SubtypeName>Connector</SubtypeName>
+          <EntityId>89454600882051751</EntityId>
+          <Name>89454600882051751</Name>
+          <Min x="0" y="-1" z="6" />
+          <BlockOrientation Forward="Backward" Up="Right" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <DeformationRatio>0.5</DeformationRatio>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>8</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>80</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <ConnectedEntityId>105884222511324581</ConnectedEntityId>
+          <MasterToSlaveTransform>
+            <Position x="9.15243163035484E-06" y="2.2835488380223978E-06" z="-2.6575284004211426" />
+            <Forward x="-4.27328537E-08" y="1.06143858E-07" z="0.9999999" />
+            <Up x="0.05177995" y="0.998658538" z="-1.03788764E-07" />
+            <Orientation>
+              <X>0.0258986615</X>
+              <Y>0.999664545</Y>
+              <Z>-5.25007735E-08</Z>
+              <W>2.27337562E-08</W>
+            </Orientation>
+          </MasterToSlaveTransform>
+          <Strength>1</Strength>
+          <MasterToSlaveGrid xsi:nil="true" />
+          <IsMaster>false</IsMaster>
+          <TradingEnabled>false</TradingEnabled>
+          <AutoUnlockTime>0</AutoUnlockTime>
+          <TimeOfConnection>0</TimeOfConnection>
+          <IsParkingEnabled>true</IsParkingEnabled>
+          <IsPowerTransferOverrideEnabled>false</IsPowerTransferOverrideEnabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="9" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="6" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="7" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="8" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="9" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="10" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="11" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="12" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="13" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="14" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="15" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="16" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="17" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="18" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="19" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="20" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="21" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="22" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="23" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="24" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="25" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="26" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="27" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="28" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="29" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="30" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="31" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="32" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="33" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="34" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="35" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="36" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="37" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="38" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="39" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="40" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="41" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="42" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="43" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="44" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="5" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="46" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="47" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="48" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="49" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="50" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-2" z="50" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Conveyor">
+          <SubtypeName>LargeBlockConveyor</SubtypeName>
+          <EntityId>136031356854737062</EntityId>
+          <Name>136031356854737062</Name>
+          <Min x="0" y="-1" z="50" />
+          <BlockOrientation Forward="Forward" Up="Right" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_ShipConnector">
+          <SubtypeName>Connector</SubtypeName>
+          <EntityId>125401620903567687</EntityId>
+          <Name>125401620903567687</Name>
+          <Min x="0" y="-1" z="49" />
+          <BlockOrientation Forward="Forward" Up="Left" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <DeformationRatio>0.5</DeformationRatio>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>8</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>20</FramesFromLastTrigger>
+                  <TimerTickInFrames>80</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <MasterToSlaveTransform xsi:nil="true" />
+          <Strength>1</Strength>
+          <MasterToSlaveGrid xsi:nil="true" />
+          <IsMaster>true</IsMaster>
+          <TradingEnabled>false</TradingEnabled>
+          <AutoUnlockTime>0</AutoUnlockTime>
+          <TimeOfConnection>0</TimeOfConnection>
+          <IsParkingEnabled>true</IsParkingEnabled>
+          <IsPowerTransferOverrideEnabled>false</IsPowerTransferOverrideEnabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Reactor">
+          <SubtypeName>LargeBlockSmallGenerator</SubtypeName>
+          <EntityId>95075415693554662</EntityId>
+          <Name>95075415693554662</Name>
+          <Min x="0" y="-1" z="51" />
+          <BlockOrientation Forward="Left" Up="Backward" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items>
+                    <MyObjectBuilder_InventoryItem>
+                      <Amount>19230.00638</Amount>
+                      <PhysicalContent xsi:type="MyObjectBuilder_Ingot">
+                        <SubtypeName>Uranium</SubtypeName>
+                      </PhysicalContent>
+                      <ItemId>0</ItemId>
+                    </MyObjectBuilder_InventoryItem>
+                  </Items>
+                  <nextItemId>1</nextItemId>
+                  <Volume>1</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame100</TimerType>
+                  <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                  <TimerTickInFrames>900</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <Capacity>19230.0078</Capacity>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="5" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="5" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="6" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="7" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="8" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-3" z="45" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="10" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="11" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="12" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="13" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="14" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="15" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="16" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="17" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="18" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="19" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="20" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="21" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="22" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="23" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="24" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="25" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="26" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="27" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="28" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="29" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="30" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="31" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="32" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="33" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="34" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="35" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="36" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="37" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="38" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="39" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="40" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="41" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="42" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="43" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="44" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="45" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="46" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="47" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="48" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="49" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="1" z="50" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="50" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-2" z="5" />
+          <IntegrityPercent>0.715553761</IntegrityPercent>
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <ConstructionStockpile>
+            <Items xsi:type="MyObjectBuilder_StockpileItem">
+              <Amount>96</Amount>
+              <PhysicalContent xsi:type="MyObjectBuilder_Ore">
+                <SubtypeName>Scrap</SubtypeName>
+              </PhysicalContent>
+            </Items>
+          </ConstructionStockpile>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Assembler">
+          <SubtypeName>LargeAssembler</SubtypeName>
+          <EntityId>77567269236156469</EntityId>
+          <Name>77567269236156469</Name>
+          <Min x="-1" y="-1" z="50" />
+          <BlockOrientation Forward="Forward" Up="Right" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_InventoryAggregate">
+                  <InventoryId>Inventory</InventoryId>
+                  <Inventories>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>4</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanSend</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                    <MyObjectBuilder_InventoryBase xsi:type="MyObjectBuilder_Inventory">
+                      <Items />
+                      <nextItemId>0</nextItemId>
+                      <Volume>4</Volume>
+                      <Mass>9223372036854.775807</Mass>
+                      <MaxItemCount>2147483647</MaxItemCount>
+                      <Size xsi:nil="true" />
+                      <InventoryFlags>CanReceive</InventoryFlags>
+                      <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                    </MyObjectBuilder_InventoryBase>
+                  </Inventories>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>true</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>20</FramesFromLastTrigger>
+                  <TimerTickInFrames>60</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+          <CurrentProgress>0</CurrentProgress>
+          <DisassembleEnabled>true</DisassembleEnabled>
+          <RepeatAssembleEnabled>false</RepeatAssembleEnabled>
+          <RepeatDisassembleEnabled>false</RepeatDisassembleEnabled>
+          <SlaveEnabled>false</SlaveEnabled>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-2" z="51" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-2" z="52" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="-1" z="52" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="51" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+          <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+          <Min x="0" y="0" z="52" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+        </MyObjectBuilder_CubeBlock>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CargoContainer">
+          <SubtypeName>LargeBlockSmallContainer</SubtypeName>
+          <EntityId>110642751355125974</EntityId>
+          <Name>110642751355125974</Name>
+          <Min x="-1" y="-1" z="52" />
+          <BlockOrientation Forward="Left" Up="Backward" />
+          <ColorMaskHSV x="0.9027778" y="0.2" z="0.55" />
+          <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items />
+                  <nextItemId>0</nextItemId>
+                  <Volume>15.625</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive CanSend</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+        </MyObjectBuilder_CubeBlock>
+      </CubeBlocks>
+      <IsStatic>true</IsStatic>
+      <Skeleton>
+        <BoneInfo>
+          <BonePosition x="1" y="-2" z="11" />
+          <BoneOffset x="127" y="122" z="127" />
+        </BoneInfo>
+        <BoneInfo>
+          <BonePosition x="2" y="-2" z="11" />
+          <BoneOffset x="127" y="124" z="127" />
+        </BoneInfo>
+        <BoneInfo>
+          <BonePosition x="0" y="-2" z="11" />
+          <BoneOffset x="127" y="124" z="127" />
+        </BoneInfo>
+      </Skeleton>
+      <ConveyorLines>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="0" y="0" z="0" />
+          <StartDirection>Forward</StartDirection>
+          <EndPosition x="-1" y="0" z="0" />
+          <EndDirection>Forward</EndDirection>
+          <Sections>
+            <Section Direction="Forward" Length="1" />
+            <Section Direction="Left" Length="1" />
+            <Section Direction="Backward" Length="1" />
+          </Sections>
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="0" y="-1" z="49" />
+          <StartDirection>Backward</StartDirection>
+          <EndPosition x="0" y="-1" z="50" />
+          <EndDirection>Forward</EndDirection>
+          <Sections />
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="0" y="-1" z="50" />
+          <StartDirection>Left</StartDirection>
+          <EndPosition x="-1" y="-1" z="50" />
+          <EndDirection>Right</EndDirection>
+          <Sections />
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+        <MyObjectBuilder_ConveyorLine>
+          <StartPosition x="-1" y="-1" z="51" />
+          <StartDirection>Backward</StartDirection>
+          <EndPosition x="-1" y="-1" z="52" />
+          <EndDirection>Forward</EndDirection>
+          <Sections />
+          <ConveyorLineType>LARGE_LINE</ConveyorLineType>
+        </MyObjectBuilder_ConveyorLine>
+      </ConveyorLines>
+      <DisplayName>Static Grid 4179</DisplayName>
+      <DestructibleBlocks>true</DestructibleBlocks>
+      <IsRespawnGrid>false</IsRespawnGrid>
+      <LocalCoordSys>12</LocalCoordSys>
+      <TargetingTargets />
+    </MyObjectBuilder_EntityBase>
+    <MyObjectBuilder_EntityBase xsi:type="MyObjectBuilder_CubeGrid">
+      <SubtypeName />
+      <EntityId>142401530307737704</EntityId>
+      <PersistentFlags>CastShadows InScene</PersistentFlags>
+      <Name>142401530307737704</Name>
+      <PositionAndOrientation>
+        <Position x="46.323711257771336" y="11.102849092594015" z="0.96666469154276946" />
+        <Forward x="0.856607437" y="-0.000248290045" z="-0.5159687" />
+        <Up x="0.5159687" y="-0.00013235127" z="0.856607437" />
+        <Orientation>
+          <X>0.347808361</X>
+          <Y>-0.347915173</Y>
+          <Z>-0.6157073</Z>
+          <W>0.6155395</W>
+        </Orientation>
+      </PositionAndOrientation>
+      <LocalPositionAndOrientation xsi:nil="true" />
+      <GridSizeEnum>Large</GridSizeEnum>
+      <CubeBlocks>
+        <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_OxygenGenerator">
+          <SubtypeName />
+          <EntityId>85056746593687532</EntityId>
+          <Name>85056746593687532</Name>
+          <Min x="-2" y="-2" z="2" />
+          <BlockOrientation Forward="Down" Up="Left" />
+          <ColorMaskHSV x="0" y="0" z="0.05" />
+          <SkinSubtypeId>Hazard_Armor</SkinSubtypeId>
+          <BuiltBy>144115188075855881</BuiltBy>
+          <ComponentContainer>
+            <Components>
+              <ComponentData>
+                <TypeId>MyInventoryBase</TypeId>
+                <Component xsi:type="MyObjectBuilder_Inventory">
+                  <Items>
+                    <MyObjectBuilder_InventoryItem>
+                      <Amount>10810.810978</Amount>
+                      <PhysicalContent xsi:type="MyObjectBuilder_Ore">
+                        <SubtypeName>Ice</SubtypeName>
+                      </PhysicalContent>
+                      <ItemId>0</ItemId>
+                    </MyObjectBuilder_InventoryItem>
+                  </Items>
+                  <nextItemId>1</nextItemId>
+                  <Volume>4</Volume>
+                  <Mass>9223372036854.775807</Mass>
+                  <MaxItemCount>2147483647</MaxItemCount>
+                  <Size xsi:nil="true" />
+                  <InventoryFlags>CanReceive</InventoryFlags>
+                  <RemoveEntityOnEmpty>false</RemoveEntityOnEmpty>
+                </Component>
+              </ComponentData>
+              <ComponentData>
+                <TypeId>MyTimerComponent</TypeId>
+                <Component xsi:type="MyObjectBuilder_TimerComponent">
+                  <Repeat>true</Repeat>
+                  <TimeToEvent>0</TimeToEvent>
+                  <SetTimeMinutes>0</SetTimeMinutes>
+                  <TimerEnabled>false</TimerEnabled>
+                  <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                  <TimerType>Frame10</TimerType>
+                  <FramesFromLastTrigger>170</FramesFromLastTrigger>
+                  <TimerTickInFrames>300</TimerTickInFrames>
+                  <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                </Component>
+              </ComponentData>
+            </Components>
+          </ComponentContainer>
+          <ShowOnHUD>false</ShowOnHUD>
+          <ShowInTerminal>true</ShowInTerminal>
+          <ShowInToolbarConfig>true</ShowInToolbarConfig>
+          <ShowInInventory>true</ShowInInventory>
+          <Enabled>true</Enabled>
+        </MyObjectBuilder_CubeBlock>
+      </CubeBlocks>
+      <DisplayName>Static Grid 7704</DisplayName>
+      <DestructibleBlocks>true</DestructibleBlocks>
+      <IsRespawnGrid>false</IsRespawnGrid>
+      <LocalCoordSys>0</LocalCoordSys>
+      <TargetingTargets />
+    </MyObjectBuilder_EntityBase>
+  </SectorObjects>
+</MyObjectBuilder_Sector>
