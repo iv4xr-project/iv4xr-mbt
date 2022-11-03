@@ -1,6 +1,0 @@
-# Total number of goals covered by this test: 1
-# Red --> Red
-
-digraph g {
-"Red" -> "Red" [label = "1-null/!(((count[0] > 60) || (count[0] = 60)))/count[0]:=(count[0] + 1); /null"];
-}
