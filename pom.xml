@@ -206,7 +206,7 @@
 	<dependency>
 		    <groupId>com.github.iv4xr-project</groupId>
 		    <artifactId>iv4xr-se-plugin</artifactId>
-		    <version>mesh-crash-fix-SNAPSHOT</version>
+		    <version>labrecruits-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>

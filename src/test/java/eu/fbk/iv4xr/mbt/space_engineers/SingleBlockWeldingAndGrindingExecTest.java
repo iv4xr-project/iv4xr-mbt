@@ -3,7 +3,9 @@ package eu.fbk.iv4xr.mbt.space_engineers;
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.longThat;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,8 @@ import spaceEngineers.model.ToolbarLocation;
 public class SingleBlockWeldingAndGrindingExecTest {
 
 	// Variables definition
-	
+	Long longSleepTime = 5000l;
+	Long shortSleepTime = 1000l;
 	Long randomSeed = 1234l;
 	
 	String worldId = "amaze";
@@ -68,6 +71,7 @@ public class SingleBlockWeldingAndGrindingExecTest {
 	TestDataCollector dataCollector;
 	SeAgentState myAgentState;
 	TestAgent testAgent;
+	SpaceEngineers se;
 	
 	SpaceEngineersJavaProxyBuilder proxyBuilder;
 	Map<String, ToolbarLocation> blockTypeToToolbarLocation;
@@ -87,7 +91,7 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		
 	}
 	
-	private void sleep(int i) {
+	private void sleep(long i) {
 		try {
 			Thread.sleep(i);
 		} catch (InterruptedException e) {
@@ -97,10 +101,19 @@ public class SingleBlockWeldingAndGrindingExecTest {
 
 	}
 	
+	private void setToolbar() {
+		controllerWrapper.getItems().setToolbarItem(blockType, blockLocation);
+		// Setup welder in the toolbar.new
+		controllerWrapper.getItems().setToolbarItem(welder, welderLocation);
+		// Setup grinder in the toolbar.
+		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
+	}
+	
 	private void startSE () {
 		//SpaceEngineers se = proxyBuilder.localhost(agentId);
-		
-		controllerWrapper = new ContextControllerWrapper(proxyBuilder.localhost(agentId), context);
+		se = proxyBuilder.localhost(agentId);
+		controllerWrapper = new ContextControllerWrapper(se, context);
+		sleep(longSleepTime);
 		theEnv = new SeEnvironment(worldId, controllerWrapper);
 		dataCollector = new TestDataCollector();
 		myAgentState = new SeAgentState(agentId);
@@ -109,21 +122,20 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		testAgent.attachEnvironment(theEnv);
 		testAgent.setTestDataCollector(dataCollector);
 		
+		
 		// We load the scenario.
-		theEnv.loadWorld();
+
+		theEnv.loadWorld();	
+
 		// needed for slow pc
-		sleep(10000);
+		sleep(longSleepTime);
 		// Setup block in the toolbar.
-		controllerWrapper.getItems().setToolbarItem(blockType, blockLocation);
-		// Setup welder in the toolbar.new
-		controllerWrapper.getItems().setToolbarItem(welder, welderLocation);
-		// Setup grinder in the toolbar.
-		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
+		
 
 	    // We observe for new blocks once, so that current blocks are not going to be
 		// considered "new".
-		theEnv.observeForNewBlocks();
-		sleep(1000);
+		//theEnv.observeForNewBlocks();
+		//sleep(longSleepTime);
 	}
 	
 	private void resetSE() {
@@ -185,10 +197,10 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					GoalStructure testingTask_grind_10 = SEQ(
 							goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
 									SEQ(tactics.equip(grinderLocation),
-											tactics.sleep(500),
+											tactics.sleep(shortSleepTime),
 											tactics.startUsingTool())),
 							goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-								    tactics.sleep(500))));
+								    tactics.sleep(shortSleepTime))));
 					outList.add(testingTask_grind_10);
 					energy = energy - 10;
 					break;
@@ -197,7 +209,7 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					GoalStructure testingTask_grind_20 = SEQ(
 					goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
 							SEQ(tactics.equip(grinderLocation),
-									tactics.sleep(500),
+									tactics.sleep(shortSleepTime),
 									tactics.startUsingTool())),
 					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
 						    tactics.sleep(500))));
@@ -209,10 +221,10 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					GoalStructure testingTask_weld_10 = SEQ(
 					goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
 							SEQ(tactics.equip(welderLocation),
-								tactics.sleep(500),
+								tactics.sleep(shortSleepTime),
 								tactics.startUsingTool())),
 					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-						    tactics.sleep(500))));
+						    tactics.sleep(shortSleepTime))));
 					outList.add(testingTask_weld_10);
 					energy = energy + 10;					
 					break;
@@ -221,10 +233,10 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					GoalStructure testingTask_weld_20 = SEQ(
 					goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
 							SEQ(tactics.equip(welderLocation),
-								tactics.sleep(500),
+								tactics.sleep(shortSleepTime),
 								tactics.startUsingTool())),
 					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-						    tactics.sleep(500))));
+						    tactics.sleep(shortSleepTime))));
 					outList.add(testingTask_weld_20);
 					energy = energy + 20;	
 					break;
@@ -233,6 +245,9 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					break;
 				} 
 			}else if (t.getSrc().getId() == "block_exists" && t.getTgt().getId() == "block_not_exists") {
+				GoalStructure testingTask_destroy = goals.alwaysSolved(
+						tactics.sleep(shortSleepTime));
+				outList.add(testingTask_destroy);
 				
 			}else if (t.getSrc().getId() == "block_not_exists" && t.getTgt().getId() == "block_exists") {
 				GoalStructure testingTask_build = goals.blockOfTypeExists(
@@ -252,7 +267,7 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		testAgent.setGoal(testingTask);
 		var i = 0;
 		while (testingTask.getStatus().inProgress() && i <= 10) {
-			sleep(200);
+			sleep(shortSleepTime);
 			testAgent.update();
 			//System.out.println(i + " " + myAgentState.getAgentId() + " " + 
 			//myAgentState.worldmodel().position.toString() + " " +
@@ -261,29 +276,43 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		}
 	}
 	
-	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
-	//@Test
+	//@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	@Test
 	public void WeldAndGrindTest() {
 		
 		// create test case
 		List<MBTChromosome> testCases = getTestCases();
 		
 		// init SE variables
-		//initSE();
 		initSE();
 		startSE();
+		setToolbar();
 		
 		for(MBTChromosome tc  : testCases) {
-			//System.out.println(tc.toString());
+			System.out.println(tc.toString());
+			
+			
+			
 			
  			List<GoalStructure> testCaseGoals = testCaseToGoal(tc);
-			sleep(10000);
+			sleep(longSleepTime);
 			
 			for(GoalStructure testingTask : testCaseGoals) {
 				execTestingTask(testingTask);
 			
 			}
 			
+			sleep(longSleepTime);
+			
+			se.getSession().exitToMainMenu();
+			
+			sleep(longSleepTime);
+			
+			theEnv.loadWorld();
+			
+			sleep(longSleepTime);
+			setToolbar();
+			sleep(longSleepTime);
 			//sleep(10000);
 			//resetSE();
 			
@@ -300,17 +329,17 @@ public class SingleBlockWeldingAndGrindingExecTest {
 			//session.exitGame();
 			//System.out.println();
 			//resetSE();
-			sleep(10000);
-			try {
-				initSE();
-				startSE();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			//theEnv.loadWorld();
-			sleep(10000);
+//			sleep(1000);
+//			try {
+//				initSE();
+//				startSE();
+//			}
+//			catch (Exception e) {
+//				e.printStackTrace();
+//				System.exit(1);
+//			}
+			//
+			//sleep(1000);
 		}
 		
 		
