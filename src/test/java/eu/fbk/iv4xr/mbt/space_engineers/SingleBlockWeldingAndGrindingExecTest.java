@@ -2,42 +2,40 @@ package eu.fbk.iv4xr.mbt.space_engineers;
 
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.longThat;
 
-import java.lang.reflect.UndeclaredThrowableException;
+
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.jupiter.api.Disabled;
+
 import org.junit.jupiter.api.Test;
 
 import environments.SeAgentState;
 import environments.SeEnvironment;
-import environments.SocketReaderWriter;
+
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.efsm.exp.Var;
+
 import eu.fbk.iv4xr.mbt.efsm.spaceEngineering.SingleBlockWeldingAndGrinding.seActions;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
+
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
-import nl.uu.cs.aplib.mainConcepts.Environment;
+
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import spaceEngineers.controller.ContextControllerWrapper;
-import spaceEngineers.controller.JvmSpaceEngineersBuilder;
-import spaceEngineers.controller.Session;
+
 import spaceEngineers.controller.SpaceEngineers;
 import spaceEngineers.controller.SpaceEngineersJavaProxyBuilder;
 import spaceEngineers.controller.SpaceEngineersTestContext;
@@ -50,11 +48,11 @@ public class SingleBlockWeldingAndGrindingExecTest {
 
 	// Variables definition
 	Long longSleepTime = 5000l;
-	Long shortSleepTime = 1000l;
+	Long shortSleepTime = 500l;
 	Long randomSeed = 1234l;
 	
-	String worldId = "amaze";
-	//String worldId = "simple-place-grind-torch";
+	//String worldId = "amaze";
+	String worldId = "simple-place-grind-torch";
 	String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 	
 	
@@ -174,9 +172,9 @@ public class SingleBlockWeldingAndGrindingExecTest {
 	
 	
 	
-	public List<GoalStructure> testCaseToGoal(MBTChromosome testCase ){
+	public GoalStructure testCaseToGoal(MBTChromosome testCase ){
 		
-		List<GoalStructure> outList = new ArrayList<>();
+		LinkedList<GoalStructure> outList = new LinkedList<>();
 		
 		AbstractTestSequence abstractTestSequence = (AbstractTestSequence) testCase.getTestcase();
 		Path path = abstractTestSequence.getPath();
@@ -186,6 +184,9 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		var goals = new GoalBuilder();
 		var tactics = new TacticLib();
 		
+//		GoalStructure testingTask = goals.alwaysSolved(
+//				tactics.sleep(shortSleepTime));
+		
 		for(EFSMTransition t : path.getTransitions()) {
 			
 			if (t.getSrc().getId() == "block_exists" && t.getTgt().getId() == "block_exists") {
@@ -193,51 +194,78 @@ public class SingleBlockWeldingAndGrindingExecTest {
 				seActions value = (seActions)t.getOutParameter().getParameter().getVariable("action").getValue();
 				switch (value) {
 				case grind_10:
-					newEnergy = Double.min(100, Double.max(0, (energy-10)/100));
-					GoalStructure testingTask_grind_10 = SEQ(
-							goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
-									SEQ(tactics.equip(grinderLocation),
-											tactics.sleep(shortSleepTime),
-											tactics.startUsingTool())),
-							goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-								    tactics.sleep(shortSleepTime))));
-					outList.add(testingTask_grind_10);
+					newEnergy = Double.min(1, Double.max(0, (energy-10)/100));
+//					GoalStructure testingTask_grind_10 = SEQ(
+//							goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
+//									SEQ(tactics.equip(grinderLocation),
+//											tactics.sleep(shortSleepTime),
+//											tactics.startUsingTool())),
+//							goals.alwaysSolved(SEQ(tactics.endUsingTool())));
+//					outList.add(testingTask_grind_10);
+					//testingTask = SEQ(testingTask,testingTask_grind_10);
+					
+					outList.add(goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
+							SEQ(tactics.equip(grinderLocation),
+							tactics.sleep(shortSleepTime),
+							tactics.startUsingTool())));
+					outList.add(goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+						    tactics.sleep(shortSleepTime))));
+							
 					energy = energy - 10;
 					break;
 				case grind_20:
-					newEnergy = Double.min(100, Double.max(0, (energy-20)/100));
-					GoalStructure testingTask_grind_20 = SEQ(
-					goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
+					newEnergy = Double.min(1, Double.max(0, (energy-20)/100));
+//					GoalStructure testingTask_grind_20 = SEQ(
+//							goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
+//									SEQ(tactics.equip(grinderLocation),
+//											tactics.sleep(shortSleepTime),
+//											tactics.startUsingTool())),
+//							goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+//						    tactics.sleep(500))));
+//					outList.add(testingTask_grind_20);
+					//testingTask = SEQ(testingTask,testingTask_grind_20);
+					outList.add(goals.lastBuiltBlockIntegrityIsBelow(newEnergy,
 							SEQ(tactics.equip(grinderLocation),
-									tactics.sleep(shortSleepTime),
-									tactics.startUsingTool())),
-					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-						    tactics.sleep(500))));
-					outList.add(testingTask_grind_20);
+							tactics.sleep(shortSleepTime),
+							tactics.startUsingTool())));
+					outList.add(goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+						    tactics.sleep(shortSleepTime))));
 					energy = energy - 20;
 					break;
 				case weld_10:
-					newEnergy = Double.min(100, Double.max(0, (energy+10)/100));
-					GoalStructure testingTask_weld_10 = SEQ(
-					goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
+					newEnergy = Double.min(1, Double.max(0, (energy+10)/100));
+//					GoalStructure testingTask_weld_10 = SEQ(
+//						goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
+//								SEQ(tactics.equip(welderLocation),
+//									tactics.sleep(shortSleepTime),
+//									tactics.startUsingTool())),
+//						goals.alwaysSolved(SEQ(tactics.endUsingTool())));
+//					outList.add(testingTask_weld_10);
+					//testingTask = SEQ(testingTask,testingTask_weld_10);
+					outList.add(goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
 							SEQ(tactics.equip(welderLocation),
-								tactics.sleep(shortSleepTime),
-								tactics.startUsingTool())),
-					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+							tactics.sleep(shortSleepTime),
+							tactics.startUsingTool())));
+					outList.add(goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
 						    tactics.sleep(shortSleepTime))));
-					outList.add(testingTask_weld_10);
 					energy = energy + 10;					
 					break;
 				case weld_20:
-					newEnergy = Double.min(100, Double.max(0, (energy+20)/100));
-					GoalStructure testingTask_weld_20 = SEQ(
-					goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
+					newEnergy = Double.min(1, Double.max(0, (energy+20)/100));
+//					GoalStructure testingTask_weld_20 = SEQ(
+//						goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
+//								SEQ(tactics.equip(welderLocation),
+//									tactics.sleep(shortSleepTime),
+//									tactics.startUsingTool())),
+//						goals.alwaysSolved(SEQ(tactics.endUsingTool())));
+//					outList.add(testingTask_weld_20);
+					outList.add(goals.lastBuiltBlockIntegrityIsAbove(newEnergy,
 							SEQ(tactics.equip(welderLocation),
-								tactics.sleep(shortSleepTime),
-								tactics.startUsingTool())),
-					goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
+							tactics.sleep(shortSleepTime),
+							tactics.startUsingTool())));
+					outList.add(goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
 						    tactics.sleep(shortSleepTime))));
-					outList.add(testingTask_weld_20);
+					//testingTask = SEQ(testingTask,testingTask_weld_20);
 					energy = energy + 20;	
 					break;
 				default:
@@ -245,34 +273,39 @@ public class SingleBlockWeldingAndGrindingExecTest {
 					break;
 				} 
 			}else if (t.getSrc().getId() == "block_exists" && t.getTgt().getId() == "block_not_exists") {
-				GoalStructure testingTask_destroy = goals.alwaysSolved(
-						tactics.sleep(shortSleepTime));
-				outList.add(testingTask_destroy);
+				//GoalStructure testingTask_destroy = goals.alwaysSolved(
+				//		tactics.sleep(shortSleepTime));
+				//outList.add(testingTask_destroy);
 				
 			}else if (t.getSrc().getId() == "block_not_exists" && t.getTgt().getId() == "block_exists") {
 				GoalStructure testingTask_build = goals.blockOfTypeExists(
         				blockType.getType(), 
         				tactics.buildBlock(blockType.getType()));
 				outList.add(testingTask_build);
+				//testingTask = SEQ(testingTask,testingTask_build);
 			}
 			
 		}
+		//outList.add(goals.alwaysSolved(tactics.sleep(longSleepTime)));
 		
-		
-		return outList;
+		//return testingTask;
+		GoalStructure testingTask = SEQ(outList.toArray(new GoalStructure[0]));
+		return testingTask;
 	}
 	
 	
 	private void execTestingTask(GoalStructure testingTask) {
+		
 		testAgent.setGoal(testingTask);
 		var i = 0;
-		while (testingTask.getStatus().inProgress() && i <= 10) {
+		while (testingTask.getStatus().inProgress() && i <= 100) {
 			sleep(shortSleepTime);
 			testAgent.update();
-			//System.out.println(i + " " + myAgentState.getAgentId() + " " + 
-			//myAgentState.worldmodel().position.toString() + " " +
-			//testingTask.showGoalStructureStatus());			
+//			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
+//			myAgentState.worldmodel().position.toString() + " " +
+//			testingTask.showGoalStructureStatus());			
 			i++;
+			//System.out.println();
 		}
 	}
 	
@@ -294,13 +327,17 @@ public class SingleBlockWeldingAndGrindingExecTest {
 			
 			
 			
- 			List<GoalStructure> testCaseGoals = testCaseToGoal(tc);
+ 			//List<GoalStructure> testCaseGoals = testCaseToGoal(tc);
+			GoalStructure testingTask = testCaseToGoal(tc);
 			sleep(longSleepTime);
 			
-			for(GoalStructure testingTask : testCaseGoals) {
-				execTestingTask(testingTask);
+			execTestingTask(testingTask);
 			
-			}
+//			for(GoalStructure testingTask : testCaseGoals) {
+//				execTestingTask(testingTask);
+//				sleep(shortSleepTime);
+//			
+//			}
 			
 			sleep(longSleepTime);
 			
@@ -343,7 +380,8 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		}
 		
 		
-		
+		se.getSession().exitToMainMenu();
+		theEnv.close();
 		System.out.println();
 		
 	}
