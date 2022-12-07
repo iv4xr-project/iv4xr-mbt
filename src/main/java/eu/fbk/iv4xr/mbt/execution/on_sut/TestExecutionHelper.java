@@ -1,4 +1,4 @@
-package eu.fbk.iv4xr.mbt.execution.labrecruits;
+package eu.fbk.iv4xr.mbt.execution.on_sut;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,32 +19,32 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
  * @author kifetew
  *
  */
-public class LabRecruitsTestExecutionHelper {
+public abstract class TestExecutionHelper {
 
-	LabRecruitsTestSuiteExecutor lrExecutor;
-	SuiteChromosome testSuite;
+	protected ConcreteTestExecutor testExecutor;
+	protected SuiteChromosome testSuite;
 	
-	private String debugHeader = "run_id,testCase,testCaseStatus,transition,transitionReponse,transitionGoal(s),"+
+	protected String debugHeader = "run_id,testCase,testCaseStatus,transition,transitionReponse,transitionGoal(s),"+
 			"transitionGoalStatus\n" ;
 	
-	private String statHeader = "run_id,folder,n_test,n_test_passed,time,maxCyclePerGoal\n";
+	protected String statHeader = "run_id,folder,n_test,n_test_passed,time,maxCyclePerGoal\n";
 	
 	// save the map between the file and the test case
-	private LinkedHashMap<AbstractTestSequence, File > testToFileMap;
+	protected LinkedHashMap<AbstractTestSequence, File > testToFileMap;
 	
 	// test folder
-	private String testsFolder;
+	protected String testsFolder;
 	
 	// id of the run
-	private String run_id;
+	protected String run_id;
 	
-	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
-		lrExecutor = new LabRecruitsTestSuiteExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
-		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
-		testSuite = parseTests (testsDir);
-		testsFolder = testsDir;
-		
-	}
+//	public TestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
+//		testExecutor = new LabRecruitsTestSuiteExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
+//		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
+//		testSuite = parseTests (testsDir);
+//		testsFolder = testsDir;
+//		
+//	}
 	
 	public File getTestCaseFile(AbstractTestSequence testSequence) {
 		if (testToFileMap.containsKey(testSequence)) {
@@ -69,7 +69,7 @@ public class LabRecruitsTestExecutionHelper {
 	 * @param testsDir
 	 * @return
 	 */
-	private  SuiteChromosome parseTests(String testsDir) {
+	protected  SuiteChromosome parseTests(String testsDir) {
 		SuiteChromosome suite = new SuiteChromosome();
 		try {
 			List<File> files = FileUtils.getFiles(new File(testsDir), "*.ser", "");
@@ -92,7 +92,7 @@ public class LabRecruitsTestExecutionHelper {
 		boolean success = true;
 		try {
 			this.run_id = String.valueOf(System.currentTimeMillis());
-			success = lrExecutor.executeTestSuite(testSuite);
+			success = testExecutor.executeTestSuite(testSuite);
 		} catch (InterruptedException e) {
 			success = false;
 			e.printStackTrace();
@@ -106,7 +106,7 @@ public class LabRecruitsTestExecutionHelper {
 	 * Create statistics table
 	 */
 	public String getDebutTableTable(){
-		LabRecruitsTestSuiteReporter testStuiteReporter = lrExecutor.getReport();
+		TestSuiteExecutionReport testStuiteReporter = testExecutor.getReport();
 
 		String statsTable = "";
 		
@@ -117,8 +117,8 @@ public class LabRecruitsTestExecutionHelper {
 			String fileName = testToFileMap.get(testCase).getName();
 			String testStatus = testStuiteReporter.getTestCaseStatus(testCase).toString();
 			// get data for each transition in the test case
-			List<LabRecruitsTestCaseReporter> caseReport = testStuiteReporter.getTestCaseReport(testCase);
-			for(LabRecruitsTestCaseReporter rep : caseReport   ) {
+			List<TestCaseExecutionReport> caseReport = testStuiteReporter.getTestCaseReport(testCase);
+			for(TestCaseExecutionReport rep : caseReport   ) {
 				String transition = rep.getTransition().toString();
 				String transitionResponse = rep.getResponse();
 				String transitionGoal = "";
@@ -142,7 +142,7 @@ public class LabRecruitsTestExecutionHelper {
 	
 	public String getStatsTable() {
 
-		LabRecruitsTestSuiteReporter testStuiteReporter = lrExecutor.getReport();
+		TestSuiteExecutionReport testStuiteReporter = testExecutor.getReport();
 
 		String id = run_id;
 		String folder = testsFolder;
@@ -162,12 +162,12 @@ public class LabRecruitsTestExecutionHelper {
 		
 		String statsTable = id+","+folder+","+String.valueOf(n_cases)+","+
 				String.valueOf(n_passed_cases)+","+String.valueOf(time)+", "+
-				String.valueOf(lrExecutor.getMaxCylce())+"\n";
+				String.valueOf(testExecutor.getMaxCylcePerGoal())+"\n";
 		return(statsTable);
 	}
 	
 	// covert the goal status of a goal structure to a string
-	private String getGoalStatus(GoalStructure goal) {
+	protected String getGoalStatus(GoalStructure goal) {
 		if (goal instanceof PrimitiveGoal) {
 			return goal.getStatus().toString();
 		}else {
@@ -179,9 +179,9 @@ public class LabRecruitsTestExecutionHelper {
 		}
 	}
 	
-	public LabRecruitsTestSuiteReporter getExecutionReport() {
+	public TestSuiteExecutionReport getExecutionReport() {
 		
-		return lrExecutor.getReport();
+		return testExecutor.getReport();
 	}
 	
 	

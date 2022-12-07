@@ -1,27 +1,24 @@
-package eu.fbk.iv4xr.mbt.execution.labrecruits;
+package eu.fbk.iv4xr.mbt.execution.on_sut;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
-import nl.uu.cs.aplib.mainConcepts.GoalStructure;
-import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 
-public class LabRecruitsTestSuiteReporter {
+public class TestSuiteExecutionReport {
 	
-	private LinkedHashMap<AbstractTestSequence, List<LabRecruitsTestCaseReporter>> testCasesReporter;
+	private LinkedHashMap<AbstractTestSequence, List<TestCaseExecutionReport>> testCasesReporter;
 	private LinkedHashMap<AbstractTestSequence, Boolean> testCasesStatus;
 	private LinkedHashMap<AbstractTestSequence, Long> testCasesTime;
 	
-	public LabRecruitsTestSuiteReporter() {
-		testCasesReporter = new LinkedHashMap<AbstractTestSequence, List<LabRecruitsTestCaseReporter>>();
+	public TestSuiteExecutionReport() {
+		testCasesReporter = new LinkedHashMap<AbstractTestSequence, List<TestCaseExecutionReport>>();
 		testCasesStatus = new LinkedHashMap<AbstractTestSequence, Boolean>();
 		testCasesTime = new LinkedHashMap<AbstractTestSequence, Long>();
 	}
 
-	public void addTestCaseReport(AbstractTestSequence testcase, List<LabRecruitsTestCaseReporter> goalReport, Boolean status, Long duration ) {
+	public void addTestCaseReport(AbstractTestSequence testcase, List<TestCaseExecutionReport> goalReport, Boolean status, Long duration ) {
 		if (testCasesReporter.containsKey(testcase)) {
 			throw new RuntimeException("Test case " + testcase.toString() + " already present");
 		}else {
@@ -35,7 +32,7 @@ public class LabRecruitsTestSuiteReporter {
 		return testCasesReporter.keySet();
 	}
 	
-	public List<LabRecruitsTestCaseReporter> getTestCaseReport(AbstractTestSequence testCase) {
+	public List<TestCaseExecutionReport> getTestCaseReport(AbstractTestSequence testCase) {
 		if (testCasesReporter.containsKey(testCase)) {
 			return testCasesReporter.get(testCase);
 		}else {
@@ -84,10 +81,10 @@ public class LabRecruitsTestSuiteReporter {
 		out = out + "N tests passed: "+getNumberOfPassedTestCases()+ "\n\n";
 		
 		for(AbstractTestSequence test : testCasesReporter.keySet()) {
-			List<LabRecruitsTestCaseReporter> caseReport = testCasesReporter.get(test);
+			List<TestCaseExecutionReport> caseReport = testCasesReporter.get(test);
 			out = out + "################\nTest pass: " + testCasesStatus.get(test) + "\n";
 			out = out + test.toString() + "\n";
-			for(LabRecruitsTestCaseReporter rep : caseReport) {
+			for(TestCaseExecutionReport rep : caseReport) {
 				out = out + rep.toString();
 			}
 			out = out + "\n";

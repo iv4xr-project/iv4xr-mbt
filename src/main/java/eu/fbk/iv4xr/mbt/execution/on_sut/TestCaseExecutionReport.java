@@ -1,20 +1,17 @@
-package eu.fbk.iv4xr.mbt.execution.labrecruits;
+package eu.fbk.iv4xr.mbt.execution.on_sut;
 
-
-import java.util.LinkedList;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 
-public class LabRecruitsTestCaseReporter {
+public class TestCaseExecutionReport {
 
 	private GoalStructure goals;
 	private String response;
 	private EFSMTransition transition;
 	private String goalStatus;
 	
-	public LabRecruitsTestCaseReporter() {
+	public TestCaseExecutionReport() {
 
 	}
 	

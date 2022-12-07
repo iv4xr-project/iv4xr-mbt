@@ -36,8 +36,9 @@ import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteReporter;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
@@ -178,7 +179,7 @@ public class Main {
 		 */
 		List<File> passedTests = new LinkedList<File>();
 		// get the report of the executions
-		LabRecruitsTestSuiteReporter executionReport = executor.getExecutionReport();
+		TestSuiteExecutionReport executionReport = executor.getExecutionReport();
 		// if test case pass save the location of the file
 		for(AbstractTestSequence testCase : executionReport.getTestCases()) {
 			if (executionReport.getTestCaseStatus(testCase)) {
@@ -611,7 +612,7 @@ public class Main {
 				System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
 			}
 			
-			LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+			TestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
 			
 			executor.execute();
 			

@@ -1,4 +1,4 @@
-package eu.fbk.iv4xr.mbt.execution.labrecruits;
+package eu.fbk.iv4xr.mbt.execution.on_sut.impl;
 
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import static org.junit.Assert.fail;
@@ -22,9 +22,14 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.ProgressStatus;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
+import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.impl.LabRecruitsTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
+import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -37,7 +42,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author Davide Prandi
  *
  */
-public class LabRecruitsTestSuiteExecutor {
+public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 
 	// LabRecruits basic settings
 	private String labRecruitesExeRootDir;
@@ -46,32 +51,35 @@ public class LabRecruitsTestSuiteExecutor {
 	private String agentName;
 
 	// number of cycle the execution a transition can take
-	private Integer maxCyclePerGoal = 200;
+	private int maxCyclePerGoal = 200;
 
-	// basic reporting for test case status
-	private LabRecruitsTestSuiteReporter testReporter;
-
-	public LabRecruitsTestSuiteExecutor(){ }
+	private TestConcretizer testConcretizer;
 	
-	public LabRecruitsTestSuiteExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, Integer maxCyclePerGoal) {
+	// basic reporting for test case status
+	private TestSuiteExecutionReport testReporter;
+
+	public LabRecruitsConcreteTestExecutor(){ }
+	
+	public LabRecruitsConcreteTestExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, int maxCyclePerGoal) {
+		this.testConcretizer = new LabRecruitsTestConcretizer();
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
 		// split level path	
 		this.levelFileName = Paths.get(levelPath).getFileName().toString();
 		this.levelFolder = Paths.get(levelPath).getParent().toString();
 		this.agentName = agentName;
 		this.maxCyclePerGoal = maxCyclePerGoal;
-		testReporter = new LabRecruitsTestSuiteReporter();
+		testReporter = new TestSuiteExecutionReport();
 	}
 
-	public void setMaxCycle(Integer max) {
+	public void setMaxCyclePerGoal(int max) {
 		this.maxCyclePerGoal = max;
 	}
 
-	public Integer getMaxCylce() {
+	public int getMaxCylcePerGoal() {
 		return maxCyclePerGoal;
 	}
 	
-	public LabRecruitsTestSuiteReporter getReport() {
+	public TestSuiteExecutionReport getReport() {
 		return testReporter;
 	}
 	
@@ -108,12 +116,12 @@ public class LabRecruitsTestSuiteExecutor {
 	}
 
 	// run a test case
-	public Boolean executeTestCase(AbstractTestSequence testcase) throws InterruptedException {
+	public boolean executeTestCase(AbstractTestSequence testcase) throws InterruptedException {
 
 		// Start registering the time of the test suite execution
 		long initialTime = System.currentTimeMillis();
 		
-		LinkedList<LabRecruitsTestCaseReporter> goalReporter = new LinkedList<LabRecruitsTestCaseReporter>();
+		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
 		
 		System.out.println("Executing: " + testcase.toString());
 
@@ -132,7 +140,7 @@ public class LabRecruitsTestSuiteExecutor {
 
 		// convert test case to a list of goal structure
 		// each goal structure represent a transition
-		List<GoalStructure> goals = convertTestCaseToGoalStructure(testAgent, testcase);
+		List<GoalStructure> goals = testConcretizer.concretizeTestCase(testAgent, testcase);
 
 		// press play in Unity
 		if (!labRecruitsEnvironment.startSimulation()) {
@@ -161,7 +169,7 @@ public class LabRecruitsTestSuiteExecutor {
 					
 					String err = "Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed";
 					System.err.println(err);
-					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+					TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
 					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
@@ -176,14 +184,14 @@ public class LabRecruitsTestSuiteExecutor {
 					
 					String err = "The goal cannot be satisfied in " + maxCyclePerGoal + " cycles";
 					System.err.println(err);
-					LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+					TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
 					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 					return false;
 				}
 			}
-			LabRecruitsTestCaseReporter goalRep = new LabRecruitsTestCaseReporter();
+			TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
 			goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 			goalReporter.add(goalRep);
 			if (!g.getStatus().success()) {
@@ -206,118 +214,6 @@ public class LabRecruitsTestSuiteExecutor {
 		
 	}
 
-	// sample code for translating EFSM test case into a goal structure
-	public List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, AbstractTestSequence tc) {
-		Path path = tc.getPath();
-		List<EFSMTransition> listTransitions = path.getTransitions();
-		return convertTestCaseToGoalStructure(agent,listTransitions) ;
-		//List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
-		//for (EFSMTransition t : listTransitions) {
-		//	GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
-		//	subGoals.add(transitionGoals);
-		//}
-		//return subGoals;
-		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
-		// return testingTask;
-	}
-	
-	// translating a test-case represented as a sequence of EFSM-transitions to a list of goal-structures:
-	public List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, List<EFSMTransition>  tc) {
-		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
-		for (EFSMTransition t : tc) {
-			GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
-			subGoals.add(transitionGoals);
-		}
-		return subGoals;
-		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
-		// return testingTask;
-	}
-	
-	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f ;
-
-	private GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
-		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
-		// start refreshing the origin state
-		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
-		// look at src and tgt state to understand the type of transition
-		if (t.getSrc().equals(t.getTgt())) {
-			// if self loop we are pressing a button
-			//subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
-			subGoals.add(GoalLib.entityInteracted(convertStateToString(t.getTgt())));
-			
-		} else if (oppositeDoorSides(t.getSrc(), t.getTgt())) {
-			// to optimize
-			//String doorName = convertDoorSideToDoorName(t.getTgt().getId());
-			String doorName = convertStateToString(t.getTgt());
-			subGoals.add(GoalLib.entityStateRefreshed(doorName));
-			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
-		} else {
-			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())) ;
-			if (LabRecruitsRandomEFSM.getStateType(t.getTgt()).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
-				// target is a goal-flag:
-				String goalFlagId = convertStateToString(t.getTgt()) ;
-				G = SEQ(GoalLib.atBGF(goalFlagId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
-						GoalLib.invariantChecked(agent, 
-							"The agent should be near " + goalFlagId, 
-							(BeliefState S) -> {
-								var gf = S.worldmodel().getElement(goalFlagId) ;
-								return Vec3.dist(S.worldmodel().getFloorPosition(), gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG ;
-							})
-						) ;
-				//G = SEQ(G,
-				//		GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
-			}
-			subGoals.add(G) ;
-		}
-		if (subGoals.size() == 1) {
-			return subGoals.get(0);
-		}else {
-			return SEQ(subGoals.toArray(new GoalStructure[0]));
-		}
-	}
-
-	// convert a state to a string
-	// for buttons it is simply the name
-	// for doors, that are written as dXp or dXm, we have to write doorX
-	// and we use convertDoorSideToDoorName
-	private String convertStateToString(EFSMState s) {
-		if (isDoor(s)) {
-			return convertDoorSideToDoorName(s.getId());
-		} else {
-			return s.getId();
-		}
-	}
-
-	// take a string in the form d1p/d1m and return door1
-	private String convertDoorSideToDoorName(String doorSide) {
-		String tmp = doorSide.substring(1, doorSide.length() - 1);
-		return "door" + tmp;
-	}
-	
-	// check if a state is a door looking at the first character
-	private Boolean isDoor(EFSMState s) {
-		String name = s.getId();
-		String b = name.substring(0, 1);
-		if (name.substring(0, 1).equals("d")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	// check if 2 states represent the opposite sites of a door
-	private Boolean oppositeDoorSides(EFSMState s, EFSMState t) {
-		if (!isDoor(s) || !isDoor(t)) {
-			// one of the state is not a door
-			return false;
-		} else if (convertDoorSideToDoorName(s.toString()).equals(convertDoorSideToDoorName(t.toString()))
-				&& s.toString() != t.toString()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	// covert the goal status of a goal structure to a string
 	private String getGoalStatus(GoalStructure goal) {
 		if (goal instanceof PrimitiveGoal) {
@@ -330,5 +226,7 @@ public class LabRecruitsTestSuiteExecutor {
 			return out;
 		}
 	}
+	
+	
 
 }
