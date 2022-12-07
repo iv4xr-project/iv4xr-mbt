@@ -204,10 +204,10 @@
 	</dependency>
 
 	<dependency>
-		    <groupId>com.github.iv4xr-project</groupId>
-		    <artifactId>iv4xr-se-plugin</artifactId>
-		    <version>labrecruits-SNAPSHOT</version>
-		</dependency>
+	    <groupId>com.github.iv4xr-project</groupId>
+		<artifactId>iv4xr-se-plugin</artifactId>
+	    <version>davide-9e44985f13-1</version>
+	</dependency>
 		
 		<dependency>
 			<groupId>me.tongfei</groupId>

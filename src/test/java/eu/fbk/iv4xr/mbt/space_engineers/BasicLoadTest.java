@@ -37,7 +37,7 @@ public class BasicLoadTest {
 	}
 	
 	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
-	//@Test
+	@Test
 	// Need SE ready
 	public void loadBasicLevel() {
 
@@ -106,13 +106,13 @@ public class BasicLoadTest {
         		goals.blockOfTypeExists(
         				blockType.getType(), 
         				tactics.buildBlock(blockType.getType())),
-				goals.lastBuiltBlockIntegrityIsBelow(0.5,
+				goals.lastBuiltBlockIntegrityIsBelow(0.8,
 						SEQ(tactics.equip(grinderLocation),
 							tactics.sleep(500),
 							tactics.startUsingTool())),
 				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
 									    tactics.sleep(500))),
-				goals.lastBuiltBlockIntegrityIsAbove(0.7,
+				goals.lastBuiltBlockIntegrityIsAbove(0.9,
 						SEQ(tactics.equip(welderLocation),
 							tactics.sleep(500),
 							tactics.startUsingTool())),
@@ -128,9 +128,12 @@ public class BasicLoadTest {
 		while (testingTask.getStatus().inProgress() && i <= 100) {
 			sleep(200);
 			testAgent.update();
+//			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
+//			myAgentState.worldmodel().position.toString() + " " +
+//			testingTask.showGoalStructureStatus());			
 			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
-			myAgentState.worldmodel().position.toString() + " " +
-			testingTask.showGoalStructureStatus());			
+					myAgentState.worldmodel().position.toString() + " " +
+					testingTask.showGoalStructureStatus());	
 			i++;
 			
 			Environment env = testAgent.env();
