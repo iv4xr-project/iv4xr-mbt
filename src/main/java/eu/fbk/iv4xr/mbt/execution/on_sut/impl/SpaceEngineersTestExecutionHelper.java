@@ -11,10 +11,10 @@ import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
  * @author kifetew
  *
  */
-public class LabRecruitsTestExecutionHelper extends TestExecutionHelper {
+public class SpaceEngineersTestExecutionHelper extends TestExecutionHelper {
 
-	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
-		testExecutor = new LabRecruitsConcreteTestExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
+	public SpaceEngineersTestExecutionHelper(String executableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
+		testExecutor = new SpaceEngineersConcreteTestExecutor(executableDir, lrLevelPath, agentName, maxCyclePerGoal);
 		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
 		testSuite = parseTests (testsDir);
 		testsFolder = testsDir;
