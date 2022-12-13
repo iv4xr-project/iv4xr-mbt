@@ -33,7 +33,7 @@ import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
-import eu.fbk.iv4xr.mbt.execution.on_sut.impl.LabRecruitsConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;

@@ -6,27 +6,24 @@ package eu.fbk.iv4xr.mbt.concretization.impl;
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import agents.tactics.GoalLib;
 import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
-import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
-import eu.fbk.iv4xr.mbt.testcase.Path;
+
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
-import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
 
 /**
  * @author kifetew, prandi
  *
  */
-public class LabRecruitsTestConcretizer implements TestConcretizer {
+public class LabRecruitsTestConcretizer extends TestConcretizer {
 
 	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f ;
 
@@ -34,31 +31,11 @@ public class LabRecruitsTestConcretizer implements TestConcretizer {
 	 * 
 	 */
 	public LabRecruitsTestConcretizer() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
-	@Override
-	public List<GoalStructure> concretizeTestCase(TestAgent testAgent, AbstractTestSequence testCase) {
-		Path path = testCase.getPath();
-		List<EFSMTransition> listTransitions = path.getTransitions();
-		return convertTestCaseToGoalStructure(testAgent,listTransitions) ;
-	}
 
-	
-	// translating a test-case represented as a sequence of EFSM-transitions to a list of goal-structures:
-	private List<GoalStructure> convertTestCaseToGoalStructure(TestAgent agent, List<EFSMTransition>  tc) {
-		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
-		for (EFSMTransition t : tc) {
-			GoalStructure transitionGoals = convertEFMSTransitionToGoal(agent, t);
-			subGoals.add(transitionGoals);
-		}
-		return subGoals;
-		// GoalStructure testingTask = SEQ(subGoals.toArray(new GoalStructure[0]));
-		// return testingTask;
-	}
-		
-
-	private GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
