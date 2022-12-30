@@ -62,7 +62,7 @@ public class LoadLabRecruitsLevelTest {
 		}
 	}
 
-	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	//@Disabled("Disabled for building whole project, enable manually by uncommenting.")
 	@Test
 	public void LoadLevelTest() {
 
@@ -115,6 +115,8 @@ public class LoadLabRecruitsLevelTest {
 		LabRecruitsMapBuilder mapBuilder = new LabRecruitsMapBuilder(lrMap, seExt, mapPlacer);
 		
 		mapBuilder.generate();
+		
+		
 		
 		// MapPlacer mapPlacer = new MapPlacer(null, seExt, null, null)
 

@@ -5,6 +5,7 @@ package eu.fbk.iv4xr.mbt.space_engineers;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import environments.SeEnvironment;
@@ -38,7 +39,7 @@ public class NavigateLrMapTest {
 		}
 	}
 	
-	//@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
 	@Test
 	public void navigateRandomMediumTest() {
 		

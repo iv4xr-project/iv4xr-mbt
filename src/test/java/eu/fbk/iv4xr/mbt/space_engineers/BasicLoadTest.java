@@ -2,8 +2,15 @@ package eu.fbk.iv4xr.mbt.space_engineers;
 
 import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Map;
 
+import org.apache.tools.ant.types.Path;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,12 +43,13 @@ public class BasicLoadTest {
 
 	}
 	
-	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	//@Disabled("Disabled for building whole project, enable manually by uncommenting.")
 	@Test
 	// Need SE ready
 	public void loadBasicLevel() {
 
 		//String worldId = "amaze";
+		String scenarioDio = "";
 		String worldId = "simple-place-grind-torch";
 		String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 
@@ -54,6 +62,23 @@ public class BasicLoadTest {
 		var grinder = DefinitionId.Companion.physicalGun("AngleGrinder2Item");
 		var grinderLocation = new ToolbarLocation(3, 0);
 
+		// load path to se saves
+		URI jarResources = null;
+		try {
+			jarResources = getClass().getProtectionDomain()
+			            .getCodeSource()
+			            .getLocation()
+			            .toURI();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		java.nio.file.Path se_saves_path = Paths.get(jarResources); 
+		se_saves_path = Paths.get(se_saves_path.toString(), "se_saves_path");
+		String game_saves_folder = se_saves_path.toString();
+		game_saves_folder = "C:\\gitRepo\\iv4XR\\iv4xr-mbt\\src\\test\\resources\\se_game_saves\\";
+		
 		Map<String, ToolbarLocation> blockTypeToToolbarLocation = context.getBlockTypeToToolbarLocation();
 		blockTypeToToolbarLocation.put(blockType.getType(), blockLocation);
 
@@ -61,7 +86,7 @@ public class BasicLoadTest {
 
 		var controllerWrapper = new ContextControllerWrapper(proxyBuilder.localhost(agentId), context);
 
-		var theEnv = new SeEnvironment(worldId, controllerWrapper);
+		var theEnv = new SeEnvironment(worldId, controllerWrapper,game_saves_folder);
 		//theEnv.loadWorld();
 
 		var dataCollector = new TestDataCollector();
