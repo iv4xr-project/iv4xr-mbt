@@ -60,7 +60,7 @@ public class ServerTest {
 	@Test
 	public void binExistsTest() {
 
-		String labRecruitesExeRootDir = getExecDir(); //System.getProperty("user.dir") + File.separator + "suts";
+		String labRecruitesExeRootDir = getExecDir();
 		System.out.println(labRecruitesExeRootDir);
 		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
 				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
@@ -81,7 +81,7 @@ public class ServerTest {
 		String levelPath = Paths.get(Platform.LEVEL_PATH, levelName).toString();
 		String agentName = "Agent1";
 		String levelFileName = levelName + "_LR";
-		String labRecruitesExeRootDir = getExecDir(); //System.getProperty("user.dir") + File.separator + "suts";
+		String labRecruitesExeRootDir = getExecDir();
 		Integer maxCycles = 200;
 		String reportFileName = levelPath + "_report.txt";
 		String statsFileName = levelPath + "_stats.csv";
