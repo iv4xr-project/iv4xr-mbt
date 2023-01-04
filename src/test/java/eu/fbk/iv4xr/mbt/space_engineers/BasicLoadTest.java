@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -75,9 +76,9 @@ public class BasicLoadTest {
 		}
 		
 		java.nio.file.Path se_saves_path = Paths.get(jarResources); 
-		se_saves_path = Paths.get(se_saves_path.toString(), "se_saves_path");
+		se_saves_path = Paths.get(se_saves_path.toString(), "se_game_saves\\");
 		String game_saves_folder = se_saves_path.toString();
-		game_saves_folder = "C:\\gitRepo\\iv4XR\\iv4xr-mbt\\src\\test\\resources\\se_game_saves\\";
+		// game_saves_folder = "C:\\gitRepo\\iv4XR\\iv4xr-mbt\\target\\test-classes\\se_game_saves\\";
 		
 		Map<String, ToolbarLocation> blockTypeToToolbarLocation = context.getBlockTypeToToolbarLocation();
 		blockTypeToToolbarLocation.put(blockType.getType(), blockLocation);
