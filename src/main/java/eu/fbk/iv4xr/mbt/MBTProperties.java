@@ -232,6 +232,16 @@ public class MBTProperties {
 	@IntValue(min = 0)
 	public static int GLOBAL_TIMEOUT = 120;
 
+	public enum MinimizationFunction{
+		GREEDY;
+	}
+	
+	@Parameter(key = "minimization_function", group = "Search Algorithm", description = "Test suite minimization heuristic")
+	public static MinimizationFunction MINIMIZATION_FUNCTION = MinimizationFunction.GREEDY;
+	
+	@Parameter(key = "minimize_suite", group = "Search Algorithm", description = "Apply minimization on the final test suite")
+	public static boolean MINIMIZE_SUITE = true;
+	
 	@Parameter(key = "minimization_timeout", group = "Search Algorithm", description = "Seconds allowed for minimization at the end")
 	@IntValue(min = 0)
 	public static int MINIMIZATION_TIMEOUT = 60;

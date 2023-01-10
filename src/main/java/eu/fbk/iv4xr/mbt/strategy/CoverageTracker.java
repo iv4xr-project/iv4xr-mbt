@@ -23,7 +23,6 @@ import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import me.tongfei.progressbar.ProgressBar;
-import me.tongfei.progressbar.ProgressBarStyle;
 
 /**
  * @author kifetew
@@ -96,6 +95,25 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 		return testSuite;
 	}
 	
+	/**
+	 * a convenience method that returns the coverage map with test cases as keys and covered goals as values
+	 * @return
+	 */
+	public Map<MBTChromosome, Set<FitnessFunction<MBTChromosome>>> getInvertedCoverageMap (){
+		Map<MBTChromosome, Set<FitnessFunction<MBTChromosome>>> invertedMap = new HashMap<>();
+		
+		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+			if (entry.getValue() == null) {
+				continue;
+			}
+			if (!invertedMap.containsKey(entry.getValue())) {
+				invertedMap.put(entry.getValue(), new HashSet<>());
+			}
+			invertedMap.get(entry.getValue()).add(entry.getKey());
+		}
+		
+		return invertedMap;
+	}
 	
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
@@ -106,6 +124,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 			boolean newGoalCovered = false;
 			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
 				if (Double.compare(entry.getValue(), 0d) == 0 && coverageMap.containsKey(entry.getKey())) {
+					chromosome.getTestcase().getCoveredGoals().add(entry.getKey());
 					updateCoverageMap (chromosome, entry.getKey());
 					newGoalCovered = true;
 				}
