@@ -441,7 +441,13 @@ public class MBTProperties {
 	 * Number of possible directions. The minimum angle for a curve will be 360 divided by the number of possible directions
 	 */
 	@Parameter(key = "beamng_n_directions", group = "BeamNG", description = "Number of possible direction tha car can take.")
-	public static int beamng_n_directions = 8;
+	public static double beamng_n_directions = 8d;
+	
+	/**
+	 * Precision of the real values
+	 */
+	@Parameter(key = "beamng_n_digits", group = "BeamNG", description = "Number of significative digits.")
+	public static int beamng_n_digitis = 3;
 	
 	/**
 	 * Maximum angle for a curve
@@ -453,11 +459,18 @@ public class MBTProperties {
 	 * Street length
 	 */
 	@Parameter(key = "beamng_min_street_length", group = "BeamNG", description = "Mimimum length of a street piece.")
-	public static int beamng_min_street_length = 20;
+	public static double beamng_min_street_length = 20d;
 	@Parameter(key = "beamng_max_street_length", group = "BeamNG", description = "Maximum length of a street piece.")
-	public static int beamng_max_street_length = 28;
+	public static double beamng_max_street_length = 28d;
 	@Parameter(key = "beamng_street_chunck_length", group = "BeamNG", description = "Step increment between min and max street lenght")
-	public static int beamng_street_chunck_length = 5;
+	public static double beamng_street_chunck_length = 5d;
+	
+	/**
+	 * Min radius of a turn
+	 */
+	@Parameter(key="beamng_min_radius", group = "BeamNG", description = "Mimimum radius of a turn.")
+	public static double beamng_min_radius = 5d;
+
 	
 	public enum GoalConstraintOnTestFactory{
 		ENDS_WITH_STATE, STARTS_WITH_STATE, CONTAINS_STATE, EXCLUDES_STATE

@@ -338,7 +338,7 @@ public class Main {
 				
 				// BeamNG specific
 				
-				if (MBTProperties.SUT_EFSM.toString().contains("beamng")) {
+				if ( (MBTProperties.SUT_EFSM.toString().toLowerCase()).contains("beamng")) {
 					try {
 						List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
 						String pointsCsv = pointsToCsv(points);
