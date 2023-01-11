@@ -44,7 +44,7 @@ public class BasicLoadTest {
 
 	}
 	
-	//@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
 	@Test
 	// Need SE ready
 	public void loadBasicLevel() {
@@ -77,7 +77,7 @@ public class BasicLoadTest {
 		
 		java.nio.file.Path se_saves_path = Paths.get(jarResources); 
 		se_saves_path = Paths.get(se_saves_path.toString(), "se_game_saves\\");
-		String game_saves_folder = se_saves_path.toString();
+		String game_saves_folder = se_saves_path.toString()+File.separator;
 		// game_saves_folder = "C:\\gitRepo\\iv4XR\\iv4xr-mbt\\target\\test-classes\\se_game_saves\\";
 		
 		Map<String, ToolbarLocation> blockTypeToToolbarLocation = context.getBlockTypeToToolbarLocation();

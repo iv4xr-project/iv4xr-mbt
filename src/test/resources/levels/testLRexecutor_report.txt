@@ -1,466 +1,5 @@
-N tests performed: 46
-N tests passed: 33
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b4
-b4-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b4 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
-b4-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
-d0m-{explore[EXPLORE]; }->b5 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
-b5-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b5 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
-b5-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
-d0m-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-b2-{toggle[TOGGLE]; }->b2
-b2-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-b2-{toggle[TOGGLE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b2; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b2-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: true
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->b0
-
-b0-{explore[EXPLORE]; }->d3m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d3m-{explore[EXPLORE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: true
-b0-{explore[EXPLORE]; }->d3m
-
-b0-{explore[EXPLORE]; }->d3m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d3p
-d3p-{explore[EXPLORE]; }->b6
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b3
-b3-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b1
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-b3-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->b1 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b3
-b3-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-b3-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b5 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
-b5-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b3
-b3-{toggle[TOGGLE]; }->b3
-b3-{explore[EXPLORE]; }->b1
-b1-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-b3-{toggle[TOGGLE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b3; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b3-{explore[EXPLORE]; }->b1 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
-b1-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
-d1m-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->b1
-b1-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-b2-{explore[EXPLORE]; }->b1 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
-b1-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d3p
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-b2-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-
-################
-Test pass: true
-b0-{explore[EXPLORE]; }->d1p
-
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: true
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->b0
-
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b1
-b1-{explore[EXPLORE]; }->d0p
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b1 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
-b1-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b3
-b3-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->b1
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
+N tests performed: 39
+N tests passed: 30
 
 ################
 Test pass: true
@@ -501,55 +40,13 @@ b5-{explore[EXPLORE]; }->d2m response Pass
 ################
 Test pass: false
 b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->d2m
-d2m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->d2m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d3p
-d3p-{explore[EXPLORE]; }->b6
-b6-{explore[EXPLORE]; }->d3p
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d3p
-d3p-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->b0
+d1m-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{toggle[TOGGLE]; }->b3
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -560,10 +57,22 @@ b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
 
 ################
 Test pass: true
+b0-{explore[EXPLORE]; }->d1p
+
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: true
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
 d1m-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b2
+b2-{explore[EXPLORE]; }->d0p
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -577,13 +86,37 @@ d1p-{explore[EXPLORE]; }->d1m response Pass
 d1m-{explore[EXPLORE]; }->d1p response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Trying to unstuck; SUCCESS. Solved by Observe; ; 
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Trying to unstuck; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
 
 ################
 Test pass: true
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->b0
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b1
+b1-{explore[EXPLORE]; }->b2
+b2-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b1
 
+b0-{explore[EXPLORE]; }->d3m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d3m-{explore[EXPLORE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
   SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
@@ -593,6 +126,35 @@ b0-{explore[EXPLORE]; }->d1p response Pass
 d1p-{explore[EXPLORE]; }->d1m response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+b1-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b2
+b2-{toggle[TOGGLE]; }->b2
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
 
 ################
 Test pass: true
@@ -601,6 +163,10 @@ b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
 d1m-{explore[EXPLORE]; }->b2
 b2-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->d2m
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -617,16 +183,53 @@ d1m-{explore[EXPLORE]; }->b2 response Pass
 b2-{explore[EXPLORE]; }->d1m response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
+d0m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->d2m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
 
 ################
-Test pass: false
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b2
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+
+################
+Test pass: true
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
 d1m-{explore[EXPLORE]; }->d0p
 d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->d2m
-d2m-{explore[EXPLORE]; }->b4
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->b4
 b4-{explore[EXPLORE]; }->d2m
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
@@ -644,9 +247,74 @@ d1m-{explore[EXPLORE]; }->d0p response Pass
 d0p-{explore[EXPLORE]; }->d0m response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->d2m response The goal cannot be satisfied in 200 cycles
+d0m-{explore[EXPLORE]; }->b5 response Pass
  goal status is
-  INPROGRESS
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
+d0m-{explore[EXPLORE]; }->b4 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
+b4-{explore[EXPLORE]; }->d2m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{toggle[TOGGLE]; }->b0
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b1
+b1-{explore[EXPLORE]; }->b3
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+b1-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->d0p
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
 
 ################
 Test pass: true
@@ -690,58 +358,49 @@ b5-{explore[EXPLORE]; }->d2m response Pass
 
 ################
 Test pass: true
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d1p
-
-b0-{explore[EXPLORE]; }->d3m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d3m-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: false
 b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b1
-b1-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b1
+d1m-{explore[EXPLORE]; }->b2
+b2-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->b1
+b1-{toggle[TOGGLE]; }->b1
 b1-{toggle[TOGGLE]; }->b1
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
   SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+b0-{explore[EXPLORE]; }->d1p response Pass
  goal status is
-  INPROGRESS
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+b1-{toggle[TOGGLE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b1; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b1-{toggle[TOGGLE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b1; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
 
 ################
 Test pass: false
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d3p
-d3p-{explore[EXPLORE]; }->b6
-b6-{toggle[TOGGLE]; }->b6
+d3m-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b3
+b3-{toggle[TOGGLE]; }->b3
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -751,188 +410,7 @@ b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
   INPROGRESS
 
 ################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->b3
-b3-{toggle[TOGGLE]; }->b3
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
 Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->b4
-b4-{explore[EXPLORE]; }->d2m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b5 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
-b5-{explore[EXPLORE]; }->b4 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
-b4-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-
-################
-Test pass: false
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d3m
-d3m-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d1m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
- goal status is
-  INPROGRESS
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b2
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->b2 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b3
-b3-{explore[EXPLORE]; }->d1m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->b3 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
-b3-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b5
-b5-{explore[EXPLORE]; }->d2m
-d2m-{explore[EXPLORE]; }->d0m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b5 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
-b5-{explore[EXPLORE]; }->d2m response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d2m-{explore[EXPLORE]; }->d0m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
-
-################
-Test pass: true
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d3m
-
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d3m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door3
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-
-################
-Test pass: false
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
@@ -940,7 +418,8 @@ d1m-{explore[EXPLORE]; }->d0p
 d0p-{explore[EXPLORE]; }->d0m
 d0m-{explore[EXPLORE]; }->d0p
 d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->d2m
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->d2m
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -963,6 +442,179 @@ d0m-{explore[EXPLORE]; }->d0p response Pass
 d0p-{explore[EXPLORE]; }->d0m response Pass
  goal status is
   SUCCESS. Solved by Trying to unstuck; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
+d0m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->d2m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->b0
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->b1
+
+b0-{explore[EXPLORE]; }->d3m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d3m-{explore[EXPLORE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d3p
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d3p
+d3p-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d3p
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d3m
+
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d3m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door3
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b1
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->b1
+b1-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->d1m
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+b1-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Trying to unstuck
+d0p-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d1p
+
+b0-{explore[EXPLORE]; }->d3m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d3m-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->d2m
+d2m-{explore[EXPLORE]; }->b4
+b4-{explore[EXPLORE]; }->d2m
+d2m-{explore[EXPLORE]; }->d0m
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
 d0m-{explore[EXPLORE]; }->d2m response The goal cannot be satisfied in 200 cycles
  goal status is
   INPROGRESS
@@ -973,8 +625,10 @@ b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
 d1m-{explore[EXPLORE]; }->d0p
-d0p-{explore[EXPLORE]; }->b2
-b2-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b2
+b2-{toggle[TOGGLE]; }->b2
+b2-{explore[EXPLORE]; }->b3
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -988,51 +642,36 @@ d1p-{explore[EXPLORE]; }->d1m response Pass
 d1m-{explore[EXPLORE]; }->d0p response Pass
  goal status is
   SUCCESS. Solved by Force path recalculation.
-d0p-{explore[EXPLORE]; }->b2 response Pass
+d0p-{explore[EXPLORE]; }->d1m response Pass
  goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
-b2-{explore[EXPLORE]; }->d0p response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
-
-################
-Test pass: true
-b0-{toggle[TOGGLE]; }->b0
-b0-{explore[EXPLORE]; }->d1p
-d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->b2
-b2-{toggle[TOGGLE]; }->b2
-b2-{explore[EXPLORE]; }->b1
-b1-{explore[EXPLORE]; }->d1m
-
-b0-{toggle[TOGGLE]; }->b0 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b0-{explore[EXPLORE]; }->d1p response Pass
- goal status is
-  SUCCESS. Solved by Force path recalculation.
-d1p-{explore[EXPLORE]; }->d1m response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
 d1m-{explore[EXPLORE]; }->b2 response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby b2
 b2-{toggle[TOGGLE]; }->b2 response Pass
  goal status is
   SUCCESS. Solved by Navigate to b2; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
-b2-{explore[EXPLORE]; }->b1 response Pass
+b2-{explore[EXPLORE]; }->b3 response Pass
  goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
-b1-{explore[EXPLORE]; }->d1m response Pass
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d3m
+
+b0-{explore[EXPLORE]; }->d3m response Pass
  goal status is
-  SUCCESS. Solved by Trying to unstuck
+  SUCCESS. Solved by Force path recalculation.
 
 ################
 Test pass: true
 b0-{toggle[TOGGLE]; }->b0
 b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
-d1m-{explore[EXPLORE]; }->d0p
+d1m-{explore[EXPLORE]; }->b1
+b1-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{toggle[TOGGLE]; }->b3
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
  goal status is
@@ -1043,9 +682,18 @@ b0-{explore[EXPLORE]; }->d1p response Pass
 d1p-{explore[EXPLORE]; }->d1m response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
-d1m-{explore[EXPLORE]; }->d0p response Pass
+d1m-{explore[EXPLORE]; }->b1 response Pass
  goal status is
-  SUCCESS. Solved by Force path recalculation.
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+b1-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{toggle[TOGGLE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b3; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
 
 ################
 Test pass: true
@@ -1054,8 +702,7 @@ b0-{explore[EXPLORE]; }->d1p
 d1p-{explore[EXPLORE]; }->d1m
 d1m-{explore[EXPLORE]; }->d0p
 d0p-{explore[EXPLORE]; }->d0m
-d0m-{explore[EXPLORE]; }->b4
-b4-{explore[EXPLORE]; }->b5
+d0m-{explore[EXPLORE]; }->b5
 b5-{explore[EXPLORE]; }->d2m
 
 b0-{toggle[TOGGLE]; }->b0 response Pass
@@ -1073,13 +720,321 @@ d1m-{explore[EXPLORE]; }->d0p response Pass
 d0p-{explore[EXPLORE]; }->d0m response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
-d0m-{explore[EXPLORE]; }->b4 response Pass
- goal status is
-  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
-b4-{explore[EXPLORE]; }->b5 response Pass
+d0m-{explore[EXPLORE]; }->b5 response Pass
  goal status is
   SUCCESS. Solved by Navigate to a navigation vertex nearby b5
 b5-{explore[EXPLORE]; }->d2m response Pass
  goal status is
   SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->d2m
+d2m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->b4
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
+d0m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->d2m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d2m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->b4 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d3p
+d3p-{explore[EXPLORE]; }->b6
+b6-{toggle[TOGGLE]; }->b6
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->b0
+
+b0-{explore[EXPLORE]; }->d3m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d3m-{explore[EXPLORE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d1p
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Trying to unstuck; SUCCESS. Solved by Observe; ; 
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->b4
+b4-{explore[EXPLORE]; }->d0m
+d0m-{explore[EXPLORE]; }->b5
+b5-{explore[EXPLORE]; }->d2m
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Navigate to a navigation vertex nearby door0; SUCCESS. Solved by Observe; ; 
+d0m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b5
+b5-{explore[EXPLORE]; }->b4 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b4
+b4-{explore[EXPLORE]; }->d0m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door0
+d0m-{explore[EXPLORE]; }->b5 response Pass
+ goal status is
+  SUCCESS. Solved by Trying to unstuck
+b5-{explore[EXPLORE]; }->d2m response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b2
+b2-{toggle[TOGGLE]; }->b2
+b2-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->b2
+b2-{explore[EXPLORE]; }->b1
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{toggle[TOGGLE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b2; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b2-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+
+################
+Test pass: false
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d3m
+d3m-{explore[EXPLORE]; }->d3p
+d3p-{explore[EXPLORE]; }->b6
+b6-{explore[EXPLORE]; }->d3p
+d3p-{explore[EXPLORE]; }->d3m
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d3m response The goal cannot be satisfied in 200 cycles
+ goal status is
+  INPROGRESS
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b2
+b2-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->b1
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->b1 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b1
+
+################
+Test pass: true
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->b0
+
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b0
+
+################
+Test pass: true
+b0-{toggle[TOGGLE]; }->b0
+b0-{explore[EXPLORE]; }->d1p
+d1p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->d0p
+d0p-{explore[EXPLORE]; }->d1m
+d1m-{explore[EXPLORE]; }->b2
+b2-{toggle[TOGGLE]; }->b2
+b2-{explore[EXPLORE]; }->b3
+b3-{explore[EXPLORE]; }->b2
+
+b0-{toggle[TOGGLE]; }->b0 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b0; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b0-{explore[EXPLORE]; }->d1p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d1p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Navigate to a navigation vertex nearby door1; SUCCESS. Solved by Observe; ; 
+d1m-{explore[EXPLORE]; }->d0p response Pass
+ goal status is
+  SUCCESS. Solved by Force path recalculation.
+d0p-{explore[EXPLORE]; }->d1m response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby door1
+d1m-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
+b2-{toggle[TOGGLE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to b2; SUCCESS. Solved by Interact; SUCCESS. Solved by ; 
+b2-{explore[EXPLORE]; }->b3 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b3
+b3-{explore[EXPLORE]; }->b2 response Pass
+ goal status is
+  SUCCESS. Solved by Navigate to a navigation vertex nearby b2
 

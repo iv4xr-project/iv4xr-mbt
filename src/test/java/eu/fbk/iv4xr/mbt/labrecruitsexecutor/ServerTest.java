@@ -51,12 +51,16 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import world.BeliefState;
 
 public class ServerTest {
-
+	
+	private static String getExecDir() {
+		return Paths.get(System.getProperty("user.dir"), "suts").toAbsolutePath().toString();
+	}
+	
 	// from iv4xrDemo
 	@Test
 	public void binExistsTest() {
 
-		String labRecruitesExeRootDir = System.getProperty("user.dir");
+		String labRecruitesExeRootDir = getExecDir();
 		System.out.println(labRecruitesExeRootDir);
 		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
 				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
@@ -77,7 +81,7 @@ public class ServerTest {
 		String levelPath = Paths.get(Platform.LEVEL_PATH, levelName).toString();
 		String agentName = "Agent1";
 		String levelFileName = levelName + "_LR";
-		String labRecruitesExeRootDir = System.getProperty("user.dir");
+		String labRecruitesExeRootDir = getExecDir();
 		Integer maxCycles = 200;
 		String reportFileName = levelPath + "_report.txt";
 		String statsFileName = levelPath + "_stats.csv";
