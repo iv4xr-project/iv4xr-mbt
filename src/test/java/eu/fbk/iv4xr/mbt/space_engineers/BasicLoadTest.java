@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import environments.SeAgentState;
 import environments.SeEnvironment;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersUtils;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.spatial.Vec3;
@@ -43,19 +44,21 @@ public class BasicLoadTest {
 		}
 
 	}
-	
-	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
+
+	// @Disabled("Disabled for building whole project, enable manually by
+	// uncommenting.")
 	@Test
 	// Need SE ready
 	public void loadBasicLevel() {
 
-		//String worldId = "amaze";
-		String scenarioDio = "";
 		String worldId = "simple-place-grind-torch";
 		String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 
-		var blockType = DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock");
+		/////////////////////////////
+		// Create SE control wrapper
 
+		// Prepare toolbar content
+		var blockType = DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock");
 		var context = new SpaceEngineersTestContext();
 		var blockLocation = new ToolbarLocation(1, 0);
 		var welder = DefinitionId.Companion.physicalGun("Welder2Item");
@@ -63,49 +66,35 @@ public class BasicLoadTest {
 		var grinder = DefinitionId.Companion.physicalGun("AngleGrinder2Item");
 		var grinderLocation = new ToolbarLocation(3, 0);
 
-		// load path to se saves
-		URI jarResources = null;
-		try {
-			jarResources = getClass().getProtectionDomain()
-			            .getCodeSource()
-			            .getLocation()
-			            .toURI();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		java.nio.file.Path se_saves_path = Paths.get(jarResources); 
-		se_saves_path = Paths.get(se_saves_path.toString(), "se_game_saves\\");
-		String game_saves_folder = se_saves_path.toString()+File.separator;
-		// game_saves_folder = "C:\\gitRepo\\iv4XR\\iv4xr-mbt\\target\\test-classes\\se_game_saves\\";
-		
+		// Create toolbar
 		Map<String, ToolbarLocation> blockTypeToToolbarLocation = context.getBlockTypeToToolbarLocation();
 		blockTypeToToolbarLocation.put(blockType.getType(), blockLocation);
 
+		// create proxy builder
 		SpaceEngineersJavaProxyBuilder proxyBuilder = new SpaceEngineersJavaProxyBuilder();
-
 		var controllerWrapper = new ContextControllerWrapper(proxyBuilder.localhost(agentId), context);
 
-		var theEnv = new SeEnvironment(worldId, controllerWrapper,game_saves_folder);
-		//theEnv.loadWorld();
+		// get the SE environment
+		var theEnv = SpaceEngineersUtils.createSeEnvWithSimpleMap(controllerWrapper);
 
+		// Attache state and agent to the environment
 		var dataCollector = new TestDataCollector();
-
 		var myAgentState = new SeAgentState(agentId);
-
 		var testAgent = new TestAgent(agentId, "some role name, else nothing");
 		testAgent.attachState(myAgentState);
 		testAgent.attachEnvironment(theEnv);
 		testAgent.setTestDataCollector(dataCollector);
 
-		var goals = new GoalBuilder();
-		var tactics = new TacticLib();
-
-	
 		// We load the scenario.
 		theEnv.loadWorld();
 		sleep(10000);
+
+		///////////////////////
+		// create goals
+		
+		var goals = new GoalBuilder();
+		var tactics = new TacticLib();
+
 		// Setup block in the toolbar.
 		controllerWrapper.getItems().setToolbarItem(blockType, blockLocation);
 		// Setup welder in the toolbar.new
@@ -113,15 +102,11 @@ public class BasicLoadTest {
 		// Setup grinder in the toolbar.
 		controllerWrapper.getItems().setToolbarItem(grinder, grinderLocation);
 
-	
-
 		// We observe for new blocks once, so that current blocks are not going to be
 		// considered "new".
 		theEnv.observeForNewBlocks();
 		sleep(1000);
 
-	
-		
 		GoalStructure testingTask = SEQ(
 //        		goals.agentAtPosition(
 //        				new Vec3(532.7066f, -45.193184f, -24.395466f), 
@@ -129,26 +114,17 @@ public class BasicLoadTest {
 //        				tactics.doNothing()),
 //				goals.agentDistanceFromPosition(new Vec3(532.7066f, -45.193184f, -24.395466f), 16f, 0.1f,
 //						tactics.moveForward()),
-        		goals.blockOfTypeExists(
-        				blockType.getType(), 
-        				tactics.buildBlock(blockType.getType())),
+				goals.blockOfTypeExists(blockType.getType(), tactics.buildBlock(blockType.getType())),
 				goals.lastBuiltBlockIntegrityIsBelow(0.8,
-						SEQ(tactics.equip(grinderLocation),
-							tactics.sleep(500),
-							tactics.startUsingTool())),
-				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-									    tactics.sleep(500))),
+						SEQ(tactics.equip(grinderLocation), tactics.sleep(500), tactics.startUsingTool())),
+				goals.alwaysSolved(SEQ(tactics.endUsingTool(), tactics.sleep(500))),
 				goals.lastBuiltBlockIntegrityIsAbove(0.9,
-						SEQ(tactics.equip(welderLocation),
-							tactics.sleep(500),
-							tactics.startUsingTool())),
-				goals.alwaysSolved(SEQ(tactics.endUsingTool(), 
-					    tactics.sleep(500)))
-				);
+						SEQ(tactics.equip(welderLocation), tactics.sleep(500), tactics.startUsingTool())),
+				goals.alwaysSolved(SEQ(tactics.endUsingTool(), tactics.sleep(500))));
 
 		testAgent.setGoal(testingTask);
 
-		
+		////////////////////////////////
 		// Run the agent and update in the loop.
 		var i = 0;
 		while (testingTask.getStatus().inProgress() && i <= 100) {
@@ -157,26 +133,21 @@ public class BasicLoadTest {
 //			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
 //			myAgentState.worldmodel().position.toString() + " " +
 //			testingTask.showGoalStructureStatus());			
-			System.out.println(i + " " + myAgentState.getAgentId() + " " + 
-					myAgentState.worldmodel().position.toString() + " " +
-					testingTask.showGoalStructureStatus());	
+			System.out.println(i + " " + myAgentState.getAgentId() + " " + myAgentState.worldmodel().position.toString()
+					+ " " + testingTask.showGoalStructureStatus());
 			i++;
-			
+
 			Environment env = testAgent.env();
-			
+
 			System.out.println();
 		}
-//        
-//        // Print results.
-//        testingTask.printGoalStructureStatus();
-//        List<GoalStructure> subgoals = testingTask.getSubgoals();
 
-//        for(GoalStructure gs : subgoals){
-//        	assertTrue(gs.getStatus().success());
-//        }
-		sleep(10000);
-		theEnv.loadWorld();
-		sleep(10000);
+		// exit to main menu
+		theEnv.getController().getSpaceEngineers().getSession().exitToMainMenu();
+		
+		// close the environment
+		theEnv.close();
 
+		
 	}
 }
