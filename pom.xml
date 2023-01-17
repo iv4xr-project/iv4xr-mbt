@@ -23,12 +23,12 @@
 
 
 	<build>
-		<resources>
+		<!--resources>
 			<resource>
 				<targetPath>/resources</targetPath>
-				<directory>${basedir}/src/test/resources</directory>
+				<directory>${basedir}/src/main/resources</directory>
 			</resource>
-		</resources>
+		</resources-->
 
 		<plugins>
 			<plugin>

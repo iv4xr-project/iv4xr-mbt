@@ -1,14 +1,14 @@
-package eu.fbk.iv4xr.mbt.efsm.examples;
+package eu.fbk.iv4xr.mbt.efsm.usageControl;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
 
-public class TrafficLightParameterGenerator extends EFSMParameterGenerator {
+public class PhoneCallParameterGenerator extends EFSMParameterGenerator {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1730557153132812090L;
+	private static final long serialVersionUID = -1947902788501953345L;
 
 	@Override
 	public EFSMParameter getRandom() {
