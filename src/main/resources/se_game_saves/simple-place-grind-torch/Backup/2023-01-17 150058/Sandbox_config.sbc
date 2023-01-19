@@ -137,6 +137,6 @@
     <EnableTeamScoreCounters>true</EnableTeamScoreCounters>
   </Settings>
   <Mods />
-  <SessionName>simple-place-grind-torch</SessionName>
-  <LastSaveTime>2023-01-17T15:11:03.1247999+01:00</LastSaveTime>
+  <SessionName>simple place-grind-torch</SessionName>
+  <LastSaveTime>2023-01-17T15:00:58.1616434+01:00</LastSaveTime>
 </MyObjectBuilder_WorldConfiguration>

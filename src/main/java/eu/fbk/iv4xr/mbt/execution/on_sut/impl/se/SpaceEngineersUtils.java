@@ -1,12 +1,27 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut.impl.se;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import environments.SeEnvironment;
 import spaceEngineers.controller.ContextControllerWrapper;
+import spaceEngineers.controller.ExtendedSpaceEngineers;
+import spaceEngineers.controller.SpaceEngineersJvmExtensionsKt;
+import spaceEngineers.iv4xr.navigation.Iv4XRAStarPathFinder;
+import spaceEngineers.model.DefinitionId;
+import spaceEngineers.model.Vec3F;
+import spaceEngineers.model.Vec3I;
+import spaceEngineers.util.generator.map.DataBlockPlacementInformation;
+import spaceEngineers.util.generator.map.MapPlacer;
+import spaceEngineers.util.generator.map.Orientations;
+import spaceEngineers.util.generator.map.labrecruits.LabRecruitsMap;
+import spaceEngineers.util.generator.map.labrecruits.LabRecruitsMapBuilder;
 
 /**
  * Utility methods to interact with Space Engineers
@@ -25,6 +40,10 @@ public class SpaceEngineersUtils {
 	// Basic map to perform grind and weldge tests
 	private static final String lrRandomMediumMapName = "LR_random_medium";
 
+	// delay time to allow communication with SE
+	public static Long longSleepTime = 2000l;
+	public static Long shortSleepTime = 500l;
+	
 	
 	/**
 	 * Load an empty level from the resources
@@ -91,4 +110,118 @@ public class SpaceEngineersUtils {
 		return game_saves_folder;
 	}
 
+	
+	
+	/**
+	 * Create a Space Engineers lavel from a csv that specify a Lab Recruits level
+	 * 
+	 * @param controllerWrapper
+	 * @param LrMapUri The URI 
+	 * @return
+	 */
+	public static SeEnvironment createSpaceEngineersMapFromLabRecruitsCsv(ContextControllerWrapper controllerWrapper, URI LrMapUri) {
+		
+		//TODO Check if the URI is valid
+		
+		// Load the map as a string
+		String mapLines = null;
+		try {
+			mapLines = Files.readString(Paths.get(LrMapUri));
+		} catch (IOException e) {
+			System.out.println("Problem in loading map "+LrMapUri.toString());
+			e.printStackTrace();
+		}
+		
+		// Load ExtendedSpaceEngineers
+		SeEnvironment theEnv = SpaceEngineersUtils.createSeEnvWithEmptyMap(controllerWrapper);
+		Iv4XRAStarPathFinder pathFinder = new Iv4XRAStarPathFinder();
+		ExtendedSpaceEngineers seExt = SpaceEngineersJvmExtensionsKt.extend(theEnv.getController().getSpaceEngineers() , pathFinder);
+
+		// create map
+		LabRecruitsMap lrMap = LabRecruitsMap.Companion.fromString(mapLines);
+		
+		Orientations or = new Orientations(Vec3I.Companion.getFORWARD(), Vec3I.Companion.getUP());
+		List<Orientations> orientations = new ArrayList<Orientations>();
+		orientations.add(or);
+		DataBlockPlacementInformation dbPlacerInfo = new DataBlockPlacementInformation(
+				DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock"), null, null, Vec3I.Companion.getZERO(),
+				orientations);
+		MapPlacer mapPlacer = new MapPlacer(lrMap, seExt, dbPlacerInfo, null);
+
+	
+		Vec3F teleportPosition = new Vec3F(10f, 10f, 10f);
+		
+		LabRecruitsMapBuilder mapBuilder = new LabRecruitsMapBuilder(lrMap, seExt, mapPlacer);
+		
+		// Load the level
+		theEnv.loadWorld();
+
+		sleep(longSleepTime);
+		
+		// generate the map
+		mapBuilder.generate();
+		
+//		SeEnvironment theEnv = SpaceEngineersUtils.createSeEnvWithEmptyMap(controllerWrapper);
+//		theEnv.loadWorld();
+//
+//		// wait the map is loaded
+//		sleep(longSleepTime);
+//
+//		// load LR level by lines
+//		String mapLines = null; 
+//		try {
+//			ClassLoader classLoader = getClass().getClassLoader();
+//			URI uri = classLoader.getResource(lr_map_path).toURI();
+//			mapLines = Files.readString(Paths.get(uri));
+//		} catch (URISyntaxException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		// Load ExtendedSpaceEngineers
+//		Iv4XRAStarPathFinder pathFinder = new Iv4XRAStarPathFinder();
+//		ExtendedSpaceEngineers seExt = SpaceEngineersJvmExtensionsKt.extend(se, pathFinder);
+//
+//		// create map
+//		LabRecruitsMap lrMap = LabRecruitsMap.Companion.fromString(mapLines);
+//
+//		Orientations or = new Orientations(Vec3I.Companion.getFORWARD(), Vec3I.Companion.getUP());
+//		List<Orientations> orientations = new ArrayList<Orientations>();
+//		orientations.add(or);
+//		DataBlockPlacementInformation dbPlacerInfo = new DataBlockPlacementInformation(
+//				DefinitionId.Companion.cubeBlock("LargeHeavyBlockArmorBlock"), null, null, Vec3I.Companion.getZERO(),
+//				orientations);
+//		MapPlacer mapPlacer = new MapPlacer(lrMap, seExt, dbPlacerInfo, null);
+//
+//		sleep(longSleepTime);
+//
+//		Vec3F teleportPosition = new Vec3F(10f, 10f, 10f);
+//
+//		
+////		lrMap.placeGenerator();
+////		lrMap.placeGravityGenerator();
+////		String generate = mapPlacer.generate(Vec3F.Companion.getZERO(), teleportPosition);
+//		
+//		LabRecruitsMapBuilder mapBuilder = new LabRecruitsMapBuilder(lrMap, seExt, mapPlacer);
+//		
+//		mapBuilder.generate();
+//		
+		
+		return null;
+	}
+	
+	
+	/**
+	 * Suspend the execution to allow Space Engineers processing information
+	 * @param i
+	 */
+	private static void sleep(long i) {
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

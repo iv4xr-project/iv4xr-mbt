@@ -21,7 +21,7 @@
   <ControlledObject>133936737378954547</ControlledObject>
   <Password />
   <Description />
-  <LastSaveTime>2023-01-17T15:11:03.1247999+01:00</LastSaveTime>
+  <LastSaveTime>2023-01-17T15:08:56.5903982+01:00</LastSaveTime>
   <SpectatorDistance>3.9730525</SpectatorDistance>
   <WorkshopId xsi:nil="true" />
   <WorkshopId1 xsi:nil="true" />
@@ -316,7 +316,7 @@
       <SavedCharacters>
         <long>133936737378954547</long>
       </SavedCharacters>
-      <LastLogoutTime>2023-01-17T15:11:03.1247999+01:00</LastLogoutTime>
+      <LastLogoutTime>2023-01-17T15:08:56.5903982+01:00</LastLogoutTime>
       <RespawnShips />
       <LastDeathPosition xsi:nil="true" />
       <ActiveContracts />
