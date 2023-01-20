@@ -3,7 +3,7 @@
 	<!--   <groupId>eu.fbk.iv4xr</groupId> -->
 	<groupId>com.github.iv4xr-project</groupId>
 	<artifactId>EvoMBT</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<name>iv4xr-MBT</name>
 	<description>Model based test generation tool</description>
 
