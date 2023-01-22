@@ -71,7 +71,7 @@ public class LoadLrLevelInSeTest {
 		}
 	}
 
-	// @Disabled("Disabled for building whole project, enable manually by uncommenting.")
+	@Disabled("Disabled for building whole project, enable manually by uncommenting.")
 	@Test
 	public void LoadLevelTest() {
 

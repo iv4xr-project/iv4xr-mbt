@@ -132,7 +132,8 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 		SpaceEngineersJavaProxyBuilder proxyBuilder = new SpaceEngineersJavaProxyBuilder();
 		SpaceEngineers se = proxyBuilder.localhost(agentId);
 		ContextControllerWrapper controllerWrapper = new ContextControllerWrapper(se, context);
-		theEnv = new SeEnvironment(worldId, controllerWrapper);
+		// theEnv = new SeEnvironment(worldId, controllerWrapper);
+		theEnv = SpaceEngineersUtils.createSeEnvWithLrRanommediumMap(controllerWrapper);
 		
 		boolean testSuiteResult = true;
 		// cycle over the test cases
