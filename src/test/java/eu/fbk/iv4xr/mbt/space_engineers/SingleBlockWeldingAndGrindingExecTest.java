@@ -330,7 +330,7 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		setToolbar();
 		
 		for(MBTChromosome tc  : testCases) {
-			System.out.println(tc.toString());
+			System.out.println(System.lineSeparator()+"Abstract test case"+System.lineSeparator()+ tc.toString()+System.lineSeparator());
 			
 			theEnv.observeForNewBlocks();
 			
