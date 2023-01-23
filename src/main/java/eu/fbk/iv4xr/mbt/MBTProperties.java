@@ -489,6 +489,15 @@ public class MBTProperties {
 	@Parameter(key = "goal_constraint_on_test_factory", group = "Search Algorithm", description = "Model coverage criterion")
 	public static GoalConstraintOnTestFactory GOAL_CONSTRAINT_ON_TEST_FACTORY = GoalConstraintOnTestFactory.ENDS_WITH_STATE;
 	
+	
+	/**
+	 * SUT executable
+	 */
+	@Parameter(key = "sut", group = "SUT executable properties", description = "Select the SUT")
+	public static String SUT = "LR";
+	
+	
+	
 	/**
 	 * Get all parameters that are available
 	 *

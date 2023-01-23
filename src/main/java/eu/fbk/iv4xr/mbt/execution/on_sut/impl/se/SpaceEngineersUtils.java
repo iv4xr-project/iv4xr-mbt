@@ -81,12 +81,13 @@ public class SpaceEngineersUtils {
 	 */
 	public static SeEnvironment createSeEnvWithLrRanommediumMap(ContextControllerWrapper controllerWrapper) {
 		// load path to se saves
-		String seGameSavesFolder = getSeGameSavesFolder();
+		// String seGameSavesFolder = getSeGameSavesFolder();
+		String seGameSavesFolder = "target\\classes\\se_game_saves\\";
 		// create evn
 		SeEnvironment theEnv = new SeEnvironment(lrRandomMediumMapName, controllerWrapper, seGameSavesFolder);
 		return theEnv;
 	}
-	
+
 
 	/**
 	 * Get folder with game saves
