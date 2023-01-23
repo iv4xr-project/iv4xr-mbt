@@ -25,6 +25,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 
 import eu.fbk.iv4xr.mbt.efsm.spaceEngineering.SingleBlockWeldingAndGrinding.seActions;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersUtils;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
@@ -113,7 +114,8 @@ public class SingleBlockWeldingAndGrindingExecTest {
 		se = proxyBuilder.localhost(agentId);
 		controllerWrapper = new ContextControllerWrapper(se, context);
 		sleep(longSleepTime);
-		theEnv = new SeEnvironment(worldId, controllerWrapper);
+		theEnv = SpaceEngineersUtils.createSeEnvWithSimpleMap(controllerWrapper);
+		// theEnv = new SeEnvironment(worldId, controllerWrapper);
 		dataCollector = new TestDataCollector();
 		myAgentState = new SeAgentState(agentId);
 		testAgent = new TestAgent(agentId, "some role name, else nothing");
