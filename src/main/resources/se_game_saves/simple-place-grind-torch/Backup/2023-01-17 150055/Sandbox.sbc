@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <MyObjectBuilder_Checkpoint xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <CurrentSector x="0" y="0" z="0" />
-  <ElapsedGameTime>84044800000</ElapsedGameTime>
-  <SessionName>simple-place-grind-torch</SessionName>
+  <ElapsedGameTime>82890240000</ElapsedGameTime>
+  <SessionName>simple place-grind-torch</SessionName>
   <SpectatorPosition>
-    <Position x="38.4877439356915" y="76.279640155102257" z="7.5428447517924724" />
+    <Position x="38.487743935691491" y="76.279640155102271" z="7.5428447517924715" />
     <Forward x="-0.268589884" y="-0.619030952" z="-0.738010943" />
     <Up x="-0.422749758" y="0.76418823" z="-0.487133473" />
     <Orientation>
@@ -21,13 +21,13 @@
   <ControlledObject>133936737378954547</ControlledObject>
   <Password />
   <Description />
-  <LastSaveTime>2023-01-17T15:11:03.1247999+01:00</LastSaveTime>
+  <LastSaveTime>2023-01-17T15:00:55.2577483+01:00</LastSaveTime>
   <SpectatorDistance>3.9730525</SpectatorDistance>
   <WorkshopId xsi:nil="true" />
   <WorkshopId1 xsi:nil="true" />
   <CharacterToolbar>
     <ToolbarType>Character</ToolbarType>
-    <SelectedSlot>3</SelectedSlot>
+    <SelectedSlot xsi:nil="true" />
     <Slots>
       <Slot>
         <Index>0</Index>
@@ -312,11 +312,11 @@
       <Model>Default_Astronaut</Model>
       <ColorMask x="0" y="0" z="0.05" />
       <BlockLimitModifier>0</BlockLimitModifier>
-      <LastLoginTime>2023-01-17T15:07:33.4804919+01:00</LastLoginTime>
+      <LastLoginTime>2023-01-17T14:59:18.0360698+01:00</LastLoginTime>
       <SavedCharacters>
         <long>133936737378954547</long>
       </SavedCharacters>
-      <LastLogoutTime>2023-01-17T15:11:03.1247999+01:00</LastLogoutTime>
+      <LastLogoutTime>2023-01-17T15:00:55.2592573+01:00</LastLogoutTime>
       <RespawnShips />
       <LastDeathPosition xsi:nil="true" />
       <ActiveContracts />
@@ -327,7 +327,7 @@
       <DisplayName>Space Pirates</DisplayName>
       <CharacterEntityId>0</CharacterEntityId>
       <BlockLimitModifier>0</BlockLimitModifier>
-      <LastLoginTime>2023-01-17T15:07:33.9495184+01:00</LastLoginTime>
+      <LastLoginTime>2023-01-17T14:59:19.8713206+01:00</LastLoginTime>
       <SavedCharacters />
       <LastLogoutTime>0001-01-01T00:00:00</LastLogoutTime>
       <RespawnShips />
@@ -618,7 +618,7 @@
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SectorWeatherComponent">
       <BaseSunDirection x="0.339467347" y="0.709795356" z="-0.617213368" />
-      <SunDirectionNormalized x="-0.5919503" y="0.352491051" z="-0.724806845" />
+      <SunDirectionNormalized x="-0.51554364" y="0.4126715" z="-0.750944138" />
       <WeatherPlanetData />
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_SessionComponentAssetModifiers" />
@@ -696,7 +696,7 @@
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_AntennaSessionComponent" />
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_EnvironmentBotSpawningSystem">
-      <TimeSinceLastEventInMs>35850</TimeSinceLastEventInMs>
+      <TimeSinceLastEventInMs>35633</TimeSinceLastEventInMs>
     </MyObjectBuilder_SessionComponent>
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_TradingManager" />
     <MyObjectBuilder_SessionComponent xsi:type="MyObjectBuilder_CoordinateSystem">
@@ -738,6 +738,12 @@
       <ShipsInProgress>
         <ShipTimePair>
           <EntityIds>
+            <long>96285133896499001</long>
+          </EntityIds>
+          <TimeTicks>97941760000</TimeTicks>
+        </ShipTimePair>
+        <ShipTimePair>
+          <EntityIds>
             <long>116945897547754405</long>
           </EntityIds>
           <TimeTicks>97944480000</TimeTicks>
@@ -768,7 +774,6 @@
   <CustomSkybox />
   <VicinityModelsCache />
   <VicinityArmorModelsCache>
-    <string>Models\Weapons\AngleGrinderMk2.mwm</string>
     <string>Models\Characters\Astronaut\SE_astronaut.mwm</string>
     <string>Models\Cubes\Large\Armor\SquarePlate.mwm</string>
   </VicinityArmorModelsCache>

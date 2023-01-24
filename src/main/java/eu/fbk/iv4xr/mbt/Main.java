@@ -81,7 +81,7 @@ public class Main {
 		}
 		
 		// set parameters in MBTProperties and Properties
-		setGlobalProperties (line);
+		// setGlobalProperties (line);
 		MBTProperties.SessionId = "" + System.currentTimeMillis();
 		SuiteChromosome solution = generationStrategy.generateTests();	
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
@@ -182,7 +182,7 @@ public class Main {
 		}
 		
 		// set parameters in MBTProperties and Properties
-		setGlobalProperties (line);
+		// setGlobalProperties (line);
 		
 		// load csv level
 		File sutExecutableFile = new File(sutExecutable+".csv");
@@ -507,18 +507,18 @@ public class Main {
 				.desc("alias for exec_on_LR")
 				.build();
 		
-		Option execOnLR = Option.builder("exec_on_LR")
-				.argName("exec_on_LR")
-				.type(String.class)
-				.desc("execute tests on Lab Recruits")
-				.build();
-		
-		Option execOnSE = Option.builder("exec_on_SE")
-				.argName("exec_on_SE")
-				.type(String.class)
-				.desc("execute tests on Space Engineers")
-				.build();
-				
+//		Option execOnLR = Option.builder("exec_on_LR")
+//				.argName("exec_on_LR")
+//				.type(String.class)
+//				.desc("execute tests on Lab Recruits")
+//				.build();
+//		
+//		Option execOnSE = Option.builder("exec_on_SE")
+//				.argName("exec_on_SE")
+//				.type(String.class)
+//				.desc("execute tests on Space Engineers")
+//				.build();
+//				
 		
 		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, 
 				"Lab Recruits: path to the gym folder "+System.lineSeparator()+" Space Engineers: path to installation folder");
@@ -573,8 +573,8 @@ public class Main {
 		options.addOption(random);
 		// options.addOption(tamer);
 		
-		options.addOption(execOnLR);
-		options.addOption(execOnSE);
+		//options.addOption(execOnLR);
+		//options.addOption(execOnSE);
 		
 		options.addOption(executableDir);
 		options.addOption(sutExecutable);
@@ -615,10 +615,26 @@ public class Main {
 	 * @param options the options available
 	 */
 	private void execute (CommandLine line, Options options) {
-		if (line.hasOption("exec_on_sut") || line.hasOption("exec_on_LR")) {			
-			executeOnLabRecruits(line,options);
-		}else if (line.hasOption("exec_on_SE")) {
-			executeOnSpaceEngineers(line,options);
+//		if (line.hasOption("exec_on_sut") || line.hasOption("exec_on_LR")) {			
+//			executeOnLabRecruits(line,options);
+//		}else if (line.hasOption("exec_on_SE")) {
+//			executeOnSpaceEngineers(line,options);
+//		}else if (line.hasOption("mutation_analysis")) {			
+//			runMutationAnalysis(line);
+//		}else {
+//			runTestGeneration(line);
+//		}
+		setGlobalProperties (line);
+		
+		if (line.hasOption("exec_on_sut")) {
+			
+			if (MBTProperties.SUT.equalsIgnoreCase("LR")) {
+				executeOnLabRecruits(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("SE")) {
+				executeOnSpaceEngineers(line,options);
+			}else {
+				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
+			}
 		}else if (line.hasOption("mutation_analysis")) {			
 			runMutationAnalysis(line);
 		}else {
@@ -635,7 +651,7 @@ public class Main {
 	 * @param options
 	 */
 	private void executeOnLabRecruits (CommandLine line, Options options) {
-		setGlobalProperties (line);		
+		// setGlobalProperties (line);		
 		String sutExecutableDir = "";
 		String sutExecutable = "";
 		String testsDir = "";
@@ -709,7 +725,7 @@ public class Main {
 	 */
 	private void executeOnSpaceEngineers (CommandLine line, Options options) {
 		
-		setGlobalProperties (line);		
+		// setGlobalProperties (line);		
 		String sutExecutableDir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\Bin64\\";
 		String sutExecutable = "";
 		String testsDir = "";
