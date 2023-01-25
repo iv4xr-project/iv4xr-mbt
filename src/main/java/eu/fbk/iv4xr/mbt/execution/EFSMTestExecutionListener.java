@@ -111,7 +111,7 @@ public class EFSMTestExecutionListener implements ExecutionListener{
 		
 		// add the context corresponding to the transition just executed to the trace
 		// get the current configuration from the model. At this point the context should contain the current context of execution
-		contexts.add(EFSMFactory.getInstance().getEFSM().getConfiguration().getContext().clone());
+		contexts.add(EFSMFactory.getInstance().getEFSM().getConfiguration().getContext().getNewCopy());
 				
 	}
 
