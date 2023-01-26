@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.fbk.iv4xr.mbt.efsm.exp.*;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.*;
+import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleComputeRadius;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleLess;
@@ -220,5 +221,26 @@ public class Expression {
 		
 	}
 
+	@Test
+	public void testDoubleComputeRadius() {
+		
+		
+		Exp<Double> x1 = new Const<Double>(-6d);
+		Exp<Double> y1 = new Const<Double>(3d);
+		Exp<Double> x2 = new Const<Double>(-3d);
+		Exp<Double> y2 = new Const<Double>(2d);
+		Exp<Double> x3 = new Const<Double>(0d);
+		Exp<Double> y3 = new Const<Double>(3d);
+		
+		DoubleComputeRadius r = new DoubleComputeRadius(x1, y1, x2, y2, x3, y3);
+		
+		Double val = r.eval().getVal();
+		
+		System.out.println(r.toDebugString()+" = "+val.toString());
+		
+		assertTrue(val > 4.9999 & val < 5.0001);
+		
+		
+	}
 	
 }

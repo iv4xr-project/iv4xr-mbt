@@ -260,17 +260,22 @@ public class EFSMTransition implements Cloneable, Serializable{
 		}
 		
 		String inParStr = new String("");
+		String outParStr = new String("");		
 		String guardString = new String("");
 		
 		if (inParameter != null) {
 			inParStr = inParameter.toString();
 		}
 		
+		if (outParameter != null) {
+			outParStr = outParameter.toString();
+		}
+		
 		if (guard != null) {
 			guardString = guard.toString();
 		}
 		
-		return src.toString()+"-{"+inParStr+"}->"+tgt.toString();
+		return src.toString()+"-{"+inParStr+" "+outParStr+"}->"+tgt.toString();
 	}
 	
 	public boolean isSelfTransition () {

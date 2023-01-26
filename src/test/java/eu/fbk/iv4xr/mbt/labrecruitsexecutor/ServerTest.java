@@ -31,9 +31,9 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestCaseReporter;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteExecutor;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteReporter;
+import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -51,12 +51,16 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import world.BeliefState;
 
 public class ServerTest {
-
+	
+	private static String getExecDir() {
+		return Paths.get(System.getProperty("user.dir"), "suts").toAbsolutePath().toString();
+	}
+	
 	// from iv4xrDemo
 	@Test
 	public void binExistsTest() {
 
-		String labRecruitesExeRootDir = System.getProperty("user.dir");
+		String labRecruitesExeRootDir = getExecDir();
 		System.out.println(labRecruitesExeRootDir);
 		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
 				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
@@ -77,7 +81,7 @@ public class ServerTest {
 		String levelPath = Paths.get(Platform.LEVEL_PATH, levelName).toString();
 		String agentName = "Agent1";
 		String levelFileName = levelName + "_LR";
-		String labRecruitesExeRootDir = System.getProperty("user.dir");
+		String labRecruitesExeRootDir = getExecDir();
 		Integer maxCycles = 200;
 		String reportFileName = levelPath + "_report.txt";
 		String statsFileName = levelPath + "_stats.csv";
@@ -115,13 +119,13 @@ public class ServerTest {
 		SuiteChromosome solution = generationStrategy.generateTests();
 			
 		// create the executor
-        LabRecruitsTestSuiteExecutor lrExecutor = new LabRecruitsTestSuiteExecutor(labRecruitesExeRootDir, Platform.LEVEL_PATH+"/"+levelFileName, agentName, maxCycles);
+        ConcreteTestExecutor lrExecutor = new LabRecruitsConcreteTestExecutor(labRecruitesExeRootDir, Platform.LEVEL_PATH+"/"+levelFileName, agentName, maxCycles);
         //lrExecutor.setMaxCycle(maxCycles);
         
         // execute the test suite
         lrExecutor.executeTestSuite(solution);
         
-        LabRecruitsTestSuiteReporter executionReport = lrExecutor.getReport();
+        TestSuiteExecutionReport executionReport = lrExecutor.getReport();
      
         File reportFile = new File(reportFileName);
         FileUtils.writeStringToFile(reportFile, executionReport.toString(),  Charset.defaultCharset());

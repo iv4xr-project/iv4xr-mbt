@@ -10,6 +10,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
@@ -113,5 +114,45 @@ public class SearchBasedStrategyTest {
 			System.out.println("Fitness: "+testcase.getFitness());
 			System.out.println(testcase.toString());
 		}
+	}
+	
+	@Test
+	public void trafficLightSearchTest() {
+		// select SUT
+		MBTProperties.SUT_EFSM = "examples.traffic_light";
+		// Select coverage criterion
+		MBTProperties.MODELCRITERION = new ModelCriterion[] {
+			ModelCriterion.TRANSITION
+		};
+		// Fix time budget to 120s
+		MBTProperties.SEARCH_BUDGET = 120l;
+		// select search algorithm to NSGAII
+		MBTProperties.ALGORITHM = Algorithm.NSGAII;
+		// set seed for repeatibility
+		MBTProperties.RANDOM_SEED = 4328213l;
+		
+		// call the test factory
+		EFSMFactory mFactory = EFSMFactory.getInstance(true);
+		assertNotNull(mFactory);
+		EFSM efsm = mFactory.getEFSM();
+		assertNotNull (efsm);
+		
+		// clean EFSM abstract test executor
+		EFSMTestExecutor.getInstance().resetEFSM();
+		
+		// generate test cases
+		SearchBasedStrategy sbStrategy = new SearchBasedStrategy<>();
+		SuiteChromosome generatedTests = sbStrategy.generateTests();
+		List<MBTChromosome> testChromosomes = generatedTests.getTestChromosomes();
+		
+		// plot test cases
+		System.out.println("\nGenerated "+testChromosomes.size()+" test cases");
+		for(MBTChromosome chr : testChromosomes) {
+			AbstractTestSequence testcase = (AbstractTestSequence) chr.getTestcase();
+			System.out.println("Fitness: "+testcase.getFitness());
+			System.out.println("Test Case");
+			System.out.println(testcase.toString());
+		}
+		
 	}
 }

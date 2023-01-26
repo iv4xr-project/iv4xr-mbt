@@ -6,6 +6,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
@@ -28,7 +29,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
  *
  */
 
-public class TrafficLight {
+public class TrafficLight implements EFSMProvider {
 	
 public enum outSignal{ sigR, sigG, sigY, sigP };
 	
@@ -180,14 +181,14 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 		
 		
 		
-		//// The model and the associated builder
+		// The model and the associated builder
 		EFSM trafficLightEFSM;
 
 		EFSMBuilder trafficLightEFSMBuilder = new EFSMBuilder(EFSM.class);
 
 		// parameter generator 
 		// FIXME
-		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
+		TrafficLightParameterGenerator parameterGenerator = new TrafficLightParameterGenerator();
 		
 		
 		trafficLightEFSM = trafficLightEFSMBuilder
@@ -200,7 +201,7 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	    		.withTransition(yellow, red, t_6)
 	    		.withTransition(pending, pending, t_7)
 	    		.withTransition(pending, yellow, t_8)
-	    		.build(red,tlContext, lrParameterGenerator);
+	    		.build(red,tlContext, parameterGenerator);
 	    
 	    return(trafficLightEFSM);
 	}

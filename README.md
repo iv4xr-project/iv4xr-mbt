@@ -10,7 +10,7 @@ The tool __EvoMBT__ requires at least Java 11. To see the online help.
 
 #### Building
 
-MBT is a Java library that can be built and installed with the Maven tool. 
+EvoMBT is a Java library that can be built and installed with the Maven tool. 
 
 > mvn clean package
 

@@ -1,25 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="false" >
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>evombt.log</file>
+    <encoder>
+      <pattern>%date %level [%thread] %logger{10} [%file:%line] -%kvp- %msg%n</pattern>
+    </encoder>
+  </appender>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5p | [%thread] %logger{5}:%L - %msg%n</pattern>
-        </encoder>
-    </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+    </encoder>
+  </appender>
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logFile.log</file>
-        <append>true</append>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5p | [%thread] %logger{5}:%L - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--   logger name="eu.fbk.iv4xr.mbt" level="DEBUG"/ -->
-
-    <root level="ERROR">
-        <appender-ref ref="STDOUT" />
-        <!-- appender-ref ref="FILE" / -->
-    </root>
-
+  <root level="error">
+    <appender-ref ref="FILE" />
+  </root>
 </configuration>

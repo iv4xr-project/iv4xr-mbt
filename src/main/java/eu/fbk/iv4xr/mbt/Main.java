@@ -7,11 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -36,8 +33,15 @@ import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestExecutionHelper;
-import eu.fbk.iv4xr.mbt.execution.labrecruits.LabRecruitsTestSuiteReporter;
+
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
+
+import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
+import eu.fbk.iv4xr.mbt.minimization.Minimizer;
+
 import eu.fbk.iv4xr.mbt.strategy.CoverageTracker;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
@@ -82,14 +86,18 @@ public class Main {
 		}
 		
 		// set parameters in MBTProperties and Properties
-		setGlobalProperties (line);
+		// setGlobalProperties (line);
 		MBTProperties.SessionId = "" + System.currentTimeMillis();
 		SuiteChromosome solution = generationStrategy.generateTests();	
 		CoverageTracker coverageTracker = generationStrategy.getCoverageTracker();
 
 		if (!line.hasOption("silent_mode")) {
 			// write tests to disk
-			writeTests (solution, coverageTracker.getCoverageMap());
+			if (MBTProperties.MINIMIZE_SUITE) {
+				solution = runMinimization(solution);
+				
+			}
+			writeTests (solution);
 		}
 		
 		// write model on disk
@@ -110,6 +118,27 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Determine the minimization function and run it on the given test suite
+	 * @param solution
+	 * @return
+	 */
+	private SuiteChromosome runMinimization(SuiteChromosome solution) {
+		
+		Minimizer minimizer;
+		switch(MBTProperties.MINIMIZATION_FUNCTION) {
+		case GREEDY:
+			minimizer = new GreedyMinimizer();
+			break;
+		default:
+			throw new RuntimeException("Unknown minimization function: " + MBTProperties.MINIMIZATION_FUNCTION);
+		}
+		solution = minimizer.minimize(solution);
+		
+		return solution;
+	}
+
+
 	/**
 	 * print out uncovered goals
 	 */
@@ -158,7 +187,7 @@ public class Main {
 		}
 		
 		// set parameters in MBTProperties and Properties
-		setGlobalProperties (line);
+		// setGlobalProperties (line);
 		
 		// load csv level
 		File sutExecutableFile = new File(sutExecutable+".csv");
@@ -183,7 +212,7 @@ public class Main {
 		 */
 		List<File> passedTests = new LinkedList<File>();
 		// get the report of the executions
-		LabRecruitsTestSuiteReporter executionReport = executor.getExecutionReport();
+		TestSuiteExecutionReport executionReport = executor.getExecutionReport();
 		// if test case pass save the location of the file
 		for(AbstractTestSequence testCase : executionReport.getTestCases()) {
 			if (executionReport.getTestCaseStatus(testCase)) {
@@ -316,7 +345,7 @@ public class Main {
 	 * writes each test in a separate file (for now in .dot and .txt formats)
 	 * @param solution
 	 */
-	private void writeTests(SuiteChromosome solution, Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap) {
+	private void writeTests(SuiteChromosome solution) {
 		// make sure tests folder exists
 		String testFolder = MBTProperties.TESTS_DIR() + File.separator + MBTProperties.SUT_EFSM + File.separator + MBTProperties.ALGORITHM + File.separator + MBTProperties.SessionId;
 		File testsFolder = new File (testFolder);
@@ -333,7 +362,7 @@ public class Main {
 			File csvFile = new File (csvFileName);
 			AbstractTestSequence abstractTestSequence = (AbstractTestSequence)testCase.getTestcase();
 			// get the list of goals covered by this individual
-			String coveredGoals = getGoveredGoalsAsComment (coverageMap, testCase);
+			String coveredGoals = getGoveredGoalsAsComment (testCase);
 			try {
 				String testAsDot = ((AbstractTestSequence)testCase.getTestcase()).toDot();
 				String testAsText = testCase.getTestcase().toString();
@@ -343,7 +372,7 @@ public class Main {
 				
 				// BeamNG specific
 				
-				if (MBTProperties.SUT_EFSM.toString().contains("beamng")) {
+				if ( (MBTProperties.SUT_EFSM.toString().toLowerCase()).contains("beamng")) {
 					try {
 						List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
 						String pointsCsv = pointsToCsv(points);
@@ -381,20 +410,21 @@ public class Main {
 	 * @param set
 	 * @return
 	 */
-	private String getGoveredGoalsAsComment(Map<FitnessFunction<MBTChromosome>, MBTChromosome> coverageMap,
-			MBTChromosome testCase) {
+	private String getGoveredGoalsAsComment(MBTChromosome testCase) {
 		// first get the set of all covered goals by the given chromosome
-		LinkedHashSet<FitnessFunction<MBTChromosome>> coveredGoals = new LinkedHashSet<>();
-		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
-			if (entry.getValue() != null && entry.getValue().equals(testCase)) {
-				coveredGoals.add(entry.getKey());
-			}
-		}
+//		LinkedHashSet<FitnessFunction<MBTChromosome>> coveredGoals = new LinkedHashSet<>();
+//		for (Entry<FitnessFunction<MBTChromosome>, MBTChromosome> entry : coverageMap.entrySet()) {
+//			if (entry.getValue() != null && entry.getValue().equals(testCase)) {
+//				coveredGoals.add(entry.getKey());
+//			}
+//		}
 		StringBuffer buffer = new StringBuffer();
 		String commentChar = "#";
 		
+		Set<FitnessFunction<?>> coveredGoals = testCase.getTestcase().getCoveredGoals();
+		
 		buffer.append(commentChar + " Total number of goals covered by this test: " + coveredGoals.size() + System.lineSeparator());
-		for (FitnessFunction<MBTChromosome> goal : coveredGoals) {
+		for (FitnessFunction<?> goal : coveredGoals) {
 			buffer.append(commentChar + " " + goal.toString() + System.lineSeparator());
 		}
 		buffer.append(System.lineSeparator());
@@ -463,7 +493,7 @@ public class Main {
 				.desc("random test generation strategy")
 				.build();
 		
-		Option mosa = Option.builder("sbt")
+		Option sbt = Option.builder("sbt")
 				.argName("sbt")
 				.type(String.class)
 				.desc("search based test generation strategy, provide algorithm as -Dalgorithm=<AlgorithmName>")
@@ -479,22 +509,37 @@ public class Main {
 		Option execOnSut = Option.builder("exec_on_sut")
 				.argName("exec_on_sut")
 				.type(String.class)
-				.desc("execute tests on the actual system under test")
+				.desc("alias for exec_on_LR")
 				.build();
 		
-		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, "Lab Recruits: path to the gym folder");
+//		Option execOnLR = Option.builder("exec_on_LR")
+//				.argName("exec_on_LR")
+//				.type(String.class)
+//				.desc("execute tests on Lab Recruits")
+//				.build();
+//		
+//		Option execOnSE = Option.builder("exec_on_SE")
+//				.argName("exec_on_SE")
+//				.type(String.class)
+//				.desc("execute tests on Space Engineers")
+//				.build();
+//				
+		
+		Option executableDir = new Option("sut_exec_dir", "sut_exec_dir", true, 
+				"Lab Recruits: path to the gym folder "+System.lineSeparator()+" Space Engineers: path to installation folder");
 		executableDir.setArgs(1);
 		
-		Option sutExecutable = new Option("sut_executable", "sut_executable", true, "Lab Recruits: path to the level csv file");
+		Option sutExecutable = new Option("sut_executable", "sut_executable", true, 
+				"Lab Recruits: path to the level csv file "+System.lineSeparator()+" Space Engineers: path to game saves folder" );
 		sutExecutable.setArgs(1);
 		
 		Option agentName = new Option("agent_name", "agent_name", true, "Lab Recruits: name of the agent in the level, defaults to 'Agent1'");
 		agentName.setArgs(1);
 		
-		Option testsDir = new Option("tests_dir", "tests_dir", true, "Lab Recruits: path to folder containing tests to be executed");
+		Option testsDir = new Option("tests_dir", "tests_dir", true, "Path to folder containing serialized tests to be executed");
 		testsDir.setArgs(1);
 		
-		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Lab Recruits: maximum number of cycles for executing a goal");
+		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal (see aplib)");
 		maxCycles.setArgs(1);
 		
 		
@@ -532,17 +577,21 @@ public class Main {
 				.build();
 
 		
-		options.addOption(mosa);
+		options.addOption(sbt);
 		options.addOption(wholesuite);
 		options.addOption(random);
 		// options.addOption(tamer);
 		
-		options.addOption(execOnSut);
+		//options.addOption(execOnLR);
+		//options.addOption(execOnSE);
+		
 		options.addOption(executableDir);
 		options.addOption(sutExecutable);
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
+
+		options.addOption(execOnSut);
 		options.addOption(mutationAnalysis);
 		options.addOption(silent);
 		options.addOption(property);
@@ -573,78 +622,26 @@ public class Main {
 	 * @param options the options available
 	 */
 	private void execute (CommandLine line, Options options) {
-		//-exec_on_sut -sut_exec_dir=./gym/Linux -sut_executable=./mbt-files/tests/a.csv -agent_name=agent2 -tests_dir=./mbt-files/tests/a/
-		/*
-		 * -exec_on_sut: enable execution on LabRecruits
-		 * -sut_exec_dir: folder containing gym
-		 * -sut_executable: path to LabRecruits level without .csv extension
-		 * -agent_name: name of the agent
-		 * -tests_dir: folder containing the serialized test cases
-		 */
+//		if (line.hasOption("exec_on_sut") || line.hasOption("exec_on_LR")) {			
+//			executeOnLabRecruits(line,options);
+//		}else if (line.hasOption("exec_on_SE")) {
+//			executeOnSpaceEngineers(line,options);
+//		}else if (line.hasOption("mutation_analysis")) {			
+//			runMutationAnalysis(line);
+//		}else {
+//			runTestGeneration(line);
+//		}
+		setGlobalProperties (line);
+		
 		if (line.hasOption("exec_on_sut")) {
 			
-			setGlobalProperties (line);
-			
-			String sutExecutableDir = "";
-			String sutExecutable = "";
-			String testsDir = "";
-			String agentName = "";
-			Integer maxCycles = 200;
-			if (line.hasOption("sut_exec_dir")) {
-				sutExecutableDir = line.getOptionValue("sut_exec_dir");
+			if (MBTProperties.SUT.equalsIgnoreCase("LR")) {
+				executeOnLabRecruits(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("SE")) {
+				executeOnSpaceEngineers(line,options);
 			}else {
-				System.out.println("exec_on_sut option needs sut_exec_dir parameter");
+				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
-			
-			if (line.hasOption("sut_executable")) {
-				sutExecutable = line.getOptionValue("sut_executable");
-			}
-			
-			if (line.hasOption("tests_dir")) {
-				testsDir = line.getOptionValue("tests_dir");
-			}else {
-				System.out.println("exec_on_sut option needs tests_dir parameter");
-			}
-			
-			if (line.hasOption("agent_name")) {
-				agentName = line.getOptionValue("agent_name", "Agent1");
-			}else {
-				System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
-			}
-			
-			if (line.hasOption("max_cycles")) {
-				maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
-			}else {
-				System.out.println("exec_on_sut option needs max_cycles parameter, but not provided, using default: 200");
-			}
-			
-			LabRecruitsTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
-			
-			executor.execute();
-			
-			// save stats
-			writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
-			
-			// save debug data
-			writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
-			
-			
-			
-			// save execution data for debug
-			//String executorDebug = executor.getDebutTableTable();
-			//String eexecutorDebugFileName = testsDir+"/execution_statistics.csv";
-			//File debugFile = new File(eexecutorDebugFileName);
-			//try {
-
-			//	FileUtils.writeStringToFile(debugFile, executorDebug, Charset.defaultCharset());
-				
-			//} catch (IOException e) {
-			//	e.printStackTrace();
-			//}
-			
-			
-			
-			
 		}else if (line.hasOption("mutation_analysis")) {			
 			runMutationAnalysis(line);
 		}else {
@@ -654,6 +651,132 @@ public class Main {
 	}
 
 
+	/**
+	 * Execute a test case generated from an EFSM model on Lab Recruits game
+	 * 
+	 * @param line
+	 * @param options
+	 */
+	private void executeOnLabRecruits (CommandLine line, Options options) {
+		// setGlobalProperties (line);		
+		String sutExecutableDir = "";
+		String sutExecutable = "";
+		String testsDir = "";
+		String agentName = "";
+		Integer maxCycles = 200;
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir");
+		}else {
+			System.out.println("exec_on_lr option needs sut_exec_dir parameter");
+		}
+		
+		if (line.hasOption("sut_executable")) {
+			sutExecutable = line.getOptionValue("sut_executable");
+		}else {
+			System.out.println("exec_on_lr option needs sut_executable parameter");
+		}
+		
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.out.println("exec_on_lr option needs tests_dir parameter");
+		}
+		
+		if (line.hasOption("agent_name")) {
+			agentName = line.getOptionValue("agent_name", "Agent1");
+		}else {
+			System.out.println("exec_on_lr option needs agent_name parameter, but not provided, using default: agent1");
+		}
+		
+		if (line.hasOption("max_cycles")) {
+			maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", "200"));
+		}else {
+			System.out.println("exec_on_lr option needs max_cycles parameter, but not provided, using default: 200");
+		}
+		
+		TestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+		
+		executor.execute();
+		
+		// save stats
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+		
+		// save debug data
+		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+		
+		
+		
+		// save execution data for debug
+		//String executorDebug = executor.getDebutTableTable();
+		//String eexecutorDebugFileName = testsDir+"/execution_statistics.csv";
+		//File debugFile = new File(eexecutorDebugFileName);
+		//try {
+
+		//	FileUtils.writeStringToFile(debugFile, executorDebug, Charset.defaultCharset());
+			
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
+	}
+	
+	/**
+	 * Execute a test case generated from an EFSM model on Space Engineers game. Parameters are interpreted as
+	 * - sut_exec_dir: full path to Spacee Engineers Bin64 folder
+	 *   default is "C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Bin64"
+	 *   remember to run as SpaceEngineers.exe -plugin Ivxr.SePlugin.dll
+	 * - sut_executable: full path to the folder with level game save
+	 * - tests_dir: path to the folder containing serialized EFSM tests
+	 * 
+	 * @param line
+	 * @param options
+	 */
+	private void executeOnSpaceEngineers (CommandLine line, Options options) {
+		
+		// setGlobalProperties (line);		
+		String sutExecutableDir = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\Bin64\\";
+		String sutExecutable = "";
+		String testsDir = "";
+		Integer maxCycles = 200;
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir","C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\Bin64\\");
+		}else {
+			System.out.println("exec_on_se option needs sut_exec_dir parameter, but it is not provided. Using default "
+					+ "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\Bin64");
+		}
+		
+		if (line.hasOption("sut_executable")) {
+			sutExecutable = line.getOptionValue("sut_executable");
+		}else {
+			System.out.println("exec_on_se option needs sut_executable parameter");
+		}
+		
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.out.println("exec_on_sut option needs tests_dir parameter");
+		}
+			
+		if (line.hasOption("max_cycles")) {
+			maxCycles = Integer.parseInt(line.getOptionValue("max_cycles", maxCycles.toString()));
+		}else {
+			System.out.println("exec_on_se option needs max_cycles parameter, but not provided, using default: 200");
+		}
+		
+		TestExecutionHelper executor = new SpaceEngineersTestExecutionHelper(sutExecutableDir, sutExecutable, testsDir, maxCycles);
+		
+		executor.execute();
+		
+		// save stats
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+				
+		// save debug data
+		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+	}
+	
+	
+	
+	
+	
 	/**
 	 * Method adapted from the EvoSuite project
 	 * Read commandline arguments and update the global properties classes (both MBT and EvoSuite)

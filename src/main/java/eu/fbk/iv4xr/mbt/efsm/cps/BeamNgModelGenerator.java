@@ -1,8 +1,10 @@
 package eu.fbk.iv4xr.mbt.efsm.cps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.util.Precision;
 import org.jgrapht.alg.util.Pair;
@@ -15,6 +17,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
+import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
@@ -42,15 +45,17 @@ import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleSum;
  * @author prandi
  *
  */
-public class BeamNgModelGenerator {
+public class BeamNgModelGenerator implements EFSMProvider {
 	
 	// Field definition
 	
+	private int n_digits = MBTProperties.beamng_n_digitis;
+	
 	// field size
-	private Double min_x_coord = MBTProperties.beamng_min_x_coord;
-	private Double min_y_coord = MBTProperties.beamng_min_y_coord;
-	private Double max_x_coord = MBTProperties.beamng_max_x_coord;
-	private Double max_y_coord = MBTProperties.beamng_max_y_coord;
+	private Double min_x_coord = Precision.round(MBTProperties.beamng_min_x_coord, n_digits);
+	private Double min_y_coord = Precision.round(MBTProperties.beamng_min_y_coord, n_digits);
+	private Double max_x_coord = Precision.round(MBTProperties.beamng_max_x_coord, n_digits);
+	private Double max_y_coord = Precision.round(MBTProperties.beamng_max_y_coord, n_digits);
 	private Const<Double> c_min_x_coord = new Const<Double>(min_x_coord);
 	private Const<Double> c_min_y_coord = new Const<Double>(min_y_coord);
 	private Const<Double> c_max_x_coord = new Const<Double>(max_x_coord);
@@ -58,8 +63,8 @@ public class BeamNgModelGenerator {
 	
 	
 	// initial position
-	private Double initial_x_coord = MBTProperties.beamng_initial_x_coord;
-	private Double initial_y_coord = MBTProperties.beamng_initial_y_coord;
+	private Double initial_x_coord = Precision.round(MBTProperties.beamng_initial_x_coord, n_digits);
+	private Double initial_y_coord = Precision.round(MBTProperties.beamng_initial_y_coord, n_digits);
 	private Var<Double> pos_x = new Var<Double>("pos_x", initial_x_coord);
 	private Var<Double> pos_y = new Var<Double>("pos_y", initial_y_coord);
 	
@@ -67,27 +72,28 @@ public class BeamNgModelGenerator {
 
 	
 	// number of slices to divide 360 angle
-	private int nDirections = MBTProperties.beamng_n_directions;
+	private double nDirections = Precision.round(MBTProperties.beamng_n_directions, n_digits);
 	// maximum permitted angle
-	private double maxAngle = MBTProperties.beamng_max_angle;
+	private double maxAngle = Precision.round(MBTProperties.beamng_max_angle, n_digits);
 	
 	
 	// street length
-	private int minStreetLength = MBTProperties.beamng_min_street_length;
-	private int maxStreetLength = MBTProperties.beamng_max_street_length;
-	private int streetChunckLength = MBTProperties.beamng_street_chunck_length;
+	private double minStreetLength = Precision.round(MBTProperties.beamng_min_street_length, n_digits);
+	private double maxStreetLength = Precision.round(MBTProperties.beamng_max_street_length, n_digits);
+	private double streetChunckLength = Precision.round(MBTProperties.beamng_street_chunck_length, n_digits);
+	
 	
 	
 	
 	// dependent values
 	
 	// vector of possible street lenghts
-	private int[] streetLengthSteps;
+	private double[] streetLengthSteps;
 	// max possible turn considering maxAngle
 	private int maxRotation;
 	// min rotation angle
 	private double minAngle;
-	
+		
 	// Model
 	private EFSM model;
 	
@@ -102,6 +108,9 @@ public class BeamNgModelGenerator {
 	// EFSM builder
 	EFSMBuilder modelBuilder = new EFSMBuilder(EFSM.class);
 	
+	// tmp map that store the position of the states
+	Map<EFSMState, Integer> stateIndex = new HashMap<EFSMState, Integer>();
+	
 	public BeamNgModelGenerator() {
 		
 		// init street Length Steps
@@ -112,11 +121,13 @@ public class BeamNgModelGenerator {
 //		}
 		
 		if (minStreetLength >= maxStreetLength) {
-			streetLengthSteps = new int[1];
+			streetLengthSteps = new double[1];
 			streetLengthSteps[0] = minStreetLength;
 		}else {
-			streetLengthSteps = new int[ 1 + Math.round( (maxStreetLength - minStreetLength)/streetChunckLength) ];
-			int currentLenght = minStreetLength;
+			
+			int nSteps = (int) Math.floor( (maxStreetLength - minStreetLength) / streetChunckLength );
+			streetLengthSteps = new double[ 1 + nSteps ];
+			double currentLenght = minStreetLength;
 			for (int i = 0; i < streetLengthSteps.length; i++) {
 				streetLengthSteps[i] = currentLenght;
 				currentLenght = currentLenght + streetChunckLength;
@@ -124,7 +135,7 @@ public class BeamNgModelGenerator {
 		}
 		
 		// compute max possible rotation index
-		minAngle = 360f / (float)nDirections;
+		minAngle = Precision.round(360d / nDirections, n_digits);
 		if (minAngle >= maxAngle) {
 			maxRotation = 1;
 		}else {
@@ -148,11 +159,11 @@ public class BeamNgModelGenerator {
 	 * @param streetLength
 	 * @return
 	 */
-	private Pair<Double,Double> getXY(double angle, int streetLength) {
+	private Pair<Double,Double> getXY(double angle, double streetLength) {
 		
 		double randiants = Math.toRadians(angle);
-		double x = Precision.round((double)streetLength * Math.cos(randiants),3);
-		double y = Precision.round((double)streetLength * Math.sin(randiants),3);
+		double x = Precision.round((double)streetLength * Math.cos(randiants),n_digits);
+		double y = Precision.round((double)streetLength * Math.sin(randiants),n_digits);
 		
 		return new Pair<Double, Double>(x, y);
 
@@ -172,11 +183,15 @@ public class BeamNgModelGenerator {
 		//EFSMState start = new EFSMState(initialStateName);
 		//modelStates.add(start);
 		
-		double totalAngle = 0f;
-		while(totalAngle < 360f) {
+		// double totalAngle = 0f;
+		double totalAngle = minAngle;
+		Integer idx = 0;
+		while(totalAngle <= 360d) {
 			EFSMState state = new EFSMState(Double.toString(totalAngle));
+			stateIndex.put(state, idx);
+			idx++;
 			modelStates.add(state);
-			totalAngle = totalAngle + minAngle;
+			totalAngle = Precision.round(totalAngle + minAngle, n_digits);
 		}
 		
 		return result;
@@ -189,7 +204,7 @@ public class BeamNgModelGenerator {
 	 * @param streetLength
 	 * @return
 	 */
-	private EFSMGuard canMove(double angle, int streetLength) {
+	private EFSMGuard canMove(double angle, double streetLength) {
 		
 		Pair<Double, Double> delta_xy = getXY(angle, streetLength);
 			
@@ -218,7 +233,7 @@ public class BeamNgModelGenerator {
 	 * @param streetLength
 	 * @return
 	 */
-	private EFSMParameter moveParameter(double angle, int streetLength) {
+	private EFSMParameter moveParameter(double angle, double streetLength) {
 		
 		Pair<Double, Double> delta_xy = getXY(angle, streetLength);
 		
@@ -234,7 +249,7 @@ public class BeamNgModelGenerator {
 	 * @param streetLength
 	 * @return
 	 */
-	private EFSMOperation moveAction(double angle, int streetLength) {
+	private EFSMOperation moveAction(double angle, double streetLength) {
 		
 		Pair<Double, Double> delta_xy = getXY(angle, streetLength);
 		
@@ -247,23 +262,46 @@ public class BeamNgModelGenerator {
 	}
 	
 	private List<Double> getValidAngles(double angle) {
-		List<Double> validAngles = new ArrayList<Double>();;
+		List<Double> validAngles = new ArrayList<Double>();
 		validAngles.add(angle);
 		for (int i = 1; i <= maxRotation; i++) {
-			double posAngle = angle + i * minAngle;
-			double negAngle = angle - i * minAngle;
+			double posAngle = Precision.round(angle + i * minAngle, n_digits);
+			double negAngle = Precision.round(angle - i * minAngle, n_digits);
+			Precision.round(angle + nDirections * minAngle , n_digits);
 			
 			if (negAngle < 0f) {
-				negAngle = 360f + negAngle;
+				negAngle = Precision.round(360f + negAngle, n_digits);
 			}
 			if (posAngle >= 360f) {
-				posAngle = posAngle - 360f;
+				posAngle = Precision.round(posAngle - 360f, n_digits);
 			}
 			validAngles.add(posAngle);
 			validAngles.add(negAngle);
 		}
 
 	
+		return validAngles;
+	}
+	
+	private List<Double> getValidAngles(EFSMState s){
+		List<Double> validAngles = new ArrayList<Double>();
+		validAngles.add(Double.parseDouble(s.getId()));
+		
+		Integer sIdx = stateIndex.get(s);
+		Integer maxIdx = stateIndex.size();
+		
+		for (int i = 1; i <= maxRotation; i++) {
+			
+			int posIdx = (sIdx + i) % (maxIdx);
+			int negIdx = (sIdx  + maxIdx - i) % (maxIdx );
+			
+			double posAngle = Double.parseDouble(modelStates.get(posIdx).getId());
+			double negAngle = Double.parseDouble(modelStates.get(negIdx).getId());
+			
+			validAngles.add(posAngle);
+			validAngles.add(negAngle);
+		}
+		
 		return validAngles;
 	}
 	
@@ -280,7 +318,7 @@ public class BeamNgModelGenerator {
 			// get angle
 			double angle = Double.parseDouble(s.getId());
 			// for each street lenght
-			for (int step : streetLengthSteps) {
+			for (double step : streetLengthSteps) {
 				// create a transition
 				EFSMTransition t_start_s = new EFSMTransition();
 				// get the guard
@@ -301,13 +339,14 @@ public class BeamNgModelGenerator {
 		for (EFSMState s : modelStates) {
 			// get angle
 			double angle = Double.parseDouble(s.getId());
-			List<Double> validAngles = getValidAngles(angle);
+			//List<Double> validAngles = getValidAngles(angle);
+			List<Double> validAngles = getValidAngles(s);
 			for(Double a : validAngles) {
 				EFSMState targetState = new EFSMState(Double.toString(a));
 				if (!modelStates.contains(targetState)) {
 					throw new RuntimeException();
 				}
-				for (int step : streetLengthSteps) {
+				for (double step : streetLengthSteps) {
 					// create a transition
 					EFSMTransition t_s_targetState = new EFSMTransition();
 					// get the guard

@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
@@ -27,7 +28,7 @@ import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 class EFSMTestExecutorSerializedTest {
 
 	@Test
-	@Ignore
+	@Disabled
 	void testDeserializeAndTest () {
 		// Serialized model from buttons_doors_1_with_count level
 		String serializedModelFile = getLocalFilePath ("serialization/EFSM_model.ser");
