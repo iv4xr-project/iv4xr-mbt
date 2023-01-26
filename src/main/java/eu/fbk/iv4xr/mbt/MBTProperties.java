@@ -168,6 +168,10 @@ public class MBTProperties {
 	
 	public static String EXECUTIONDEBUG_FILE () { return OUTPUT_DIR + File.separator + STATISTICS_DIR_NAME + File.separator + "execution_debug.csv";}
 	
+	@Parameter(key = "save_context", group = "Runtime", description = "Save the value of the context during execution")
+	public static Boolean SAVE_CONTEXT = false;
+	
+	
 	@Parameter(key = "statistics_interval", group = "SUT execution", description = "Duration of statistics snapshot (in seconds, should be less than search budget)")
 	@LongValue(min = 1)
 	public static long STATISTICS_INTERVAL = 10;

@@ -90,7 +90,7 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 		}
 	}
 	
-	private ExecutionResult runTest (Testcase test) {
+	public static ExecutionResult runTest (Testcase test) {
 		ExecutionListener executionListner = new EFSMTestExecutionListener(test);
 		EFSMTestExecutor.getInstance().addListner(executionListner);
 		ExecutionResult executionResult = EFSMTestExecutor.getInstance().executeTestcase(test);

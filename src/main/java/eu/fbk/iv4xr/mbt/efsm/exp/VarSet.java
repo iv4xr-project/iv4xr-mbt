@@ -77,6 +77,19 @@ public class VarSet<T> implements Cloneable, Serializable {
 		return out;
 	}
 
+	public String toCsvLine() {
+		String out = "";
+		for(String key : this.varSet.keySet()) {
+			out = out + this.varSet.get(key).toDebugString()+","; 
+		}
+		if (this.varSet.keySet().size() > 0) {
+			out = out.substring(0, out.length()-1) + System.lineSeparator();
+		}
+		
+		return out;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
