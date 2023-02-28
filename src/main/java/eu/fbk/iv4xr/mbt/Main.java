@@ -31,6 +31,7 @@ import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
@@ -51,6 +52,7 @@ import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 
@@ -386,9 +388,9 @@ public class Main {
 				// Save context 
 				if (MBTProperties.SAVE_CONTEXT) {
 					// Execute to get the context seuqnece
-					ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
-					List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();					
-					String contextListToCsv = contextListToCsv(contexts);
+					// ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
+					// List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();					
+					String contextListToCsv = fullTraceToCsv(abstractTestSequence);
 					FileUtils.writeStringToFile(ctxFile, contextListToCsv, Charset.defaultCharset());
 					
 				}
@@ -420,11 +422,34 @@ public class Main {
 	}
 	
 	
-	private String contextListToCsv(List<EFSMContext> listCtx) {
+	private String fullTraceToCsv(AbstractTestSequence abstractTestSequence) {		
+		// Execute to get the context sequence
+		ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
+		// get context list
+		List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();
+		// get transition list
+		Path path = abstractTestSequence.getPath();
+		// get initial context
+		EFSMContext context = EFSMFactory.getInstance().getEFSM().getInitialConfiguration().getContext();
+		
+		contexts.add(0, context);
+		
 		StringBuffer buffer = new StringBuffer();
-		for(EFSMContext ctx : listCtx) {
-			buffer.append(ctx.toCsvLine());
+		for (int i = 0; i < path.getLength(); i++) {
+			
+			EFSMContext efsmContextPre = contexts.get(i);
+			EFSMContext efsmContextPost = contexts.get(i+1);
+			EFSMTransition transition = path.getTransitionAt(i);
+			
+			String l = efsmContextPre.toDebugString() + " [" + transition.toString() + "] " +  efsmContextPost.toDebugString() + System.lineSeparator(); 
+			buffer.append(l);
+			
+			
 		}
+		
+//		for(EFSMContext ctx : listCtx) {
+//			buffer.append(ctx.toCsvLine());
+//		}
 		return buffer.toString();
 
 	}
