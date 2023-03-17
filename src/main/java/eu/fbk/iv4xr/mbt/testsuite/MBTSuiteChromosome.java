@@ -20,7 +20,7 @@ public class MBTSuiteChromosome extends SuiteChromosome {
 		super();
 	}
 	
-	public MBTSuiteChromosome(ChromosomeFactory testChromosomeFactory) {
+	public MBTSuiteChromosome(ChromosomeFactory<MBTChromosome> testChromosomeFactory) {
 		super(testChromosomeFactory);
 		// TODO Auto-generated constructor stub
 	}
@@ -34,4 +34,19 @@ public class MBTSuiteChromosome extends SuiteChromosome {
 		return copy;
 	}
 	
+	
+	@Override
+	public double getFitness() {
+		
+		if (tests == null || tests.size() == 0) {
+			return Double.MAX_VALUE;
+		}
+		
+		double fitness = 0d;
+		for (MBTChromosome test : tests) {
+			fitness += test.getFitness();
+		}
+		
+		return fitness;
+	}
 }
