@@ -27,7 +27,9 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
@@ -352,12 +354,16 @@ public class Main {
 			String txtFileName = testFolder + File.separator + "test_" + count + ".txt";
 			String serFileName = testFolder + File.separator + "test_" + count + ".ser";
 			String csvFileName = testFolder + File.separator + "test_" + count + ".csv";
+			String ctxFileName = testFolder + File.separator + "test_" + count + "_context.txt";
+			
 			File dotFile = new File (dotFileName);
 			File txtFile = new File (txtFileName);
 			File csvFile = new File (csvFileName);
+			File ctxFile = new File (ctxFileName);
 			AbstractTestSequence abstractTestSequence = (AbstractTestSequence)testCase.getTestcase();
 			// get the list of goals covered by this individual
 			String coveredGoals = getGoveredGoalsAsComment (testCase);
+									
 			try {
 				String testAsDot = ((AbstractTestSequence)testCase.getTestcase()).toDot();
 				String testAsText = testCase.getTestcase().toString();
@@ -365,8 +371,8 @@ public class Main {
 				FileUtils.writeStringToFile(txtFile, coveredGoals + testAsText, Charset.defaultCharset());
 				TestSerializationUtils.saveTestSequence((AbstractTestSequence) testCase.getTestcase(), serFileName);
 				
-				// BeamNG specific
-				
+				// BeamNG specific 
+				// TODO Make this part an executor?
 				if ( (MBTProperties.SUT_EFSM.toString().toLowerCase()).contains("beamng")) {
 					try {
 						List<Pair<Integer, Integer>> points = TestToPoints.getInstance().testcaseToPoints(abstractTestSequence);
@@ -376,6 +382,19 @@ public class Main {
 						e.printStackTrace();
 					}
 				}
+				
+				// Save context 
+				if (MBTProperties.SAVE_CONTEXT) {
+					// Execute to get the context seuqnece
+					ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
+					List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();					
+					String contextListToCsv = contextListToCsv(contexts);
+					FileUtils.writeStringToFile(ctxFile, contextListToCsv, Charset.defaultCharset());
+					
+				}
+				
+				
+				
 				
 				
 			} catch (IOException e) {
@@ -395,9 +414,19 @@ public class Main {
 	private String pointsToCsv(List<Pair<Integer, Integer>> points) {
 		StringBuffer buffer = new StringBuffer();
 		for (Pair<Integer, Integer> point : points) {
-			buffer.append(point.toString("%1$s,%2$s") + "\n");
+			buffer.append(point.toString("%1$s,%2$s") + System.lineSeparator());
 		}
 		return buffer.toString();
+	}
+	
+	
+	private String contextListToCsv(List<EFSMContext> listCtx) {
+		StringBuffer buffer = new StringBuffer();
+		for(EFSMContext ctx : listCtx) {
+			buffer.append(ctx.toCsvLine());
+		}
+		return buffer.toString();
+
 	}
 
 	/**

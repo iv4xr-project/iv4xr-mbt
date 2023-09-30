@@ -99,5 +99,9 @@ public class Var<T> implements Exp<T> {
 	}
 
 	
+	public Var<T> clone(){
+		Var<T> newVar = new Var<T>(this.getId(), this.getValue());
+		return newVar;
+	}
 
 }

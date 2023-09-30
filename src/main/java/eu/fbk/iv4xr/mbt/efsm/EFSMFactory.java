@@ -14,6 +14,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.efsm.spaceEngineering.SingleBlockWeldingAndGrinding;
+import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCall1;
 
 
 /**
@@ -69,6 +70,11 @@ public class EFSMFactory {
 		case "examples.traffic_light":
 			TrafficLight trafficLight = new TrafficLight();
 			efsm = trafficLight.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "usagecontrol.phone_call_1":
+			PhoneCall1 phoneCall1 = new PhoneCall1();
+			efsm = phoneCall1.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		default:

@@ -1,7 +1,9 @@
 package eu.fbk.iv4xr.mbt.efsm;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -29,9 +31,19 @@ public class EFSMContext implements Cloneable, Serializable  {
 		}	
 	}
 	
+	public EFSMContext(List<Var> vars) {
+		if (context == null) {
+			context = new VarSet();
+		}
+		for(Var v : vars ) {
+			context.put(v);
+		}
+	}
+	
+	
 	@Override
 	public EFSMContext clone() {	
-		//return SerializationUtils.clone(this);
+	//return SerializationUtils.clone(this);
 		
 		// get all variables in the context
 		Collection allVariables = context.getAllVariables();
@@ -41,9 +53,25 @@ public class EFSMContext implements Cloneable, Serializable  {
 		EFSMContext newContext = new EFSMContext(allVariablesArray);
 		
 		return newContext;
-
 	}
 
+	public EFSMContext getNewCopy() {
+		
+		
+		// get all variables in the context
+		Collection<Var<?>> allVariables = context.getAllVariables();
+		   
+		List<Var> clonedVars = new ArrayList<>();
+		for(Var<?> v : allVariables) {
+			clonedVars.add(v.clone());
+		}
+		
+		EFSMContext newCtx = new EFSMContext(clonedVars);		
+		
+		return newCtx;
+	}
+	
+	
 	public VarSet getContext() {
 		return this.context;
 	}
@@ -66,6 +94,10 @@ public class EFSMContext implements Cloneable, Serializable  {
 	// to string for debugging
 	public String toDebugString() {
 		return context.toDebugString();
+	}
+	
+	public String toCsvLine() {
+		return context.toCsvLine();
 	}
 	
 	public String toString() {

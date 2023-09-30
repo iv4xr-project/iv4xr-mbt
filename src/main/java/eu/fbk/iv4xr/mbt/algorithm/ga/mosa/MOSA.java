@@ -235,6 +235,13 @@ public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 		// the next two lines are needed since that coverage information are used
 		// during EvoSuite post-processing
 		MBTChromosome tch = (MBTChromosome) solution;
+		
+		// check if test is valid
+		if (!tch.getTestcase().isValid()) {
+			logger.debug("invalid test: {}", tch.getTestcase().toString());
+			return;
+		}
+		
 		tch.getTestcase().getCoveredGoals().add(covered);
 
 		// store the test cases that are optimal for the test goal in the
