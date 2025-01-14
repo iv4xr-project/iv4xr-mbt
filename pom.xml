@@ -225,7 +225,7 @@
 	<dependency>
 	    <groupId>com.github.iv4xr-project</groupId>
 	    <artifactId>iv4xr-se-plugin</artifactId>
-	    <version>34679bb</version>
+	    <version>34679bb901</version>
 	</dependency>
 	
 		<!--dependency>
