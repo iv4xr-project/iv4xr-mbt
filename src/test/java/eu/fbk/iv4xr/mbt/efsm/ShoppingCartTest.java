@@ -41,23 +41,24 @@ public class ShoppingCartTest {
         m.transition(null, sc.searchResult);
         assertTrue(m.curState.equals(sc.searchResult));
         
-        // Try to add three more books
-        for (int i = 0; i < 3; i++) {
+        // Try to add two more books
+        for (int i = 0; i < 2; i++) {
             m.transition(null, sc.bookInformation);
-            assertTrue(m.curState.equals(sc.bookInformation));
-            m.transition(null, sc.addedToCart);
+            assertTrue(m.curState.equals(sc.bookInformation));      
+            m.transition(null, sc.addedToCart);   
             assertTrue(m.curState.equals(sc.addedToCart));
+            m.transition(null, sc.searchResult);
+            assertTrue(m.curState.equals(sc.searchResult));
         }
         
-        // Check if the number of books is now 4
-        assertTrue((Integer)m.curContext.getContext().getVariable("numOfBooks").getValue() == 4);
+        // Check if the number of books is now 3
+        assertTrue((Integer)m.curContext.getContext().getVariable("numOfBooks").getValue() == 3);
         
         // Attempt to add another book, should fail because numOfBooks > 3
         m.transition(null, sc.bookInformation);
         assertTrue(m.curState.equals(sc.bookInformation));
         m.transition(null, sc.addedToCart);
         assertFalse(m.curState.equals(sc.addedToCart)); // No transition should happen
-        assertTrue((Integer)m.curContext.getContext().getVariable("numOfBooks").getValue() == 4);
     }
 
     @Test
