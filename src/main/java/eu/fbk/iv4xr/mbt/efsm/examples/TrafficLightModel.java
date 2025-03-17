@@ -6,7 +6,6 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
@@ -20,19 +19,10 @@ import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
-/**
- * 
- * Implementing
- * Figure 3.10: Extended state machine model of a traffic light controller that keeps 
- * track of the passage of time, assuming it reacts at regular intervals.
- * Reference:  Lee & Seshia, Introduction to Embedded Systems
- *
- */
-
-public class TrafficLight implements EFSMProvider {
+public class TrafficLightModel {
 	
-public enum outSignal{ sigR, sigG, sigY, sigP };
-
+	
+	public enum outSignal{ sigR, sigG, sigY };
 	
 	
 	//// States
@@ -48,8 +38,9 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	public EFSMContext tlContext = new EFSMContext(count);
 	
 	//// input
-	private Var<Boolean> pedestrian = new Var<Boolean>("pedestrian",true);
-
+	public Var<Boolean> pedestrian = new Var<Boolean>("pedestrian",true);
+	//public EFSMParameter input = new EFSMParameter(pedestrian);
+			
 	//// output 
 	public Var<Enum> signal = new Var<Enum>("signal", outSignal.sigR);
 	//public EFSMParameter output = new EFSMParameter(signal);
@@ -73,7 +64,6 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	// count greater or equal 60
 	BoolOr countGreatEqThanSixty = new BoolOr(countGreatThanSixty, countEqualSixty);
 	// count less than 60
-
 	BoolNot countLessThanSixty = new BoolNot(countGreatEqThanSixty);
 	
 	// constant 5
@@ -91,15 +81,8 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	BoolAnd countGreatEqThanSixtyAndPedestrian = new BoolAnd(countGreatEqThanSixty,pedestrian);
 	BoolAnd countLessThanSixtyAndPedestrian = new BoolAnd(countLessThanSixty,pedestrian);
 	
-	public Var<Boolean> getPedestrian() {
-		return pedestrian;
-	}
-
-	public void setPedestrian(Var<Boolean> pedestrian) {
-		this.pedestrian = pedestrian;
-	}
 	
-	public TrafficLight() {
+	public TrafficLightModel() {
 		
 	}
 	
@@ -137,65 +120,26 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 		Var<Enum> t3Out = new Var<Enum>("signal", outSignal.sigY);
 		t_3.setOutParameter(new EFSMParameter(t3Out));
 		
-		
-		
-		// t_4 : green -> pending
+		// t_4 : green -> pedestrian
 		EFSMTransition t_4 = new EFSMTransition();
 		// input
 		Var<Boolean> t4In = new Var<Boolean>("pedestrian",true);		
 		t_4.setInParameter(new EFSMParameter(t4In));
 		// guard
 		t_4.setGuard(new EFSMGuard(countLessThanSixtyAndPedestrian));
-		
-		// no operation and no output
-		t_4.setOp(new EFSMOperation(incCount));
-		// t_4.setOp(new EFSMOperation(resetCount));
-		
-		// Var<Enum> t4Out = new Var<Enum>("signal", outSignal.sigP);
-		// t_4.setOutParameter(new EFSMParameter(t4Out));
-		
 		// no operation and no output
 		
-				
-		// t_5 : yellow -> yellow # increment count
-		EFSMTransition t_5 = new EFSMTransition();
-		t_5.setGuard(new EFSMGuard(countLessThanFive));
-		t_5.setOp(new EFSMOperation(incCount));
-		
-		// t_6 : yellow -> red 
-		EFSMTransition t_6 = new EFSMTransition();
-		t_6.setGuard(new EFSMGuard(countGreatEqThanFive));
-		t_6.setOp(new EFSMOperation(resetCount));
-		Var<Enum> t6Out = new Var<Enum>("signal", outSignal.sigR);
-		t_6.setOutParameter(new EFSMParameter(t6Out));
-		
-		// t_7 : pending -> pending # increment count
-		EFSMTransition t_7 = new EFSMTransition();
-		t_7.setGuard(new EFSMGuard(countLessThanSixty));
-		t_7.setOp(new EFSMOperation(incCount));
-		
-		
-		// t_8 : pending -> yellow 
-		EFSMTransition t_8 = new EFSMTransition();
-		t_8.setGuard(new EFSMGuard(countGreatEqThanSixty));
-		t_8.setOp(new EFSMOperation(resetCount));
-		Var<Enum> t8Out = new Var<Enum>("signal", outSignal.sigY);
-		t_8.setOutParameter(new EFSMParameter(t6Out));
 		
 		
 		
-		
-
 		//// The model and the associated builder
-
 		EFSM trafficLightEFSM;
 
 		EFSMBuilder trafficLightEFSMBuilder = new EFSMBuilder(EFSM.class);
 
 		// parameter generator 
 		// FIXME
-		TrafficLightParameterGenerator parameterGenerator = new TrafficLightParameterGenerator();
-
+		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 		
 		
 		trafficLightEFSM = trafficLightEFSMBuilder
@@ -204,13 +148,10 @@ public enum outSignal{ sigR, sigG, sigY, sigP };
 	    		.withTransition(green, green, t_2)
 	    		.withTransition(green, yellow, t_3)
 	    		.withTransition(green, pending, t_4)
-	    		.withTransition(yellow, yellow, t_5)
-	    		.withTransition(yellow, red, t_6)
-	    		.withTransition(pending, pending, t_7)
-	    		.withTransition(pending, yellow, t_8)
-	    		.build(red,tlContext, parameterGenerator);
+	    		.build(red,tlContext, lrParameterGenerator);
 	    
 	    return(trafficLightEFSM);
 	}
-
+	
+	
 }
