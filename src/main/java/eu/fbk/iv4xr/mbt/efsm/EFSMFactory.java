@@ -12,6 +12,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1FireWithDeath;
+import eu.fbk.iv4xr.mbt.efsm.labRecruits.RGButton1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.efsm.spaceEngineering.SingleBlockWeldingAndGrinding;
 import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCall1;
@@ -50,6 +51,11 @@ public class EFSMFactory {
 		case "labrecruits.buttons_doors_fire_with_death":
 			ButtonDoors1FireWithDeath bdfwd = new ButtonDoors1FireWithDeath();
 			efsm = bdfwd.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "labrecruits.buttons_rgb":
+			RGButton1 rgbbtn =  new RGButton1();
+			efsm = rgbbtn.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		case "se.weld_and_grind":
