@@ -28,7 +28,7 @@ public class RGButton1 implements EFSMProvider {
     public EFSMState bb = new EFSMState("CBb");
 
     // Screen
-    public EFSMState cs = new EFSMState("CS1");
+    // public EFSMState cs = new EFSMState("CS1");
 
     // context variables
     public Var<Boolean> br_state = new Var<>("CBr", false);
@@ -120,7 +120,7 @@ public class RGButton1 implements EFSMProvider {
         EFSMTransition t_9 = new EFSMTransition();
         t_9.setInParameter(inputParExplore);
         t_9.setId("t9");
-        RGButton1EFSMBuilder.withTransition(bb, br, t_9);
+        RGButton1EFSMBuilder.withTransition(bb, bg, t_9);
 
         return RGButton1EFSMBuilder.build(bb, RGButton1ctx, lrParameterGenerator);
     }

@@ -25,7 +25,7 @@ import world.BeliefState;
  */
 public class LabRecruitsTestConcretizer extends TestConcretizer {
 
-	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f ;
+	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f;
 
 	/**
 	 * 
@@ -34,49 +34,62 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		super();
 	}
 
-
 	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
+		EFSMState src = t.getSrc();
+		EFSMState tgt = t.getTgt();
+
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
 		// look at src and tgt state to understand the type of transition
-		if (t.getSrc().equals(t.getTgt())) {
+		if (isScreen(tgt)) {
+
+		} else if (src.equals(tgt)) {
 			// if self loop we are pressing a button
-			//subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
-			subGoals.add(GoalLib.entityInteracted(convertStateToString(t.getTgt())));
-			
-		} else if (oppositeDoorSides(t.getSrc(), t.getTgt())) {
-			// to optimize
-			//String doorName = convertDoorSideToDoorName(t.getTgt().getId());
-			String doorName = convertStateToString(t.getTgt());
-			subGoals.add(GoalLib.entityStateRefreshed(doorName));
-			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName+"should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))) ;
-		} else {
-			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(t.getTgt())) ;
-			if (LabRecruitsRandomEFSM.getStateType(t.getTgt()).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
-				// target is a goal-flag:
-				String goalFlagId = convertStateToString(t.getTgt()) ;
-				G = SEQ(GoalLib.atBGF(goalFlagId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
-						GoalLib.invariantChecked(agent, 
-							"The agent should be near " + goalFlagId, 
-							(BeliefState S) -> {
-								var gf = S.worldmodel().getElement(goalFlagId) ;
-								return Vec3.dist(S.worldmodel().getFloorPosition(), gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG ;
-							})
-						) ;
-				//G = SEQ(G,
-				//		GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
+			// subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
+			if (isButton(tgt))
+				subGoals.add(GoalLib.entityInteracted(tgt.getId()));
+			else if (isScreen(tgt)) {
+				// if it's a screen check the color of the screen matches the one in the "inParameter" variable
+				// "inParameter" should be set to a Var<String> named with the id of the colorScreen and the value the hex representation of the color to be expected
+				Object color = t.getInParameter().getParameter().getVariable(tgt.getId()).getValue();
+				subGoals.add(GoalLib.entityStateRefreshed(tgt.getId()));
+				subGoals.add(GoalLib.entityInvariantChecked(agent, tgt.getId(), tgt + " should be " + color,
+						(WorldEntity e) -> e.getStringProperty("color").equals(color)));
 			}
-			subGoals.add(G) ;
+
+		} else if (oppositeDoorSides(src, tgt)) {
+			// to optimize
+			// String doorName = convertDoorSideToDoorName(t.getTgt().getId());
+			String doorName = convertStateToString(tgt);
+			subGoals.add(GoalLib.entityStateRefreshed(doorName));
+			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName + "should be open",
+					(WorldEntity e) -> e.getBooleanProperty("isOpen")));
+		} else {
+			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(tgt));
+			if (LabRecruitsRandomEFSM.getStateType(tgt).equals(LabRecruitsRandomEFSM.StateType.GoalFlag)) {
+				// target is a goal-flag:
+				String goalFlagId = convertStateToString(tgt);
+				G = SEQ(GoalLib.atBGF(goalFlagId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
+						GoalLib.invariantChecked(agent,
+								"The agent should be near " + goalFlagId,
+								(BeliefState S) -> {
+									var gf = S.worldmodel().getElement(goalFlagId);
+									return Vec3.dist(S.worldmodel().getFloorPosition(),
+											gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG;
+								}));
+				// G = SEQ(G,
+				// GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
+			}
+			subGoals.add(G);
 		}
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
-		}else {
+		} else {
 			return SEQ(subGoals.toArray(new GoalStructure[0]));
 		}
 	}
-	
-	
+
 	// convert a state to a string
 	// for buttons it is simply the name
 	// for doors, that are written as dXp or dXm, we have to write doorX
@@ -94,16 +107,20 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		String tmp = doorSide.substring(1, doorSide.length() - 1);
 		return "door" + tmp;
 	}
-	
+
 	// check if a state is a door looking at the first character
 	private Boolean isDoor(EFSMState s) {
+		return s.getId().startsWith("d");
+	}
+
+	// check if a state is a button or a colorButton
+	private Boolean isButton(EFSMState s) {
 		String name = s.getId();
-		String b = name.substring(0, 1);
-		if (name.substring(0, 1).equals("d")) {
-			return true;
-		} else {
-			return false;
-		}
+		return name.startsWith("b") | name.startsWith("cb");
+	}
+
+	private Boolean isScreen(EFSMState s) {
+		return s.getId().startsWith("cs");
 	}
 
 	// check if 2 states represent the opposite sites of a door
@@ -111,11 +128,11 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		if (!isDoor(s) || !isDoor(t)) {
 			// one of the state is not a door
 			return false;
-		} else if (convertDoorSideToDoorName(s.toString()).equals(convertDoorSideToDoorName(t.toString()))
-				&& s.toString() != t.toString()) {
-			return true;
-		} else {
+		}
+		if (s.getId() == t.getId()) {
+			// if they are the same thet cannot be the different sides of the same door
 			return false;
 		}
+		return convertDoorSideToDoorName(s.getId()).equals(convertDoorSideToDoorName(t.getId()));
 	}
 }
