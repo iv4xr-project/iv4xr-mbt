@@ -23,19 +23,19 @@ import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 public class RGButton1 implements EFSMProvider {
 
     // buttons
-    public EFSMState br = new EFSMState("CBr");
-    public EFSMState bg = new EFSMState("CBg");
-    public EFSMState bb = new EFSMState("CBb");
+    public EFSMState br = new EFSMState("cbr");
+    public EFSMState bg = new EFSMState("cbg");
+    public EFSMState bb = new EFSMState("cbb");
 
     // Screen
     // public EFSMState cs = new EFSMState("CS1");
 
     // context variables
-    public Var<Boolean> br_state = new Var<>("CBr", false);
-    public Var<Boolean> bg_state = new Var<>("CBg", false);
-    public Var<Boolean> bb_state = new Var<>("CBb", false);
+    public Var<Boolean> br_state = new Var<>("cbr", false);
+    public Var<Boolean> bg_state = new Var<>("cbg", false);
+    public Var<Boolean> bb_state = new Var<>("cbb", false);
 
-    public Var<String> screen_color = new Var<>("CS1", "#000000");
+    public Var<String> screen_color = new Var<>("cs1", "#000000");
 
     // input variables
     public Var<LRActions> action = new Var<LRActions>("action", null);

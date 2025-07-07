@@ -53,7 +53,7 @@ public class EFSMFactory {
 			efsm = bdfwd.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
-		case "labrecruits.buttons_rgb":
+		case "labrecruits.rgbutton1":
 			RGButton1 rgbbtn =  new RGButton1();
 			efsm = rgbbtn.getModel();
 			efsm.setShortestPathsBetweenStates();

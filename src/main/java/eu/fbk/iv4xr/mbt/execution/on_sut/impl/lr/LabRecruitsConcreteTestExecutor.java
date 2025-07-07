@@ -26,7 +26,6 @@ import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.LabRecruitsTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
