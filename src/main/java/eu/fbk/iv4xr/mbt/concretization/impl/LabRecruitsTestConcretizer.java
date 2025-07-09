@@ -38,51 +38,47 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		EFSMState src = t.getSrc();
 		EFSMState tgt = t.getTgt();
+		String targetId = convertStateToString(tgt);
 
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
 		// look at src and tgt state to understand the type of transition
-		if (src.equals(tgt)) {
+		if (isScreen(tgt)) {
+			// if it's a screen check the color of the screen matches the one in the
+			// "inParameter" variable
+			// "inParameter" should be set to a Var<String> named with the id of the
+			// colorScreen and the value the hex representation of the color to be expected
+			Object color = t.getInParameter().getParameter().getVariable(targetId).getValue();
+			//subGoals.add(GoalLib.entityStateRefreshed(targetId);
+			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + " should be " + color,
+					(WorldEntity e) -> e.getStringProperty("color").equals(color)));
+		} else if (src.equals(tgt)) {
 			// if self loop we are pressing a button
-			// subGoals.add(GoalLib.entityInteracted(t.getTgt().getId()));
-			if (isButton(tgt))
-				subGoals.add(GoalLib.entityInteracted(tgt.getId()));
-			else if (isScreen(tgt)) {
-				// if it's a screen check the color of the screen matches the one in the
-				// "inParameter" variable
-				// "inParameter" should be set to a Var<String> named with the id of the
-				// colorScreen and the value the hex representation of the color to be expected
-				Object color = t.getInParameter().getParameter().getVariable(tgt.getId()).getValue();
-				subGoals.add(GoalLib.entityStateRefreshed(tgt.getId()));
-				subGoals.add(GoalLib.entityInvariantChecked(agent, tgt.getId(), tgt + " should be " + color,
-						(WorldEntity e) -> e.getStringProperty("color").equals(color)));
-			}
-
+			// subGoals.add(GoalLib.entityInteracted(targetId));
+			subGoals.add(GoalLib.entityInteracted(targetId));
 		} else if (oppositeDoorSides(src, tgt)) {
 			// to optimize
-			// String doorName = convertDoorSideToDoorName(t.getTgt().getId());
-			String doorName = convertStateToString(tgt);
-			subGoals.add(GoalLib.entityStateRefreshed(doorName));
-			subGoals.add(GoalLib.entityInvariantChecked(agent, doorName, doorName + "should be open",
+			subGoals.add(GoalLib.entityStateRefreshed(targetId));
+			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + "should be open",
 					(WorldEntity e) -> e.getBooleanProperty("isOpen")));
-		} else {
-			GoalStructure G = GoalLib.entityStateRefreshed(convertStateToString(tgt));
-			if (isGoalFlag(tgt)) {
-				// target is a goal-flag:
-				String goalFlagId = convertStateToString(tgt);
-				G = SEQ(GoalLib.atBGF(goalFlagId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
-						GoalLib.invariantChecked(agent,
-								"The agent should be near " + goalFlagId,
-								(BeliefState S) -> {
-									var gf = S.worldmodel().getElement(goalFlagId);
-									return Vec3.dist(S.worldmodel().getFloorPosition(),
-											gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG;
-								}));
-				// G = SEQ(G,
-				// GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
-			}
+		} else if (isGoalFlag(tgt)) {
+			// target is a goal-flag:
+			GoalStructure G = GoalLib.entityStateRefreshed(targetId);
+			G = SEQ(GoalLib.atBGF(targetId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
+					GoalLib.invariantChecked(agent,
+							"The agent should be near " + targetId,
+							(BeliefState S) -> {
+								var gf = S.worldmodel().getElement(targetId);
+								return Vec3.dist(S.worldmodel().getFloorPosition(),
+										gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG;
+							}));
+			// G = SEQ(G,
+			// GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
 			subGoals.add(G);
+		} else {
+			subGoals.add(GoalLib.entityStateRefreshed(targetId));
 		}
+
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
 		} else {
