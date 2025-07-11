@@ -6,3 +6,4 @@ data/
 **/.DS_Store
 mbt-files
 evombt.log
+.vscode

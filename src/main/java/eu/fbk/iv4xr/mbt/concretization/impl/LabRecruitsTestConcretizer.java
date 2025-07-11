@@ -44,12 +44,13 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
 		// look at src and tgt state to understand the type of transition
 		if (isScreen(tgt)) {
+
 			// if it's a screen check the color of the screen matches the one in the
 			// "inParameter" variable
 			// "inParameter" should be set to a Var<String> named with the id of the
 			// colorScreen and the value the hex representation of the color to be expected
 			Object color = t.getInParameter().getParameter().getVariable(targetId).getValue();
-			//subGoals.add(GoalLib.entityStateRefreshed(targetId);
+			// subGoals.add(GoalLib.entityStateRefreshed(targetId));
 			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + " should be " + color,
 					(WorldEntity e) -> e.getStringProperty("color").equals(color)));
 		} else if (src.equals(tgt)) {
@@ -120,7 +121,7 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		return name.startsWith("b") | name.startsWith("cb");
 	}
 
-	private Boolean isScreen(EFSMState s) {
+	private Boolean isScreen(EFSMState s) {		
 		return s.getId().startsWith("cs");
 	}
 
