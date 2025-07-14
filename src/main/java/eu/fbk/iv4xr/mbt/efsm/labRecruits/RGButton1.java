@@ -16,6 +16,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.IfThenElseOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
+import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
 
 public class RGButton1 implements EFSMProvider {
 
@@ -45,14 +46,18 @@ public class RGButton1 implements EFSMProvider {
 
         // operations
         Const<String> black = new Const<>("#000000");
-
-        Assign<Boolean> br_toggle_assign = new Assign<>(br_state, new BoolNot(br_state));
+        
+        BoolNot not_br = new BoolNot(br_state);
+        BoolNot not_bg = new BoolNot(bg_state);
+        BoolNot not_bb = new BoolNot(bb_state);
+        
+        Assign<Boolean> br_toggle_assign = new Assign<>(br_state, not_br);
         Assign<String> screen_set_red = new Assign<>(screen_color, new IfThenElseOp<>(br_state, new Const<>("#FF0000"), black));
 
-        Assign<Boolean> bg_toggle_assign = new Assign<>(bg_state, new BoolNot(bg_state));
+        Assign<Boolean> bg_toggle_assign = new Assign<>(bg_state, not_bg);
         Assign<String> screen_set_green = new Assign<>(screen_color, new IfThenElseOp<>(bg_state, new Const<>("#00FF00"), black));
 
-        Assign<Boolean> bb_toggle_assign = new Assign<>(bb_state, new BoolNot(bb_state));
+        Assign<Boolean> bb_toggle_assign = new Assign<>(bb_state, not_bb);
         Assign<String> screen_set_blue = new Assign<>(screen_color, new IfThenElseOp<>(bb_state, new Const<>("#0000FF"), black));
 
 
@@ -120,18 +125,21 @@ public class RGButton1 implements EFSMProvider {
         EFSMTransition t_7 = new EFSMTransition();
         t_7.setInParameter(inputParExplore);
         t_7.setId("t7");
+        t_7.setGuard(new EFSMGuard(new BoolAnd (not_br, not_bg)));
         RGButton1EFSMBuilder.withTransition(cs1, bb, t_7);
 
         // t_8 cs1 -> bg
         EFSMTransition t_8 = new EFSMTransition();
         t_8.setInParameter(inputParExplore);
         t_8.setId("t8");
+        t_8.setGuard(new EFSMGuard(new BoolAnd (not_br, not_bb)));
         RGButton1EFSMBuilder.withTransition(cs1, bg, t_8);
 
         // t_9 cs1 -> br
         EFSMTransition t_9 = new EFSMTransition();
         t_9.setInParameter(inputParExplore);
         t_9.setId("t9");
+        t_9.setGuard(new EFSMGuard(new BoolAnd (not_bb, not_bg)));
         RGButton1EFSMBuilder.withTransition(cs1, br, t_9);
         
         return RGButton1EFSMBuilder.build(bb, RGButton1ctx, lrParameterGenerator);
