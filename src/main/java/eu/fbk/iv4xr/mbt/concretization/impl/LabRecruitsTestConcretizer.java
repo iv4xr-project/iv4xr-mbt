@@ -50,9 +50,12 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 			// "inParameter" should be set to a Var<String> named with the id of the
 			// colorScreen and the value the hex representation of the color to be expected
 			Object color = t.getInParameter().getParameter().getVariable(targetId).getValue();
-			// subGoals.add(GoalLib.entityStateRefreshed(targetId));
+			subGoals.add(GoalLib.entityStateRefreshed(targetId));
 			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + " should be " + color,
-					(WorldEntity e) -> e.getStringProperty("color").equals(color)));
+					(WorldEntity e) -> {
+						//System.out.println(e.getStringProperty("color"));
+						return e.getStringProperty("color").equals(color);
+					}));
 		} else if (src.equals(tgt)) {
 			// if self loop we are pressing a button
 			// subGoals.add(GoalLib.entityInteracted(targetId));
