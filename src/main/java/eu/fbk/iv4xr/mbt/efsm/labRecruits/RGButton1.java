@@ -63,10 +63,10 @@ public class RGButton1 implements EFSMProvider {
         EFSMParameter inputParExplore = new EFSMParameter(exploreVar);
 
         // screen color parameter check
-        EFSMParameter inputParBlack = new EFSMParameter(new Var<String>("cs1", "0.0/0.0/0.0"));
-        EFSMParameter inputParRed   = new EFSMParameter(new Var<String>("cs1", "1.0/0.0/0.0"));
-        EFSMParameter inputParGreen = new EFSMParameter(new Var<String>("cs1", "0.0/1.0/0.0"));
-        EFSMParameter inputParBlue =  new EFSMParameter(new Var<String>("cs1", "0.0/0.0/1.0"));
+        EFSMParameter ColorCheckBlack = new EFSMParameter(new Var<String>("cs1", "0.0/0.0/0.0"));
+        EFSMParameter ColorCheckRed   = new EFSMParameter(new Var<String>("cs1", "1.0/0.0/0.0"));
+        EFSMParameter ColorCheckGreen = new EFSMParameter(new Var<String>("cs1", "0.0/1.0/0.0"));
+        EFSMParameter ColorCheckBlue  = new EFSMParameter(new Var<String>("cs1", "0.0/0.0/1.0"));
 
         
         // Button toggles
@@ -95,7 +95,7 @@ public class RGButton1 implements EFSMProvider {
         // Screen color check
         // t_4: bb-> cs1 check black
         EFSMTransition t_4 = new EFSMTransition();
-        t_4.setInParameter(inputParBlack);
+        t_4.setInParameter(ColorCheckBlack);
         t_4.setId("t4");
         t_4.setGuard(new EFSMGuard(not_bb));
         RGButton1EFSMBuilder.withTransition(bb, cs1, t_4);
@@ -103,36 +103,36 @@ public class RGButton1 implements EFSMProvider {
 
         // t_4p: bb-> cs1 check BLUE
         EFSMTransition t_4p = new EFSMTransition();
-        t_4p.setInParameter(inputParBlue);
+        t_4p.setOutParameter(ColorCheckBlue);
         t_4p.setId("t4p");
         t_4p.setGuard(new EFSMGuard(bb_state));
         RGButton1EFSMBuilder.withTransition(bb, cs1, t_4p);
 
         // t_5: bg-> cs1 check black
         EFSMTransition t_5 = new EFSMTransition();
-        t_5.setInParameter(inputParBlack);
+        t_5.setOutParameter(ColorCheckBlack);
         t_5.setId("t5");
         t_5.setGuard(new EFSMGuard(not_bg));
         RGButton1EFSMBuilder.withTransition(bg, cs1, t_5);
 
         // t_6p: bg-> cs1 check GREEN
         EFSMTransition t_5p = new EFSMTransition();
-        t_5p.setInParameter(inputParGreen);
+        t_5p.setOutParameter(ColorCheckGreen);
         t_5p.setId("t5p");
         t_5p.setGuard(new EFSMGuard(bg_state));
         RGButton1EFSMBuilder.withTransition(bg, cs1, t_5p);
 
         // t_6: br-> cs1 check black
         EFSMTransition t_6 = new EFSMTransition();
-        t_6.setInParameter(inputParBlack);
+        t_6.setOutParameter(ColorCheckBlack);
         t_6.setId("t6");
         t_6.setGuard(new EFSMGuard(not_br));
         RGButton1EFSMBuilder.withTransition(br, cs1, t_6);
 
         // t_6p: br-> cs1 check RED
         EFSMTransition t_6p = new EFSMTransition();
-        t_6p.setInParameter(inputParRed);
-        t_6p.setId("t4p");
+        t_6p.setOutParameter(ColorCheckRed);
+        t_6p.setId("t6p");
         t_6p.setGuard(new EFSMGuard(br_state));
         RGButton1EFSMBuilder.withTransition(br, cs1, t_6p);
 
