@@ -95,7 +95,7 @@ public class RGButton1 implements EFSMProvider {
         // Screen color check
         // t_4: bb-> cs1 check black
         EFSMTransition t_4 = new EFSMTransition();
-        t_4.setInParameter(ColorCheckBlack);
+        t_4.setOutParameter(ColorCheckBlack);
         t_4.setId("t4");
         t_4.setGuard(new EFSMGuard(not_bb));
         RGButton1EFSMBuilder.withTransition(bb, cs1, t_4);
