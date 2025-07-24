@@ -18,53 +18,73 @@ public class LabRecruitsRGButton1 {
         EFSM m = rbg1.getModel();
 
 
+        // blue button
 		assertTrue(m.curState.equals(rbg1.bb));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
+        assertTrue(m.curContext.getContext().getVariable("cbb").getValue().equals(false));
+        assertTrue(m.curContext.getContext().getVariable("cbr").getValue().equals(false));
+        assertTrue(m.curContext.getContext().getVariable("cbg").getValue().equals(false));
+        
+        m.transition(null, rbg1.bb);
+        assertTrue(m.curContext.getContext().getVariable("cbb").getValue().equals(true));
+        
+        m.transition(null, rbg1.cs1);
+		assertTrue(m.curState.equals(rbg1.cs1));
+        
+        // check that i can't move to other states while button is pressed
+        m.transition(null, rbg1.br);
+        m.transition(null, rbg1.bg);
+		assertTrue(m.curState.equals(rbg1.cs1));
+        
         
         m.transition(null, rbg1.bb);
 		assertTrue(m.curState.equals(rbg1.bb));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#0000FF"));
 
         m.transition(null, rbg1.bb);
-		assertTrue(m.curState.equals(rbg1.bb));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
+        assertTrue(m.curContext.getContext().getVariable("cbb").getValue().equals(false));
 
+        m.transition(null, rbg1.cs1);
+		assertTrue(m.curState.equals(rbg1.cs1));
+        
+        // red button
+        m.transition(null, rbg1.br);
+		assertTrue(m.curState.equals(rbg1.br));
 
         m.transition(null, rbg1.cs1);
 		assertTrue(m.curState.equals(rbg1.cs1));
 
-
-
-        m.transition(null, rbg1.bg);
-        assertTrue(m.curState.equals(rbg1.bg));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
+        m.transition(null, rbg1.br);
+		assertTrue(m.curState.equals(rbg1.br));
         
-        m.transition(null, rbg1.bg);
-		assertTrue(m.curState.equals(rbg1.bg));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#00FF00"));
+        m.transition(null, rbg1.br);
+		assertTrue(m.curState.equals(rbg1.br));
+        assertTrue(m.curContext.getContext().getVariable("cbr").getValue().equals(true));
 
-        m.transition(null, rbg1.bg);
-		assertTrue(m.curState.equals(rbg1.bg));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
-
+        m.transition(null, rbg1.br);
+		assertTrue(m.curState.equals(rbg1.br));
+        assertTrue(m.curContext.getContext().getVariable("cbr").getValue().equals(false));
 
         m.transition(null, rbg1.cs1);
 		assertTrue(m.curState.equals(rbg1.cs1));
 
+        // green button|
+        m.transition(null, rbg1.bg);
+		assertTrue(m.curState.equals(rbg1.bg));
 
+        m.transition(null, rbg1.cs1);
+		assertTrue(m.curState.equals(rbg1.bg));
 
-        m.transition(null, rbg1.br);
-        assertTrue(m.curState.equals(rbg1.br));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
+        m.transition(null, rbg1.bg);
+		assertTrue(m.curState.equals(rbg1.bg));
         
-        m.transition(null, rbg1.br);
-		assertTrue(m.curState.equals(rbg1.br));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#FF0000"));
+        m.transition(null, rbg1.bg);
+		assertTrue(m.curState.equals(rbg1.bg));
+        assertTrue(m.curContext.getContext().getVariable("cbg").getValue().equals(true));
 
-        m.transition(null, rbg1.br);
-		assertTrue(m.curState.equals(rbg1.br));
-        assertTrue(m.curContext.getContext().getVariable("cs1").getValue().equals("#000000"));
+        m.transition(null, rbg1.bg);
+		assertTrue(m.curState.equals(rbg1.bg));
+        assertTrue(m.curContext.getContext().getVariable("cbg").getValue().equals(false));
 
-
+        m.transition(null, rbg1.cs1);
+		assertTrue(m.curState.equals(rbg1.cs1));
     }
 }
