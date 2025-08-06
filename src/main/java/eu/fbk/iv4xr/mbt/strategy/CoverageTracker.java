@@ -118,7 +118,27 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
 		fitnessEvaluations++;
-		MBTChromosome chromosome = (MBTChromosome)arg0;
+		if (arg0 instanceof MBTChromosome) {
+			MBTChromosome chromosome = (MBTChromosome)arg0;
+			updateCoverage(chromosome);
+		}else if (arg0 instanceof MBTSuiteChromosome) {
+			MBTSuiteChromosome suiteChromosome = (MBTSuiteChromosome)arg0;
+			for (MBTChromosome chromosome : suiteChromosome.getTestChromosomes()) {
+				updateCoverage(chromosome);
+			}
+		}
+		
+		// time to take statistics snapshot
+		if (takeSnapshot()) {
+			statisticsSnapshot();
+		}
+	}
+
+	/**
+	 * given a test chromosome, update set of covered goals
+	 * @param chromosome
+	 */
+	private void updateCoverage(MBTChromosome chromosome) {
 		if (chromosome.getTestcase().isValid()) {
 			feasiblePaths++;
 			boolean newGoalCovered = false;
@@ -134,11 +154,6 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 				assert (coveredGoals <= totalGoals);
 				coverage = (double)coveredGoals / totalGoals;
 			}
-		}
-		
-		// time to take statistics snapshot
-		if (takeSnapshot()) {
-			statisticsSnapshot();
 		}
 	}
 

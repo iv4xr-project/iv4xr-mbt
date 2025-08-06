@@ -41,6 +41,7 @@ import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testcase.Testcase;
+import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
 
 /**
@@ -73,6 +74,17 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 				mbtTest.setExecutionResult(result);
 			}
 			return getFitness (mbtTest, result);
+		}else if (test instanceof MBTSuiteChromosome) {
+			MBTSuiteChromosome mbtSuite = (MBTSuiteChromosome)test;
+			for (MBTChromosome mbtTest : mbtSuite.getTestChromosomes()) {
+				ExecutionResult result = mbtTest.getExecutionResult();
+				if (result == null || mbtTest.isChanged()) {
+					result = runTest (mbtTest.getTestcase());
+					mbtTest.setExecutionResult(result);
+				}
+				getFitness(mbtTest, result);
+			}
+			return mbtSuite.getFitness();
 		}else {
 			throw new RuntimeException("Unsupported chromosome type: " + test.getClass().getName());
 		}

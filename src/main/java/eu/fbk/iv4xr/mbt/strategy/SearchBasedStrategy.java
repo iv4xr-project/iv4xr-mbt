@@ -39,7 +39,7 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 	/**
 	 * Set some Evosuite global parameters that control properties of the search algorithms
 	 */
-	private static void configureEvosuiteSettings () {
+	protected static void configureEvosuiteSettings () {
 		// TODO currently Archive supports only TestChromosome/TestSuiteChromosome
 		// we should extend it to include other types of chromosomes, e.g., MBTChromosome
 		// and use it externally, since Evosuite is just a library here
