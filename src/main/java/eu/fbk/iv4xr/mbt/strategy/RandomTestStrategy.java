@@ -50,7 +50,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class RandomTestStrategy<T extends Chromosome> extends GenerationStrategy {
+public class RandomTestStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static final Logger logger = LoggerFactory.getLogger(RandomTestStrategy.class);
 	

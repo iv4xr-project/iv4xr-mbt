@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author kifetew
  *
  */
-public class RandomLengthTestChromosomeFactory<T extends Chromosome> implements ChromosomeFactory<T> {
+public class RandomLengthTestChromosomeFactory<T extends Chromosome<T>> implements ChromosomeFactory<T> {
 
 	/**
 	 * 
@@ -34,10 +34,10 @@ public class RandomLengthTestChromosomeFactory<T extends Chromosome> implements 
 
 	@Override
 	public T getChromosome() {
-		T chromosome = (T) new MBTChromosome();
+		MBTChromosome chromosome = new MBTChromosome();
 		Testcase testcase = testFactory.getTestcase();
-		((MBTChromosome)chromosome).setTestcase(testcase);
-		return chromosome;
+		chromosome.setTestcase(testcase);
+		return (T) chromosome;
 	}
 
 }

@@ -24,7 +24,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrategy {
+public class SearchBasedStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static Logger logger = LoggerFactory.getLogger(SearchBasedStrategy.class);
 	

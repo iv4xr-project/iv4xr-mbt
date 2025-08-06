@@ -20,7 +20,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class WholesuiteStrategy<T extends Chromosome> extends SearchBasedStrategy<T> {
+public class WholesuiteStrategy<T extends Chromosome<T>> extends SearchBasedStrategy<T> {
 	
 	private static Logger logger = LoggerFactory.getLogger(WholesuiteStrategy.class);
 	

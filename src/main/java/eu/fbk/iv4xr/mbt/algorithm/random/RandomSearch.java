@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Gordon Fraser
  */
-public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
+public class RandomSearch<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RandomSearch.class);
 

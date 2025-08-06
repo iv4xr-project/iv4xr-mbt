@@ -87,7 +87,7 @@ import sun.misc.Signal;
  * @author kifetew
  *
  */
-public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgorithmFactory<T>{
+public class AlgorithmFactory<T extends Chromosome<T>> extends PropertiesSearchAlgorithmFactory<T>{
 
 	protected CoverageGoalFactory<?> getFitnessFactory(ModelCriterion criterion){
 		switch (criterion){
@@ -173,7 +173,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 				MonotonicGA<T> ga = new MonotonicGA<T>(factory);
 				if (Properties.REPLACEMENT_FUNCTION == TheReplacementFunction.FITNESSREPLACEMENT) {
 					// user has explicitly asked for this replacement function
-					ga.setReplacementFunction(new FitnessReplacementFunction());
+					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
 					ga.setReplacementFunction(new TestSuiteReplacementFunction());
@@ -185,7 +185,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 				CellularGA<T> ga = new CellularGA<T>(Properties.MODEL, factory);
 				if (Properties.REPLACEMENT_FUNCTION == TheReplacementFunction.FITNESSREPLACEMENT) {
 					// user has explicitly asked for this replacement function
-					ga.setReplacementFunction(new FitnessReplacementFunction());
+					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
 					ga.setReplacementFunction(new TestSuiteReplacementFunction());
@@ -198,7 +198,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 				SteadyStateGA<T> ga = new SteadyStateGA<T>(factory);
 				if (Properties.REPLACEMENT_FUNCTION == TheReplacementFunction.FITNESSREPLACEMENT) {
 					// user has explicitly asked for this replacement function
-					ga.setReplacementFunction(new FitnessReplacementFunction());
+					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
 					ga.setReplacementFunction(new TestSuiteReplacementFunction());
@@ -229,9 +229,9 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			case ONE_PLUS_LAMBDA_LAMBDA_GA:
 				logger.info("Chosen search algorithm: 1 + (lambda, lambda)GA");
 				return new OnePlusLambdaLambdaGA<>(factory, Properties.LAMBDA);
-			case MIO:
-				logger.info("Chosen search algorithm: MIO");
-				return new MIO<>(factory);
+//			case MIO:
+//				logger.info("Chosen search algorithm: MIO");
+//				return new MIO(factory);
 			case STANDARD_CHEMICAL_REACTION:
 				logger.info("Chosen search algorithm: Standard Chemical Reaction Optimization");
 				return new StandardChemicalReaction<>(factory);
@@ -272,7 +272,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 		}
 	}
 	
-	protected CrossOverFunction getCrossoverFunction() {
+	protected CrossOverFunction<T> getCrossoverFunction() {
 		if (MBTProperties.STRATEGY == Strategy.SUITE) {
 			return new SinglePointRelativeCrossOver();
 		}else {
@@ -388,7 +388,7 @@ public class AlgorithmFactory<T extends Chromosome> extends PropertiesSearchAlgo
 			ga.addStoppingCondition(rmi);
 
 			if (Properties.STOPPING_PORT != -1) {
-				SocketStoppingCondition ss = new SocketStoppingCondition();
+				SocketStoppingCondition<T> ss = SocketStoppingCondition.getInstance();
 				ss.accept();
 				ga.addStoppingCondition(ss);
 			}

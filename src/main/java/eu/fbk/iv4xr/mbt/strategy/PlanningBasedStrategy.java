@@ -64,7 +64,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrategy {
+public class PlanningBasedStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlanningBasedStrategy.class);
 	
