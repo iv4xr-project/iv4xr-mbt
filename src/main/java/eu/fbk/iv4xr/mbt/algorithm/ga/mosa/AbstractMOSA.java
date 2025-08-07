@@ -31,7 +31,7 @@ import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.metaheuristics.SearchListener;
-import org.evosuite.ga.metaheuristics.mosa.comparators.MOSADominanceComparator;
+//import org.evosuite.ga.metaheuristics.mosa.comparators.MOSADominanceComparator;
 import org.evosuite.ga.operators.selection.SelectionFunction;
 import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testcase.secondaryobjectives.TestCaseSecondaryObjective;
@@ -53,6 +53,7 @@ import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.MOSADominanceComparator;
 
 
 /**
@@ -62,7 +63,7 @@ import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
  *
  * @param <T>
  */
-public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorithm<T> {
+public abstract class AbstractMOSA<T extends Chromosome<T>> extends GeneticAlgorithm<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 
@@ -190,7 +191,7 @@ public abstract class AbstractMOSA<T extends Chromosome> extends GeneticAlgorith
 	 */
 	private T newRandomIndividual() {
 		T randomChromosome = chromosomeFactory.getChromosome();
-		for (FitnessFunction<?> fitnessFunction : this.fitnessFunctions) {
+		for (FitnessFunction<T> fitnessFunction : this.fitnessFunctions) {
 			randomChromosome.addFitness(fitnessFunction);
 		}
 		return randomChromosome;

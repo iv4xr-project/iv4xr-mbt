@@ -2,7 +2,6 @@ package eu.fbk.iv4xr.mbt.efsm;
 
 import java.lang.reflect.Method;
 
-import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.cps.BeamNgModelGenerator;

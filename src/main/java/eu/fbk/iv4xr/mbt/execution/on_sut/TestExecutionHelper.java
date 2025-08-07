@@ -2,10 +2,12 @@ package eu.fbk.iv4xr.mbt.execution.on_sut;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
@@ -72,7 +74,8 @@ public abstract class TestExecutionHelper {
 	protected  SuiteChromosome parseTests(String testsDir) {
 		SuiteChromosome suite = new SuiteChromosome();
 		try {
-			List<File> files = FileUtils.getFiles(new File(testsDir), "*.ser", "");
+			WildcardFileFilter fileFilter = WildcardFileFilter.builder().setWildcards("*.ser").get();
+			Collection<File> files = FileUtils.listFiles(new File(testsDir), fileFilter, null);
 			for (File file : files) {
 				AbstractTestSequence test = TestSerializationUtils.loadTestSequence(file.getAbsolutePath());
 				MBTChromosome chromosome = new MBTChromosome();

@@ -50,6 +50,7 @@ import org.evosuite.ga.stoppingconditions.StoppingCondition;
 import org.evosuite.ga.stoppingconditions.ZeroFitnessStoppingCondition;
 import org.evosuite.statistics.StatisticsListener;
 import org.evosuite.strategy.PropertiesSearchAlgorithmFactory;
+import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testcase.localsearch.BranchCoverageMap;
 import org.evosuite.testsuite.RelativeSuiteLengthBloatControl;
 import org.evosuite.testsuite.TestSuiteReplacementFunction;
@@ -176,7 +177,7 @@ public class AlgorithmFactory<T extends Chromosome<T>> extends PropertiesSearchA
 					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
-					ga.setReplacementFunction(new TestSuiteReplacementFunction());
+//					ga.setReplacementFunction(new TestSuiteReplacementFunction());
 				}
 				return ga;
 			}
@@ -188,7 +189,7 @@ public class AlgorithmFactory<T extends Chromosome<T>> extends PropertiesSearchA
 					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
-					ga.setReplacementFunction(new TestSuiteReplacementFunction());
+//					ga.setReplacementFunction(new TestSuiteReplacementFunction());
 				}
 				return ga;
 			}
@@ -201,7 +202,7 @@ public class AlgorithmFactory<T extends Chromosome<T>> extends PropertiesSearchA
 					ga.setReplacementFunction(new FitnessReplacementFunction<T>());
 				} else {
 					// use default
-					ga.setReplacementFunction(new TestSuiteReplacementFunction());
+//					ga.setReplacementFunction(new TestSuiteReplacementFunction());
 				}
 				return ga;
 			}

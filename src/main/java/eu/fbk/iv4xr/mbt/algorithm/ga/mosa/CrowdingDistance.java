@@ -31,7 +31,7 @@ import org.evosuite.ga.comparators.SortByFitness;
  * 
  * @author Annibale Panichella
  */
-public class CrowdingDistance<T extends Chromosome> {
+public class CrowdingDistance<T extends Chromosome<T>> {
 	
 	/**
 	 * Method used to assign the 'traditional' Crowding Distance
@@ -60,7 +60,7 @@ public class CrowdingDistance<T extends Chromosome> {
 		double objetiveMinn;
 		double distance;
 
-		for (final FitnessFunction<?> ff : set) {
+		for (final FitnessFunction<T> ff : set) {
 			// Sort the population by Fit n
 			Collections.sort(front, new SortByFitness(ff, false));
 

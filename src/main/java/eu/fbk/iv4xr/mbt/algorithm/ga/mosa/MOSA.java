@@ -31,7 +31,7 @@ import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
-import org.evosuite.ga.metaheuristics.mosa.comparators.OnlyCrowdingComparator;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.OnlyCrowdingComparator;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  * @param <T>
  */
-public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
+public class MOSA<T extends Chromosome<T>> extends AbstractMOSA<T> {
 
 	private static final long serialVersionUID = 146182080947267628L;
 
@@ -149,8 +149,8 @@ public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 //			logger.debug("SUBFRONT: {}", i);
 			for (T t : ranking.getSubfront(0)) {
 				logger.debug("INDIVIDUAL: {}", t.toString());
-				Map<FitnessFunction<?>, Double> fitnessValues = t.getFitnessValues();
-				for (Entry<FitnessFunction<?>, Double> entry : fitnessValues.entrySet()) {
+				Map<FitnessFunction<T>, Double> fitnessValues = t.getFitnessValues();
+				for (Entry<FitnessFunction<T>, Double> entry : fitnessValues.entrySet()) {
 					if (uncoveredGoals.contains(entry.getKey())) {
 						logger.debug("GOAL: {} : FITNESS: {}", entry.getKey(), entry.getValue());
 					}
@@ -247,7 +247,7 @@ public class MOSA<T extends Chromosome> extends AbstractMOSA<T> {
 		// store the test cases that are optimal for the test goal in the
 		// archive
 		if (archive.containsKey(covered)) {
-			MBTChromosome existingSolution = (MBTChromosome) this.archive.get(covered);
+			T existingSolution = this.archive.get(covered);
 			// if the new solution is better (based on secondary criterion), then the archive must be updated
 			if (solution.compareSecondaryObjective(existingSolution) < 0) {
 				this.archive.put(covered, solution);
