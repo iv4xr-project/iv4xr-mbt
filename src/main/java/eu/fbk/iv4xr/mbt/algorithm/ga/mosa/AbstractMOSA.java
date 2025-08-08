@@ -41,19 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.MOSADominanceComparator;
 import eu.fbk.iv4xr.mbt.strategy.AlgorithmFactory;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
-
-import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.FastNonDominatedSorting;
-import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.MOSADominanceComparator;
 
 
 /**

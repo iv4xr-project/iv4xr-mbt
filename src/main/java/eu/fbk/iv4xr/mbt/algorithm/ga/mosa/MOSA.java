@@ -31,17 +31,11 @@ import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
-import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.OnlyCrowdingComparator;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
-import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
-import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.OnlyCrowdingComparator;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;

@@ -19,14 +19,10 @@
  */
 package eu.fbk.iv4xr.mbt.strategy;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.ga.stoppingconditions.StoppingCondition;
@@ -36,9 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
-import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
-import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testsuite.MBTSuiteChromosome;
+import eu.fbk.iv4xr.mbt.algorithm.random.RandomSearch;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
@@ -47,9 +41,13 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * 
  * Class adapted from EvoSuite
  * 
+ * This class is not currently used since it does the same thing as {@link SearchBasedStrategy} 
+ * only with the {@link RandomSearch} algorithm. It could eventually be removed if no longer used.
+ * 
  * @author kifetew
  *
  */
+@Deprecated
 public class RandomTestStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static final Logger logger = LoggerFactory.getLogger(RandomTestStrategy.class);
