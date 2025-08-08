@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!--   <groupId>eu.fbk.iv4xr</groupId> -->
 	<groupId>com.github.iv4xr-project</groupId>
@@ -13,9 +15,9 @@
 		<maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
 
 		<junit.version>4.13.2</junit.version>
-		<junit.jupiter.version>5.6.0</junit.jupiter.version>
-		<junit.vintage.version>5.6.0</junit.vintage.version>
-		<junit.platform.version>1.1.0</junit.platform.version>
+		<junit.jupiter.version>5.9.1</junit.jupiter.version>
+		<junit.vintage.version>5.9.1</junit.vintage.version>
+		<junit.platform.version>1.3.1</junit.platform.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -23,44 +25,41 @@
 
 
 	<build>
-		<!--resources>
-			<resource>
-				<targetPath>/resources</targetPath>
-				<directory>${basedir}/src/main/resources</directory>
-			</resource>
-		</resources-->
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
+					<!-- This configuration is mostly for clarity; the defaults
+					are fine -->
 					<reuseForks>false</reuseForks>
 					<forkCount>1</forkCount>
 				</configuration>
 				<dependencies>
-					<!-- let surefire run JUnit 4 but also JUnit 5 tests -->
+					<!-- This is the JUnit 5 test runner provider -->
 					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${junit.platform.version}</version>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit-platform</artifactId>
+						<version>${maven-surefire-plugin.version}</version>
 					</dependency>
-					<!-- let JUnit vintage engine run JUnit 3 or JUnit 4 tests -->
-					<dependency>
-						<groupId>org.junit.vintage</groupId>
-						<artifactId>junit-vintage-engine</artifactId>
-						<version>${junit.vintage.version}</version>
-					</dependency>
-					<!-- let JUnit 5 engine run JUnit 5 tests -->
+					<!-- This is the engine that actually runs the JUnit 5 tests -->
 					<dependency>
 						<groupId>org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-engine</artifactId>
 						<version>${junit.jupiter.version}</version>
 					</dependency>
-
+					<!-- This is the engine that allows the JUnit 5 platform to
+					run legacy JUnit 4 tests -->
+					<dependency>
+						<groupId>org.junit.vintage</groupId>
+						<artifactId>junit-vintage-engine</artifactId>
+						<version>${junit.jupiter.version}</version>
+					</dependency>
 				</dependencies>
 			</plugin>
+
+			<!-- The other plugins from your pom are included for completeness -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.6</version>
@@ -84,26 +83,23 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<configuration> <archive> <manifest> <mainClass>eu.fbk.iv4xr.mbt.Main</mainClass> 
-				</manifest> </archive> </configuration> </plugin -->
-                <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-javadoc-plugin</artifactId>
-             <version>3.1.1</version>
-             <configuration>
-                 <show>protected</show>
-                 <additionalOptions>-Xdoclint:-missing</additionalOptions>
-             </configuration>
-             <executions>
-                 <execution>
-                     <id>attach-javadocs</id>
-                     <goals>
-                         <goal>jar</goal>
-                     </goals>
-                 </execution>
-             </executions>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<show>protected</show>
+					<additionalOptions>-Xdoclint:-missing</additionalOptions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -126,11 +122,13 @@
 		</dependency>
 
 		<!-- iv4xr github repository -->
-		<!-- dependency> <groupId>com.github.iv4xr-project</groupId> <artifactId>iv4xrdemo-efsm</artifactId> 
+		<!-- dependency> <groupId>com.github.iv4xr-project</groupId>
+		<artifactId>iv4xrdemo-efsm</artifactId> 
 			<version>master-SNAPSHOT</version> </dependency -->
 
 		<!-- EFSM4J imported in eu.fbk.iv4xr.mbt.efsm4j -->
-		<!-- dependency> <groupId>com.github.mbenz89</groupId> <artifactId>EFSM4J</artifactId> 
+		<!-- dependency> <groupId>com.github.mbenz89</groupId>
+		<artifactId>EFSM4J</artifactId> 
 			<version>master-SNAPSHOT</version> </dependency -->
 
 		<dependency>
@@ -213,28 +211,27 @@
             <version>[2.2.2,)</version>
         </dependency-->
 
-		
-		
-	<dependency>
-	    <groupId>com.github.iv4xr-project</groupId>
-	    <artifactId>aplib</artifactId>
-	    <version>1.5.4</version>
-	</dependency>
+
+		<dependency>
+			<groupId>com.github.iv4xr-project</groupId>
+			<artifactId>aplib</artifactId>
+			<version>1.5.4</version>
+		</dependency>
 
 
-	<dependency>
-	    <groupId>com.github.iv4xr-project</groupId>
-	    <artifactId>iv4xr-se-plugin</artifactId>
-	    <version>34679bb901</version>
-	</dependency>
-	
+		<dependency>
+			<groupId>com.github.iv4xr-project</groupId>
+			<artifactId>iv4xr-se-plugin</artifactId>
+			<version>34679bb901</version>
+		</dependency>
+
 		<!--dependency>
 			<groupId>com.github.iv4xr-project</groupId>
 			<artifactId>iv4xr-se-plugin</artifactId>
 			<version>davide-SNAPSHOT</version>
 		</dependency-->
 
-	<!--dependency>
+		<!--dependency>
 	    <groupId>com.github.iv4xr-project</groupId>
 		<artifactId>iv4xr-se-plugin</artifactId>
 	    <version>v0.9.0</version>
