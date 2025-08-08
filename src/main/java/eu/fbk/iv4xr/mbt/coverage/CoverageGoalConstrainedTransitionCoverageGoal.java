@@ -73,7 +73,7 @@ public class CoverageGoalConstrainedTransitionCoverageGoal extends CoverageGoal 
 			updateCollateralCoverage(test, executionResult);
 		}
 		test.setChanged(false);
-		updateIndividual(this, test, fitness);
+		updateIndividual(test, fitness);
 		return fitness;
 	}
 	
@@ -115,8 +115,8 @@ public class CoverageGoalConstrainedTransitionCoverageGoal extends CoverageGoal 
 			ExecutionTrace executionTrace = executionResult.getExecutionTrace();
 			for (Object transition : executionTrace.getCoveredTransitions()) {
 				EFSMTransition coveredTransition = (EFSMTransition)transition;
-				CoverageGoal goal = new CoverageGoalConstrainedTransitionCoverageGoal(coveredTransition, constrainingGoal);
-				updateIndividual(goal, individual, 0d);
+//				CoverageGoal goal = new CoverageGoalConstrainedTransitionCoverageGoal(coveredTransition, constrainingGoal);
+				updateIndividual(individual, 0d);
 			}
 		}
 	}

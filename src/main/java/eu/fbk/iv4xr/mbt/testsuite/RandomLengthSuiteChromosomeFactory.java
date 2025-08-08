@@ -19,7 +19,7 @@ import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestChromosomeFactory;
  * @author kifetew
  *
  */
-public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<MBTSuiteChromosome> {
+public class RandomLengthSuiteChromosomeFactory implements ChromosomeFactory<SuiteChromosome> {
 
 	/**
 	 * 

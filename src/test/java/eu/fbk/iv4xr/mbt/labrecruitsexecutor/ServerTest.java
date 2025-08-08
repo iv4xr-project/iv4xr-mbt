@@ -1,9 +1,6 @@
 package eu.fbk.iv4xr.mbt.labrecruitsexecutor;
 
-import static nl.uu.cs.aplib.AplibEDSL.SEQ;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,44 +8,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.evosuite.shaded.org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import agents.LabRecruitsTestAgent;
-import agents.tactics.GoalLib;
-import environments.LabRecruitsConfig;
-import environments.LabRecruitsEnvironment;
-
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
-import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
-import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testcase.Path;
-import eu.fbk.iv4xr.mbt.testcase.RandomLengthTestFactory;
-import eu.fbk.iv4xr.mbt.testcase.Testcase;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
-import eu.iv4xr.framework.mainConcepts.TestAgent;
-import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import game.LabRecruitsTestServer;
 import game.Platform;
-
-import nl.uu.cs.aplib.mainConcepts.GoalStructure;
-import world.BeliefState;
 
 public class ServerTest {
 	
@@ -93,6 +69,7 @@ public class ServerTest {
 		MBTProperties.LR_n_doors = 4;
 		MBTProperties.SEARCH_BUDGET = 10;
 		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		MBTProperties.SHOW_PROGRESS = false;
 		
 		// create random level and save it
 		EFSMFactory factory = EFSMFactory.getInstance(true);

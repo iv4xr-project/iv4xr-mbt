@@ -26,7 +26,7 @@ public class MBTSuiteChromosome extends SuiteChromosome {
 	}
 	
 	@Override
-	public Chromosome clone() {
+	public MBTSuiteChromosome clone() {
 		MBTSuiteChromosome copy = new MBTSuiteChromosome(this.testChromosomeFactory);
 		for (MBTChromosome test : tests) {
 			copy.addTest((MBTChromosome) test.clone());

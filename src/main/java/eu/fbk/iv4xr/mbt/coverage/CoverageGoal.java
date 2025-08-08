@@ -48,7 +48,7 @@ import eu.fbk.iv4xr.mbt.utils.EFSMPathUtils;
  * @author kifetew
  *
  */
-public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
+public abstract class CoverageGoal extends FitnessFunction {
 		
 	/**
 	 * 
@@ -121,7 +121,7 @@ public abstract class CoverageGoal extends FitnessFunction<Chromosome> {
 			updateCollateralCoverage(test, executionResult);
 		}
 		test.setChanged(false);
-		updateIndividual(this, test, fitness);
+		updateIndividual(test, fitness);
 		return fitness;
 	}
 	

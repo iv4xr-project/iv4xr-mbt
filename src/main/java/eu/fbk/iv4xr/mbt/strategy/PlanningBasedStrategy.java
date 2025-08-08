@@ -21,13 +21,14 @@ package eu.fbk.iv4xr.mbt.strategy;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
@@ -64,7 +65,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrategy {
+public class PlanningBasedStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlanningBasedStrategy.class);
 	
@@ -101,12 +102,18 @@ public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrat
 		String anml = efsm.getAnmlString();
 		
 		String dot = efsm.getDotString();
-		String anmlFilePath = prepareAnmlFile (anml);
+		String anmlFilePath;
+		try {
+			anmlFilePath = prepareAnmlFile (anml);
+			// useful for debugging
+			saveDotFile (dot, anmlFilePath);
+			
+			callPlanner(anmlFilePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		// useful for debugging
-		saveDotFile (dot, anmlFilePath);
-		
-		callPlanner(anmlFilePath);
 		
 		// TODO take output of planner and populate the test suite
 		// TODO calculate coverage
@@ -117,7 +124,7 @@ public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrat
 	private void saveDotFile(String dot, String anmlFilePath) {
 		String dotFilePath = anmlFilePath + ".dot";
 		try {
-			FileUtils.fileWrite(dotFilePath, dot);
+			FileUtils.write(new File(dotFilePath), dot, Charset.defaultCharset());
 			System.out.println("Saved efsm as dot: " + dotFilePath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -128,13 +135,14 @@ public class PlanningBasedStrategy<T extends Chromosome> extends GenerationStrat
 	/**
 	 * create a temporary file, save the model in anml and return file path
 	 * @return
+	 * @throws IOException 
 	 */
-	private String prepareAnmlFile (String strAnml) {
+	private String prepareAnmlFile (String strAnml) throws IOException {
 		File parentDir = new File(outputDir);
 		parentDir.mkdirs();
-		File tempFile = FileUtils.createTempFile(MBTProperties.SUT_EFSM + "_" + System.currentTimeMillis(), ".anml", parentDir);
+		File tempFile = File.createTempFile(MBTProperties.SUT_EFSM + "_" + System.currentTimeMillis(), ".anml", parentDir);
 		try {
-			FileUtils.fileWrite(tempFile, "utf8", strAnml);
+			FileUtils.write(tempFile, "utf8", strAnml);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

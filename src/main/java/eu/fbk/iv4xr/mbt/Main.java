@@ -27,6 +27,7 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -76,7 +77,8 @@ public class Main {
 		// determine the test generation strategy
 		GenerationStrategy generationStrategy = new SearchBasedStrategy<MBTChromosome>();
 		if (line.hasOption("random")) {
-			generationStrategy = new RandomTestStrategy<MBTChromosome>();
+			MBTProperties.ALGORITHM = Algorithm.RANDOM_SEARCH;
+			//generationStrategy = new RandomTestStrategy<MBTChromosome>();
 		}
 		
 		if (line.hasOption("planning")) {

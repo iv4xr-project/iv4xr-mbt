@@ -24,7 +24,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author kifetew
  *
  */
-public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrategy {
+public class SearchBasedStrategy<T extends Chromosome<T>> extends GenerationStrategy {
 
 	private static Logger logger = LoggerFactory.getLogger(SearchBasedStrategy.class);
 	
@@ -121,23 +121,13 @@ public class SearchBasedStrategy<T extends Chromosome> extends GenerationStrateg
 		searchAlgorithm.addFitnessFunctions((List<FitnessFunction<T>>) goals);
 		logger.debug("Total goals: {}", goals.size());
 		
-		// MOSA has ots 
-//		if (MBTProperties.ALGORITHM != Algorithm.MOSA) {
-			coverageTracker = new CoverageTracker(goals);
-			searchAlgorithm.addListener(getCoverageTracker());
-			searchAlgorithm.addStoppingCondition(getCoverageTracker());
-//		}
+		coverageTracker = new CoverageTracker(goals);
+		searchAlgorithm.addListener(getCoverageTracker());
+		searchAlgorithm.addStoppingCondition(getCoverageTracker());
 		
 		// invoke generate solution on the algorithm
 		searchAlgorithm.generateSolution();
-//		List<T> bestIndividuals = searchAlgorithm.getBestIndividuals();
 		
-		// return result from coverageTracker (archive)
-//		SuiteChromosome solution = new MBTSuiteChromosome();
-//		for (MBTChromosome test : coverageTracker.getTestSuite()) {
-//		for (T test : bestIndividuals) {
-//			solution.addTest((MBTChromosome) test);
-//		}
 		return getCoverageTracker().getTestSuite();
 	}
 

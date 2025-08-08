@@ -12,6 +12,8 @@ import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
 import org.evosuite.ga.localsearch.LocalSearchObjective;
+import org.evosuite.testcase.TestCase;
+import org.evosuite.testcase.TestChromosome;
 import org.evosuite.testsuite.AbstractTestSuiteChromosome;
 
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
@@ -20,7 +22,7 @@ import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
  * @author kifetew
  *
  */
-public class SuiteChromosome extends AbstractTestSuiteChromosome<MBTChromosome> {
+public class SuiteChromosome extends AbstractTestSuiteChromosome<SuiteChromosome, MBTChromosome> {
 
 	/**
 	 * 
@@ -40,7 +42,7 @@ public class SuiteChromosome extends AbstractTestSuiteChromosome<MBTChromosome> 
 	/**
 	 * @param testChromosomeFactory
 	 */
-	public SuiteChromosome(ChromosomeFactory testChromosomeFactory) {
+	public SuiteChromosome(ChromosomeFactory<MBTChromosome> testChromosomeFactory) {
 		super(testChromosomeFactory);
 		// TODO Auto-generated constructor stub
 	}
@@ -48,32 +50,49 @@ public class SuiteChromosome extends AbstractTestSuiteChromosome<MBTChromosome> 
 	/**
 	 * @param source
 	 */
-	public SuiteChromosome(AbstractTestSuiteChromosome source) {
+	public SuiteChromosome(SuiteChromosome source) {
 		super(source);
 		// TODO Auto-generated constructor stub
 	}
 
 
 	@Override
-	public Chromosome clone() {
+	public SuiteChromosome clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public <T extends Chromosome> int compareSecondaryObjective(T o) {
+	public int compareSecondaryObjective(SuiteChromosome o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public boolean localSearch(LocalSearchObjective<? extends Chromosome> objective) {
+	public boolean localSearch(LocalSearchObjective<SuiteChromosome> objective) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public List<FitnessFunction<?>> getCoveredGoals() {
 		return coveredGoals;
+	}
+
+	@Override
+	public SuiteChromosome self() {
+		return this;
+	}
+
+	@Override
+	public MBTChromosome addTest(TestCase testCase) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addTestChromosome(TestChromosome testChromosome) {
+		// 
+		
 	}
 
 }
