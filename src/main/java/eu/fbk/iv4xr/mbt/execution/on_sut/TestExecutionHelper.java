@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.maven.shared.utils.io.FileUtils;
 
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -29,8 +30,14 @@ public abstract class TestExecutionHelper {
 	
 	protected String statHeader = "run_id,folder,n_test,n_test_passed,time,maxCyclePerGoal\n";
 	
+	// Default serialized model position	
+	protected String serializedModelFile = "Model" + File.separator + "EFSM_model.ser";
+	
 	// save the map between the file and the test case
 	protected LinkedHashMap<AbstractTestSequence, File > testToFileMap;
+	
+	// save the EFSM model
+	protected EFSM model; 
 	
 	// test folder
 	protected String testsFolder;
@@ -54,6 +61,9 @@ public abstract class TestExecutionHelper {
 		}
 	}
 	
+	public EFSM getModel() {
+		return model;
+	}
 	
 	// setter and getter
 	public String getStatHeader() {
@@ -81,6 +91,10 @@ public abstract class TestExecutionHelper {
 				// save file to test map
 				testToFileMap.put(test,file);
 			}
+			// Load the model
+			if (FileUtils.fileExists(testsDir + serializedModelFile)) {
+				model = TestSerializationUtils.loadEFSM(testsDir + serializedModelFile);
+			}			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

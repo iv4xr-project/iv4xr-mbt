@@ -8,6 +8,7 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import java.util.LinkedList;
 
 import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.tactics.SpaceEngineersGoalLib;
@@ -53,6 +54,38 @@ public class SpaceEngineersTestConcretizer extends TestConcretizer {
 		}
 	}
 
+
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {
+		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
+		// start refreshing the origin state
+		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
+		// look at src and tgt state to understand the type of transition
+		if (t.getSrc().equals(t.getTgt())) {
+			// if self loop we are pressing a button
+			String buttonName = convertStateToString(t.getTgt());
+			GoalStructure g = SEQ(
+					SpaceEngineersGoalLib.buttonInCloseRange(buttonName),
+					SpaceEngineersGoalLib.buttonIsInteracted(buttonName)
+					);
+			subGoals.add(g);
+
+		} else if (oppositeDoorSides(t.getSrc(), t.getTgt())) {
+			String doorName = convertStateToString(t.getTgt());
+			subGoals.add(SpaceEngineersGoalLib.doorIsOpen(doorName, agent));
+		} else {
+			// if the target is a door
+			if (isDoor(t.getTgt())) {
+				subGoals.add(SpaceEngineersGoalLib.doorInCloseRange(convertStateToString(t.getTgt())));
+			}else {
+				subGoals.add(SpaceEngineersGoalLib.buttonInCloseRange(convertStateToString(t.getTgt())));
+			}
+		}
+		if (subGoals.size() == 1) {
+			return subGoals.get(0);
+		}else {
+			return SEQ(subGoals.toArray(new GoalStructure[0]));
+		}
+	}
 
 	
 	// convert a state to a string

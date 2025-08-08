@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import agents.tactics.GoalLib;
 import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
@@ -34,6 +35,7 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		super();
 	}
 
+	// No model
 	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		EFSMState src = t.getSrc();
@@ -90,6 +92,62 @@ public class LabRecruitsTestConcretizer extends TestConcretizer {
 		}
 	}
 
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {
+		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
+		EFSMState src = t.getSrc();
+		EFSMState tgt = t.getTgt();
+		String targetId = convertStateToString(tgt);
+
+		// start refreshing the origin state
+		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
+		// look at src and tgt state to understand the type of transition
+		if (isScreen(tgt)) {
+
+			// if it's a screen check the color of the screen matches the one in the
+			// "inParameter" variable
+			// "inParameter" should be set to a Var<String> named with the id of the
+			// colorScreen and the value the hex representation of the color to be expected
+			Object color = t.getOutParameter().getParameter().getVariable(targetId).getValue();
+			//subGoals.add(GoalLib.entityStateRefreshed(targetId));
+			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + " should be " + color,
+					(WorldEntity e) -> {
+						//System.out.println(e.getStringProperty("color"));
+						return e.getStringProperty("color").equals(color);
+					}));
+		} else if (src.equals(tgt)) {
+			// if self loop we are pressing a button
+			// subGoals.add(GoalLib.entityInteracted(targetId));
+			subGoals.add(GoalLib.entityInteracted(targetId));
+		} else if (oppositeDoorSides(src, tgt)) {
+			// to optimize
+			subGoals.add(GoalLib.entityStateRefreshed(targetId));
+			subGoals.add(GoalLib.entityInvariantChecked(agent, targetId, targetId + "should be open",
+					(WorldEntity e) -> e.getBooleanProperty("isOpen")));
+		} else if (isGoalFlag(tgt)) {
+			// target is a goal-flag:
+			GoalStructure G = GoalLib.entityStateRefreshed(targetId);
+			G = SEQ(GoalLib.atBGF(targetId, THRESHOLD_DISTANCE_TO_GOALFLAG, true),
+					GoalLib.invariantChecked(agent,
+							"The agent should be near " + targetId,
+							(BeliefState S) -> {
+								var gf = S.worldmodel().getElement(targetId);
+								return Vec3.dist(S.worldmodel().getFloorPosition(),
+										gf.getFloorPosition()) <= THRESHOLD_DISTANCE_TO_GOALFLAG;
+							}));
+			// G = SEQ(G,
+			// GoalLib.entityInCloseRange(convertStateToString(t.getTgt())));
+			subGoals.add(G);
+		} else {
+			subGoals.add(GoalLib.entityStateRefreshed(targetId));
+		}
+
+		if (subGoals.size() == 1) {
+			return subGoals.get(0);
+		} else {
+			return SEQ(subGoals.toArray(new GoalStructure[0]));
+		}
+	}
+	
 	// convert a state to a string
 	// for buttons it is simply the name
 	// for doors, that are written as dXp or dXm, we have to write doorX
