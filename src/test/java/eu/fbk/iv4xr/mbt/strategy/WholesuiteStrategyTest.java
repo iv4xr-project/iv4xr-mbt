@@ -2,7 +2,8 @@ package eu.fbk.iv4xr.mbt.strategy;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
@@ -17,6 +18,11 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  */
 public class WholesuiteStrategyTest {
 
+	@BeforeEach
+	public void common() {
+		MBTProperties.SHOW_PROGRESS = false;
+	}
+	
 	@Test
 	public void testGenerateTests() {
 		MBTProperties.SUT_EFSM = "labrecruits.random_large";

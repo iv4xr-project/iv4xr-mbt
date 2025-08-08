@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
@@ -29,6 +30,11 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  */
 public class SearchBasedStrategyTest {
 
+	@BeforeEach
+	public void common() {
+		MBTProperties.SHOW_PROGRESS = false;
+	}
+	
 	@Test
 	public void testGenerateConstrainedTests() {
 		// Model criterion should be STATE
@@ -100,7 +106,7 @@ public class SearchBasedStrategyTest {
 	
 	@Test
 	public void testGenerateTests() {
-		MBTProperties.SUT_EFSM = "labrecruits.random_large";
+		MBTProperties.SUT_EFSM = "labrecruits.random_default";
 		MBTProperties.MODELCRITERION = new ModelCriterion[] {
 				ModelCriterion.TRANSITION 
 		};
@@ -125,9 +131,9 @@ public class SearchBasedStrategyTest {
 			ModelCriterion.TRANSITION
 		};
 		// Fix time budget to 120s
-		MBTProperties.SEARCH_BUDGET = 120l;
+//		MBTProperties.SEARCH_BUDGET = 120l;
 		// select search algorithm to NSGAII
-		MBTProperties.ALGORITHM = Algorithm.NSGAII;
+//		MBTProperties.ALGORITHM = Algorithm.NSGAII;
 		// set seed for repeatibility
 		MBTProperties.RANDOM_SEED = 4328213l;
 		
