@@ -62,9 +62,9 @@ public class KTransitionCoverageGoal extends CoverageGoal {
 			// the path size should be at list K_TRANSITION_SIZE to include a goal
 			if (path.getLength() >=  MBTProperties.K_TRANSITION_SIZE) {
 				for (int i = 0; i < path.getLength() - MBTProperties.K_TRANSITION_SIZE+1; i++) {
-					EFSMPath subPath = path.subPath(i, i + MBTProperties.K_TRANSITION_SIZE);
-					KTransitionCoverageGoal goal = new KTransitionCoverageGoal(subPath);
-					updateIndividual(goal, individual, 0d);
+//					EFSMPath subPath = path.subPath(i, i + MBTProperties.K_TRANSITION_SIZE);
+//					KTransitionCoverageGoal goal = new KTransitionCoverageGoal(subPath);
+					updateIndividual(individual, 0d);
 				}
 			}
 		}

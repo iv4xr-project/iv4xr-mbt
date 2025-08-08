@@ -3,15 +3,10 @@
  */
 package eu.fbk.iv4xr.mbt.algorithm.operators.crossover;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ConstructionFailedException;
 import org.evosuite.ga.operators.crossover.CrossOverFunction;
 import org.evosuite.utils.Randomness;
-
-import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 
 /**
  * @author kifetew
@@ -36,9 +31,6 @@ public class SinglePointPathCrossOver extends CrossOverFunction {
 		if (parent1.size() < 2 || parent2.size() < 2) {
 			return;
 		}
-		
-//		MBTChromosome parent1 = (MBTChromosome)arg0;
-//		MBTChromosome parent2 = (MBTChromosome)arg1;
 		
 		// Choose a position in the middle
 		int point1 = Randomness.nextInt(parent1.size() - 1) + 1;

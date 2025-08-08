@@ -27,6 +27,7 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -49,6 +50,7 @@ import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
+import eu.fbk.iv4xr.mbt.strategy.WholesuiteStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -75,11 +77,16 @@ public class Main {
 		// determine the test generation strategy
 		GenerationStrategy generationStrategy = new SearchBasedStrategy<MBTChromosome>();
 		if (line.hasOption("random")) {
-			generationStrategy = new RandomTestStrategy<MBTChromosome>();
+			MBTProperties.ALGORITHM = Algorithm.RANDOM_SEARCH;
+			//generationStrategy = new RandomTestStrategy<MBTChromosome>();
 		}
 		
 		if (line.hasOption("planning")) {
 			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();			
+		}
+		
+		if (line.hasOption("wholesuite")) {
+			generationStrategy = new WholesuiteStrategy<MBTChromosome>();
 		}
 		
 		// set parameters in MBTProperties and Properties
@@ -568,6 +575,12 @@ public class Main {
 		
 		
 		
+		Option wholesuite = Option.builder("wholesuite")
+				.argName("wholesuite")
+				.type(String.class)
+				.desc("WholeSuite test generation strategy")
+				.build();
+		
 		Option mutationAnalysis = Option.builder("mutation_analysis")
 				.argName("mutation_analysis")
 				.type(String.class)
@@ -575,9 +588,6 @@ public class Main {
 						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
 						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
 				.build();
-		
-		
-		
 		
 		
 		
@@ -599,6 +609,7 @@ public class Main {
 
 		
 		options.addOption(sbt);
+		options.addOption(wholesuite);
 		options.addOption(random);
 		// options.addOption(tamer);
 		
@@ -610,11 +621,9 @@ public class Main {
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
-		
+
 		options.addOption(execOnSut);
-		
 		options.addOption(mutationAnalysis);
-		
 		options.addOption(silent);
 		options.addOption(property);
 		

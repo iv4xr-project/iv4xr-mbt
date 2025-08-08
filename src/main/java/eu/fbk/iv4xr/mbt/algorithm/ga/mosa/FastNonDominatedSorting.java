@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.ga.metaheuristics.mosa.comparators.MOSADominanceComparator;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.MOSADominanceComparator;
 
 /**
  * This class ranks the test cases according to the 
@@ -36,7 +36,7 @@ import org.evosuite.ga.metaheuristics.mosa.comparators.MOSADominanceComparator;
  * @author Annibale Panichella, Fitsum M. Kifetew
  */
 
-public class FastNonDominatedSorting<T extends Chromosome> implements Ranking<T> {
+public class FastNonDominatedSorting<T extends Chromosome<T>> implements Ranking<T> {
 
 	/**
 	 * An array containing all the fronts found during the search

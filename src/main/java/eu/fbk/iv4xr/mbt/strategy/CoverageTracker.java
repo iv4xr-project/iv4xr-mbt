@@ -28,7 +28,7 @@ import me.tongfei.progressbar.ProgressBar;
  * @author kifetew
  *
  */
-public class CoverageTracker extends StoppingConditionImpl implements SearchListener {
+public class CoverageTracker<T extends Chromosome<T>> extends StoppingConditionImpl<T> implements SearchListener<T> {
 
 	/**
 	 * 
@@ -118,11 +118,31 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	@Override
 	public void fitnessEvaluation(Chromosome arg0) {
 		fitnessEvaluations++;
-		MBTChromosome chromosome = (MBTChromosome)arg0;
+		if (arg0 instanceof MBTChromosome) {
+			MBTChromosome chromosome = (MBTChromosome)arg0;
+			updateCoverage(chromosome);
+		}else if (arg0 instanceof MBTSuiteChromosome) {
+			MBTSuiteChromosome suiteChromosome = (MBTSuiteChromosome)arg0;
+			for (MBTChromosome chromosome : suiteChromosome.getTestChromosomes()) {
+				updateCoverage(chromosome);
+			}
+		}
+		
+		// time to take statistics snapshot
+		if (takeSnapshot()) {
+			statisticsSnapshot();
+		}
+	}
+
+	/**
+	 * given a test chromosome, update set of covered goals
+	 * @param chromosome
+	 */
+	private void updateCoverage(MBTChromosome chromosome) {
 		if (chromosome.getTestcase().isValid()) {
 			feasiblePaths++;
 			boolean newGoalCovered = false;
-			for (Entry<FitnessFunction<?>, Double> entry : chromosome.getFitnessValues().entrySet()) {
+			for (Entry<FitnessFunction<MBTChromosome>, Double> entry : chromosome.getFitnessValues().entrySet()) {
 				if (Double.compare(entry.getValue(), 0d) == 0 && coverageMap.containsKey(entry.getKey())) {
 					chromosome.getTestcase().getCoveredGoals().add(entry.getKey());
 					updateCoverageMap (chromosome, entry.getKey());
@@ -134,11 +154,6 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 				assert (coveredGoals <= totalGoals);
 				coverage = (double)coveredGoals / totalGoals;
 			}
-		}
-		
-		// time to take statistics snapshot
-		if (takeSnapshot()) {
-			statisticsSnapshot();
 		}
 	}
 
@@ -155,7 +170,7 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	}
 
 	@Override
-	public void iteration(GeneticAlgorithm<?> arg0) {
+	public void iteration(GeneticAlgorithm<T> arg0) {
 		if (MBTProperties.SHOW_PROGRESS) {
 			coveragePb.stepTo(coveredGoals);
 			long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
@@ -170,12 +185,12 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	}
 
 	@Override
-	public void searchFinished(GeneticAlgorithm<?> arg0) {
+	public void searchFinished(GeneticAlgorithm<T> arg0) {
 		statisticsSnapshot();
 	}
 
 	@Override
-	public void searchStarted(GeneticAlgorithm<?> ga) {
+	public void searchStarted(GeneticAlgorithm<T> ga) {
 		if (MBTProperties.SHOW_PROGRESS) {
 			coveragePb.stepTo(0);
 			budgetPb.stepTo(0);
@@ -342,5 +357,11 @@ public class CoverageTracker extends StoppingConditionImpl implements SearchList
 	 */
 	public Map<FitnessFunction<MBTChromosome>, MBTChromosome> getCoverageMap (){
 		return coverageMap;
+	}
+
+	@Override
+	public StoppingConditionImpl<T> clone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

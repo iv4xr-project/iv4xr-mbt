@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
@@ -29,8 +30,13 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  */
 public class SearchBasedStrategyTest {
 
+	@BeforeEach
+	public void common() {
+		MBTProperties.SHOW_PROGRESS = false;
+	}
+	
 	@Test
-	public void testGenerateTests() {
+	public void testGenerateConstrainedTests() {
 		// Model criterion should be STATE
 		MBTProperties.MODELCRITERION = new ModelCriterion[] {
 				ModelCriterion.STATE 
@@ -60,7 +66,7 @@ public class SearchBasedStrategyTest {
 			AbstractTestSequence testcase = (AbstractTestSequence) chr.getTestcase();
 			System.out.println("Fitness: "+testcase.getFitness());
 			System.out.println(testcase.toString());
-			
+			assertTrue(testcase.getPath().getStates().contains(gf0));
 		}
 	}
 	
@@ -99,6 +105,24 @@ public class SearchBasedStrategyTest {
 	}
 	
 	@Test
+	public void testGenerateTests() {
+		MBTProperties.SUT_EFSM = "labrecruits.random_default";
+		MBTProperties.MODELCRITERION = new ModelCriterion[] {
+				ModelCriterion.TRANSITION 
+		};
+		
+		SearchBasedStrategy strategy = new SearchBasedStrategy<>();
+		SuiteChromosome suite = strategy.generateTests();
+		List<MBTChromosome> generatedTests = suite.getTestChromosomes();
+		System.out.println("\nGenerated "+generatedTests.size()+" test cases");
+		for(MBTChromosome chr : generatedTests) {
+			AbstractTestSequence testcase = (AbstractTestSequence) chr.getTestcase();
+			System.out.println("Fitness: "+testcase.getFitness());
+			System.out.println(testcase.toString());
+		}
+	}
+	
+	@Test
 	public void trafficLightSearchTest() {
 		// select SUT
 		MBTProperties.SUT_EFSM = "examples.traffic_light";
@@ -107,9 +131,9 @@ public class SearchBasedStrategyTest {
 			ModelCriterion.TRANSITION
 		};
 		// Fix time budget to 120s
-		MBTProperties.SEARCH_BUDGET = 120l;
+//		MBTProperties.SEARCH_BUDGET = 120l;
 		// select search algorithm to NSGAII
-		MBTProperties.ALGORITHM = Algorithm.NSGAII;
+//		MBTProperties.ALGORITHM = Algorithm.NSGAII;
 		// set seed for repeatibility
 		MBTProperties.RANDOM_SEED = 4328213l;
 		
