@@ -3,7 +3,7 @@
  */
 package eu.fbk.iv4xr.mbt.execution.on_sut;
 
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 

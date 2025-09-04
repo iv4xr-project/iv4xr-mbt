@@ -7,7 +7,7 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 
 import java.util.LinkedList;
 
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.tactics.SpaceEngineersGoalLib;
@@ -19,7 +19,11 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
  * @author Davide Prandi
  *
  */
-public class SpaceEngineersTestConcretizer extends TestConcretizer {
+public class SpaceEngineersTestConcretizer extends AplibTestConcretizer {
+	
+	public SpaceEngineersTestConcretizer(TestAgent testAgent) {
+		super(testAgent);
+	}
 
 	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();

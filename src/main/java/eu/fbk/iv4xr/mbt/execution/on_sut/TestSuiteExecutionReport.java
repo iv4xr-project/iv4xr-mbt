@@ -8,17 +8,17 @@ import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 
 public class TestSuiteExecutionReport {
 	
-	private LinkedHashMap<AbstractTestSequence, List<TestCaseExecutionReport>> testCasesReporter;
+	private LinkedHashMap<AbstractTestSequence, List<AplibTestCaseExecutionReport>> testCasesReporter;
 	private LinkedHashMap<AbstractTestSequence, Boolean> testCasesStatus;
 	private LinkedHashMap<AbstractTestSequence, Long> testCasesTime;
 	
 	public TestSuiteExecutionReport() {
-		testCasesReporter = new LinkedHashMap<AbstractTestSequence, List<TestCaseExecutionReport>>();
+		testCasesReporter = new LinkedHashMap<AbstractTestSequence, List<AplibTestCaseExecutionReport>>();
 		testCasesStatus = new LinkedHashMap<AbstractTestSequence, Boolean>();
 		testCasesTime = new LinkedHashMap<AbstractTestSequence, Long>();
 	}
 
-	public void addTestCaseReport(AbstractTestSequence testcase, List<TestCaseExecutionReport> goalReport, Boolean status, Long duration ) {
+	public void addTestCaseReport(AbstractTestSequence testcase, List<AplibTestCaseExecutionReport> goalReport, Boolean status, Long duration ) {
 		if (testCasesReporter.containsKey(testcase)) {
 			throw new RuntimeException("Test case " + testcase.toString() + " already present");
 		}else {
@@ -32,7 +32,7 @@ public class TestSuiteExecutionReport {
 		return testCasesReporter.keySet();
 	}
 	
-	public List<TestCaseExecutionReport> getTestCaseReport(AbstractTestSequence testCase) {
+	public List<AplibTestCaseExecutionReport> getTestCaseReport(AbstractTestSequence testCase) {
 		if (testCasesReporter.containsKey(testCase)) {
 			return testCasesReporter.get(testCase);
 		}else {
@@ -81,10 +81,10 @@ public class TestSuiteExecutionReport {
 		out = out + "N tests passed: "+getNumberOfPassedTestCases()+ "\n\n";
 		
 		for(AbstractTestSequence test : testCasesReporter.keySet()) {
-			List<TestCaseExecutionReport> caseReport = testCasesReporter.get(test);
+			List<AplibTestCaseExecutionReport> caseReport = testCasesReporter.get(test);
 			out = out + "################\nTest pass: " + testCasesStatus.get(test) + "\n";
 			out = out + test.toString() + "\n";
-			for(TestCaseExecutionReport rep : caseReport) {
+			for(AplibTestCaseExecutionReport rep : caseReport) {
 				out = out + rep.toString();
 			}
 			out = out + "\n";

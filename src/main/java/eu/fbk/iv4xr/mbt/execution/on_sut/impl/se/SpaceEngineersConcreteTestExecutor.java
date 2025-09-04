@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import agents.LabRecruitsTestAgent;
+import environments.LabRecruitsEnvironment;
 import environments.SeAgentState;
 import environments.SeEnvironment;
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibConcreteTestCase;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.SpaceEngineersTestConcretizer;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
-import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -29,7 +32,7 @@ import spaceEngineers.controller.SpaceEngineersTestContext;
 
 public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor {
 
-	private TestConcretizer testConcretizer;
+	private AplibTestConcretizer testConcretizer;
 	private int maxCyclePerGoal;
 	private TestSuiteExecutionReport testReporter;
 	
@@ -44,9 +47,18 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 	
 	private String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
 	
+	private TestAgent testAgent;
 	
 	public SpaceEngineersConcreteTestExecutor(String seExecutableDir, String seGameSavePath, Integer maxCyclePerGoal) {
-		this.testConcretizer = new SpaceEngineersTestConcretizer();
+		
+		var dataCollector = new TestDataCollector();
+		var myAgentState = new SeAgentState(agentId);
+		testAgent = new TestAgent(agentId, "Navigator");
+		testAgent.attachState(myAgentState);
+		testAgent.attachEnvironment(theEnv);
+		testAgent.setTestDataCollector(dataCollector);
+		
+		this.testConcretizer = new SpaceEngineersTestConcretizer(testAgent);
 		setMaxCyclePerGoal(maxCyclePerGoal);
 		this.spaceEngineersExeRootDir = seExecutableDir;
 		this.seGameSavePath = seGameSavePath;
@@ -156,7 +168,7 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 		
 		long initialTime = System.currentTimeMillis();
 		
-		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
+		LinkedList<AplibTestCaseExecutionReport> goalReporter = new LinkedList<AplibTestCaseExecutionReport>();
 
 		
 		System.out.println("Executing test case");
@@ -169,22 +181,23 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 		sleep(longSleepTime);
 		
 		
-		var dataCollector = new TestDataCollector();
-		var myAgentState = new SeAgentState(agentId);
-		var testAgent = new TestAgent(agentId, "Navigator");
-		testAgent.attachState(myAgentState);
-		testAgent.attachEnvironment(theEnv);
-		testAgent.setTestDataCollector(dataCollector);
-		List<GoalStructure> concretizeTestCase = testConcretizer.concretizeTestCase(testAgent, testcase );
+//		var dataCollector = new TestDataCollector();
+//		var myAgentState = new SeAgentState(agentId);
+//		var testAgent = new TestAgent(agentId, "Navigator");
+//		testAgent.attachState(myAgentState);
+//		testAgent.attachEnvironment(theEnv);
+//		testAgent.setTestDataCollector(dataCollector);
+		AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase) testConcretizer.concretizeTestCase(testcase );
+		List<GoalStructure> goals = concreteTestCase.getGoalStructures();
 		//for(GoalStructure g: concretizeTestCase) {
 		//	execTestingTask(g, testAgent);
 		//}
 
 		String status = "SUCCESS";
 		
-		for (int i = 0; i < concretizeTestCase.size(); i++) {
+		for (int i = 0; i < goals.size(); i++) {
 			//for (GoalStructure g : goals) {
-				GoalStructure g = concretizeTestCase.get(i);
+				GoalStructure g = goals.get(i);
 				testAgent.setGoal(g);
 				System.err.println("Testing "+testcase.getPath().getTransitionAt(i).toString());
 		
@@ -199,7 +212,7 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 						
 						String err = "Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed";
 						System.err.println(err);
-						TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+						AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 						goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 						goalReporter.add(goalRep);
 						testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
@@ -214,14 +227,14 @@ public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor 
 						
 						String err = "The goal cannot be satisfied in " + maxCyclePerGoal + " cycles";
 						System.err.println(err);
-						TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+						AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 						goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 						goalReporter.add(goalRep);
 						testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 						return false;
 					}
 				}
-				TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+				AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 				goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 				goalReporter.add(goalRep);
 				if (!g.getStatus().success()) {
