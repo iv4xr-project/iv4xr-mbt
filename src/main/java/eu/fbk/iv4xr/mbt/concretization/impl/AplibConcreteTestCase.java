@@ -1,10 +1,11 @@
 /**
- * 
+ * @author kifetew
  */
-package eu.fbk.iv4xr.mbt.concretization;
+package eu.fbk.iv4xr.mbt.concretization.impl;
 
 import java.util.List;
 
+import eu.fbk.iv4xr.mbt.concretization.ConcreteTestCase;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 
 /**

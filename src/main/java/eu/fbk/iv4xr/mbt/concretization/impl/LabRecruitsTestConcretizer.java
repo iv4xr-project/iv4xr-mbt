@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import agents.tactics.GoalLib;
 import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
@@ -35,7 +36,7 @@ public class LabRecruitsTestConcretizer extends AplibTestConcretizer {
 	}
 
 
-	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));

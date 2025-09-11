@@ -8,6 +8,7 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import java.util.LinkedList;
 
 import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.tactics.SpaceEngineersGoalLib;
@@ -25,7 +26,7 @@ public class SpaceEngineersTestConcretizer extends AplibTestConcretizer {
 		super(testAgent);
 	}
 
-	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
