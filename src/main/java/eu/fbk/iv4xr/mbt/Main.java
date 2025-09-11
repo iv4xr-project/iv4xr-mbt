@@ -37,7 +37,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
-import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
@@ -281,7 +281,7 @@ public class Main {
 			// save debug information
 			String statPath = outFolder+File.separator+"stat_mutated_sut_"+i+".csv";
 			String debugHeader = mutExecutor.getDebugHeader();
-			String debugData = mutExecutor.getDebutTableTable();
+			String debugData = mutExecutor.getDebugTableTable();
 			
 			try {
 				FileUtils.writeStringToFile(new File(statPath), debugHeader+debugData, Charset.defaultCharset());
@@ -725,7 +725,7 @@ public class Main {
 			System.out.println("exec_on_lr option needs max_cycles parameter, but not provided, using default: 200");
 		}
 		
-		TestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+		AplibTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
 		
 		executor.execute();
 		
@@ -733,7 +733,7 @@ public class Main {
 		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
 		
 		// save debug data
-		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 		
 		
 		
@@ -793,7 +793,7 @@ public class Main {
 			System.out.println("exec_on_se option needs max_cycles parameter, but not provided, using default: 200");
 		}
 		
-		TestExecutionHelper executor = new SpaceEngineersTestExecutionHelper(sutExecutableDir, sutExecutable, testsDir, maxCycles);
+		AplibTestExecutionHelper executor = new SpaceEngineersTestExecutionHelper(sutExecutableDir, sutExecutable, testsDir, maxCycles);
 		
 		executor.execute();
 		
@@ -801,7 +801,7 @@ public class Main {
 		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
 				
 		// save debug data
-		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
 	

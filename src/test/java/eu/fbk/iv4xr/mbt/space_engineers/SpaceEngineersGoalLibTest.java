@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import environments.SeAgentState;
 import environments.SeEnvironment;
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.SpaceEngineersTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
@@ -223,7 +224,14 @@ public class SpaceEngineersGoalLibTest {
 		// wait the map is loaded
 		sleep(longSleepTime);
 		
-		SpaceEngineersTestConcretizer concretizer = new SpaceEngineersTestConcretizer();
+		var dataCollector = new TestDataCollector();
+		var myAgentState = new SeAgentState(agentId);
+		var testAgent = new TestAgent(agentId, "Navigator");
+		testAgent.attachState(myAgentState);
+		testAgent.attachEnvironment(theEnv);
+		testAgent.setTestDataCollector(dataCollector);
+		
+		SpaceEngineersTestConcretizer concretizer = new SpaceEngineersTestConcretizer(testAgent);
 		
 		for(MBTChromosome t : testCases) {
 			System.out.println();
@@ -231,14 +239,15 @@ public class SpaceEngineersGoalLibTest {
 			System.out.println(t.toString());
 			theEnv.loadWorld();
 			sleep(longSleepTime);
-			var dataCollector = new TestDataCollector();
-			var myAgentState = new SeAgentState(agentId);
-			var testAgent = new TestAgent(agentId, "Navigator");
-			testAgent.attachState(myAgentState);
-			testAgent.attachEnvironment(theEnv);
-			testAgent.setTestDataCollector(dataCollector);
-			List<GoalStructure> concretizeTestCase = concretizer.concretizeTestCase(testAgent, (AbstractTestSequence)t.getTestcase() );
-			for(GoalStructure g: concretizeTestCase) {
+//			var dataCollector = new TestDataCollector();
+//			var myAgentState = new SeAgentState(agentId);
+//			var testAgent = new TestAgent(agentId, "Navigator");
+//			testAgent.attachState(myAgentState);
+//			testAgent.attachEnvironment(theEnv);
+//			testAgent.setTestDataCollector(dataCollector);
+			AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase) concretizer.concretizeTestCase((AbstractTestSequence)t.getTestcase());
+			List<GoalStructure> goals = concreteTestCase.getGoalStructures();
+			for(GoalStructure g: goals) {
 				execTestingTask(g, testAgent);
 			}
 			se.getSession().exitToMainMenu();

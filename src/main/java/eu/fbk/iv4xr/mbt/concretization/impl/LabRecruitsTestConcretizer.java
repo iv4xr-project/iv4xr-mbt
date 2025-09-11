@@ -8,7 +8,8 @@ import static nl.uu.cs.aplib.AplibEDSL.SEQ;
 import java.util.LinkedList;
 
 import agents.tactics.GoalLib;
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
@@ -23,19 +24,19 @@ import world.BeliefState;
  * @author kifetew, prandi
  *
  */
-public class LabRecruitsTestConcretizer extends TestConcretizer {
+public class LabRecruitsTestConcretizer extends AplibTestConcretizer {
 
 	static float THRESHOLD_DISTANCE_TO_GOALFLAG = 0.5f ;
 
 	/**
 	 * 
 	 */
-	public LabRecruitsTestConcretizer() {
-		super();
+	public LabRecruitsTestConcretizer(TestAgent testAgent) {
+		super(testAgent);
 	}
 
 
-	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t) {
+	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {
 		LinkedList<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		// start refreshing the origin state
 		// subGoals.add(GoalLib.entityStateRefreshed(convertStateToString(t.getSrc())));
