@@ -43,8 +43,9 @@ public abstract class AplibTestConcretizer implements TestConcretizer {
 		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		
 		// get the EFSM model and reset it
-		EFSMFactory modelFactory = EFSMFactory.getInstance(true);
+		EFSMFactory modelFactory = EFSMFactory.getInstance();
 		EFSM model = modelFactory.getEFSM();
+		model.reset();
 		
 		for (EFSMTransition t : tc) {
 			// execute the transition
