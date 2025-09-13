@@ -87,7 +87,6 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
 			Boolean testResult = executeTestCase(testcase);
-			
 		}
 
 		return testSuiteResult;

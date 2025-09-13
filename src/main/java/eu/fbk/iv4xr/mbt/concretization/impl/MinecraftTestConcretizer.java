@@ -37,11 +37,8 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 
 	@Override
 	public ConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
-
-		System.out.println("Concretizing...");
 		Path path = abstractTestCase.getPath();
 		List<EFSMTransition> transitions = path.getTransitions();
-		System.out.println(transitions);
 
 		// get the EFSM model and reset it
 		EFSMFactory modelFactory = EFSMFactory.getInstance(true);
@@ -52,26 +49,27 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		ArrayNode actionsArray = mapper.createArrayNode();
 
 		ConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();
-		for (EFSMTransition transition : transitions) {
-			System.out.println(transition);
-
+		for (EFSMTransition rawTransition : transitions) {
 			// execute the transition
-			model.transition(transition);
+			model.transition(rawTransition);
+
+			// get the real transiton, with the uodated variables
+			EFSMTransition transition = model.getTransition(rawTransition.getId());
 
 			LinkedHashMap<String, Var<Object>> inParamSet = getParameterSafe(transition.getInParameter());
 			LinkedHashMap<String, Var<Object>> outParamSet = getParameterSafe(transition.getOutParameter());
-
+			
 			String previousActionName = "";
 			ObjectNode currentAction = null;
-
+			
 			for (Map.Entry<String, Var<Object>> entry : combineParams(inParamSet, outParamSet).entrySet()) {
-
+				
 				String[] keys = entry.getKey().split("__");
 				String actionName = keys[0];
-				System.out.println(actionName);
+				
 
 				// once a new action is created we need to set it up
-				if (previousActionName != actionName) {
+				if (!previousActionName.equals(actionName)) {
 					previousActionName = actionName;
 
 					currentAction = mapper.createObjectNode();
@@ -96,7 +94,6 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		}
 
 		try {
-			System.out.println(actionsArray.toString());
 			mapper.writeValue(new File("TESTACTIONS.json"), actionsArray);
 
 		} catch (Exception e) {
@@ -111,18 +108,22 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 
 	private static LinkedHashMap<String, Var<Object>> combineParams(Map<String, Var<Object>> inParams,
 			Map<String, Var<Object>> outParams) {
-		LinkedHashMap<String, Var<Object>> combined = new LinkedHashMap<>(inParams);
 
-		if (outParams == null) {
-			return combined;
+		LinkedHashMap<String, Var<Object>> combined = new LinkedHashMap<>();
+
+		if (inParams != null) {
+			combined.putAll(inParams);
 		}
 
-		combined.putAll(
-				outParams.entrySet()
-						.stream()
-						.collect(Collectors.toMap(
-								entry -> "check_" + entry.getKey(),
-								Map.Entry::getValue)));
+		// add "check_" prefix on out_params
+		if (outParams != null) {
+			combined.putAll(
+					outParams.entrySet()
+							.stream()
+							.collect(Collectors.toMap(
+									entry -> "check_" + entry.getKey(),
+									Map.Entry::getValue)));
+		}
 
 		return combined;
 	}

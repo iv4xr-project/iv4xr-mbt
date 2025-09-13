@@ -66,7 +66,7 @@ public class DurabilityTest implements EFSMProvider {
 		EFSMTransition t_1 = new EFSMTransition();
 		t_1.setInParameter(place_block);
 		t_1.setId("t1");
-		DurabilityEFSMBuilder.withTransition(blockReference, stoneBlock, t_1);
+		DurabilityEFSMBuilder.withTransition(stoneBlock, blockReference, t_1);
 
 		EFSMTransition t_2 = new EFSMTransition();
 		t_2.setOp(consume_pickaxe_operation);
@@ -74,15 +74,15 @@ public class DurabilityTest implements EFSMProvider {
 		t_2.setOutParameter(durability_inv_check);
 		t_2.setGuard(pickaxe_has_uses);
 		t_2.setId("t2");
-		DurabilityEFSMBuilder.withTransition(stoneBlock, blockReference, t_2);
+		DurabilityEFSMBuilder.withTransition(blockReference, stoneBlock, t_2);
 
 		EFSMTransition t_3 = new EFSMTransition();
 		t_3.setGuard(pickaxe_is_broken);
 		t_3.setOutParameter(has_no_pickaxe_check);
 		t_3.setId("t3");
-		DurabilityEFSMBuilder.withTransition(blockReference, endState, t_3);
+		DurabilityEFSMBuilder.withTransition(stoneBlock, endState, t_3);
 
-		return DurabilityEFSMBuilder.build(blockReference, DurabilityCtx, lrParameterGenerator);
+		return DurabilityEFSMBuilder.build(stoneBlock, DurabilityCtx, lrParameterGenerator);
 	}
 
 }
