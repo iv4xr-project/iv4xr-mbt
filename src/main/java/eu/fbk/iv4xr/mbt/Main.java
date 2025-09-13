@@ -40,6 +40,9 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
 
 import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
@@ -670,6 +673,8 @@ public class Main {
 				executeOnLabRecruits(line,options);
 			}else if (MBTProperties.SUT.equalsIgnoreCase("SE")) {
 				executeOnSpaceEngineers(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("MC")) {
+				executeOnMinecraft(line,options);
 			}else {
 				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
@@ -804,6 +809,40 @@ public class Main {
 		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
+	private void executeOnMinecraft(CommandLine line, Options options){
+		// setGlobalProperties (line);		
+		String sutExecutableDir = "~/Documents/git/MineflayerTestbed";
+		String csvLevel = "";
+		String testsDir = "";
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir","~/Documents/git/MineflayerTestbed");
+		}else {
+			System.out.println("exec_on_se option needs sut_exec_dir parameter, but it is not provided. Using default ");
+		}
+
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.out.println("exec_on_sut option needs tests_dir parameter");
+		}
+			
+		
+		/*if (line.hasOption("sut_executable")) {
+			csvLevel = line.getOptionValue("sut_executable");
+		}else {
+			System.out.println("exec_on_mc option needs sut_executable parameter");
+		}
+
+		if (line.hasOption("server_address")) {
+			csvLevel = line.getOptionValue("server_address");
+		}else {
+			System.out.println("exec_on_mc option needs sut_executable parameter");
+		}*/
+
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, "", testsDir);
+
+		executor.execute();
+	}
 	
 	
 	
