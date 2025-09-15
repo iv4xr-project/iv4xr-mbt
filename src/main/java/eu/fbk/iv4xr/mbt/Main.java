@@ -576,6 +576,9 @@ public class Main {
 		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal (see aplib)");
 		maxCycles.setArgs(1);
 		
+		// minecraft specific options
+		Option serverAddress = new Option("server_address", "server_address", true, "ip address or domain for the Minecraft server");
+		serverAddress.setArgs(1);
 		
 		
 		Option wholesuite = Option.builder("wholesuite")
@@ -624,6 +627,8 @@ public class Main {
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
+
+		options.addOption(serverAddress);
 
 		options.addOption(execOnSut);
 		options.addOption(mutationAnalysis);
@@ -811,35 +816,49 @@ public class Main {
 	
 	private void executeOnMinecraft(CommandLine line, Options options){
 		// setGlobalProperties (line);		
-		String sutExecutableDir = "~/Documents/git/MineflayerTestbed";
+		String sutExecutableDir = "";
+		String serverAddress = "localhost";
+		String agent = "Bot";
 		String csvLevel = "";
 		String testsDir = "";
+		int[] coords = {16, 65, 0};
+
 		if (line.hasOption("sut_exec_dir")) {
-			sutExecutableDir = line.getOptionValue("sut_exec_dir","~/Documents/git/MineflayerTestbed");
+			sutExecutableDir = line.getOptionValue("sut_exec_dir");
 		}else {
-			System.out.println("exec_on_se option needs sut_exec_dir parameter, but it is not provided. Using default ");
+			System.out.println("exec_on_sut option needs sut_exec_dir parameter, but it is not provided.");
+			System.exit(2);
 		}
 
 		if (line.hasOption("tests_dir")) {
 			testsDir = line.getOptionValue("tests_dir");
 		}else {
-			System.out.println("exec_on_sut option needs tests_dir parameter");
+			System.err.println("exec_on_sut option needs tests_dir parameter");
 		}
-			
 		
-		/*if (line.hasOption("sut_executable")) {
+		// TODO: check that -Dsut_efsm is set correctly
+		
+		if (line.hasOption("sut_executable")) {
 			csvLevel = line.getOptionValue("sut_executable");
 		}else {
-			System.out.println("exec_on_mc option needs sut_executable parameter");
+			System.out.println("Sut MC option needs sut_executable parameter");
 		}
 
 		if (line.hasOption("server_address")) {
-			csvLevel = line.getOptionValue("server_address");
+			serverAddress = line.getOptionValue("server_address");
 		}else {
-			System.out.println("exec_on_mc option needs sut_executable parameter");
-		}*/
+			System.out.println("exec_on_mc option needs server_address parameter. Using default (localhost)");
+		}
 
-		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, "", testsDir);
+		if (line.hasOption("agent_name")) {
+			agent = line.getOptionValue("agent_name");
+		}else {
+			System.out.println("exec_on_mc option needs agent parameter. Using default (Bot)");
+		}
+
+		// TODO: parse coords
+
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, coords[0], coords[1], coords[2]);
 
 		executor.execute();
 	}

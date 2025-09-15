@@ -1,35 +1,42 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc;
 
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
-import eu.fbk.iv4xr.mbt.concretization.ConcreteTestCase;
+import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftTestConcretizer;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- * This class transform a test suite generated from an EFMS model of a
- * LabRecruits level into an aplib GoalStructure and run it on LabRecruits. The
- * EFSM model is made only of buttons and doors.
+ * This class transforms a test suite generated from an EFMS model of a
+ * Minecraft test level into a MineflayerTestbed json file and run it.
  * 
- * @author Davide Prandi
+ * @author itsAlisaa
  *
  */
 public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
+	private static ObjectMapper mapper = new ObjectMapper();
 
-	// LabRecruits basic settings
+	private ArrayNode testCases;
+	private ObjectNode meta;
+
 	private String mineflayerTestDir;
-	private String levelPath;
+	private Path jsonFilePath;
 
 	private TestSuiteExecutionReport testReporter;
 	// number of cycle the execution a transition can take
@@ -37,24 +44,29 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 
 	private GenericTestConcretizer testConcretizer;
 
-	public MinecraftConcreteTestExecutor(){ }
-	
-	public MinecraftConcreteTestExecutor(String mineflayerTestDir, String levelPath, String mcServerAddress) {
+	public MinecraftConcreteTestExecutor(String mineflayerTestDir, String levelPath, String testsDir, String agent,
+			String mcServerAddress, int x, int y, int z) {
+		this.testCases = mapper.createArrayNode();
+		this.meta = mapper.createObjectNode();
 		this.mineflayerTestDir = mineflayerTestDir;
-		// split level path	
-		this.levelPath = levelPath;
-
 
 		this.testReporter = new TestSuiteExecutionReport();
-		
-		// set the configuration of the server
-
-		// define the data collector and attach it to the agent
-		var dataCollector = new TestDataCollector();
-
 		this.testConcretizer = new MinecraftTestConcretizer();
+
+		this.jsonFilePath = Paths.get(testsDir, "concrete_test.json");
+
+		meta.put("id", MBTProperties.SUT_EFSM);
+		meta.put("time", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(OffsetDateTime.now()));
+		meta.put("level_csv", Paths.get(levelPath).toAbsolutePath().toString());
+		meta.put("username", agent);
+		meta.put("address", mcServerAddress);
+		meta.put("x", x);
+		meta.put("y", y);
+		meta.put("z", z);
+
 	}
 
+	// unused but required bu abstract class
 	public void setMaxCyclePerGoal(int max) {
 		this.maxCyclePerGoal = max;
 	}
@@ -62,55 +74,57 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 	public int getMaxCylcePerGoal() {
 		return maxCyclePerGoal;
 	}
-	
-	public TestSuiteExecutionReport getReport(){
+
+	public TestSuiteExecutionReport getReport() {
 		return testReporter;
 	}
-	
-	
-	/**
-	 * We assume a valid solution
-	 * 
-	 * @param solution
-	 * @return
-	 * @throws InterruptedException
-	 */
-	public boolean executeTestSuite(SuiteChromosome solution)
-			throws InterruptedException {
 
-//		// open the server
-//		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
-//				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
-
+	public boolean executeTestSuite(SuiteChromosome solution) {
 		boolean testSuiteResult = true;
 		// cycle over the test cases
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
-			Boolean testResult = executeTestCase(testcase);
+			executeTestCase(testcase);
 		}
 
-		return testSuiteResult;
+		ObjectNode json = mapper.createObjectNode();
+		json.set("meta", meta);
+		json.set("test_cases", testCases);
+
+		try {
+			mapper.writeValue(jsonFilePath.toFile(), json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return runMineflayer() == 0;
 	}
 
 	// run a test case
-	public boolean executeTestCase(AbstractTestSequence testcase) {		
-		// convert test case to a list of goal structure
-		// each goal structure represent a transition
-		testConcretizer.concretizeTestCase(testcase);
-		
-		String status = "SUCCESS";
-		// iterate over goals
-		// 
+	public boolean executeTestCase(AbstractTestSequence testcase) {
+		MinecraftConcreteTestCase concreteTestcase = (MinecraftConcreteTestCase) testConcretizer
+				.concretizeTestCase(testcase);
+		ObjectNode jsonTestcase = concreteTestcase.getJsonTestCase("test_" + (testCases.size() + 1));
+		testCases.add(jsonTestcase);
 
-		/*
-		if (status == "SUCCESS") {
-			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.TRUE, timeDuration);
-			return true;
-		}else {
-			testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
-			return false;
-		}
-		*/
 		return true;
+	}
+
+	private int runMineflayer() {
+		ProcessBuilder processBuilder = new ProcessBuilder("npm", "start", "test=" + jsonFilePath.toAbsolutePath());
+		processBuilder.directory(new java.io.File(mineflayerTestDir));
+
+		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+		processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+
+		try {
+			Process process = processBuilder.start();
+			int exitCode = process.waitFor();
+			return exitCode;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return 255;
 	}
 }

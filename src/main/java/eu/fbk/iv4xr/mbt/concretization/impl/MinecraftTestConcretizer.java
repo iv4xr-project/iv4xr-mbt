@@ -27,16 +27,17 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
  */
 public class MinecraftTestConcretizer extends GenericTestConcretizer {
+	private static ObjectMapper mapper = new ObjectMapper();
+
 
 	@Override
-	public ConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
+	public MinecraftConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
 		Path path = abstractTestCase.getPath();
 		List<EFSMTransition> transitions = path.getTransitions();
 
@@ -45,10 +46,10 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		EFSM model = modelFactory.getEFSM();
 
 		// setup json mapper
-		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode actionsArray = mapper.createArrayNode();
+		
 
-		ConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();
+		MinecraftConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();
+
 		for (EFSMTransition rawTransition : transitions) {
 			// execute the transition
 			model.transition(rawTransition);
@@ -73,7 +74,7 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 					previousActionName = actionName;
 
 					currentAction = mapper.createObjectNode();
-					actionsArray.add(currentAction);
+					concreteTestCase.addAction(currentAction);
 
 					currentAction.put("name", actionName);
 
@@ -84,24 +85,12 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 				}
 
 				// some actions may not require parameters
-				String param = null;
-				Object value = entry.getValue().getValue();
 				if (keys.length > 1) {
-					param = keys[1];
-					currentAction.putPOJO(param, value);
+					Object value = entry.getValue().getValue();
+					currentAction.putPOJO(keys[1], value);
 				}
 			}
 		}
-
-		try {
-			mapper.writeValue(new File("TESTACTIONS.json"), actionsArray);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// translate the transition to the desired concrete content ..
-		// and add it to the concrete test case
 
 		return concreteTestCase;
 	}
