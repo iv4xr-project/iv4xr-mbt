@@ -134,7 +134,7 @@ public class Mutator implements Serializable, Cloneable {
 		
 		if (choice < 0.33) {
 			insertSelfTransitionMutation();
-		} else if (choice < 0.33) {
+		} else if (choice < 0.66) {
 			deleteSelfTransitionMutation();
 		} else {
 			singleTransitionRemoval();
