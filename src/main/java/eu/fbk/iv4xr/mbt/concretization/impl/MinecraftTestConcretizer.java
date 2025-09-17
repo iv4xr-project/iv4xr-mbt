@@ -3,28 +3,19 @@
  */
 package eu.fbk.iv4xr.mbt.concretization.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.io.File;
 
-import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
-
-import eu.fbk.iv4xr.mbt.concretization.ConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
+import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
+import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Path;
-
-import eu.fbk.iv4xr.mbt.efsm.exp.Var;
-import eu.fbk.iv4xr.mbt.efsm.exp.VarSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,7 +25,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class MinecraftTestConcretizer extends GenericTestConcretizer {
 	private static ObjectMapper mapper = new ObjectMapper();
-
 
 	@Override
 	public MinecraftConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
@@ -46,7 +36,6 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		EFSM model = modelFactory.getEFSM();
 
 		// setup json mapper
-		
 
 		MinecraftConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();
 
@@ -54,20 +43,18 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 			// execute the transition
 			model.transition(rawTransition);
 
-			// get the real transiton, with the uodated variables
+			// get the real transiton, with the updated variables
 			EFSMTransition transition = model.getTransition(rawTransition.getId());
 
-			LinkedHashMap<String, Var<Object>> inParamSet = getParameterSafe(transition.getInParameter());
-			LinkedHashMap<String, Var<Object>> outParamSet = getParameterSafe(transition.getOutParameter());
-			
+			LinkedHashMap<String, Var<Object>> combinedParams = combineParams(transition);
+
 			String previousActionName = "";
 			ObjectNode currentAction = null;
-			
-			for (Map.Entry<String, Var<Object>> entry : combineParams(inParamSet, outParamSet).entrySet()) {
-				
-				String[] keys = entry.getKey().split("__");
+
+			for (Map.Entry<String, Var<Object>> entry : combinedParams.entrySet()) {
+
+				String[] keys = entry.getKey().split(MBTProperties.MC_ACTION_NAME_SEPARATOR);
 				String actionName = keys[0];
-				
 
 				// once a new action is created we need to set it up
 				if (!previousActionName.equals(actionName)) {
@@ -76,11 +63,14 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 					currentAction = mapper.createObjectNode();
 					concreteTestCase.addAction(currentAction);
 
-					currentAction.put("name", actionName);
+					// allow more of the same action on the same transition by using the same separator we use for states
+					currentAction.put("name", actionName.split(MBTProperties.MC_SEPARATOR)[0]);
 
-					// by convention the target will be the name of the state we are going to, some
-					// action don't need a target, but it's easier to just ignore it.
-					String target = transition.getTgt().getId().split("\\^")[0];
+					// by convention the target will be the name of the target state of the transition, 
+					// some actions don't need a target, but it's easier to just ignore it.
+
+					// to allow for more states with the same target in mineflayertestbed, a sepatrator can be used
+					String target = transition.getTgt().getId().split(MBTProperties.MC_SEPARATOR)[0];
 					currentAction.put("target", target);
 				}
 
@@ -95,32 +85,22 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		return concreteTestCase;
 	}
 
-	private static LinkedHashMap<String, Var<Object>> combineParams(Map<String, Var<Object>> inParams,
-			Map<String, Var<Object>> outParams) {
+	private static LinkedHashMap<String, Var<Object>> combineParams(EFSMTransition t) {
 
 		LinkedHashMap<String, Var<Object>> combined = new LinkedHashMap<>();
 
-		if (inParams != null) {
-			combined.putAll(inParams);
+		if (t.getInParameter() != null) {
+			combined.putAll(t.getInParameter().getParameter().getHash());
 		}
 
 		// add "check_" prefix on out_params
-		if (outParams != null) {
-			combined.putAll(
-					outParams.entrySet()
-							.stream()
-							.collect(Collectors.toMap(
-									entry -> "check_" + entry.getKey(),
-									Map.Entry::getValue)));
+		if (t.getOutParameter() != null) {
+			for (Map.Entry<String, Var<Object>> entry : ((LinkedHashMap<String, Var<Object>>) t.getOutParameter()
+					.getParameter().getHash()).entrySet()) {
+				combined.put("check_" + entry.getKey(), entry.getValue());
+			}
 		}
-
 		return combined;
 	}
 
-	private static LinkedHashMap<String, Var<Object>> getParameterSafe(EFSMParameter param) {
-		if (param == null) {
-			return null;
-		}
-		return param.getParameter().getHash();
-	}
 }

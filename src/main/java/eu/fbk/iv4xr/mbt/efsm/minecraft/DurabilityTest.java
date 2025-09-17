@@ -27,7 +27,7 @@ public class DurabilityTest implements EFSMProvider {
 	public EFSMState endState = new EFSMState("stone^end");
 
 	// variables
-	public Var<Integer> durability = new Var<Integer>("inventory__damage", 16);
+	public Var<Integer> durability = new Var<Integer>("inventory__damage", 0);
 
 	// transitions
 

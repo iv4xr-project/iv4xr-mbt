@@ -40,7 +40,6 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
-import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
@@ -817,11 +816,13 @@ public class Main {
 	private void executeOnMinecraft(CommandLine line, Options options){
 		// setGlobalProperties (line);		
 		String sutExecutableDir = "";
-		String serverAddress = "localhost";
-		String agent = "Bot";
+		String serverAddress = null;
+		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
 		String csvLevel = "";
 		String testsDir = "";
-		int[] coords = {16, 65, 0};
+		int x = MBTProperties.MC_DEFAULT_X;
+		int y = MBTProperties.MC_DEFAULT_Y;
+		int z = MBTProperties.MC_DEFAULT_Z;
 
 		if (line.hasOption("sut_exec_dir")) {
 			sutExecutableDir = line.getOptionValue("sut_exec_dir");
@@ -847,18 +848,18 @@ public class Main {
 		if (line.hasOption("server_address")) {
 			serverAddress = line.getOptionValue("server_address");
 		}else {
-			System.out.println("exec_on_mc option needs server_address parameter. Using default (localhost)");
+			System.out.println("exec_on_mc option needs server_address parameter. Using default");
 		}
 
 		if (line.hasOption("agent_name")) {
 			agent = line.getOptionValue("agent_name");
 		}else {
-			System.out.println("exec_on_mc option needs agent parameter. Using default (Bot)");
+			System.out.println("exec_on_mc option needs agent parameter. Using default");
 		}
 
 		// TODO: parse coords
 
-		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, coords[0], coords[1], coords[2]);
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, x, y, z);
 
 		executor.execute();
 	}

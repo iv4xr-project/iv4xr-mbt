@@ -501,7 +501,18 @@ public class MBTProperties {
 	public static String SUT = "LR";
 	
 	
+	/**
+	 * Minecraft specific constants
+	 */
+	public static String MC_SEPARATOR = "\\^";
+	public static String MC_ACTION_NAME_SEPARATOR = "__";
 	
+	public static String MC_DEFAULT_AGENT_NAME = "Bot";
+	public static int MC_DEFAULT_X = 16;
+	public static int MC_DEFAULT_Y = 64;
+	public static int MC_DEFAULT_Z = 0;
+
+
 	/**
 	 * Get all parameters that are available
 	 *
