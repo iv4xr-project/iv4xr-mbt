@@ -816,7 +816,7 @@ public class Main {
 	private void executeOnMinecraft(CommandLine line, Options options){
 		// setGlobalProperties (line);		
 		String sutExecutableDir = "";
-		String serverAddress = null;
+		String serverAddress = "";
 		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
 		String csvLevel = "";
 		String testsDir = "";

@@ -10,9 +10,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
-import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
-import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
-import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 
@@ -22,7 +19,7 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
  *
  */
 public abstract class AplibTestExecutionHelper extends TestExecutionHelper {
-
+	protected AplibConcreteTestExecutor testExecutor;
 	/*
 	 * Create statistics table
 	 */

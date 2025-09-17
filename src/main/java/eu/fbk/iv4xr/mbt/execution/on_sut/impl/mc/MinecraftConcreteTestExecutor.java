@@ -2,13 +2,12 @@ package eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc;
 
 import java.nio.file.Paths;
 import java.nio.file.Path;
-import java.io.File;
+
 import java.io.IOException;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftConcreteTestCase;
@@ -26,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * This class transforms a test suite generated from an EFMS model of a
  * Minecraft test level into a MineflayerTestbed json file and run it.
  * 
- * @author itsAlisaa
+ * @author guss-alberto
  *
  */
 public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
@@ -38,10 +37,6 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 	private String mineflayerTestDir;
 	private Path jsonFilePath;
 
-	private TestSuiteExecutionReport testReporter;
-	// number of cycle the execution a transition can take
-	private int maxCyclePerGoal = 200;
-
 	private GenericTestConcretizer testConcretizer;
 
 	public MinecraftConcreteTestExecutor(String mineflayerTestDir, String levelPath, String testsDir, String agent,
@@ -50,7 +45,6 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 		this.meta = mapper.createObjectNode();
 		this.mineflayerTestDir = mineflayerTestDir;
 
-		this.testReporter = new TestSuiteExecutionReport();
 		this.testConcretizer = new MinecraftTestConcretizer();
 
 		this.jsonFilePath = Paths.get(testsDir, "concrete_test.json");
@@ -66,21 +60,11 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 
 	}
 
-	// unused but required bu abstract class
-	public void setMaxCyclePerGoal(int max) {
-		this.maxCyclePerGoal = max;
-	}
-
-	public int getMaxCylcePerGoal() {
-		return maxCyclePerGoal;
-	}
-
 	public TestSuiteExecutionReport getReport() {
-		return testReporter;
+		return new TestSuiteExecutionReport();
 	}
 
 	public boolean executeTestSuite(SuiteChromosome solution) {
-		boolean testSuiteResult = true;
 		// cycle over the test cases
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
