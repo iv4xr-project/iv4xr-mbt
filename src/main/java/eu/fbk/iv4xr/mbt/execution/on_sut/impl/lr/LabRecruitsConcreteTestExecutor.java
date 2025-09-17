@@ -29,6 +29,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -43,7 +44,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author Davide Prandi
  *
  */
-public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
+public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecutor {
 
 	// LabRecruits basic settings
 	private String labRecruitesExeRootDir;

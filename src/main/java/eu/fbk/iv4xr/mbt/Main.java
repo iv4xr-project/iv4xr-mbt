@@ -40,6 +40,8 @@ import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
 
 import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
@@ -573,6 +575,9 @@ public class Main {
 		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal (see aplib)");
 		maxCycles.setArgs(1);
 		
+		// minecraft specific options
+		Option serverAddress = new Option("server_address", "server_address", true, "ip address or domain for the Minecraft server");
+		serverAddress.setArgs(1);
 		
 		
 		Option wholesuite = Option.builder("wholesuite")
@@ -622,6 +627,8 @@ public class Main {
 		options.addOption(agentName);
 		options.addOption(maxCycles);
 
+		options.addOption(serverAddress);
+
 		options.addOption(execOnSut);
 		options.addOption(mutationAnalysis);
 		options.addOption(silent);
@@ -670,6 +677,8 @@ public class Main {
 				executeOnLabRecruits(line,options);
 			}else if (MBTProperties.SUT.equalsIgnoreCase("SE")) {
 				executeOnSpaceEngineers(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("MC")) {
+				executeOnMinecraft(line,options);
 			}else {
 				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
@@ -804,6 +813,51 @@ public class Main {
 		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
+	private void executeOnMinecraft(CommandLine line, Options options){
+		// setGlobalProperties (line);		
+		String sutExecutableDir = "";
+		String serverAddress = "";
+		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
+		String csvLevel = "";
+		String testsDir = "";
+
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir");
+		}else {
+			System.out.println("exec_on_sut option needs sut_exec_dir parameter, but it is not provided.");
+			System.exit(2);
+		}
+
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.err.println("exec_on_sut option needs tests_dir parameter");
+		}
+		
+		if (line.hasOption("sut_executable")) {
+			csvLevel = line.getOptionValue("sut_executable");
+		}else {
+			System.out.println("Sut MC option needs sut_executable parameter");
+		}
+
+		if (line.hasOption("server_address")) {
+			serverAddress = line.getOptionValue("server_address");
+		}else {
+			System.out.println("exec_on_mc option needs server_address parameter. Using default");
+		}
+
+		if (line.hasOption("agent_name")) {
+			agent = line.getOptionValue("agent_name");
+		}else {
+			System.out.println("exec_on_mc option needs agent parameter. Using default");
+		}
+
+		// TODO: parse coords
+
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
+
+		executor.execute();
+	}
 	
 	
 	

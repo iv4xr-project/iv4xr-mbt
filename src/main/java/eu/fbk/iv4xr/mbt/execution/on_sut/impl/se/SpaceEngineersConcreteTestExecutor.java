@@ -17,6 +17,7 @@ import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.SpaceEngineersTestConcretizer;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -30,7 +31,7 @@ import spaceEngineers.controller.SpaceEngineers;
 import spaceEngineers.controller.SpaceEngineersJavaProxyBuilder;
 import spaceEngineers.controller.SpaceEngineersTestContext;
 
-public class SpaceEngineersConcreteTestExecutor implements ConcreteTestExecutor {
+public class SpaceEngineersConcreteTestExecutor implements AplibConcreteTestExecutor {
 
 	private AplibTestConcretizer testConcretizer;
 	private int maxCyclePerGoal;
