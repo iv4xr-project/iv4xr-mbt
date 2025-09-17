@@ -16,6 +16,7 @@ import environments.SeEnvironment;
 import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.SpaceEngineersTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
@@ -32,7 +33,7 @@ import spaceEngineers.controller.SpaceEngineersJavaProxyBuilder;
 import spaceEngineers.controller.SpaceEngineersTestContext;
 
 public class SpaceEngineersConcreteTestExecutor implements AplibConcreteTestExecutor {
-
+	protected EFSM model;
 	private AplibTestConcretizer testConcretizer;
 	private int maxCyclePerGoal;
 	private TestSuiteExecutionReport testReporter;
@@ -50,8 +51,8 @@ public class SpaceEngineersConcreteTestExecutor implements AplibConcreteTestExec
 	
 	private TestAgent testAgent;
 	
-	public SpaceEngineersConcreteTestExecutor(String seExecutableDir, String seGameSavePath, Integer maxCyclePerGoal) {
-		
+	public SpaceEngineersConcreteTestExecutor(EFSM model, String seExecutableDir, String seGameSavePath, Integer maxCyclePerGoal) {
+		this.model = model;
 		var dataCollector = new TestDataCollector();
 		var myAgentState = new SeAgentState(agentId);
 		testAgent = new TestAgent(agentId, "Navigator");
@@ -59,7 +60,7 @@ public class SpaceEngineersConcreteTestExecutor implements AplibConcreteTestExec
 		testAgent.attachEnvironment(theEnv);
 		testAgent.setTestDataCollector(dataCollector);
 		
-		this.testConcretizer = new SpaceEngineersTestConcretizer(testAgent);
+		this.testConcretizer = new SpaceEngineersTestConcretizer(testAgent, model);
 		setMaxCyclePerGoal(maxCyclePerGoal);
 		this.spaceEngineersExeRootDir = seExecutableDir;
 		this.seGameSavePath = seGameSavePath;

@@ -25,6 +25,7 @@ import world.BeliefState;
 import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.LabRecruitsTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
@@ -51,6 +52,7 @@ public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecuto
 	private String levelFileName;
 	private String levelFolder;
 	private String agentName;
+	protected EFSM model;
 
 	private LabRecruitsTestAgent testAgent;
 	private LabRecruitsEnvironment labRecruitsEnvironment;
@@ -67,7 +69,8 @@ public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecuto
 
 	public LabRecruitsConcreteTestExecutor(){ }
 	
-	public LabRecruitsConcreteTestExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, int maxCyclePerGoal) {
+	public LabRecruitsConcreteTestExecutor(EFSM model, String labRecruitesExeRootDir, String levelPath, String agentName, int maxCyclePerGoal) {
+		this.model = model;
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
 		// split level path	
 		this.levelFileName = Paths.get(levelPath).getFileName().toString();
@@ -92,7 +95,7 @@ public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecuto
 		var dataCollector = new TestDataCollector();
 		testAgent.setTestDataCollector(dataCollector);
 		
-		this.testConcretizer = new LabRecruitsTestConcretizer(testAgent);
+		this.testConcretizer = new LabRecruitsTestConcretizer(testAgent, model);
 	}
 
 	public void setMaxCyclePerGoal(int max) {

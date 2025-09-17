@@ -96,7 +96,7 @@ public class ServerTest {
 		SuiteChromosome solution = generationStrategy.generateTests();
 			
 		// create the executor
-        ConcreteTestExecutor lrExecutor = new LabRecruitsConcreteTestExecutor(labRecruitesExeRootDir, Platform.LEVEL_PATH+"/"+levelFileName, agentName, maxCycles);
+        ConcreteTestExecutor lrExecutor = new LabRecruitsConcreteTestExecutor(efsm, labRecruitesExeRootDir, Platform.LEVEL_PATH+"/"+levelFileName, agentName, maxCycles);
         //lrExecutor.setMaxCycle(maxCycles);
         
         // execute the test suite
