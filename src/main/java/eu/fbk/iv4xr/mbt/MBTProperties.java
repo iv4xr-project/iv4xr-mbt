@@ -157,6 +157,7 @@ public class MBTProperties {
 	
 	public static String TESTS_DIR () { return OUTPUT_DIR + File.separator + "tests";}
 	
+	public static String MODEL_EXPORT_DIR_NAME = "Model";
 	
 	public static String STATISTICS_DIR_NAME = "statistics";
 	

@@ -21,7 +21,7 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
  * Each SUT must provide an implementation for this interface so as to enable execution of tests on the actual SUT
  *
  */
-public abstract class AplibTestConcretizer implements TestConcretizer {
+public abstract class AplibTestConcretizer extends TestConcretizer {
 
 	private TestAgent testAgent;
 	public AplibTestConcretizer(TestAgent testAgent) {
@@ -42,9 +42,9 @@ public abstract class AplibTestConcretizer implements TestConcretizer {
 	public List<GoalStructure> convertTestCaseToGoalStructure(List<EFSMTransition>  tc) {
 		List<GoalStructure> subGoals = new LinkedList<GoalStructure>();
 		
-		// get the EFSM model and reset it
-		EFSMFactory modelFactory = EFSMFactory.getInstance();
-		EFSM model = modelFactory.getEFSM();
+//		// get the EFSM model and reset it
+//		EFSMFactory modelFactory = EFSMFactory.getInstance();
+//		EFSM model = modelFactory.getEFSM();
 		model.reset();
 		
 		for (EFSMTransition t : tc) {

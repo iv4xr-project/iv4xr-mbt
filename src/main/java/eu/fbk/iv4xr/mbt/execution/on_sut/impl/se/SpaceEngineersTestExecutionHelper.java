@@ -13,11 +13,11 @@ public class SpaceEngineersTestExecutionHelper extends AplibTestExecutionHelper 
 	
 	public SpaceEngineersTestExecutionHelper(String seExecutableDir, String seGameSavePath, String testsDir, Integer maxCyclePerGoal) {
 		
-		testExecutor = new SpaceEngineersConcreteTestExecutor(seExecutableDir, seGameSavePath, maxCyclePerGoal);
+		model = parseModel(testsDir);
+		testExecutor = new SpaceEngineersConcreteTestExecutor(model, seExecutableDir, seGameSavePath, maxCyclePerGoal);
 		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
 		testSuite = parseTests (testsDir);
 		testsFolder = testsDir;
-		
 	}
 	
 }

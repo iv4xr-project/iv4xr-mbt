@@ -26,6 +26,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class MinecraftTestConcretizer extends GenericTestConcretizer {
 	private static ObjectMapper mapper = new ObjectMapper();
 
+	public MinecraftTestConcretizer(EFSM model) {
+		this.model = model;
+	}
+	
 	@Override
 	public MinecraftConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
 		Path path = abstractTestCase.getPath();

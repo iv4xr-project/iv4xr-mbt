@@ -31,7 +31,8 @@ public class LabRecruitsTestExecutionHelper extends AplibTestExecutionHelper {
 //	private String run_id;
 	
 	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
-		testExecutor = new LabRecruitsConcreteTestExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
+		model = parseModel(testsDir);
+		testExecutor = new LabRecruitsConcreteTestExecutor(model, lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
 		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
 		testSuite = parseTests (testsDir);
 		testsFolder = testsDir;

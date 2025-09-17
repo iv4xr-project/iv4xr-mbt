@@ -31,8 +31,9 @@ public class LabRecruitsTestConcretizer extends AplibTestConcretizer {
 	/**
 	 * 
 	 */
-	public LabRecruitsTestConcretizer(TestAgent testAgent) {
+	public LabRecruitsTestConcretizer(TestAgent testAgent, EFSM model) {
 		super(testAgent);
+		this.model = model;
 	}
 
 

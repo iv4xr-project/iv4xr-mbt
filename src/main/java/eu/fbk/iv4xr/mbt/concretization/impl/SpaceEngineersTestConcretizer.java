@@ -22,8 +22,9 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
  */
 public class SpaceEngineersTestConcretizer extends AplibTestConcretizer {
 	
-	public SpaceEngineersTestConcretizer(TestAgent testAgent) {
+	public SpaceEngineersTestConcretizer(TestAgent testAgent, EFSM model) {
 		super(testAgent);
+		this.model = model;
 	}
 
 	public GoalStructure convertEFMSTransitionToGoal(TestAgent agent, EFSMTransition t, EFSM model) {

@@ -4,13 +4,17 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
+import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -21,6 +25,7 @@ import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
  */
 public abstract class TestExecutionHelper {
 
+	protected EFSM model;
 	protected ConcreteTestExecutor testExecutor;
 	protected SuiteChromosome testSuite;
 	
@@ -81,6 +86,26 @@ public abstract class TestExecutionHelper {
 		return suite;
 	}
 
+	/**
+	 * Load a serialized EFSM model into a java object
+	 * @param testsDir
+	 * @return an instance of an EFSM
+	 */
+	protected EFSM parseModel(String testsDir){
+		WildcardFileFilter fileFilter = WildcardFileFilter.builder().setWildcards("*.ser").get();
+		List<File> files = (List<File>) FileUtils.listFiles(new File(testsDir + File.separator + MBTProperties.MODEL_EXPORT_DIR_NAME), fileFilter, null);
+		// there should be just one
+		if (files == null || files.size() != 1) {
+			throw new RuntimeException("There should be exactly one serialized model.");
+		}
+		try {
+			return TestSerializationUtils.loadEFSM(files.get(0).getAbsolutePath());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public boolean execute() {
 		boolean success = true;
 		try {

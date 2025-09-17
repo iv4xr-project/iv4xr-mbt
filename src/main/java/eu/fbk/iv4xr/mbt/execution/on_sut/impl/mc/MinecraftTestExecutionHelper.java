@@ -11,7 +11,8 @@ public class MinecraftTestExecutionHelper extends TestExecutionHelper {
 
 	public MinecraftTestExecutionHelper(String mineflayerTestDir, String mcLevelPath, String mcServerAddress, String testsDir, String agent, int x, int y, int z) {
 
-		testExecutor = new MinecraftConcreteTestExecutor(mineflayerTestDir, mcLevelPath, testsDir, agent, mcServerAddress, x, y, z);
+		model = parseModel(testsDir);
+		testExecutor = new MinecraftConcreteTestExecutor(model, mineflayerTestDir, mcLevelPath, testsDir, agent, mcServerAddress, x, y, z);
 		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
 		testSuite = parseTests (testsDir);
 		testsFolder = testsDir;

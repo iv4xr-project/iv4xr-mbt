@@ -12,6 +12,7 @@ import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 	private static ObjectMapper mapper = new ObjectMapper();
-
+	protected EFSM model;
 	private ArrayNode testCases;
 	private ObjectNode meta;
 
@@ -39,13 +40,14 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 
 	private GenericTestConcretizer testConcretizer;
 
-	public MinecraftConcreteTestExecutor(String mineflayerTestDir, String levelPath, String testsDir, String agent,
+	public MinecraftConcreteTestExecutor(EFSM model, String mineflayerTestDir, String levelPath, String testsDir, String agent,
 			String mcServerAddress, int x, int y, int z) {
+		this.model = model;
 		this.testCases = mapper.createArrayNode();
 		this.meta = mapper.createObjectNode();
 		this.mineflayerTestDir = mineflayerTestDir;
 
-		this.testConcretizer = new MinecraftTestConcretizer();
+		this.testConcretizer = new MinecraftTestConcretizer(model);
 
 		this.jsonFilePath = Paths.get(testsDir, "concrete_test.json");
 
