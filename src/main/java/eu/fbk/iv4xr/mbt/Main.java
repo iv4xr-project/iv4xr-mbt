@@ -820,9 +820,6 @@ public class Main {
 		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
 		String csvLevel = "";
 		String testsDir = "";
-		int x = MBTProperties.MC_DEFAULT_X;
-		int y = MBTProperties.MC_DEFAULT_Y;
-		int z = MBTProperties.MC_DEFAULT_Z;
 
 		if (line.hasOption("sut_exec_dir")) {
 			sutExecutableDir = line.getOptionValue("sut_exec_dir");
@@ -836,8 +833,6 @@ public class Main {
 		}else {
 			System.err.println("exec_on_sut option needs tests_dir parameter");
 		}
-		
-		// TODO: check that -Dsut_efsm is set correctly
 		
 		if (line.hasOption("sut_executable")) {
 			csvLevel = line.getOptionValue("sut_executable");
@@ -859,7 +854,7 @@ public class Main {
 
 		// TODO: parse coords
 
-		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, x, y, z);
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
 
 		executor.execute();
 	}

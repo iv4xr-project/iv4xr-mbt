@@ -17,6 +17,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
+import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
@@ -27,7 +28,7 @@ public class DurabilityTest implements EFSMProvider {
 	public EFSMState endState = new EFSMState("stone^end");
 
 	// variables
-	public Var<Integer> durability = new Var<Integer>("inventory__damage", 0);
+	public Var<Integer> durability = new Var<Integer>("inventory::damage", 0);
 
 	// transitions
 
@@ -37,31 +38,32 @@ public class DurabilityTest implements EFSMProvider {
 		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 
 		Exp<Boolean> has_uses_left = new IntLess(durability, new Const<Integer>(31));
+		Exp<Boolean> has_no_uses_left = new IntEq(durability, new Const<Integer>(31));
 
 		Assign<Integer> consume_uses = new Assign<Integer>(durability, new IntSum(durability, new Const<Integer>(1)));
 		EFSMOperation consume_pickaxe_operation = new EFSMOperation(consume_uses);
 		// guards
 		EFSMGuard pickaxe_has_uses = new EFSMGuard(has_uses_left);
-		EFSMGuard pickaxe_is_broken = new EFSMGuard(new BoolNot(has_uses_left));
+		EFSMGuard pickaxe_is_broken = new EFSMGuard(has_no_uses_left);
 
 		// actions
 		EFSMParameter place_block = new EFSMParameter(
-				new Var<String>("select__item", "stone"),
-				new Var<String>("place__face", "top"));
+				new Var<String>("select::item", "stone"),
+				new Var<String>("place::face", "top"));
 
 		EFSMParameter break_block = new EFSMParameter(
-				new Var<String>("select__item", "golden_pickaxe"),
-				new Var<Boolean>("break__expect_result", true));
+				new Var<String>("select::item", "golden_pickaxe"),
+				new Var<Boolean>("break::expect_result", true));
 
 		// checks
 		EFSMParameter durability_inv_check = new EFSMParameter(
-				new Var<String>("inventory__item", "golden_pickaxe"),
-				new Var<Boolean>("inventory__expect_result", true),
+				new Var<String>("inventory::item", "golden_pickaxe"),
+				new Var<Boolean>("inventory::expect_result", true),
 				durability);
 
 		EFSMParameter has_no_pickaxe_check = new EFSMParameter(
-				new Var<String>("inventory__item", "golden_pickaxe"),
-				new Var<Boolean>("inventory__expect_result", false));
+				new Var<String>("inventory::item", "golden_pickaxe"),
+				new Var<Boolean>("inventory::expect_result", false));
 
 		EFSMTransition t_1 = new EFSMTransition();
 		t_1.setInParameter(place_block);

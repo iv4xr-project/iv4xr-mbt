@@ -505,12 +505,17 @@ public class MBTProperties {
 	 * Minecraft specific constants
 	 */
 	public static String MC_SEPARATOR = "\\^";
-	public static String MC_ACTION_NAME_SEPARATOR = "__";
+	public static String MC_ACTION_NAME_SEPARATOR = "::";
 	
 	public static String MC_DEFAULT_AGENT_NAME = "Bot";
-	public static int MC_DEFAULT_X = 16;
-	public static int MC_DEFAULT_Y = 64;
-	public static int MC_DEFAULT_Z = 0;
+
+
+	@Parameter(key = "mc_x", group = "Minecraft", description = "X coordinate of the level origin")
+	public static int MC_X = 16;
+	@Parameter(key = "mc_y", group = "Minecraft", description = "Y coordinate of the level origin")
+	public static int MC_Y = 64;
+	@Parameter(key = "mc_z", group = "Minecraft", description = "Z coordinate of the level origin")
+	public static int MC_Z = 0;
 
 
 	/**
