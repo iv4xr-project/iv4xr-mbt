@@ -1,0 +1,6 @@
+stone_sword, iron_sword, diamond_sword, netherite_sword
+|iron_block,iron_block,iron_block,
+iron_block,iron_block,iron_block,
+iron_block,iron_block,iron_block,
+|,@player,,
+,"@pig{NoAI:1b,Health:100f,attributes:[{id:""minecraft:generic.max_health"",base:100}]}^mob",,

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftTestConcretizer;
@@ -38,7 +38,7 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 	private String mineflayerTestDir;
 	private Path jsonFilePath;
 
-	private GenericTestConcretizer testConcretizer;
+	private TestConcretizer testConcretizer;
 
 	public MinecraftConcreteTestExecutor(EFSM model, String mineflayerTestDir, String levelPath, String testsDir, String agent,
 			String mcServerAddress, int x, int y, int z) {
