@@ -4,7 +4,6 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMGuard;
 import eu.fbk.iv4xr.mbt.efsm.EFSMOperation;
 import eu.fbk.iv4xr.mbt.efsm.EFSMParameter;
-import eu.fbk.iv4xr.mbt.efsm.EFSMParameterGenerator;
 import eu.fbk.iv4xr.mbt.efsm.EFSMProvider;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
@@ -15,7 +14,6 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
-import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
@@ -38,13 +36,13 @@ public class DurabilityTest implements EFSMProvider {
 		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 
 		Exp<Boolean> has_uses_left = new IntLess(durability, new Const<Integer>(31));
-		Exp<Boolean> has_no_uses_left = new IntEq(durability, new Const<Integer>(31));
+		Exp<Boolean> has_one_use_left = new IntEq(durability, new Const<Integer>(31));
 
 		Assign<Integer> consume_uses = new Assign<Integer>(durability, new IntSum(durability, new Const<Integer>(1)));
 		EFSMOperation consume_pickaxe_operation = new EFSMOperation(consume_uses);
 		// guards
 		EFSMGuard pickaxe_has_uses = new EFSMGuard(has_uses_left);
-		EFSMGuard pickaxe_is_broken = new EFSMGuard(has_no_uses_left);
+		EFSMGuard pickaxe_is_broken = new EFSMGuard(has_one_use_left);
 
 		// actions
 		EFSMParameter place_block = new EFSMParameter(

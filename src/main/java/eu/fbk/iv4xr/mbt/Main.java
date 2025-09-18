@@ -832,27 +832,27 @@ public class Main {
 			testsDir = line.getOptionValue("tests_dir");
 		}else {
 			System.err.println("exec_on_sut option needs tests_dir parameter");
+			System.exit(2);
 		}
 		
 		if (line.hasOption("sut_executable")) {
 			csvLevel = line.getOptionValue("sut_executable");
 		}else {
 			System.out.println("Sut MC option needs sut_executable parameter");
+			System.exit(2);
 		}
 
 		if (line.hasOption("server_address")) {
 			serverAddress = line.getOptionValue("server_address");
 		}else {
-			System.out.println("exec_on_mc option needs server_address parameter. Using default");
+			System.out.println("Sut MC option needs server_address parameter. Using default");
 		}
 
 		if (line.hasOption("agent_name")) {
 			agent = line.getOptionValue("agent_name");
 		}else {
-			System.out.println("exec_on_mc option needs agent parameter. Using default");
+			System.out.println("Sut MC option needs agent parameter. Using default");
 		}
-
-		// TODO: parse coords
 
 		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
 

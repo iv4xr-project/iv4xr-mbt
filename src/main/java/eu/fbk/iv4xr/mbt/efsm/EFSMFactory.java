@@ -7,6 +7,7 @@ import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.cps.BeamNgModelGenerator;
 import eu.fbk.iv4xr.mbt.efsm.cps.NineStates;
 import eu.fbk.iv4xr.mbt.efsm.examples.TrafficLight;
+import eu.fbk.iv4xr.mbt.efsm.minecraft.DamageCheck;
 import eu.fbk.iv4xr.mbt.efsm.minecraft.DurabilityTest;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
@@ -35,6 +36,11 @@ public class EFSMFactory {
 		case "minecraft.durability":
 			DurabilityTest dbt = new DurabilityTest();
 			efsm = dbt.getModel();
+			efsm.setShortestPathsBetweenStates();
+			break;
+		case "minecraft.damage":
+			DamageCheck dmc = new DamageCheck();
+			efsm = dmc.getModel();
 			efsm.setShortestPathsBetweenStates();
 			break;
 		case "labrecruits.buttons_doors_1" :
