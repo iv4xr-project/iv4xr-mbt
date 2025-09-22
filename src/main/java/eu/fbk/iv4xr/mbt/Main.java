@@ -483,6 +483,7 @@ public class Main {
 		File featureFile = new File (modelFeaturesFileName);
 		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
+		efsm.reset();
 		try {
 			if (!line.hasOption("silent_mode")) {
 				TestSerializationUtils.saveEFSM(efsm, modelFileName);

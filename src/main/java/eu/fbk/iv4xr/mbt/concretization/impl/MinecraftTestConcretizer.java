@@ -32,6 +32,9 @@ public class MinecraftTestConcretizer extends TestConcretizer {
 	@Override
 	public MinecraftConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
 		Path path = abstractTestCase.getPath();
+		
+		model.reset();
+
 		List<EFSMTransition> transitions = path.getTransitions();
 
 		MinecraftConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();

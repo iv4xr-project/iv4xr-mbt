@@ -11,7 +11,6 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMBuilder;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
-import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
@@ -72,7 +71,7 @@ public class CartTest implements EFSMProvider {
         EFSMTransition t_6 = new EFSMTransition();
         t_6.setId("t6");
         t_6.setGuard(new EFSMGuard( new BoolAnd(switchOff, poweredState)));
-        t_6.setOutParameter(new EFSMParameter(new Var<String>("block::expected", "detector_rail[powered=false]")));
+        t_6.setOutParameter(new EFSMParameter(new Var<String>("block::expected", "detector_rail[powered=true]")));
         CartEFSMBuilder.withTransition(start, destinationPowered, t_6);
 
         EFSMTransition t_7 = new EFSMTransition();
@@ -84,7 +83,7 @@ public class CartTest implements EFSMProvider {
         EFSMTransition t_8 = new EFSMTransition();
         t_8.setId("t8");
         t_8.setGuard(new EFSMGuard( new BoolAnd(switchOff, new BoolNot(poweredState))));
-        t_8.setOutParameter(new EFSMParameter(new Var<String>("block::expected", "detector_rail[powered=true]")));
+        t_8.setOutParameter(new EFSMParameter(new Var<String>("block::expected", "detector_rail[powered=false]")));
         CartEFSMBuilder.withTransition(start, destinationPowered, t_8);
 
 

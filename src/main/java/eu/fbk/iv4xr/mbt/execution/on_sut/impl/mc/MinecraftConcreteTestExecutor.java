@@ -41,7 +41,7 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 	private TestConcretizer testConcretizer;
 
 	public MinecraftConcreteTestExecutor(EFSM model, String mineflayerTestDir, String levelPath, String testsDir, String agent,
-			String mcServerAddress, int x, int y, int z) {
+		String mcServerAddress, int x, int y, int z) {
 		this.model = model;
 		this.testCases = mapper.createArrayNode();
 		this.meta = mapper.createObjectNode();
@@ -50,10 +50,12 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 		this.testConcretizer = new MinecraftTestConcretizer(model);
 
 		this.jsonFilePath = Paths.get(testsDir, "concrete_test.json");
+		Path outputCsv = Paths.get(testsDir, "execution_log.csv");
 
 		meta.put("id", MBTProperties.SUT_EFSM);
 		meta.put("time", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(OffsetDateTime.now()));
 		meta.put("level_csv", Paths.get(levelPath).toAbsolutePath().toString());
+		meta.put("output_csv", outputCsv.toAbsolutePath().toString());
 		meta.put("username", agent);
 		meta.put("address", mcServerAddress);
 		meta.put("x", x);
