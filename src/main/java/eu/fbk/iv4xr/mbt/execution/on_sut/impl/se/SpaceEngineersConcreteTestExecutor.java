@@ -20,6 +20,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
@@ -170,7 +171,7 @@ public class SpaceEngineersConcreteTestExecutor implements AplibConcreteTestExec
 		
 		long initialTime = System.currentTimeMillis();
 		
-		LinkedList<AplibTestCaseExecutionReport> goalReporter = new LinkedList<AplibTestCaseExecutionReport>();
+		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
 
 		
 		System.out.println("Executing test case");

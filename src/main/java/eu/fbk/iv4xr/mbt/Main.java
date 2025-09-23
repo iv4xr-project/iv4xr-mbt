@@ -858,6 +858,12 @@ public class Main {
 		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
 
 		executor.execute();
+
+		// save stats
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+				
+		// save debug data
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
 	

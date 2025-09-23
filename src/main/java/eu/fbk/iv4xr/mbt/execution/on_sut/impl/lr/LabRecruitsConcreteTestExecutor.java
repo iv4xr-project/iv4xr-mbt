@@ -32,6 +32,7 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.Path;
@@ -148,7 +149,7 @@ public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecuto
 		// Start registering the time of the test suite execution
 		long initialTime = System.currentTimeMillis();
 		
-		LinkedList<AplibTestCaseExecutionReport> goalReporter = new LinkedList<AplibTestCaseExecutionReport>();
+		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
 		
 		System.out.println("Executing: " + testcase.toString());
 

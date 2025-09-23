@@ -35,12 +35,12 @@ public abstract class AplibTestExecutionHelper extends TestExecutionHelper {
 			String fileName = testToFileMap.get(testCase).getName();
 			String testStatus = testStuiteReporter.getTestCaseStatus(testCase).toString();
 			// get data for each transition in the test case
-			List<AplibTestCaseExecutionReport> caseReport = testStuiteReporter.getTestCaseReport(testCase);
-			for(AplibTestCaseExecutionReport rep : caseReport   ) {
+			List<TestCaseExecutionReport> caseReport = testStuiteReporter.getTestCaseReport(testCase);
+			for(TestCaseExecutionReport rep : caseReport   ) {
 				String transition = rep.getTransition().toString();
 				String transitionResponse = rep.getResponse();
 				String transitionGoal = "";
-				String transitionGoalStatus = getGoalStatus(rep.getGoal());
+				String transitionGoalStatus = getGoalStatus(((AplibTestCaseExecutionReport) rep).getGoal());
 				//String transitionGoalResponse = rep.getResponse();
 				
 				String tbLine = run_id + "," +
