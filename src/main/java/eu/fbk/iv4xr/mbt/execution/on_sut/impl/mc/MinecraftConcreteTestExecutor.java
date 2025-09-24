@@ -180,7 +180,6 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 
 				if (currentTestCase != null && !testCase.equals(currentTestCase)) {
 					List<TestCaseExecutionReport> caseReport = new ArrayList<>();
-					caseReport.add(new TestCaseExecutionReport());
 					reporter.addTestCaseReport(testCaseMap.get(testCase), caseReport, prevRes, time - startTime);
 					startTime = time;
 				}
@@ -197,7 +196,7 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 						testCase + "," +
 						passed + "," +
 						actionDetails + ","
-						+ (passed ? "Passed" : "Failed") + ","
+						+ (passed ? "Pass" : "Fail") + ","
 						+ ","
 						+ status + "\n";
 

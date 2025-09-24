@@ -19,7 +19,6 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
  *
  */
 public abstract class AplibTestExecutionHelper extends TestExecutionHelper {
-	protected AplibConcreteTestExecutor testExecutor;
 	/*
 	 * Create statistics table
 	 */
@@ -80,7 +79,7 @@ public abstract class AplibTestExecutionHelper extends TestExecutionHelper {
 		
 		String statsTable = id+","+folder+","+String.valueOf(n_cases)+","+
 				String.valueOf(n_passed_cases)+","+String.valueOf(time)+", "+
-				String.valueOf(testExecutor.getMaxCylcePerGoal())+"\n";
+				String.valueOf(((AplibConcreteTestExecutor)testExecutor).getMaxCylcePerGoal())+"\n";
 		return(statsTable);
 	}
 	
