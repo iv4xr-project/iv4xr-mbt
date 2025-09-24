@@ -1,0 +1,18 @@
+golden_pickaxe, iron_pickaxe, stone_pickaxe,
+stone 64, stone 64, stone 64,
+acacia_log 64, acacia_log 64, acacia_log 64,
+|iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block^place_stone,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block^place_wood,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block
+|,,,
+,^stone,,
+,,,
+,,,@player
+,,,
+,,,
+,^wood,,

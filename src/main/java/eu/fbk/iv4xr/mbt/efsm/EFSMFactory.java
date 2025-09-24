@@ -10,6 +10,7 @@ import eu.fbk.iv4xr.mbt.efsm.examples.TrafficLight;
 import eu.fbk.iv4xr.mbt.efsm.minecraft.CartTest;
 import eu.fbk.iv4xr.mbt.efsm.minecraft.DamageCheck;
 import eu.fbk.iv4xr.mbt.efsm.minecraft.DurabilityTest;
+import eu.fbk.iv4xr.mbt.efsm.minecraft.SuperDurability;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Count;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.ButtonDoors1Fire;
@@ -34,6 +35,11 @@ public class EFSMFactory {
 	 */
 	private EFSMFactory() {
 		switch (MBTProperties.SUT_EFSM) {
+		case "minecraft.multi_durability":
+			SuperDurability sdb = new SuperDurability();
+			efsm = sdb.getModel();
+			efsm.getShortestPathsBetweenStates();
+			break;
 		case "minecraft.durability":
 			DurabilityTest dbt = new DurabilityTest();
 			efsm = dbt.getModel();

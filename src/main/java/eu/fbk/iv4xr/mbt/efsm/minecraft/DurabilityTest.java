@@ -17,7 +17,6 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
 public class DurabilityTest implements EFSMProvider {
 
@@ -33,7 +32,6 @@ public class DurabilityTest implements EFSMProvider {
 	public EFSM getModel() {
 		EFSMBuilder DurabilityEFSMBuilder = new EFSMBuilder(EFSM.class);
 		EFSMContext DurabilityCtx = new EFSMContext(durability);
-		LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 
 		Exp<Boolean> has_uses_left = new IntLess(durability, new Const<Integer>(31));
 		Exp<Boolean> has_one_use_left = new IntEq(durability, new Const<Integer>(31));
@@ -83,7 +81,7 @@ public class DurabilityTest implements EFSMProvider {
 		t_3.setId("t3");
 		DurabilityEFSMBuilder.withTransition(blockReference, endState, t_3);
 
-		return DurabilityEFSMBuilder.build(stoneBlock, DurabilityCtx, lrParameterGenerator);
+		return DurabilityEFSMBuilder.build(stoneBlock, DurabilityCtx, null);
 	}
 
 }
