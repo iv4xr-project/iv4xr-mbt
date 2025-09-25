@@ -65,7 +65,6 @@ public class SuperDurability implements EFSMProvider {
 
         EFSMTransition t1 = new EFSMTransition("t1");
         t1.setGuard(new EFSMGuard(new IntLess(stonePDamage, new Const<Integer>(STONEP_DURABILITY))));
-        t1.setInParameter(new EFSMParameter(new Var<String>("select::item", "stone_pickaxe")));
         t1.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("stone_pickaxe")),
                 new Assign<>(selectedItemInt, new Const<Integer>(0))));
         DurabilitypEFSMBuilder.withTransition(start, stonePick, t1);
@@ -75,8 +74,6 @@ public class SuperDurability implements EFSMProvider {
 
         EFSMTransition t2 = new EFSMTransition("t2");
         t2.setGuard(new EFSMGuard(new IntLess(ironPDamage, new Const<Integer>(IRONP_DURABILITY))));
-        // t2.setInParameter(new EFSMParameter(new Var<String>("select::item",
-        // "iron_pickaxe")));
         t2.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("iron_pickaxe")),
                 new Assign<>(selectedItemInt, new Const<Integer>(1))));
         DurabilitypEFSMBuilder.withTransition(start, ironPick, t2);
@@ -86,8 +83,6 @@ public class SuperDurability implements EFSMProvider {
 
         EFSMTransition t3 = new EFSMTransition("t3");
         t3.setGuard(new EFSMGuard(new IntLess(goldPDamage, new Const<Integer>(GOLDP_DURABILITY))));
-        // t3.setInParameter(new EFSMParameter(new Var<String>("select::item",
-        // "golden_pickaxe")));
         t3.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("golden_pickaxe")),
                 new Assign<>(selectedItemInt, new Const<Integer>(2))));
         DurabilitypEFSMBuilder.withTransition(start, goldPick, t3);
@@ -109,7 +104,7 @@ public class SuperDurability implements EFSMProvider {
         EFSMTransition t4b = new EFSMTransition("t4b");
         t4b.setInParameter(new EFSMParameter(
                 selectedItem,
-                new Var<String>("break", "")));
+                new Var<Boolean>("break::expect_result", true)));
         DurabilitypEFSMBuilder.withTransition(stonePlace, stoneState, t4b);
 
         EFSMTransition t4r = new EFSMTransition("t4r");
@@ -129,7 +124,7 @@ public class SuperDurability implements EFSMProvider {
         EFSMTransition t5b = new EFSMTransition("t5b");
         t5b.setInParameter(new EFSMParameter(
                 selectedItem,
-                new Var<String>("break", "")));
+                new Var<Boolean>("break::expect_result", true)));
         DurabilitypEFSMBuilder.withTransition(woodPlace, woodState, t5b);
 
         EFSMTransition t5r = new EFSMTransition("t5r");
@@ -149,7 +144,7 @@ public class SuperDurability implements EFSMProvider {
                 new EFSMParameter(new Var<String>("inventory^ironp::item", "iron_pickaxe"), ironPDamage));
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6i);
 
-        EFSMTransition t6g = new EFSMTransition("t6i");
+        EFSMTransition t6g = new EFSMTransition("t6g");
         t6g.setGuard(new EFSMGuard(new IntEq(selectedItemInt, new Const<Integer>(2))));
         t6g.setOp(new EFSMOperation(new Assign<Integer>(goldPDamage, new IntSum(goldPDamage, durabilityCost))));
         t6g.setOutParameter(
