@@ -29,6 +29,8 @@ public class SuperDurability implements EFSMProvider {
     public static final int GOLDP_DURABILITY = 32;
     public static final int IRONP_DURABILITY = 250;
 
+    public EFSMState mob = new EFSMState("mob");
+
     public EFSMState stoneState = new EFSMState("stone");
     public EFSMState stonePlace = new EFSMState("place_stone");
 
@@ -153,6 +155,21 @@ public class SuperDurability implements EFSMProvider {
         t6g.setOutParameter(
                 new EFSMParameter(new Var<String>("inventory^goldp::item", "golden_pickaxe"), goldPDamage));
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6g);
+
+
+        // attacking a mob should take 2 durability
+        EFSMTransition t7 = new EFSMTransition("t7");
+        t7.setInParameter(new EFSMParameter(
+                new Var<Double>("move_to::distance", DISTANCE),
+                selectedItem,
+                new Var<Integer>("wait::ticks", 20),
+                new Var<String>("attack", "")
+        ));
+        t7.setOp(new EFSMOperation(new Assign<Integer>(durabilityCost, new Const<Integer>(2))));
+        DurabilitypEFSMBuilder.withTransition(selected, mob, t7);
+
+        EFSMTransition t7r = new EFSMTransition("t7r");
+        DurabilitypEFSMBuilder.withTransition(mob, durabilityCalc, t7r);
 
         return DurabilitypEFSMBuilder.build(start, DurabilitypCtx, null);
     }

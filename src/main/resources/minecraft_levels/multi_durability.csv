@@ -1,18 +1,25 @@
-golden_pickaxe, iron_pickaxe, stone_pickaxe,
-stone 64, stone 64, stone 64,
-acacia_log 64, acacia_log 64, acacia_log 64,
-|iron_block,iron_block,iron_block,iron_block
- iron_block,iron_block^place_stone,iron_block,iron_block
- iron_block,iron_block,iron_block,iron_block
- iron_block,iron_block,iron_block,iron_block
- iron_block,iron_block,iron_block,iron_block
- iron_block,iron_block,iron_block,iron_block
- iron_block,iron_block^place_wood,iron_block,iron_block
- iron_block,iron_block,iron_block,iron_block
-|,,,
-,^stone,,
-,,,
-,,,@player
-,,,
-,,,
-,^wood,,
+golden_pickaxe, iron_pickaxe, stone_pickaxe,,,,,,
+stone 64, stone 64, stone 64,,,,,,
+acacia_log 64, acacia_log 64, acacia_log 64,,,,,,
+|iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,blue_concrete,iron_block,iron_block,iron_block,blue_concrete,iron_block,iron_block
+ iron_block,iron_block,iron_block,blue_concrete,iron_block,blue_concrete,iron_block,iron_block^place_stone,iron_block
+ iron_block,iron_block,iron_block,iron_block,blue_concrete,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block,blue_concrete,blue_concrete,blue_concrete,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block,blue_concrete,iron_block,blue_concrete,iron_block,iron_block
+ iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,blue_concrete,iron_block,blue_concrete,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,blue_concrete,iron_block,blue_concrete,iron_block,iron_block,iron_block,iron_block
+ iron_block,iron_block,blue_concrete,iron_block,blue_concrete,iron_block,iron_block,iron_block^place_wood,iron_block
+ iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block,iron_block
+|,,,,,,,,
+,,,,,,,^stone,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,"@blaze{NoAI:1b,active_effects:[{id:""minecraft:resistance"",amplifier:5,duration:-1}]}^mob",,,@player,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,^wood,
