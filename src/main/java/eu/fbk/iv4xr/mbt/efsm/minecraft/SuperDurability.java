@@ -159,7 +159,9 @@ public class SuperDurability implements EFSMProvider {
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6g);
 
         EFSMTransition t6gb = new EFSMTransition("t6gb");
-        t6gb.setGuard(new EFSMGuard( new BoolAnd(gold_selected, new BoolNot(gold_is_not_broken))));
+        // t6gb.setGuard(new EFSMGuard( new BoolAnd(gold_selected, new BoolNot(gold_is_not_broken))));
+        Exp<Boolean> gold_is_broken =  new IntGreat(gold_durability, new IntSubt(new Const<Integer>(GOLDP_DURABILITY), new Const<Integer>(1)));        
+        t6gb.setGuard(new EFSMGuard( new BoolAnd(gold_selected, gold_is_broken)));
         t6gb.setOp(new EFSMOperation(new Assign<Integer>(goldPDamage, gold_durability)));
         t6gb.setOutParameter(
                 new EFSMParameter(new Var<String>("inventory::item", "golden_pickaxe"), 
