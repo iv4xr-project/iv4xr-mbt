@@ -97,7 +97,7 @@ public class MinecraftTestConcretizer extends TestConcretizer {
 		if (t.getOutParameter() != null) {
 			for (Map.Entry<String, Var<Object>> entry : ((LinkedHashMap<String, Var<Object>>) t.getOutParameter()
 					.getParameter().getHash()).entrySet()) {
-				combined.put("check_" + entry.getKey(), entry.getValue());
+				combined.put( MBTProperties.MC_CHECK_PREFIX + entry.getKey(), entry.getValue());
 			}
 		}
 		return combined;
