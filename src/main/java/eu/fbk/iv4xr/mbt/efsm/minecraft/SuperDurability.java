@@ -13,16 +13,13 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMBuilder;
 import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
-import eu.fbk.iv4xr.mbt.efsm.exp.IfThenElseOp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
-import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSubt;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
 public class SuperDurability implements EFSMProvider {
         public static final int NUMBER_OF_BLOCKS = 64 * 3;
@@ -30,6 +27,7 @@ public class SuperDurability implements EFSMProvider {
         public static final int STONEP_DURABILITY = 131;
         public static final int GOLDP_DURABILITY = 32;
         public static final int IRONP_DURABILITY = 250;
+        public static final int DIAMONDP_DURABILITY = 1561;
 
         public EFSMState mob = new EFSMState("mob");
 
@@ -38,10 +36,6 @@ public class SuperDurability implements EFSMProvider {
 
         public EFSMState woodState = new EFSMState("wood");
         public EFSMState woodPlace = new EFSMState("place_wood");
-
-        public EFSMState goldPick = new EFSMState("golden_pickaxe");
-        public EFSMState stonePick = new EFSMState("stone_pickaxe");
-        public EFSMState ironPick = new EFSMState("iron_pickaxe");
 
         // helper states
         public EFSMState start = new EFSMState("start");
@@ -52,6 +46,7 @@ public class SuperDurability implements EFSMProvider {
         public Var<Integer> stonePDamage = new Var<>("inventory^stonep::damage", 0);
         public Var<Integer> ironPDamage = new Var<>("inventory^ironp::damage", 0);
         public Var<Integer> goldPDamage = new Var<>("inventory^goldp::damage", 0);
+        public Var<Integer> diamondPDamage = new Var<>("inventory^diamondp::damage", 0);
 
         public Var<Integer> stoneCount = new Var<>("inventory^stonec::count", NUMBER_OF_BLOCKS);
         public Var<Integer> woodCount = new Var<>("inventory^woodc::count", NUMBER_OF_BLOCKS);
@@ -62,35 +57,49 @@ public class SuperDurability implements EFSMProvider {
 
     public EFSM getModel() {
         EFSMBuilder DurabilitypEFSMBuilder = new EFSMBuilder(EFSM.class);
-        EFSMContext DurabilitypCtx = new EFSMContext(stonePDamage, ironPDamage, goldPDamage, stoneCount, woodCount,
+        EFSMContext DurabilitypCtx = new EFSMContext(stonePDamage, ironPDamage, goldPDamage, diamondPDamage, stoneCount, woodCount,
                 durabilityCost, selectedItem, selectedItemInt);
 
-        EFSMTransition t1 = new EFSMTransition("t1");
-        t1.setGuard(new EFSMGuard(new IntLess(stonePDamage, new Const<Integer>(STONEP_DURABILITY))));
-        t1.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("stone_pickaxe")),
+        EFSMTransition t1s = new EFSMTransition("t1s");
+        t1s.setGuard(new EFSMGuard(new IntLess(stonePDamage, new Const<Integer>(STONEP_DURABILITY))));
+        t1s.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("stone_pickaxe")),
                 new Assign<>(selectedItemInt, new Const<Integer>(0))));
-        DurabilitypEFSMBuilder.withTransition(start, stonePick, t1);
+        DurabilitypEFSMBuilder.withTransition(start, selected, t1s);
 
-        EFSMTransition t1r = new EFSMTransition("t1r");
-        DurabilitypEFSMBuilder.withTransition(stonePick, selected, t1r);
-
-        EFSMTransition t2 = new EFSMTransition("t2");
-        t2.setGuard(new EFSMGuard(new IntLess(ironPDamage, new Const<Integer>(IRONP_DURABILITY))));
-        t2.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("iron_pickaxe")),
+        EFSMTransition t1i = new EFSMTransition("t1i");
+        t1i.setGuard(new EFSMGuard(new IntLess(ironPDamage, new Const<Integer>(IRONP_DURABILITY))));
+        t1i.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("iron_pickaxe")),
                 new Assign<>(selectedItemInt, new Const<Integer>(1))));
-        DurabilitypEFSMBuilder.withTransition(start, ironPick, t2);
+        DurabilitypEFSMBuilder.withTransition(start, selected, t1i);
+
+        EFSMTransition t1g = new EFSMTransition("t1g");
+        t1g.setGuard(new EFSMGuard(new IntLess(goldPDamage, new Const<Integer>(GOLDP_DURABILITY))));
+        t1g.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("golden_pickaxe")),
+                new Assign<>(selectedItemInt, new Const<Integer>(2))));
+        DurabilitypEFSMBuilder.withTransition(start, selected, t1g);
+
+
+        EFSMTransition t1d = new EFSMTransition("t1d");
+        t1d.setGuard(new EFSMGuard(new IntLess(diamondPDamage, new Const<Integer>(DIAMONDP_DURABILITY))));
+        t1d.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("diamond_pickaxe")),
+                new Assign<>(selectedItemInt, new Const<Integer>(3))));
+        DurabilitypEFSMBuilder.withTransition(start, selected, t1d);
+
+
+        
+        // attacking a mob should take 2 durability
+        EFSMTransition t2 = new EFSMTransition("t2");
+        t2.setInParameter(new EFSMParameter(
+                new Var<Double>("move_to::distance", DISTANCE),
+                selectedItem,
+                new Var<Integer>("wait::ticks", 10),
+                new Var<String>("attack", "")
+        ));
+        t2.setOp(new EFSMOperation(new Assign<Integer>(durabilityCost, new Const<Integer>(2))));
+        DurabilitypEFSMBuilder.withTransition(selected, mob, t2);
 
         EFSMTransition t2r = new EFSMTransition("t2r");
-        DurabilitypEFSMBuilder.withTransition(ironPick, selected, t2r);
-
-        EFSMTransition t3 = new EFSMTransition("t3");
-        t3.setGuard(new EFSMGuard(new IntLess(goldPDamage, new Const<Integer>(GOLDP_DURABILITY))));
-        t3.setOp(new EFSMOperation(new Assign<>(selectedItem, new Const<String>("golden_pickaxe")),
-                new Assign<>(selectedItemInt, new Const<Integer>(2))));
-        DurabilitypEFSMBuilder.withTransition(start, goldPick, t3);
-
-        EFSMTransition t3r = new EFSMTransition("t3r");
-        DurabilitypEFSMBuilder.withTransition(goldPick, selected, t3r);
+        DurabilitypEFSMBuilder.withTransition(mob, durabilityCalc, t2r);
 
         EFSMTransition t4 = new EFSMTransition("t4");
         t4.setGuard(new EFSMGuard(new IntGreat(stoneCount, new Const<Integer>(0))));
@@ -132,25 +141,55 @@ public class SuperDurability implements EFSMProvider {
         EFSMTransition t5r = new EFSMTransition("t5r");
         DurabilitypEFSMBuilder.withTransition(woodState, durabilityCalc, t5r);
 
+        // durability calc
+
+        Exp<Integer> stone_durability = new IntSum(stonePDamage, durabilityCost);
+        Exp<Boolean> stone_selected = new IntEq(selectedItemInt, new Const<Integer>(0));
+        Exp<Boolean> stone_is_not_broken = new IntLess(stone_durability, new Const<Integer>(STONEP_DURABILITY));
+        Exp<Boolean> stone_is_broken =  new IntGreat(stone_durability, new Const<Integer>(STONEP_DURABILITY - 1));        
+
         EFSMTransition t6s = new EFSMTransition("t6s");
-        t6s.setGuard(new EFSMGuard(new IntEq(selectedItemInt, new Const<Integer>(0))));
-        t6s.setOp(new EFSMOperation(new Assign<Integer>(stonePDamage, new IntSum(stonePDamage, durabilityCost))));
+        t6s.setGuard(new EFSMGuard(new BoolAnd(stone_selected, stone_is_not_broken)));
+        t6s.setOp(new EFSMOperation(new Assign<Integer>(stonePDamage, stone_durability)));
         t6s.setOutParameter(
                 new EFSMParameter(new Var<String>("inventory^stonep::item", "stone_pickaxe"), stonePDamage));
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6s);
 
+        EFSMTransition t6sb = new EFSMTransition("t6sb");
+        t6sb.setGuard(new EFSMGuard( new BoolAnd(stone_selected, stone_is_broken)));
+        t6sb.setOp(new EFSMOperation(new Assign<Integer>(stonePDamage, stone_durability)));
+        t6sb.setOutParameter(
+                new EFSMParameter(new Var<String>("inventory::item", "stone_pickaxe"), 
+                                  new Var<Integer>("inventory::count", 0)
+                                ));
+        DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6sb);
+
+        Exp<Integer> iron_durability = new IntSum(ironPDamage, durabilityCost);
+        Exp<Boolean> iron_selected = new IntEq(selectedItemInt, new Const<Integer>(1));
+        Exp<Boolean> iron_is_not_broken = new IntLess(iron_durability, new Const<Integer>(IRONP_DURABILITY));
+        Exp<Boolean> iron_is_broken =  new IntGreat(iron_durability, new Const<Integer>(IRONP_DURABILITY - 1));        
+
         EFSMTransition t6i = new EFSMTransition("t6i");
-        t6i.setGuard(new EFSMGuard(new IntEq(selectedItemInt, new Const<Integer>(1))));
-        t6i.setOp(new EFSMOperation(new Assign<Integer>(ironPDamage, new IntSum(ironPDamage, durabilityCost))));
+        t6i.setGuard(new EFSMGuard(new BoolAnd(iron_selected, iron_is_not_broken)));
+        t6i.setOp(new EFSMOperation(new Assign<Integer>(ironPDamage, iron_durability)));
         t6i.setOutParameter(
                 new EFSMParameter(new Var<String>("inventory^ironp::item", "iron_pickaxe"), ironPDamage));
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6i);
 
+        EFSMTransition t6ib = new EFSMTransition("t6ib");
+        t6ib.setGuard(new EFSMGuard( new BoolAnd(iron_selected, iron_is_broken)));
+        t6ib.setOp(new EFSMOperation(new Assign<Integer>(ironPDamage, iron_durability)));
+        t6ib.setOutParameter(
+                new EFSMParameter(new Var<String>("inventory::item", "iron_pickaxe"), 
+                                  new Var<Integer>("inventory::count", 0)
+                                ));
+        DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6ib);
+
         Exp<Integer> gold_durability = new IntSum(goldPDamage, durabilityCost);
         Exp<Boolean> gold_selected = new IntEq(selectedItemInt, new Const<Integer>(2));
         Exp<Boolean> gold_is_not_broken = new IntLess(gold_durability, new Const<Integer>(GOLDP_DURABILITY));
+        Exp<Boolean> gold_is_broken =  new IntGreat(gold_durability, new Const<Integer>(GOLDP_DURABILITY - 1));        
         
-
         EFSMTransition t6g = new EFSMTransition("t6g");
         t6g.setGuard(new EFSMGuard( new BoolAnd(gold_selected, gold_is_not_broken)));
         t6g.setOp(new EFSMOperation(new Assign<Integer>(goldPDamage, gold_durability)));
@@ -159,8 +198,6 @@ public class SuperDurability implements EFSMProvider {
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6g);
 
         EFSMTransition t6gb = new EFSMTransition("t6gb");
-        // t6gb.setGuard(new EFSMGuard( new BoolAnd(gold_selected, new BoolNot(gold_is_not_broken))));
-        Exp<Boolean> gold_is_broken =  new IntGreat(gold_durability, new IntSubt(new Const<Integer>(GOLDP_DURABILITY), new Const<Integer>(1)));        
         t6gb.setGuard(new EFSMGuard( new BoolAnd(gold_selected, gold_is_broken)));
         t6gb.setOp(new EFSMOperation(new Assign<Integer>(goldPDamage, gold_durability)));
         t6gb.setOutParameter(
@@ -169,21 +206,25 @@ public class SuperDurability implements EFSMProvider {
                                 ));
         DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6gb);
 
+        Exp<Integer> diamond_durability = new IntSum(diamondPDamage, durabilityCost);
+        Exp<Boolean> diamond_selected = new IntEq(selectedItemInt, new Const<Integer>(3));
+        Exp<Boolean> diamond_is_not_broken = new IntLess(diamond_durability, new Const<Integer>(DIAMONDP_DURABILITY));
+        Exp<Boolean> diamond_is_broken =  new IntGreat(diamond_durability, new Const<Integer>(DIAMONDP_DURABILITY - 1));        
 
+        EFSMTransition t6d = new EFSMTransition("t6d");
+        t6d.setGuard(new EFSMGuard(new BoolAnd(diamond_selected, diamond_is_not_broken)));
+        t6d.setOp(new EFSMOperation(new Assign<Integer>(diamondPDamage, diamond_durability)));
+        t6d.setOutParameter(
+                new EFSMParameter(new Var<String>("inventory^diamondp::item", "diamond_pickaxe"), diamondPDamage));
+        DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6d);
 
-        // attacking a mob should take 2 durability
-        EFSMTransition t7 = new EFSMTransition("t7");
-        t7.setInParameter(new EFSMParameter(
-                new Var<Double>("move_to::distance", DISTANCE),
-                selectedItem,
-                new Var<Integer>("wait::ticks", 20),
-                new Var<String>("attack", "")
-        ));
-        t7.setOp(new EFSMOperation(new Assign<Integer>(durabilityCost, new Const<Integer>(2))));
-        DurabilitypEFSMBuilder.withTransition(selected, mob, t7);
-
-        EFSMTransition t7r = new EFSMTransition("t7r");
-        DurabilitypEFSMBuilder.withTransition(mob, durabilityCalc, t7r);
+        EFSMTransition t6db = new EFSMTransition("t6db");
+        t6db.setGuard(new EFSMGuard( new BoolAnd(diamond_selected, diamond_is_broken)));
+        t6db.setOp(new EFSMOperation(new Assign<Integer>(diamondPDamage, iron_durability)));
+        t6db.setOutParameter(
+                new EFSMParameter(new Var<String>("inventory::item", "diamond_pickaxe"), 
+                                  new Var<Integer>("inventory::count", 0)));
+        DurabilitypEFSMBuilder.withTransition(durabilityCalc, start, t6db);
 
         return DurabilitypEFSMBuilder.build(start, DurabilitypCtx, null);
     }

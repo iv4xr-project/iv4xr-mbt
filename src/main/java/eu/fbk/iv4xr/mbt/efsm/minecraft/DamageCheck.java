@@ -16,9 +16,7 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleGreat;
-import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.realDouble.DoubleSubt;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
 public class DamageCheck implements EFSMProvider {
     public EFSMState start = new EFSMState("start");
@@ -33,12 +31,12 @@ public class DamageCheck implements EFSMProvider {
     public EFSM getModel() {
         EFSMBuilder DamageEFSMBuilder = new EFSMBuilder(EFSM.class);
         EFSMContext DamageCtx = new EFSMContext(health, attackDamage);
-        LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 
         Exp<Boolean> mob_has_heath = new DoubleGreat(health, attackDamage);
-        // danger, does not take into account if they are equal
+        
         Exp<Boolean> final_hit = new BoolNot(mob_has_heath);
 
+        EFSMOperation set_wood_sword_dmg = new EFSMOperation(new Assign<Double>(attackDamage, new Const<Double>(4.0)));
         EFSMOperation set_stone_sword_dmg = new EFSMOperation(new Assign<Double>(attackDamage, new Const<Double>(5.0)));
         EFSMOperation set_iron_sword_dmg = new EFSMOperation(new Assign<Double>(attackDamage, new Const<Double>(6.0)));
         EFSMOperation set_diamond_sword_dmg = new EFSMOperation(new Assign<Double>(attackDamage, new Const<Double>(7.0)));
@@ -94,8 +92,14 @@ public class DamageCheck implements EFSMProvider {
         t_7.setInParameter(new EFSMParameter(new Var<String>("select::item", "netherite_sword")));
         DamageEFSMBuilder.withTransition(start, select_sword, t_7);
 
+        EFSMTransition t_8 = new EFSMTransition();
+        t_8.setId("t8");
+        t_8.setOp(set_wood_sword_dmg);
+        t_8.setInParameter(new EFSMParameter(new Var<String>("select::item", "wooden_sword")));
+        DamageEFSMBuilder.withTransition(start, select_sword, t_7);
 
-        return DamageEFSMBuilder.build(start, DamageCtx, lrParameterGenerator);
+
+        return DamageEFSMBuilder.build(start, DamageCtx, null);
     }
 
 }

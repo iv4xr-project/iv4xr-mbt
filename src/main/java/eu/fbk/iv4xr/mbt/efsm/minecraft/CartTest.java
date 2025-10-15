@@ -15,7 +15,6 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Exp;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LRParameterGenerator;
 
 
 public class CartTest implements EFSMProvider {
@@ -33,8 +32,6 @@ public class CartTest implements EFSMProvider {
     public EFSM getModel() {
         EFSMBuilder CartEFSMBuilder = new EFSMBuilder(EFSM.class);
         EFSMContext cartCtx = new EFSMContext(switchState, poweredState);
-
-        LRParameterGenerator lrParameterGenerator = new LRParameterGenerator();
 
         EFSMOperation toggleSwitch = new EFSMOperation(new Assign<Boolean>(switchState, new BoolNot(switchState)));
         EFSMOperation toggleRailPower = new EFSMOperation(new Assign<Boolean>(poweredState, new BoolNot(poweredState)));
@@ -87,6 +84,6 @@ public class CartTest implements EFSMProvider {
         CartEFSMBuilder.withTransition(start, destinationPowered, t_8);
 
 
-        return CartEFSMBuilder.build(initialState, cartCtx, lrParameterGenerator);
+        return CartEFSMBuilder.build(initialState, cartCtx, null);
     }
 }
