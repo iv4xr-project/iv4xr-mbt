@@ -8,10 +8,9 @@ import java.util.List;
 
 import java.util.Map;
 
-import eu.fbk.iv4xr.mbt.concretization.GenericTestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -23,7 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * 
  */
-public class MinecraftTestConcretizer extends GenericTestConcretizer {
+public class MinecraftTestConcretizer extends TestConcretizer {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	public MinecraftTestConcretizer(EFSM model) {
@@ -33,13 +32,10 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 	@Override
 	public MinecraftConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
 		Path path = abstractTestCase.getPath();
+		
+		model.reset();
+
 		List<EFSMTransition> transitions = path.getTransitions();
-
-		// get the EFSM model and reset it
-		EFSMFactory modelFactory = EFSMFactory.getInstance(true);
-		EFSM model = modelFactory.getEFSM();
-
-		// setup json mapper
 
 		MinecraftConcreteTestCase concreteTestCase = new MinecraftConcreteTestCase();
 
@@ -101,7 +97,7 @@ public class MinecraftTestConcretizer extends GenericTestConcretizer {
 		if (t.getOutParameter() != null) {
 			for (Map.Entry<String, Var<Object>> entry : ((LinkedHashMap<String, Var<Object>>) t.getOutParameter()
 					.getParameter().getHash()).entrySet()) {
-				combined.put("check_" + entry.getKey(), entry.getValue());
+				combined.put( MBTProperties.MC_CHECK_PREFIX + entry.getKey(), entry.getValue());
 			}
 		}
 		return combined;

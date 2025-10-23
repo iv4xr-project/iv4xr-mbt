@@ -1,0 +1,6 @@
+stone 64, golden_pickaxe
+|iron_block,iron_block,iron_block
+iron_block,iron_block^place_against,iron_block
+iron_block,iron_block,iron_block
+|,@player,
+,^stone,

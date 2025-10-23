@@ -507,6 +507,7 @@ public class MBTProperties {
 	 */
 	public static String MC_SEPARATOR = "\\^";
 	public static String MC_ACTION_NAME_SEPARATOR = "::";
+	public static String MC_CHECK_PREFIX = "check_";
 	
 	public static String MC_DEFAULT_AGENT_NAME = "Bot";
 

@@ -260,7 +260,11 @@ public class CoverageTracker<T extends Chromosome<T>> extends StoppingConditionI
 		long consumedBudget = (System.currentTimeMillis() - startTime)/1000;
 		String criteria = "";
 		for (ModelCriterion criterion : MBTProperties.MODELCRITERION) {
-			criteria += criterion.toString() + ";";
+			if (criterion == ModelCriterion.KTRANSITION){
+				criteria += criterion.toString() + "-" + MBTProperties.K_TRANSITION_SIZE + ";";
+			} else {
+				criteria += criterion.toString() + ";";
+			}
 		}
 		criteria = criteria.substring(0, criteria.length()-1);
 		
