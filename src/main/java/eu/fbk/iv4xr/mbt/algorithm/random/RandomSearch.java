@@ -22,14 +22,12 @@
  */
 package eu.fbk.iv4xr.mbt.algorithm.random;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.evosuite.ga.Chromosome;
 import org.evosuite.ga.ChromosomeFactory;
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +40,9 @@ import org.slf4j.LoggerFactory;
  * it ends the search (even before the search budget is completed).
  * </p>
  * 
- * @author Gordon Fraser
+ * @author Fitsum Kifetew, Gordon Fraser
  */
-public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
+public class RandomSearch<T extends Chromosome<T>> extends org.evosuite.ga.metaheuristics.RandomSearch<T> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RandomSearch.class);
 
@@ -73,8 +71,6 @@ public class RandomSearch<T extends Chromosome> extends GeneticAlgorithm<T> {
 	protected void evolve() {
 		T newChromosome = chromosomeFactory.getChromosome();
 		calculateFitness(newChromosome);
-//		getFitnessFunction().getFitness(newChromosome);
-//		notifyEvaluation(newChromosome);
 		currentIteration++;
 	}
 

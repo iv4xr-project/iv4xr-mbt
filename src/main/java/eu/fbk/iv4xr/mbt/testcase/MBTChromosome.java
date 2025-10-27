@@ -26,7 +26,7 @@ import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
  * @author kifetew
  *
  */
-public class MBTChromosome extends ExecutableChromosome {
+public class MBTChromosome extends ExecutableChromosome<MBTChromosome> {
 	
 	/**
 	 * 
@@ -53,7 +53,7 @@ public class MBTChromosome extends ExecutableChromosome {
 	}
 	
 	@Override
-	protected void copyCachedResults(ExecutableChromosome other) {
+	protected void copyCachedResults(MBTChromosome other) {
 		// TODO Auto-generated method stub
 
 	}
@@ -65,7 +65,7 @@ public class MBTChromosome extends ExecutableChromosome {
 	}
 
 	@Override
-	public Chromosome clone() {
+	public MBTChromosome clone() {
 		MBTChromosome clone = new MBTChromosome();
 		try {
 			clone.setTestcase(testcase.clone());
@@ -94,7 +94,7 @@ public class MBTChromosome extends ExecutableChromosome {
 	}
 
 	@Override
-	public int compareTo(Chromosome o) {
+	public int compareTo(MBTChromosome o) {
 		int result = super.compareTo(o);
 		if (result != 0) {
 			return result;
@@ -114,16 +114,16 @@ public class MBTChromosome extends ExecutableChromosome {
 	}
 
 	@Override
-	public <T extends Chromosome> int compareSecondaryObjective(T o) {
+	public int compareSecondaryObjective(MBTChromosome o) {
 		int objective = 0;
 		int c = 0;
 
 		while (c == 0 && objective < secondaryObjectives.size()) {
 
-			SecondaryObjective<T> so = (SecondaryObjective<T>) secondaryObjectives.get(objective++);
+			SecondaryObjective<MBTChromosome> so = secondaryObjectives.get(objective++);
 			if (so == null)
 				break;
-			c = so.compareChromosomes((T) this, o);
+			c = so.compareChromosomes(this, o);
 		}
 		return c;
 	}
@@ -135,15 +135,15 @@ public class MBTChromosome extends ExecutableChromosome {
 		setChanged(true);
 	}
 
-	@Override
-	public void crossOver(Chromosome other, int position1, int position2) throws ConstructionFailedException {
-		testcase.crossOver (((MBTChromosome)other).getTestcase(), position1, position2); 
+	 @Override
+	public void crossOver(MBTChromosome other, int position1, int position2) throws ConstructionFailedException {
+		testcase.crossOver (other.getTestcase(), position1, position2); 
 		testcase.clearCoveredGoals();
 		setChanged(true);
 	}
 
 	@Override
-	public boolean localSearch(LocalSearchObjective<? extends Chromosome> objective) {
+	public boolean localSearch(LocalSearchObjective<MBTChromosome> objective) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -228,4 +228,11 @@ public class MBTChromosome extends ExecutableChromosome {
 		super.setChanged(changed);
 		testcase.setChanged(changed);
 	}
+
+	@Override
+	public MBTChromosome self() {
+		return this;
+	}
+
+
 }

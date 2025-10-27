@@ -157,6 +157,7 @@ public class MBTProperties {
 	
 	public static String TESTS_DIR () { return OUTPUT_DIR + File.separator + "tests";}
 	
+	public static String MODEL_EXPORT_DIR_NAME = "Model";
 	
 	public static String STATISTICS_DIR_NAME = "statistics";
 	
@@ -501,7 +502,24 @@ public class MBTProperties {
 	public static String SUT = "LR";
 	
 	
+	/**
+	 * Minecraft specific constants
+	 */
+	public static String MC_SEPARATOR = "\\^";
+	public static String MC_ACTION_NAME_SEPARATOR = "::";
+	public static String MC_CHECK_PREFIX = "check_";
 	
+	public static String MC_DEFAULT_AGENT_NAME = "Bot";
+
+
+	@Parameter(key = "mc_x", group = "Minecraft", description = "X coordinate of the level origin")
+	public static int MC_X = 16;
+	@Parameter(key = "mc_y", group = "Minecraft", description = "Y coordinate of the level origin")
+	public static int MC_Y = 64;
+	@Parameter(key = "mc_z", group = "Minecraft", description = "Z coordinate of the level origin")
+	public static int MC_Z = 0;
+
+
 	/**
 	 * Get all parameters that are available
 	 *

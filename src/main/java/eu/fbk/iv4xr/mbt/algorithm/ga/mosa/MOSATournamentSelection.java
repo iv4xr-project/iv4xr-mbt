@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.evosuite.Properties;
 import org.evosuite.ga.Chromosome;
-import org.evosuite.ga.metaheuristics.mosa.comparators.RankAndCrowdingDistanceComparator;
+import eu.fbk.iv4xr.mbt.algorithm.ga.mosa.comparators.RankAndCrowdingDistanceComparator;
 import org.evosuite.ga.operators.selection.SelectionFunction;
 import org.evosuite.utils.Randomness;
 
@@ -33,7 +33,7 @@ import org.evosuite.utils.Randomness;
  *
  * @author Annibale Panichella, Fitsum M. Kifetew
  */
-public class MOSATournamentSelection<T extends Chromosome> extends SelectionFunction<T> {
+public class MOSATournamentSelection<T extends Chromosome<T>> extends SelectionFunction<T> {
 
 	private static final long serialVersionUID = -7465418404056357932L;
 

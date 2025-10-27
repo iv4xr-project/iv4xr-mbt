@@ -11,7 +11,8 @@ import org.apache.commons.io.FileUtils;
 import org.evosuite.Properties;
 import org.evosuite.Properties.NoSuchParameterException;
 import org.evosuite.utils.Randomness;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.fbk.iv4xr.mbt.MBTProperties;
 import eu.fbk.iv4xr.mbt.MBTProperties.ModelCriterion;
@@ -33,6 +34,11 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  *
  */
 public class CoverageGoalConstrainedTransitionCoverageGoalTest {
+	
+	@BeforeEach
+	public void common() {
+		MBTProperties.SHOW_PROGRESS = false;
+	}
 	
 	@Test
 	public void test1() {

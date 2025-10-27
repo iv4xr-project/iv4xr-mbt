@@ -74,7 +74,7 @@ public class TransitionCoverageGoal extends CoverageGoal {
 				EFSMTransition coveredTransition = (EFSMTransition)transition;
 				CoverageGoal goal = new TransitionCoverageGoal(coveredTransition);
 //				individual.addFitness(goal, 0d);
-				updateIndividual(goal, individual, 0d);
+				updateIndividual(individual, 0d);
 			}
 		}
 	}

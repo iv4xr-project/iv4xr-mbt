@@ -22,12 +22,16 @@ import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.ProgressStatus;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.LabRecruitsTestConcretizer;
+import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMState;
 import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
@@ -42,26 +46,32 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
  * @author Davide Prandi
  *
  */
-public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
+public class LabRecruitsConcreteTestExecutor implements AplibConcreteTestExecutor {
 
 	// LabRecruits basic settings
 	private String labRecruitesExeRootDir;
 	private String levelFileName;
 	private String levelFolder;
 	private String agentName;
+	protected EFSM model;
 
+	private LabRecruitsTestAgent testAgent;
+	private LabRecruitsEnvironment labRecruitsEnvironment;
+	
 	// number of cycle the execution a transition can take
 	private int maxCyclePerGoal = 200;
 
-	private TestConcretizer testConcretizer;
+	private AplibTestConcretizer testConcretizer;
 	
 	// basic reporting for test case status
 	private TestSuiteExecutionReport testReporter;
+	
+	private LabRecruitsTestServer testServer;
 
 	public LabRecruitsConcreteTestExecutor(){ }
 	
-	public LabRecruitsConcreteTestExecutor(String labRecruitesExeRootDir, String levelPath, String agentName, int maxCyclePerGoal) {
-		this.testConcretizer = new LabRecruitsTestConcretizer();
+	public LabRecruitsConcreteTestExecutor(EFSM model, String labRecruitesExeRootDir, String levelPath, String agentName, int maxCyclePerGoal) {
+		this.model = model;
 		this.labRecruitesExeRootDir = labRecruitesExeRootDir;
 		// split level path	
 		this.levelFileName = Paths.get(levelPath).getFileName().toString();
@@ -69,6 +79,24 @@ public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 		this.agentName = agentName;
 		this.maxCyclePerGoal = maxCyclePerGoal;
 		testReporter = new TestSuiteExecutionReport();
+
+		// open the server
+		testServer = new LabRecruitsTestServer(false, Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
+		
+		// set the configuration of the server
+		LabRecruitsConfig lrCfg = new LabRecruitsConfig(levelFileName, levelFolder);
+		
+		// start LabRecruits environment
+		labRecruitsEnvironment = new LabRecruitsEnvironment(lrCfg);
+		
+		// create the agent and attach the goal structure
+		testAgent = new LabRecruitsTestAgent(agentName).attachState(new BeliefState())
+				.attachEnvironment(labRecruitsEnvironment);
+		// define the data collector and attach it to the agent
+		var dataCollector = new TestDataCollector();
+		testAgent.setTestDataCollector(dataCollector);
+		
+		this.testConcretizer = new LabRecruitsTestConcretizer(testAgent, model);
 	}
 
 	public void setMaxCyclePerGoal(int max) {
@@ -94,9 +122,9 @@ public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 	public boolean executeTestSuite(SuiteChromosome solution)
 			throws InterruptedException {
 
-		// open the server
-		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
-				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
+//		// open the server
+//		LabRecruitsTestServer testServer = new LabRecruitsTestServer(false,
+//				Platform.PathToLabRecruitsExecutable(labRecruitesExeRootDir));
 
 		boolean testSuiteResult = true;
 		// cycle over the test cases
@@ -125,22 +153,11 @@ public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 		
 		System.out.println("Executing: " + testcase.toString());
 
-		// set the configuration of the server
-		LabRecruitsConfig lrCfg = new LabRecruitsConfig(levelFileName, levelFolder);
-
-		// start LabRecruits environment
-		LabRecruitsEnvironment labRecruitsEnvironment = new LabRecruitsEnvironment(lrCfg);
-
-		// create the agent and attach the goal structure
-		LabRecruitsTestAgent testAgent = new LabRecruitsTestAgent(agentName).attachState(new BeliefState())
-				.attachEnvironment(labRecruitsEnvironment);
-		// define the data collector and attach it to the agent
-		var dataCollector = new TestDataCollector();
-		testAgent.setTestDataCollector(dataCollector);
 
 		// convert test case to a list of goal structure
 		// each goal structure represent a transition
-		List<GoalStructure> goals = testConcretizer.concretizeTestCase(testAgent, testcase);
+		AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase) testConcretizer.concretizeTestCase(testcase);
+		List<GoalStructure> goals = concreteTestCase.getGoalStructures();
 
 		// press play in Unity
 		if (!labRecruitsEnvironment.startSimulation()) {
@@ -169,7 +186,7 @@ public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 					
 					String err = "Verdict " + testAgent.getTestDataCollector().getLastFailVerdict().toString() + " failed";
 					System.err.println(err);
-					TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+					AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
 					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
@@ -184,14 +201,14 @@ public class LabRecruitsConcreteTestExecutor implements ConcreteTestExecutor {
 					
 					String err = "The goal cannot be satisfied in " + maxCyclePerGoal + " cycles";
 					System.err.println(err);
-					TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+					AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 					goalRep.addReport(g, err, testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 					goalReporter.add(goalRep);
 					testReporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
 					return false;
 				}
 			}
-			TestCaseExecutionReport goalRep = new TestCaseExecutionReport();
+			AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
 			goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
 			goalReporter.add(goalRep);
 			if (!g.getStatus().success()) {

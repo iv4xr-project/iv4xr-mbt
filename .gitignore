@@ -3,5 +3,8 @@
 .settings/
 data/
 .classpath
+.vscode
 **/.DS_Store
 mbt-files
+evombt.log
+evombt-test.log

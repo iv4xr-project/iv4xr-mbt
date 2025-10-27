@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.util.Precision;
-import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;

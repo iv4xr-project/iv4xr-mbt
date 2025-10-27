@@ -28,7 +28,7 @@ import org.evosuite.ga.FitnessFunction;
  * 
  * @author Annibale Panichella
  */
-public class PreferenceSortingComparator<T extends Chromosome> implements Comparator<Object> {
+public class PreferenceSortingComparator<T extends Chromosome<T>> implements Comparator<Object> {
 
 	private final FitnessFunction<T> objective;
 

@@ -2,12 +2,14 @@ package eu.fbk.iv4xr.mbt.space_engineers;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import environments.SeAgentState;
 import environments.SeEnvironment;
 import eu.fbk.iv4xr.mbt.MBTProperties;
+import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.SpaceEngineersTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
@@ -37,7 +39,19 @@ public class SpaceEngineersGoalLibTest {
 	Long shortSleepTime = 500l;
 	String worldId = "LR_random_medium";
 	String agentId = SpaceEngineers.Companion.DEFAULT_AGENT_ID;
+	EFSM model;
 
+	@Before
+	public void setup() {
+		MBTProperties.SUT_EFSM = "labrecruits.random_medium";
+		MBTProperties.RANDOM_SEED = 38743l;
+		
+		EFSMFactory mFactory = EFSMFactory.getInstance(true);
+		assertNotNull(mFactory);
+		model = mFactory.getEFSM();
+		assertNotNull(model);
+	}
+	
 	private void sleep(long i) {
 		try {
 			Thread.sleep(i);
@@ -185,16 +199,17 @@ public class SpaceEngineersGoalLibTest {
 
 	private List<MBTChromosome> getTestCases() {
 
-		MBTProperties.SUT_EFSM = "labrecruits.random_medium";
-		MBTProperties.RANDOM_SEED = 38743l;
+//		MBTProperties.SUT_EFSM = "labrecruits.random_medium";
+//		MBTProperties.RANDOM_SEED = 38743l;
 		// MBTProperties.MODELCRITERION[0] = ModelCriterion.KTRANSITION;
 
-		EFSMFactory mFactory = EFSMFactory.getInstance(true);
-		assertNotNull(mFactory);
-		EFSM efsm = mFactory.getEFSM();
-		assertNotNull(efsm);
+//		EFSMFactory mFactory = EFSMFactory.getInstance(true);
+//		assertNotNull(mFactory);
+//		EFSM efsm = mFactory.getEFSM();
+//		assertNotNull(efsm);
 
-		EFSMTestExecutor.getInstance().resetEFSM();
+//		EFSMTestExecutor.getInstance().resetEFSM();
+		model.reset();
 
 		SearchBasedStrategy sbStrategy = new SearchBasedStrategy<>();
 		SuiteChromosome generatedTests = sbStrategy.generateTests();
@@ -223,7 +238,14 @@ public class SpaceEngineersGoalLibTest {
 		// wait the map is loaded
 		sleep(longSleepTime);
 		
-		SpaceEngineersTestConcretizer concretizer = new SpaceEngineersTestConcretizer();
+		var dataCollector = new TestDataCollector();
+		var myAgentState = new SeAgentState(agentId);
+		var testAgent = new TestAgent(agentId, "Navigator");
+		testAgent.attachState(myAgentState);
+		testAgent.attachEnvironment(theEnv);
+		testAgent.setTestDataCollector(dataCollector);
+		
+		SpaceEngineersTestConcretizer concretizer = new SpaceEngineersTestConcretizer(testAgent, model);
 		
 		for(MBTChromosome t : testCases) {
 			System.out.println();
@@ -231,14 +253,15 @@ public class SpaceEngineersGoalLibTest {
 			System.out.println(t.toString());
 			theEnv.loadWorld();
 			sleep(longSleepTime);
-			var dataCollector = new TestDataCollector();
-			var myAgentState = new SeAgentState(agentId);
-			var testAgent = new TestAgent(agentId, "Navigator");
-			testAgent.attachState(myAgentState);
-			testAgent.attachEnvironment(theEnv);
-			testAgent.setTestDataCollector(dataCollector);
-			List<GoalStructure> concretizeTestCase = concretizer.concretizeTestCase(testAgent, (AbstractTestSequence)t.getTestcase() );
-			for(GoalStructure g: concretizeTestCase) {
+//			var dataCollector = new TestDataCollector();
+//			var myAgentState = new SeAgentState(agentId);
+//			var testAgent = new TestAgent(agentId, "Navigator");
+//			testAgent.attachState(myAgentState);
+//			testAgent.attachEnvironment(theEnv);
+//			testAgent.setTestDataCollector(dataCollector);
+			AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase) concretizer.concretizeTestCase((AbstractTestSequence)t.getTestcase());
+			List<GoalStructure> goals = concreteTestCase.getGoalStructures();
+			for(GoalStructure g: goals) {
 				execTestingTask(g, testAgent);
 			}
 			se.getSession().exitToMainMenu();

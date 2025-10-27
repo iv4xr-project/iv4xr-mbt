@@ -108,7 +108,7 @@ public class EFSMBuilder
 			EFSMParameterGenerator parameterGenerator) {
 		Preconditions.checkNotNull(initialState);
 		Preconditions.checkNotNull(initialContext);
-		Preconditions.checkNotNull(parameterGenerator);
+		//Preconditions.checkNotNull(parameterGenerator);
 		
 		return new EFSM(base, initialState, initialContext, parameterGenerator);
 

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.evosuite.ga.FitnessFunction;
-import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
+//import org.evosuite.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import eu.fbk.iv4xr.mbt.algorithm.operators.mutation.Mutator;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;

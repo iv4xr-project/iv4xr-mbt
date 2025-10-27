@@ -2,7 +2,7 @@ package eu.fbk.iv4xr.mbt.efsm.exp;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -13,7 +13,7 @@ public class VarSet<T> implements Cloneable, Serializable {
 	 */
 	private static final long serialVersionUID = -4020261488465440013L;
 
-	private HashMap<String, Var<T>> varSet = new HashMap<String, Var<T>>();
+	private LinkedHashMap<String, Var<T>> varSet = new LinkedHashMap<String, Var<T>>();
 	
 	
 	public VarSet(Var<T> var) {
@@ -29,7 +29,7 @@ public class VarSet<T> implements Cloneable, Serializable {
 	public VarSet() {
 	}
 	
-	public HashMap<String, Var<T>> getHash(){
+	public LinkedHashMap<String, Var<T>> getHash(){
 		return this.varSet;
 	}
 	

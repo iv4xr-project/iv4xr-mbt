@@ -28,7 +28,7 @@ import org.evosuite.ga.FitnessFunction;
  * 
  * @author Annibale Panichella
  */
-public class MOSADominanceComparator<T extends Chromosome> implements Comparator<Object> {
+public class MOSADominanceComparator<T extends Chromosome<T>> implements Comparator<Object> {
 
 	private Set<FitnessFunction<T>> objectives;
 

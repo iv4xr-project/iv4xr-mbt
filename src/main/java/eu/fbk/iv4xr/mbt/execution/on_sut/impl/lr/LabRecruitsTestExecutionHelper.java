@@ -3,7 +3,7 @@ package eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr;
 import java.io.File;
 import java.util.LinkedHashMap;
 
-import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 
 /**
@@ -11,7 +11,7 @@ import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
  * @author kifetew
  *
  */
-public class LabRecruitsTestExecutionHelper extends TestExecutionHelper {
+public class LabRecruitsTestExecutionHelper extends AplibTestExecutionHelper {
 
 //	ConcreteTestExecutor testExecutor;
 //	SuiteChromosome testSuite;
@@ -31,7 +31,8 @@ public class LabRecruitsTestExecutionHelper extends TestExecutionHelper {
 //	private String run_id;
 	
 	public LabRecruitsTestExecutionHelper(String lrExecutableDir, String lrLevelPath, String agentName, String testsDir, Integer maxCyclePerGoal) {
-		testExecutor = new LabRecruitsConcreteTestExecutor(lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
+		model = parseModel(testsDir);
+		testExecutor = new LabRecruitsConcreteTestExecutor(model, lrExecutableDir, lrLevelPath, agentName, maxCyclePerGoal);
 		testToFileMap = new LinkedHashMap<AbstractTestSequence,File>();
 		testSuite = parseTests (testsDir);
 		testsFolder = testsDir;

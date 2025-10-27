@@ -29,7 +29,7 @@ import org.evosuite.ga.FitnessFunction;
  *
  * @param <T>
  */
-public interface Ranking<T extends Chromosome> {
+public interface Ranking<T extends Chromosome<T>> {
 	
 	public void computeRankingAssignment(List<T> solutions, Set<FitnessFunction<T>> uncovered_goals);
 

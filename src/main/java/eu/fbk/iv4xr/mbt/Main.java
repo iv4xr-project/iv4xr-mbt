@@ -27,6 +27,7 @@ import org.evosuite.utils.Randomness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.iv4xr.mbt.MBTProperties.Algorithm;
 import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
@@ -37,9 +38,11 @@ import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.ExecutionResult;
 
-import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
 
 import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
@@ -50,6 +53,7 @@ import eu.fbk.iv4xr.mbt.strategy.GenerationStrategy;
 import eu.fbk.iv4xr.mbt.strategy.PlanningBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.RandomTestStrategy;
 import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
+import eu.fbk.iv4xr.mbt.strategy.WholesuiteStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
 import eu.fbk.iv4xr.mbt.testcase.Path;
@@ -77,11 +81,16 @@ public class Main {
 		// determine the test generation strategy
 		GenerationStrategy generationStrategy = new SearchBasedStrategy<MBTChromosome>();
 		if (line.hasOption("random")) {
-			generationStrategy = new RandomTestStrategy<MBTChromosome>();
+			MBTProperties.ALGORITHM = Algorithm.RANDOM_SEARCH;
+			//generationStrategy = new RandomTestStrategy<MBTChromosome>();
 		}
 		
 		if (line.hasOption("planning")) {
 			generationStrategy = new PlanningBasedStrategy<MBTChromosome>();			
+		}
+		
+		if (line.hasOption("wholesuite")) {
+			generationStrategy = new WholesuiteStrategy<MBTChromosome>();
 		}
 		
 		// set parameters in MBTProperties and Properties
@@ -276,7 +285,7 @@ public class Main {
 			// save debug information
 			String statPath = outFolder+File.separator+"stat_mutated_sut_"+i+".csv";
 			String debugHeader = mutExecutor.getDebugHeader();
-			String debugData = mutExecutor.getDebutTableTable();
+			String debugData = mutExecutor.getDebugTableTable();
 			
 			try {
 				FileUtils.writeStringToFile(new File(statPath), debugHeader+debugData, Charset.defaultCharset());
@@ -499,6 +508,7 @@ public class Main {
 		File featureFile = new File (modelFeaturesFileName);
 		
 		EFSM efsm = EFSMFactory.getInstance().getEFSM();
+		efsm.reset();
 		try {
 			if (!line.hasOption("silent_mode")) {
 				TestSerializationUtils.saveEFSM(efsm, modelFileName);
@@ -591,7 +601,16 @@ public class Main {
 		Option maxCycles = new Option("max_cycles", "max_cycles", true, "Maximum number of cycles for executing a goal (see aplib)");
 		maxCycles.setArgs(1);
 		
+		// minecraft specific options
+		Option serverAddress = new Option("server_address", "server_address", true, "ip address or domain for the Minecraft server");
+		serverAddress.setArgs(1);
 		
+		
+		Option wholesuite = Option.builder("wholesuite")
+				.argName("wholesuite")
+				.type(String.class)
+				.desc("WholeSuite test generation strategy")
+				.build();
 		
 		Option mutationAnalysis = Option.builder("mutation_analysis")
 				.argName("mutation_analysis")
@@ -600,9 +619,6 @@ public class Main {
 						+ " Use -Dmax_number mutations=X to run on at most X mutions."+
 						" (Deafault "+MBTProperties.MAX_NUMBER_MUTATIONS+")")
 				.build();
-		
-		
-		
 		
 		
 		
@@ -624,6 +640,7 @@ public class Main {
 
 		
 		options.addOption(sbt);
+		options.addOption(wholesuite);
 		options.addOption(random);
 		// options.addOption(tamer);
 		
@@ -635,11 +652,11 @@ public class Main {
 		options.addOption(testsDir);
 		options.addOption(agentName);
 		options.addOption(maxCycles);
-		
+
+		options.addOption(serverAddress);
+
 		options.addOption(execOnSut);
-		
 		options.addOption(mutationAnalysis);
-		
 		options.addOption(silent);
 		options.addOption(property);
 		
@@ -686,6 +703,8 @@ public class Main {
 				executeOnLabRecruits(line,options);
 			}else if (MBTProperties.SUT.equalsIgnoreCase("SE")) {
 				executeOnSpaceEngineers(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("MC")) {
+				executeOnMinecraft(line,options);
 			}else {
 				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
@@ -741,7 +760,7 @@ public class Main {
 			System.out.println("exec_on_lr option needs max_cycles parameter, but not provided, using default: 200");
 		}
 		
-		TestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
+		AplibTestExecutionHelper executor = new LabRecruitsTestExecutionHelper(sutExecutableDir, sutExecutable, agentName, testsDir, maxCycles);
 		
 		executor.execute();
 		
@@ -749,7 +768,7 @@ public class Main {
 		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
 		
 		// save debug data
-		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 		
 		
 		
@@ -809,7 +828,7 @@ public class Main {
 			System.out.println("exec_on_se option needs max_cycles parameter, but not provided, using default: 200");
 		}
 		
-		TestExecutionHelper executor = new SpaceEngineersTestExecutionHelper(sutExecutableDir, sutExecutable, testsDir, maxCycles);
+		AplibTestExecutionHelper executor = new SpaceEngineersTestExecutionHelper(sutExecutableDir, sutExecutable, testsDir, maxCycles);
 		
 		executor.execute();
 		
@@ -817,9 +836,60 @@ public class Main {
 		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
 				
 		// save debug data
-		writeStatistics(executor.getDebutTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
+	private void executeOnMinecraft(CommandLine line, Options options){
+		// setGlobalProperties (line);		
+		String sutExecutableDir = "";
+		String serverAddress = "";
+		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
+		String csvLevel = "";
+		String testsDir = "";
+
+		if (line.hasOption("sut_exec_dir")) {
+			sutExecutableDir = line.getOptionValue("sut_exec_dir");
+		}else {
+			System.out.println("exec_on_sut option needs sut_exec_dir parameter, but it is not provided.");
+			System.exit(2);
+		}
+
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+		}else {
+			System.err.println("exec_on_sut option needs tests_dir parameter");
+			System.exit(2);
+		}
+		
+		if (line.hasOption("sut_executable")) {
+			csvLevel = line.getOptionValue("sut_executable");
+		}else {
+			System.out.println("Sut MC option needs sut_executable parameter");
+			System.exit(2);
+		}
+
+		if (line.hasOption("server_address")) {
+			serverAddress = line.getOptionValue("server_address");
+		}else {
+			System.out.println("Sut MC option needs server_address parameter. Using default");
+		}
+
+		if (line.hasOption("agent_name")) {
+			agent = line.getOptionValue("agent_name");
+		}else {
+			System.out.println("Sut MC option needs agent parameter. Using default");
+		}
+
+		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
+
+		executor.execute();
+
+		// save stats
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+				
+		// save debug data
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+	}
 	
 	
 	
