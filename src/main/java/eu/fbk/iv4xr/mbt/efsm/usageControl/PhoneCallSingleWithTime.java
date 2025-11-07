@@ -26,7 +26,7 @@ public class PhoneCallSingleWithTime implements EFSMProvider {
 	public enum actions { StartCall, InCall, Recharge, StopManual, Charge, StopNoCredit, TimePass };
 	
 	// const values	
-	private static final Integer initialCreditVal = 30;
+	private static final Integer initialCreditVal = 50;
 	private static final Integer creditChargeVal = 10;
 	private static final Integer chargeTimeVal = 10;
 	private static final Integer rechargeAmountVal = 50;
