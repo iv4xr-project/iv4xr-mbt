@@ -44,7 +44,7 @@ import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
-
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.usageControl.SafaxTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
 import eu.fbk.iv4xr.mbt.minimization.Minimizer;
 
@@ -705,6 +705,8 @@ public class Main {
 				executeOnSpaceEngineers(line,options);
 			}else if (MBTProperties.SUT.equalsIgnoreCase("MC")) {
 				executeOnMinecraft(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("SAFAX")) {
+				executeOnSAFAX(line,options);
 			}else {
 				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
@@ -891,7 +893,54 @@ public class Main {
 		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
-	
+	/**
+	 * Execute on concrete SUT SAFAX ({@link https://safax.win.tue.nl/}(
+	 * @param line
+	 * @param options
+	 */
+	private void executeOnSAFAX(CommandLine line, Options options) {
+		
+		String sutExecutableDir = "";
+		String testsDir = "";
+		
+		// check if path to the executor is defined
+		if (MBTProperties.SAFAX_EXECUTOR.isBlank() ){
+			System.out.println("Path to SAFAX test executor need to be defined.");
+			System.out.println("Add option -Dsafax_test_executor=/path/to/the/executor/");
+			System.exit(2);
+		}
+		
+		// check if SAFAX config file is defind
+		if (MBTProperties.SAFAX_CFG.isBlank() ){
+			System.out.println("Path to SAFAX configuration to be defined.");
+			System.out.println("Add option  -Dsafax_config_json==/path/to/the/json/configuration");
+			System.exit(2);
+		}		
+		
+		
+		// print SAFAX options
+		System.out.println("SAFAX options");
+		System.out.println("  SAFAX configuration: "+MBTProperties.SAFAX_CFG);
+		System.out.println("  SAFAX test executor: "+MBTProperties.SAFAX_EXECUTOR);
+		
+		// path to the test generated from the model
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+			System.out.println("  Test folder: "+testsDir);
+		}else {
+			System.err.println("exec_on_sut option needs tests_dir parameter");
+			System.exit(2);
+		}
+		
+		TestExecutionHelper executor = new SafaxTestExecutionHelper(testsDir);
+		
+		executor.execute();
+		
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+		
+		// save debug data
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+	}
 	
 	
 	/**

@@ -28,5 +28,5 @@ public class MinecraftConcreteTestCase extends GenericConcreteTestCase {
         testCase.put("id", name);
         testCase.set("actions", actions);
         return testCase;
-    }; 
+    }
 }

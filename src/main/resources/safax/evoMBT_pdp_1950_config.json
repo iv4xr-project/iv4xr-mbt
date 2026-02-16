@@ -1,0 +1,30 @@
+{
+  "config": {
+    "pdpCode": "1950",
+    "requests": {
+      "CALL": "./fixtures/sample-demo-ucon/bob-1-call.xml",
+      "RECHARGE": "./fixtures/sample-demo-ucon/bob-8-call.xml"
+    }
+  },
+  "open_commands": [
+    {
+      "type": "CREATE_SESSION"
+    },
+    {
+      "type": "DELAY",
+      "params": {
+        "delayMs": 100
+      }
+    }],
+  "close_commands": [
+    {
+      "type": "DELAY",
+      "params": {
+        "delayMs": 100
+      }
+    },
+    {
+      "type": "DELETE_SESSION"
+    }
+  ]
+}

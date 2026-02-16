@@ -519,7 +519,18 @@ public class MBTProperties {
 	@Parameter(key = "mc_z", group = "Minecraft", description = "Z coordinate of the level origin")
 	public static int MC_Z = 0;
 
+	
+	/**
+	 * SAFAX parameters
+	 */
+	@Parameter(key = "safax_config_json", group = "SAFAX", description = "Path to the PDP configuration")
+	public static String SAFAX_CFG = "safax/evoMBT_pdp_1949_config.json";
+	@Parameter(key = "safax_test_executor", group = "SAFAX", description = "Path to the test executor ")
+	public static String SAFAX_EXECUTOR = "";
 
+	
+	public static String SAFAX_CMD_SEPARATOR = "::";
+	
 	/**
 	 * Get all parameters that are available
 	 *
