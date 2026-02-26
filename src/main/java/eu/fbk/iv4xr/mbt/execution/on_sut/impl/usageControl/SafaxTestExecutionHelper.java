@@ -20,7 +20,7 @@ public class SafaxTestExecutionHelper extends TestExecutionHelper {
 		testSuite = parseTests(testsDir);
 		testsFolder = testsDir;
 		
-		testExecutor = new SafaxConcreteTestExecutor(model,testsFolder);
+		testExecutor = new SafaxConcreteTestExecutor(model,testsFolder, testToFileMap);
 	}
 	
 	@Override

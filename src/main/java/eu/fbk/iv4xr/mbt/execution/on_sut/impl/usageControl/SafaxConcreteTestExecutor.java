@@ -9,11 +9,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 
 
@@ -60,11 +65,14 @@ public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
 	private Path testsInputFolder;
 	private Path testsOutputFolder;
 		
+	private Map<AbstractTestSequence, File> testToFileMap;
 	
-	public SafaxConcreteTestExecutor(EFSM model, String testsDir) {
+	public SafaxConcreteTestExecutor(EFSM model, String testsDir, Map testToFileMap) {
 		
 		// store EFSM model
 		this.model = model;
+		
+		this.testToFileMap = testToFileMap;
 		
 		this.jsonTestCases = objectMapper.createArrayNode();
 		
@@ -172,12 +180,8 @@ public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
 		/*
 		 * Collect outputs and compare with test case transitions
 		 */		
-		if (loadSafaxClientOutput()) {
-			return true;
-		}else {
-			return false;
-		}
-		
+		return loadSafaxClientOutput();
+	
 		
 	}
 
@@ -187,8 +191,14 @@ public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
 		// get the json basic structure
 		SafaxConcreteTestCase concreteTestCase = (SafaxConcreteTestCase) testConcretizer.concretizeTestCase(testcase);
 		
+		// create the json file name from the ser file name
+		File testFile = testToFileMap.get(testcase);
+		
+		String testFileName = testFile.getName();
+		
 		// store tin memory the test case
-		String caseName = "test_" + (jsonTestCases.size() + 1);
+		// String caseName = "test_" + (jsonTestCases.size() + 1);
+		String caseName = FilenameUtils.removeExtension(testFileName);
 		ObjectNode jsonTestcase = concreteTestCase.getJsonTestCase(configurationNode);
 		jsonTestCases.add(jsonTestcase);
 

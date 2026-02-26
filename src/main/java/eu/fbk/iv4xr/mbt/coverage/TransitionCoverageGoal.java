@@ -36,7 +36,13 @@ public class TransitionCoverageGoal extends CoverageGoal {
 
 	@Override
 	public String toString() {
-		return transition == null? "" : (transition.getSrc() + " --> " + transition.getTgt());
+		// return transition == null? "" : (transition.getSrc() + " --> " + transition.getTgt());		
+		return transition == null? "" : (transition.getSrc()  
+			 +	" - " + transition.getInParameter().toString() 
+			// + 	" | " + transition.getGuard().toString() 
+			// +	" | " + transition.getOp().toString() 
+			 +	" | " + transition.getOutParameter() 
+			 +	" -> " + transition.getTgt());
 	}
 
 	/**
