@@ -32,6 +32,7 @@ import eu.fbk.iv4xr.mbt.coverage.CoverageGoal;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.efsm.EFSMContext;
 import eu.fbk.iv4xr.mbt.efsm.EFSMFactory;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.efsm.cps.TestToPoints;
 import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitMutationManager;
 import eu.fbk.iv4xr.mbt.execution.EFSMTestExecutor;
@@ -43,7 +44,7 @@ import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
-
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.usageControl.SafaxTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.minimization.GreedyMinimizer;
 import eu.fbk.iv4xr.mbt.minimization.Minimizer;
 
@@ -55,6 +56,7 @@ import eu.fbk.iv4xr.mbt.strategy.SearchBasedStrategy;
 import eu.fbk.iv4xr.mbt.strategy.WholesuiteStrategy;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testcase.MBTChromosome;
+import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import eu.fbk.iv4xr.mbt.utils.TestSerializationUtils;
 
@@ -395,9 +397,9 @@ public class Main {
 				// Save context 
 				if (MBTProperties.SAVE_CONTEXT) {
 					// Execute to get the context seuqnece
-					ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
-					List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();					
-					String contextListToCsv = contextListToCsv(contexts);
+					// ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
+					// List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();					
+					String contextListToCsv = fullTraceToCsv(abstractTestSequence);
 					FileUtils.writeStringToFile(ctxFile, contextListToCsv, Charset.defaultCharset());
 					
 				}
@@ -429,11 +431,34 @@ public class Main {
 	}
 	
 	
-	private String contextListToCsv(List<EFSMContext> listCtx) {
+	private String fullTraceToCsv(AbstractTestSequence abstractTestSequence) {		
+		// Execute to get the context sequence
+		ExecutionResult executionResult = CoverageGoal.runTest(abstractTestSequence);
+		// get context list
+		List<EFSMContext> contexts = executionResult.getExecutionTrace().getContexts();
+		// get transition list
+		Path path = abstractTestSequence.getPath();
+		// get initial context
+		EFSMContext context = EFSMFactory.getInstance().getEFSM().getInitialConfiguration().getContext();
+		
+		contexts.add(0, context);
+		
 		StringBuffer buffer = new StringBuffer();
-		for(EFSMContext ctx : listCtx) {
-			buffer.append(ctx.toCsvLine());
+		for (int i = 0; i < path.getLength(); i++) {
+			
+			EFSMContext efsmContextPre = contexts.get(i);
+			EFSMContext efsmContextPost = contexts.get(i+1);
+			EFSMTransition transition = path.getTransitionAt(i);
+			
+			String l = efsmContextPre.toDebugString() + " [" + transition.toString() + "] " +  efsmContextPost.toDebugString() + System.lineSeparator(); 
+			buffer.append(l);
+			
+			
 		}
+		
+//		for(EFSMContext ctx : listCtx) {
+//			buffer.append(ctx.toCsvLine());
+//		}
 		return buffer.toString();
 
 	}
@@ -680,6 +705,8 @@ public class Main {
 				executeOnSpaceEngineers(line,options);
 			}else if (MBTProperties.SUT.equalsIgnoreCase("MC")) {
 				executeOnMinecraft(line,options);
+			}else if (MBTProperties.SUT.equalsIgnoreCase("SAFAX")) {
+				executeOnSAFAX(line,options);
 			}else {
 				throw new RuntimeException("SUT "+MBTProperties.SUT+" not supported.");
 			}
@@ -866,7 +893,54 @@ public class Main {
 		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
 	}
 	
-	
+	/**
+	 * Execute on concrete SUT SAFAX ({@link https://safax.win.tue.nl/}(
+	 * @param line
+	 * @param options
+	 */
+	private void executeOnSAFAX(CommandLine line, Options options) {
+		
+		String sutExecutableDir = "";
+		String testsDir = "";
+		
+		// check if path to the executor is defined
+		if (MBTProperties.SAFAX_EXECUTOR.isBlank() ){
+			System.out.println("Path to SAFAX test executor need to be defined.");
+			System.out.println("Add option -Dsafax_test_executor=/path/to/the/executor/");
+			System.exit(2);
+		}
+		
+		// check if SAFAX config file is defind
+		if (MBTProperties.SAFAX_CFG.isBlank() ){
+			System.out.println("Path to SAFAX configuration to be defined.");
+			System.out.println("Add option  -Dsafax_config_json==/path/to/the/json/configuration");
+			System.exit(2);
+		}		
+		
+		
+		// print SAFAX options
+		System.out.println("SAFAX options");
+		System.out.println("  SAFAX configuration: "+MBTProperties.SAFAX_CFG);
+		System.out.println("  SAFAX test executor: "+MBTProperties.SAFAX_EXECUTOR);
+		
+		// path to the test generated from the model
+		if (line.hasOption("tests_dir")) {
+			testsDir = line.getOptionValue("tests_dir");
+			System.out.println("  Test folder: "+testsDir);
+		}else {
+			System.err.println("exec_on_sut option needs tests_dir parameter");
+			System.exit(2);
+		}
+		
+		TestExecutionHelper executor = new SafaxTestExecutionHelper(testsDir);
+		
+		executor.execute();
+		
+		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );
+		
+		// save debug data
+		writeStatistics(executor.getDebugTableTable(), executor.getDebugHeader(), MBTProperties.EXECUTIONDEBUG_FILE());
+	}
 	
 	
 	/**
