@@ -42,7 +42,7 @@ import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
 
 	private static Set<String> ignoreEvents = new HashSet<String>(
-			Arrays.asList("SESSION_CREATED", "ATTRIBUTE_UPDATED", "SESSION_STOPPED", "SKIP"));
+			Arrays.asList("SESSION_CREATED", "ATTRIBUTE_UPDATED", "SESSION_STOPPED", "SKIP", "RE_EVAL_STARTED" ));
 	
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -238,13 +238,20 @@ public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
         try {
         	
         	
+//        	String[] command = {"docker", "run", "--rm",  "-i",  
+//                    "-v", String.format("%s:/app/input", Paths.get(testsInputFolder.toString()).toAbsolutePath()),
+//                    "-v", String.format("%s:/app/output", Paths.get(testsOutputFolder.toString()).toAbsolutePath()),
+//                    "-e", "NODE_ENV=dev",
+//                    "ucon-client", "input"
+//                    };
+        			
         	String[] command = {"docker", "run", "--rm",  "-i",  
                     "-v", String.format("%s:/app/input", Paths.get(testsInputFolder.toString()).toAbsolutePath()),
                     "-v", String.format("%s:/app/output", Paths.get(testsOutputFolder.toString()).toAbsolutePath()),
-                    "-e", "NODE_ENV=dev",
+                    "-e", "NODE_ENV=prod",
                     "ucon-client", "input"
                     };
-        			
+        	
         	System.err.println(String.join(" ", command));
         	
         	// build docker command
@@ -328,12 +335,18 @@ public class SafaxConcreteTestExecutor  implements ConcreteTestExecutor  {
     					TestCaseExecutionReport stepReport = new TestCaseExecutionReport();
     					
     					// check if the event observed correspond to the expected
-    					if (safaxResponses.get(responseIndex).equalsIgnoreCase(expectedResponse)) {
-    						stepReport.addReport(expectedResponse, transition);    						
-    					}else {
+    					if (responseIndex  <  safaxResponses.size()) {
+        					if (safaxResponses.get(responseIndex).equalsIgnoreCase(expectedResponse)) {
+        						stepReport.addReport(expectedResponse, transition);    						
+        					}else {
+        						returnStatus = false;
+        						testStatus = false;
+        						stepReport.addReport("Expect "+ expectedResponse + " but observe "+ safaxResponses.get(responseIndex), transition);    						
+        					}    						
+    					} else {
     						returnStatus = false;
     						testStatus = false;
-    						stepReport.addReport("Expect "+ expectedResponse + " but observe "+ safaxResponses.get(responseIndex), transition);    						
+    						stepReport.addReport("Missing transition in SAFAX output", transition);    						    						
     					}
     					
     					testReporter.add(stepReport);    					

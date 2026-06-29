@@ -19,9 +19,9 @@ import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSubt;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
-import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCallSingleWithTime.uconEvents;
+import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCallDoubleWithTime.uconEvents;
 
-public class PhoneCallDoubleWithTime implements EFSMProvider{
+public class PhoneCallDoubleWithTimeInternal  implements EFSMProvider{
 
 	// public enum actions { StartCall, InCall, Recharge, StopManual, Charge, StopNoCredit, TimePass };
 	public enum uconEvents { EVAL_PERMIT, EVAL_DENY, REQUEST_STOPPED, RE_EVAL_PERMIT, RE_EVAL_DENY, SKIP};
@@ -32,7 +32,7 @@ public class PhoneCallDoubleWithTime implements EFSMProvider{
 	private static final Integer chargeTimeVal = 10000; //milliseconds
 	private static final Integer rechargeAmountVal = 10;
 	private static final Integer timeStepVal = 2000; // milliseconds
-	private static final Integer timeRechargeVal = 1600; // milliseconds
+	private static final Integer timeRechargeVal = 400; // milliseconds
 	
 	// constants
 	Const<Integer> initialCredit = new Const<Integer>(initialCreditVal);
@@ -95,7 +95,6 @@ public class PhoneCallDoubleWithTime implements EFSMProvider{
 			new BoolAnd(enoughCredit2, new BoolAnd(isChargingTimeCall1,isChargingTimeCall2));
 	BoolAnd enoughCredit_and_notEnoughCredit2_and_IsChargingTimeCall1_and_IsCharginTimeCall2 = 
 			new BoolAnd(enoughCredit_and_notEnoughCredit2, new BoolAnd(isChargingTimeCall1,isChargingTimeCall2));
-	
 	// assign
 	Assign<Integer> recharge = new Assign<>(credit, addCredit);
 	Assign<Integer> charge = new Assign<>(credit, consumeCredit);
@@ -236,22 +235,32 @@ public class PhoneCallDoubleWithTime implements EFSMProvider{
 		t7.setOutParameter(new EFSMParameter(t7Out));
 		phoneCallEFSMBuilder.withTransition(Calling1, Calling1, t7);
 		
-		// t8: Calling1 - recharge -> RechargingWhileCalling1
+//		// t8: Calling1 - recharge -> RechargingWhileCalling1
+//		EFSMTransition t8 = new EFSMTransition();
+//		t8.setGuard(new EFSMGuard(noChargingTimeCall1));
+//		t8.setOp(new EFSMOperation(recharge));
+//		Var<Enum> t8Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
+//		t8.setInParameter(in_par_recharge);
+//		t8.setOutParameter(new EFSMParameter(t8Out));
+//		phoneCallEFSMBuilder.withTransition(Calling1, RechargingWhileCalling1, t8);
+//		
+//		// t9: RechargingWhileCalling1 - timePass -> Calling1
+//		EFSMTransition t9 = new EFSMTransition();
+//		t9.setOp(new EFSMOperation(rechargeTimeCall1Pass));
+//		Var<Enum> t9Out = new Var<Enum>("action", uconEvents.SKIP);
+//		t9.setInParameter(in_par_recharge_time);
+//		t9.setOutParameter(new EFSMParameter(t9Out));
+//		phoneCallEFSMBuilder.withTransition(RechargingWhileCalling1, Calling1, t9);		
+		
+		
+		// t8: Calling1 - recharge -> Calling1
 		EFSMTransition t8 = new EFSMTransition();
 		t8.setGuard(new EFSMGuard(noChargingTimeCall1));
-		t8.setOp(new EFSMOperation(recharge));
+		t8.setOp(new EFSMOperation(recharge, rechargeTimeCall1Pass));
 		Var<Enum> t8Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
 		t8.setInParameter(in_par_recharge);
 		t8.setOutParameter(new EFSMParameter(t8Out));
-		phoneCallEFSMBuilder.withTransition(Calling1, RechargingWhileCalling1, t8);
-		
-		// t9: RechargingWhileCalling1 - timePass -> Calling1
-		EFSMTransition t9 = new EFSMTransition();
-		t9.setOp(new EFSMOperation(rechargeTimeCall1Pass));
-		Var<Enum> t9Out = new Var<Enum>("action", uconEvents.SKIP);
-		t9.setInParameter(in_par_recharge_time);
-		t9.setOutParameter(new EFSMParameter(t9Out));
-		phoneCallEFSMBuilder.withTransition(RechargingWhileCalling1, Calling1, t9);		
+		phoneCallEFSMBuilder.withTransition(Calling1, Calling1, t8);
 		
 		// t10: Calling1 - call -> Calling1and2
 		EFSMTransition t10 = new EFSMTransition();
@@ -307,23 +316,32 @@ public class PhoneCallDoubleWithTime implements EFSMProvider{
 		t15.setOutParameter(new EFSMParameter(t15Out));
 		phoneCallEFSMBuilder.withTransition(Calling1and2, Calling1and2, t15);
 					
-		// t16: Calling1and2 - recharge -> RechargingWhileCalling1and2
+//		// t16: Calling1and2 - recharge -> RechargingWhileCalling1and2
+//		EFSMTransition t16 = new EFSMTransition();
+//		t16.setGuard(new EFSMGuard(noChargingTimeCall1_and_noChargingTimeCall2));
+//		t16.setOp(new EFSMOperation(recharge));
+//		Var<Enum> t16Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
+//		t16.setInParameter(in_par_recharge);
+//		t16.setOutParameter(new EFSMParameter(t16Out));
+//		phoneCallEFSMBuilder.withTransition(Calling1and2, RechargingWhileCalling1and2, t16);
+//		
+//		// t17: RechargingWhileCalling1and2 - timePass -> Calling1and2
+//		EFSMTransition t17 = new EFSMTransition();
+//		t17.setOp(new EFSMOperation(rechargeTimeCall1Pass,rechargeTimeCall2Pass));
+//		Var<Enum> t17Out = new Var<Enum>("action", uconEvents.SKIP);
+//		t17.setInParameter(in_par_recharge_time);
+//		t17.setOutParameter(new EFSMParameter(t17Out));
+//		phoneCallEFSMBuilder.withTransition(RechargingWhileCalling1and2, Calling1and2, t17);	
+
+		// t16: Calling1and2 - recharge -> Calling1and2
 		EFSMTransition t16 = new EFSMTransition();
 		t16.setGuard(new EFSMGuard(noChargingTimeCall1_and_noChargingTimeCall2));
-		t16.setOp(new EFSMOperation(recharge));
+		t16.setOp(new EFSMOperation(recharge, rechargeTimeCall1Pass, rechargeTimeCall2Pass));
 		Var<Enum> t16Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
 		t16.setInParameter(in_par_recharge);
 		t16.setOutParameter(new EFSMParameter(t16Out));
-		phoneCallEFSMBuilder.withTransition(Calling1and2, RechargingWhileCalling1and2, t16);
+		phoneCallEFSMBuilder.withTransition(Calling1and2, Calling1and2, t16);
 		
-		// t17: RechargingWhileCalling1and2 - timePass -> Calling1and2
-		EFSMTransition t17 = new EFSMTransition();
-		t17.setOp(new EFSMOperation(rechargeTimeCall1Pass,rechargeTimeCall2Pass));
-		Var<Enum> t17Out = new Var<Enum>("action", uconEvents.SKIP);
-		t17.setInParameter(in_par_recharge_time);
-		t17.setOutParameter(new EFSMParameter(t17Out));
-		phoneCallEFSMBuilder.withTransition(RechargingWhileCalling1and2, Calling1and2, t17);	
-
 		// First RE-EALUATE_ALLOW call 1 and the RE-EALUATE_DENY call 2
 		
 		// t18: Calling1and2 - noCredit for 2  -> Calling1
@@ -414,39 +432,16 @@ public class PhoneCallDoubleWithTime implements EFSMProvider{
 		t25.setOutParameter(new EFSMParameter(t25Out));
 		phoneCallEFSMBuilder.withTransition(Calling2, NoCall, t25);	
 		
+		// t26: Calling2 - recharge -> NoCall
+		EFSMTransition t26 = new EFSMTransition();
+		t26.setGuard(new EFSMGuard(noChargingTimeCall2));
+		t26.setOp(new EFSMOperation(recharge, rechargeTimeCall2Pass));
+		Var<Enum> t26Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
+		t26.setInParameter(in_par_recharge);
+		t26.setOutParameter(new EFSMParameter(t26Out));
+		phoneCallEFSMBuilder.withTransition(Calling2, Calling2, t26);
+		
 		return phoneCallEFSMBuilder.build(NoCall, context, null);
 	}
 
-	// //
-	// Removed
-	// when the charge time for both are active and there is not money for 2
-	// it suffices to close call 2 and go to call 1
-	// then call 1 manage the decision depending if there is money 
-	// the below version introduce not useful complication introducing a pending state
-	
-	//		// t18: Calling1and2 - noCredit for 2 but credit for 1 -> Call2Pending
-//	EFSMTransition t18 = new EFSMTransition();
-//	t18.setGuard(new EFSMGuard(enoughCredit_and_notEnoughCredit2_and_IsChargingTimeCall1_and_IsCharginTimeCall2));
-//	t18.setOp(new EFSMOperation(charge,timeCall1Reset));
-//	Var<Enum> t18Out = new Var<Enum>("action", uconEvents.RE_EVAL_PERMIT);
-//	t18.setInParameter(in_no_input);
-//	t18.setOutParameter(new EFSMParameter(t18Out));
-//	phoneCallEFSMBuilder.withTransition(Calling1and2, Call2Pending, t18);
-//	
-//	// t19: Call2Pending - nocredit -> Calling1
-//	EFSMTransition t19 = new EFSMTransition();
-//	t19.setOp(new EFSMOperation(timeCall2Reset));
-//	Var<Enum> t19Out = new Var<Enum>("action", uconEvents.RE_EVAL_DENY);
-//	t19.setInParameter(in_no_input);
-//	t19.setOutParameter(new EFSMParameter(t19Out));
-//	phoneCallEFSMBuilder.withTransition(Call2Pending, Calling1, t19);
-//
-//	// t20: Calling1and2 - noCredit -> Calling1
-//	EFSMTransition t20 = new EFSMTransition();
-//	t20.setGuard(new EFSMGuard(notEnoughCredit_and_IsCharginTimeCall1_and_IsChargingTimeCall2));
-//	t20.setOp(new EFSMOperation(timeCall2Reset));
-//	Var<Enum> t20Out = new Var<Enum>("action", uconEvents.RE_EVAL_DENY);
-//	t20.setInParameter(in_no_input);
-//	t20.setOutParameter(new EFSMParameter(t20Out));
-//	phoneCallEFSMBuilder.withTransition(Calling1and2, Calling1, t20);
 }

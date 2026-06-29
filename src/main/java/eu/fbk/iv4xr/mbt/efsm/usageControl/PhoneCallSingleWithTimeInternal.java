@@ -13,16 +13,15 @@ import eu.fbk.iv4xr.mbt.efsm.exp.Assign;
 import eu.fbk.iv4xr.mbt.efsm.exp.Const;
 import eu.fbk.iv4xr.mbt.efsm.exp.Var;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolAnd;
-import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolNot;
 import eu.fbk.iv4xr.mbt.efsm.exp.bool.BoolOr;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntEq;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntGreat;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntLess;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSubt;
 import eu.fbk.iv4xr.mbt.efsm.exp.integer.IntSum;
-import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCall1.actions;
+import eu.fbk.iv4xr.mbt.efsm.usageControl.PhoneCallSingleWithTime.uconEvents;
 
-public class PhoneCallSingleWithTime implements EFSMProvider {
+public class PhoneCallSingleWithTimeInternal implements EFSMProvider {
 
 	// public enum actions { StartCall, InCall, Recharge, StopManual, Charge, StopNoCredit, TimePass };
 	public enum uconEvents { EVAL_PERMIT, EVAL_DENY, REQUEST_STOPPED, RE_EVAL_PERMIT, RE_EVAL_DENY, SKIP};
@@ -32,8 +31,9 @@ public class PhoneCallSingleWithTime implements EFSMProvider {
 	private static final Integer creditChargeVal = 20;
 	private static final Integer chargeTimeVal = 10000; //milliseconds
 	private static final Integer rechargeAmountVal = 10;
-	private static final Integer timeStepVal = 2000; // milliseconds
-	private static final Integer timeRechargeVal = 4000; // milliseconds
+	private static final Integer timeStepVal = 11000; // milliseconds
+	private static final Integer timeRechargeVal = 1000; // milliseconds
+	
 	
 	// constants
 	Const<Integer> initialCredit = new Const<Integer>(initialCreditVal);
@@ -78,7 +78,7 @@ public class PhoneCallSingleWithTime implements EFSMProvider {
 	// states	
 	public EFSMState Calling = new EFSMState("Calling");
 	public EFSMState NoCall = new EFSMState("NoCall");
-	public EFSMState ChargingWhileCalling = new EFSMState("ChargingWhileCalling");
+	// public EFSMState ChargingWhileCalling = new EFSMState("ChargingWhileCalling");
 	
 	// input parameters encode SAFAX action
 	EFSMParameter in_par_recharge = new EFSMParameter(
@@ -163,43 +163,53 @@ public class PhoneCallSingleWithTime implements EFSMProvider {
 		t4.setOutParameter(new EFSMParameter(t4Out));
 		phoneCallEFSMBuilder.withTransition(Calling, Calling, t4);
 				
-		// t5: Calling - recharge -> ChargingWhileCalling
+//		// t5: Calling - recharge -> ChargingWhileCalling
+//		EFSMTransition t5 = new EFSMTransition();
+//		t5.setGuard(new EFSMGuard(noChargingTime));
+//		t5.setOp(new EFSMOperation(recharge));
+//		Var<Enum> t5Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
+//		t5.setInParameter(in_par_recharge);
+//		t5.setOutParameter(new EFSMParameter(t5Out));
+//		phoneCallEFSMBuilder.withTransition(Calling, ChargingWhileCalling, t5);
+//		
+//		// t6: ChargingWhileCalling - timePass -> Calling
+//		EFSMTransition t6 = new EFSMTransition();
+//		t6.setOp(new EFSMOperation(rechargeTimePass));
+//		Var<Enum> t6Out = new Var<Enum>("action", uconEvents.SKIP);
+//		t6.setInParameter(in_par_recharge_time);
+//		t6.setOutParameter(new EFSMParameter(t6Out));
+//		phoneCallEFSMBuilder.withTransition(ChargingWhileCalling, Calling, t6);
+		
+		// t5: Calling - recharge -> Calling 
 		EFSMTransition t5 = new EFSMTransition();
 		t5.setGuard(new EFSMGuard(noChargingTime));
-		t5.setOp(new EFSMOperation(recharge));
+		t5.setOp(new EFSMOperation(recharge,rechargeTimePass));
 		Var<Enum> t5Out = new Var<Enum>("action", uconEvents.EVAL_PERMIT);
 		t5.setInParameter(in_par_recharge);
 		t5.setOutParameter(new EFSMParameter(t5Out));
-		phoneCallEFSMBuilder.withTransition(Calling, ChargingWhileCalling, t5);
+		phoneCallEFSMBuilder.withTransition(Calling, Calling, t5);
 		
-		// t6: ChargingWhileCalling - timePass -> Calling
+		// t6: Calling - endCall -> NoCall
 		EFSMTransition t6 = new EFSMTransition();
-		t6.setOp(new EFSMOperation(rechargeTimePass));
-		Var<Enum> t6Out = new Var<Enum>("action", uconEvents.SKIP);
-		t6.setInParameter(in_par_recharge_time);
+		t6.setGuard(new EFSMGuard(notIsChargingTime));
+		t6.setOp(new EFSMOperation(timeReset));
+		Var<Enum> t6Out = new Var<Enum>("action", uconEvents.REQUEST_STOPPED);
+		t6.setInParameter(in_par_stop_call_1);
 		t6.setOutParameter(new EFSMParameter(t6Out));
-		phoneCallEFSMBuilder.withTransition(ChargingWhileCalling, Calling, t6);
+		phoneCallEFSMBuilder.withTransition(Calling, NoCall, t6);
 		
-		// t7: Calling - endCall -> NoCall
+		// t7: Calling - noCredit -> NoCall
 		EFSMTransition t7 = new EFSMTransition();
-		t7.setGuard(new EFSMGuard(notIsChargingTime));
+		t7.setGuard(new EFSMGuard(notEnoughCredit_and_isCharginTime));
 		t7.setOp(new EFSMOperation(timeReset));
-		Var<Enum> t7Out = new Var<Enum>("action", uconEvents.REQUEST_STOPPED);
-		t7.setInParameter(in_par_stop_call_1);
+		Var<Enum> t7Out = new Var<Enum>("action", uconEvents.RE_EVAL_DENY);
+		t7.setInParameter(in_no_input);
 		t7.setOutParameter(new EFSMParameter(t7Out));
 		phoneCallEFSMBuilder.withTransition(Calling, NoCall, t7);
-		
-		// t8: Calling - noCredit -> NoCall
-		EFSMTransition t8 = new EFSMTransition();
-		t8.setGuard(new EFSMGuard(notEnoughCredit_and_isCharginTime));
-		t8.setOp(new EFSMOperation(timeReset));
-		Var<Enum> t8Out = new Var<Enum>("action", uconEvents.RE_EVAL_DENY);
-		t8.setInParameter(in_no_input);
-		t8.setOutParameter(new EFSMParameter(t8Out));
-		phoneCallEFSMBuilder.withTransition(Calling, NoCall, t8);
 		
 		return phoneCallEFSMBuilder.build(NoCall, context, null);
 		
 	}
+
 
 }

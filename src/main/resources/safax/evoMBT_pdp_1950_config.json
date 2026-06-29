@@ -15,12 +15,13 @@
       "params": {
         "delayMs": 100
       }
-    }],
+    }
+  ],
   "close_commands": [
     {
       "type": "DELAY",
       "params": {
-        "delayMs": 100
+        "delayMs": 200
       }
     },
     {
