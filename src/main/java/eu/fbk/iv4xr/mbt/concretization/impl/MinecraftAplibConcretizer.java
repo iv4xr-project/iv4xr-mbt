@@ -73,30 +73,37 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 		return combined;
 	}
 
-	private GoalStructure toGoal(String name, Map<String, Object> params) {
-		GoalStructure goal = null;
+	private GoalStructure toGoal(TestAgent agent, String name, Map<String, Object> params) {
 		switch (name.toLowerCase()) {
-			case "move_to_tag":
-				goalLib.tagReached((String) params.get("target"));
-				break;
-			case "move_to_tag_within":
-				goalLib.tagReachedWithinDistance((String) params.get("target"), (Double) params.get("distance"));
-				break;
+			case "move_to":
+				return goalLib.tagReached((String) params.get("target"));
+			case "move_to_within":
+				return goalLib.tagReachedWithinDistance((String) params.get("target"), (Double) params.get("distance"));
 			case "break":
-				goalLib.mined((String) params.get("target"));
-				break;
+				return goalLib.mined((String) params.get("target"));
 			case "attack":
-				goalLib.attacked((String) params.get("target"));
-				break;
+				return goalLib.attacked((String) params.get("target"));
+			case "select":
+				return goalLib.selected((String) params.get("item"));
+			case "place":
+				return goalLib.placed((String) params.get("target"), (String) params.get("face"));
+			case "click":
+				return goalLib.clicked((String) params.get("target"));
 			case "anvil_operation":
-				goalLib.usedAnvil((String) params.get("target"), (String) params.get("item_one"),
+				return goalLib.usedAnvil((String) params.get("target"), (String) params.get("item_one"),
 						(String) params.get("item_two"), (String) params.get("custom_name"));
-				break;
-			// TODO: the rest of this
+
+			// Checks
+			case "check_block":
+				return goalLib.assertBlockIs(agent, (String)params.get("target"), (String)params.get("expected"), (String)params.get("nbt"));
+			case "check_item":
+				return goalLib.assertHasItem(agent, (String)params.get("item"), (Integer)params.get("count"));
+			case "check_entity":
+				return goalLib.assertEntityHealth(agent, (String)params.get("target"), (Float)params.get("health"));
 			default:
 				break;
 		}
-		return goal;
+		return null;
 	}
 
 	@Override
@@ -117,7 +124,7 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 			if (!previousActionName.equals(actionName)) {
 				if (previousActionName != null) {
 					String actualName = previousActionName.split(MBTProperties.MC_SEPARATOR)[0];
-					g = toGoal(actualName, currentActionParams);
+					g = toGoal(agent, actualName, currentActionParams);
 					subGoals.add(g);
 				}
 
@@ -143,7 +150,7 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 		}
 
 		String actualName = previousActionName.split(MBTProperties.MC_SEPARATOR)[0];
-		g = toGoal(actualName, currentActionParams);
+		g = toGoal(agent, actualName, currentActionParams);
 		subGoals.add(g);
 
 		if (subGoals.size() == 1) {

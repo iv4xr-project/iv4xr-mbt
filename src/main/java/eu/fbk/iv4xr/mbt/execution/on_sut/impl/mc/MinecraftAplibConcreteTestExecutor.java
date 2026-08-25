@@ -1,148 +1,146 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc;
 
-import java.nio.file.Paths;
-import java.nio.file.Path;
-
-import static org.mockito.ArgumentMatchers.booleanThat;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
-import eu.fbk.iv4xr.mbt.concretization.TestConcretizer;
-import eu.fbk.iv4xr.mbt.MBTProperties;
-import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftConcreteTestCase;
-import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftTestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
+import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
+import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftAplibConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
+import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import eu.fbk.iv4xr.minecraftlib.MinecraftEnv;
-
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.iv4xr.framework.mainConcepts.TestAgent;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 
 /**
- * This class transforms a test suite generated from an EFMS model of a
- * Minecraft test level into a MineflayerTestbed json file and run it.
+ * This class transforms a test suite generated from an EFMS model
  * 
- * @author guss-alberto
+ * @author agusmeroli
  *
  */
 public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExecutor {
-	private static ObjectMapper mapper = new ObjectMapper();
 	protected EFSM model;
-	private ArrayNode testCases;
-	private ObjectNode meta;
-
+	private int maxCycle;
 
 	private MinecraftEnv environment;
 
+	private TestAgent testAgent;
 
-	private TestConcretizer testConcretizer;
-	protected long startTime = 0;
-
-	private String debugTable = "";
+	private AplibTestConcretizer testConcretizer;
 
 	private TestSuiteExecutionReport reporter;
 	protected int failures = 0;
-	private HashMap<String, AbstractTestSequence> testCaseMap = new HashMap<>();
 
 	public MinecraftAplibConcreteTestExecutor(EFSM model, String mineflayerTestURL, String levelPath,
-			String agent,
-			String mcServerAddress, int x, int y, int z) {
+			String agent, int x, int y, int z) {
+
 		this.model = model;
-		this.startTime = System.currentTimeMillis();
-		this.testCases = mapper.createArrayNode();
-		this.meta = mapper.createObjectNode();
+		this.environment = new MinecraftEnv(mineflayerTestURL);
+		this.testAgent = new TestAgent(agent, "tester");
 
-		environment = new MinecraftEnv(mineflayerTestURL);
+		this.testConcretizer = new MinecraftAplibConcretizer(testAgent, model);
 
-		environment.buildLevel(levelPath, x, y, z);
+		environment.buildLevel(levelPath, x, y, z);	
 
-		this.testConcretizer = new MinecraftTestConcretizer(model);
 
 		this.reporter = new TestSuiteExecutionReport();
-
-
-		meta.put("id", MBTProperties.SUT_EFSM);
-		meta.put("time", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(OffsetDateTime.now()));
-		meta.put("level_csv", Paths.get(levelPath).toAbsolutePath().toString());
-		meta.put("username", agent);
-		meta.put("address", mcServerAddress);
-		meta.put("x", x);
-		meta.put("y", y);
-		meta.put("z", z);
-
 	}
 
+	@Override
+	public boolean executeTestSuite(SuiteChromosome solution) throws InterruptedException {
+		boolean result = true;
+		// cycle over the test cases
+		for (int i = 0; i < solution.size(); i++) {
+			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
+			result &= executeTestCase(testcase);
+		}
+
+		return result;
+	}
+
+	// run a test case
+	public boolean executeTestCase(AbstractTestSequence testcase) throws InterruptedException {
+		// false if at least one goal fails
+		boolean status = true;
+
+		// Start registering the time of the test suite execution
+		long initialTime = System.currentTimeMillis();
+		
+		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
+		
+		System.out.println("Executing: " + testcase.toString());
+
+
+		AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase)testConcretizer
+				.concretizeTestCase(testcase);
+		List<GoalStructure> goals = concreteTestCase.getGoalStructures();
+
+		// iterate over goals
+		// 
+		for (int i = 0; i < goals.size(); i++) {
+		//for (GoalStructure g : goals) {
+			GoalStructure g = goals.get(i);
+			testAgent.setGoal(g);
+			System.err.println("Testing "+testcase.getPath().getTransitionAt(i).toString());
+
+			// try to execute the test case
+			int nCycle = 0;
+			while (g.getStatus().inProgress()) {
+				testAgent.update();
+
+				Thread.sleep(20);
+				nCycle++;
+			}
+
+			AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
+			goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
+			goalReporter.add(goalRep);
+
+			status &= !g.getStatus().success();
+		}
+		
+		// stop the time
+		long finalTime = System.currentTimeMillis();
+		long timeDuration = finalTime - initialTime;
+		
+
+		reporter.addTestCaseReport(testcase, goalReporter, status, timeDuration);
+		return status;
+
+	}
+	
+	
+	// covert the goal status of a goal structure to a string
+	private String getGoalStatus(GoalStructure goal) {
+		if (goal instanceof PrimitiveGoal) {
+			return goal.getStatus().toString();
+		}else {
+			String out = "";
+			for(GoalStructure g : goal.getSubgoals()) {
+				out = out + getGoalStatus(g) +"; ";
+			}
+			return out;
+		}
+	}
+
+	@Override
 	public TestSuiteExecutionReport getReport() {
 		return reporter;
 	}
 
-	public boolean executeTestSuite(SuiteChromosome solution) {
-		// cycle over the test cases
-		for (int i = 0; i < solution.size(); i++) {
-			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
-			executeTestCase(testcase);
-		}
-
-		ObjectNode json = mapper.createObjectNode();
-		json.set("meta", meta);
-		json.set("test_cases", testCases);
-
-		try {
-			mapper.writeValue(jsonFilePath.toFile(), json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		int res = runMineflayer();
-		reportExecution();
-		return res == 0;
-	}
-
-	// run a test case
-	public boolean executeTestCase(AbstractTestSequence testcase) {
-		MinecraftConcreteTestCase concreteTestcase = (MinecraftConcreteTestCase) testConcretizer
-				.concretizeTestCase(testcase);
-
-		String caseName = "test_" + (testCases.size() + 1);
-		ObjectNode jsonTestcase = concreteTestcase.toJsonTestCase(caseName);
-		testCases.add(jsonTestcase);
-
-		testCaseMap.put(caseName, testcase);
-
-		return true;
-	}
-
-
-	public String getDebugTable() {
-		return debugTable;
-	}
-
-	private void reportExecution() {
-
-	}
-
 	@Override
 	public void setMaxCyclePerGoal(int max) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'setMaxCyclePerGoal'");
+		this.maxCycle = max;
 	}
 
 	@Override
 	public int getMaxCylcePerGoal() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getMaxCylcePerGoal'");
+		return maxCycle;
 	}
 }
