@@ -116,7 +116,7 @@ public class MinecraftConcreteTestExecutor implements ConcreteTestExecutor {
 				.concretizeTestCase(testcase);
 
 		String caseName = "test_" + (testCases.size() + 1);
-		ObjectNode jsonTestcase = concreteTestcase.getJsonTestCase(caseName);
+		ObjectNode jsonTestcase = concreteTestcase.toJsonTestCase(caseName);
 		testCases.add(jsonTestcase);
 
 		testCaseMap.put(caseName, testcase);

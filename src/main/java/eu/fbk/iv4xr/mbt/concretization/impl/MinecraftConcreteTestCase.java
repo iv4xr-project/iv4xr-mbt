@@ -23,7 +23,11 @@ public class MinecraftConcreteTestCase extends GenericConcreteTestCase {
         actions.add(action);
     }
 
-    public ObjectNode getJsonTestCase(String name){
+    public ArrayNode getActions() {
+        return actions;
+    }
+
+    public ObjectNode toJsonTestCase(String name){
         ObjectNode testCase = mapper.createObjectNode();
         testCase.put("id", name);
         testCase.set("actions", actions);
