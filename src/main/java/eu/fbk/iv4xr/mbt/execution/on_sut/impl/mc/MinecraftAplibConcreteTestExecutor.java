@@ -14,7 +14,9 @@ import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 import eu.fbk.iv4xr.minecraftlib.MinecraftEnv;
+import eu.fbk.iv4xr.minecraftlib.MinecraftState;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
+import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 
@@ -31,8 +33,10 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 	private MinecraftEnv environment;
 
 	private TestAgent testAgent;
+	private MinecraftState state;
 
 	private AplibTestConcretizer testConcretizer;
+	private TestDataCollector dataCollector;
 
 	private TestSuiteExecutionReport reporter;
 	protected int failures = 0;
@@ -42,7 +46,15 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 
 		this.model = model;
 		this.environment = new MinecraftEnv(mineflayerTestURL);
+		this.state = new MinecraftState();
 		this.testAgent = new TestAgent(agent, "tester");
+
+		dataCollector = new TestDataCollector();
+
+		testAgent.attachState(state);
+		testAgent.attachEnvironment(environment);
+		testAgent.setTestDataCollector(dataCollector);
+		
 
 		this.testConcretizer = new MinecraftAplibConcretizer(testAgent, model);
 
