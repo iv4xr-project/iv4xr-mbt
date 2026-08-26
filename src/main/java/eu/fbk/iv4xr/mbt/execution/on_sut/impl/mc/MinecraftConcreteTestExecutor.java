@@ -3,8 +3,6 @@ package eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 
-import static org.mockito.ArgumentMatchers.booleanThat;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

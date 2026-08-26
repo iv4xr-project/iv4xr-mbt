@@ -42,6 +42,7 @@ import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr.LabRecruitsTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestExecutionHelper;
+import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftAplibTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc.MinecraftTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.se.SpaceEngineersTestExecutionHelper;
 import eu.fbk.iv4xr.mbt.execution.on_sut.impl.usageControl.SafaxTestExecutionHelper;
@@ -164,7 +165,7 @@ public class Main {
 		String sutExecutableDir = "";
 		String sutExecutable = "";
 		String testsDir = "";
-		String agentName = "";
+		String agentName = null;
 		Integer maxCycles = 200;
 		if (line.hasOption("sut_exec_dir")) {
 			sutExecutableDir = line.getOptionValue("sut_exec_dir");
@@ -182,10 +183,9 @@ public class Main {
 			System.out.println("exec_on_sut option needs tests_dir parameter");
 		}
 		
-		if (line.hasOption("agent_name")) {
-			agentName = line.getOptionValue("agent_name", "Agent1");
-		}else {
-			System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: agent1");
+		agentName = line.getOptionValue("agent_name", "Agent1");
+		if (!line.hasOption("agent_name")) {
+			System.out.println("exec_on_sut option needs agent_name parameter, but not provided, using default: Agent1");
 		}
 		
 		if (line.hasOption("max_cycles")) {
@@ -882,8 +882,8 @@ public class Main {
 			System.out.println("Sut MC option needs agent parameter. Using default");
 		}
 
-		TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
-
+		// TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
+		TestExecutionHelper executor = new MinecraftAplibTestExecutionHelper(serverAddress, csvLevel, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
 		executor.execute();
 
 		// save stats

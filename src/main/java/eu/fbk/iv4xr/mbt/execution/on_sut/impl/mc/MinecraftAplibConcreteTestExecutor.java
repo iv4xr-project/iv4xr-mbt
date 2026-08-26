@@ -7,6 +7,7 @@ import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.MinecraftAplibConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
+import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
@@ -41,25 +42,23 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 	private TestSuiteExecutionReport reporter;
 	protected int failures = 0;
 
-	public MinecraftAplibConcreteTestExecutor(EFSM model, String mineflayerTestURL, String levelPath,
-			String agent, int x, int y, int z) {
+	public MinecraftAplibConcreteTestExecutor(EFSM model, String mineflayerTestURL, String levelPath, String agent,
+			int x, int y, int z) {
 
 		this.model = model;
 		this.environment = new MinecraftEnv(mineflayerTestURL);
 		this.state = new MinecraftState();
 		this.testAgent = new TestAgent(agent, "tester");
 
-		dataCollector = new TestDataCollector();
+		this.dataCollector = new TestDataCollector();
 
 		testAgent.attachState(state);
 		testAgent.attachEnvironment(environment);
 		testAgent.setTestDataCollector(dataCollector);
-		
 
 		this.testConcretizer = new MinecraftAplibConcretizer(testAgent, model);
 
-		environment.buildLevel(levelPath, x, y, z);	
-
+		environment.buildLevel(levelPath, x, y, z);
 
 		this.reporter = new TestSuiteExecutionReport();
 	}
@@ -70,6 +69,7 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 		// cycle over the test cases
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
+			environment.resetWorker();
 			result &= executeTestCase(testcase);
 		}
 
@@ -83,59 +83,75 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 
 		// Start registering the time of the test suite execution
 		long initialTime = System.currentTimeMillis();
-		
+
 		LinkedList<TestCaseExecutionReport> goalReporter = new LinkedList<TestCaseExecutionReport>();
-		
+
 		System.out.println("Executing: " + testcase.toString());
 
-
-		AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase)testConcretizer
-				.concretizeTestCase(testcase);
+		AplibConcreteTestCase concreteTestCase = (AplibConcreteTestCase) testConcretizer.concretizeTestCase(testcase);
 		List<GoalStructure> goals = concreteTestCase.getGoalStructures();
 
 		// iterate over goals
-		// 
+		//
 		for (int i = 0; i < goals.size(); i++) {
-		//for (GoalStructure g : goals) {
+			// for (GoalStructure g : goals) {
 			GoalStructure g = goals.get(i);
+			EFSMTransition transition = testcase.getPath().getTransitionAt(i);
+
+			if (g == null) {
+				System.err.println("Skipping " + transition);
+
+				continue;
+			}
+
 			testAgent.setGoal(g);
-			System.err.println("Testing "+testcase.getPath().getTransitionAt(i).toString());
+			System.err.println("Testing " + transition);
 
 			// try to execute the test case
-			int nCycle = 0;
 			while (g.getStatus().inProgress()) {
 				testAgent.update();
+				if (dataCollector.getNumberOfFailVerdictsSeen() > 0) {
+					// stop the time
+					long finalTime = System.currentTimeMillis();
+					long timeDuration = finalTime - initialTime;
 
+					String err = "Failed verdict " + dataCollector.getLastFailVerdict().toString();
+					System.err.println(err);
+					AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
+					goalRep.addReport(g, err, transition, getGoalStatus(g));
+					goalReporter.add(goalRep);
+					reporter.addTestCaseReport(testcase, goalReporter, Boolean.FALSE, timeDuration);
+					return false;
+				}
 				Thread.sleep(20);
-				nCycle++;
 			}
 
 			AplibTestCaseExecutionReport goalRep = new AplibTestCaseExecutionReport();
-			goalRep.addReport(g, "Pass", testcase.getPath().getTransitionAt(i), getGoalStatus(g));
+			goalRep.addReport(g, "Pass", transition, getGoalStatus(g));
+
 			goalReporter.add(goalRep);
 
+			// Not sure this matters since we exit early anyways
 			status &= !g.getStatus().success();
 		}
-		
+
 		// stop the time
 		long finalTime = System.currentTimeMillis();
 		long timeDuration = finalTime - initialTime;
-		
 
 		reporter.addTestCaseReport(testcase, goalReporter, status, timeDuration);
 		return status;
 
 	}
-	
-	
+
 	// covert the goal status of a goal structure to a string
 	private String getGoalStatus(GoalStructure goal) {
 		if (goal instanceof PrimitiveGoal) {
 			return goal.getStatus().toString();
-		}else {
+		} else {
 			String out = "";
-			for(GoalStructure g : goal.getSubgoals()) {
-				out = out + getGoalStatus(g) +"; ";
+			for (GoalStructure g : goal.getSubgoals()) {
+				out = out + getGoalStatus(g) + "; ";
 			}
 			return out;
 		}

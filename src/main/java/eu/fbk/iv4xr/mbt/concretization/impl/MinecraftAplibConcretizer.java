@@ -34,27 +34,6 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 
 	private MinecraftGoalLib goalLib = new MinecraftGoalLib();
 
-	@Override
-	public AplibConcreteTestCase concretizeTestCase(AbstractTestSequence abstractTestCase) {
-		Path path = abstractTestCase.getPath();
-
-		model.reset();
-
-		List<EFSMTransition> transitions = path.getTransitions();
-
-		AplibConcreteTestCase concreteTestCase = new AplibConcreteTestCase();
-
-		for (EFSMTransition rawTransition : transitions) {
-			// execute the transition
-			model.transition(rawTransition);
-
-			// get the real transiton, with the updated variables
-
-		}
-
-		return concreteTestCase;
-	}
-
 	private static LinkedHashMap<String, Var<Object>> combineParams(EFSMTransition t) {
 
 		LinkedHashMap<String, Var<Object>> combined = new LinkedHashMap<>();
@@ -83,9 +62,11 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 				return goalLib.mined((String) params.get("target"));
 			case "attack":
 				return goalLib.attacked((String) params.get("target"));
+			case "wait":
+				return goalLib.waited((Integer) params.get("ticks"));
 			case "select":
 				return goalLib.selected((String) params.get("item"));
-			case "place":
+			case "place_against":
 				return goalLib.placed((String) params.get("target"), (String) params.get("face"));
 			case "click":
 				return goalLib.clicked((String) params.get("target"));
@@ -121,7 +102,7 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 			String actionName = keys[0];
 
 			// once a new action is created we need to set it up
-			if (!previousActionName.equals(actionName)) {
+			if (!actionName.equals(previousActionName)) {
 				if (previousActionName != null) {
 					String actualName = previousActionName.split(MBTProperties.MC_SEPARATOR)[0];
 					g = toGoal(agent, actualName, currentActionParams);
@@ -148,16 +129,23 @@ public class MinecraftAplibConcretizer extends AplibTestConcretizer {
 				currentActionParams.put(keys[1], value);
 			}
 		}
-
-		String actualName = previousActionName.split(MBTProperties.MC_SEPARATOR)[0];
-		g = toGoal(agent, actualName, currentActionParams);
-		subGoals.add(g);
+		if (previousActionName != null) {
+			String actualName = previousActionName.split(MBTProperties.MC_SEPARATOR)[0];
+			g = toGoal(agent, actualName, currentActionParams);
+			subGoals.add(g);
+		}
+		
+		
+		if (subGoals.isEmpty()) {
+			return null;
+		}
 
 		if (subGoals.size() == 1) {
 			return subGoals.get(0);
-		} else {
-			return SEQ(subGoals.toArray(new GoalStructure[0]));
-		}
+		} 
+		
+		return SEQ(subGoals.toArray(new GoalStructure[0]));
+		
 	}
 
 }

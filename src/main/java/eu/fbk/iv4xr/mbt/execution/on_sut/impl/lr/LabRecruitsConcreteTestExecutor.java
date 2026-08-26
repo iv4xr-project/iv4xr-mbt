@@ -1,41 +1,27 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut.impl.lr;
 
-import static nl.uu.cs.aplib.AplibEDSL.SEQ;
-import static org.junit.Assert.fail;
-
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import agents.LabRecruitsTestAgent;
-import agents.tactics.GoalLib;
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
 import game.LabRecruitsTestServer;
 import game.Platform;
-import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
-import eu.iv4xr.framework.mainConcepts.WorldEntity;
-import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
-import nl.uu.cs.aplib.mainConcepts.ProgressStatus;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import world.BeliefState;
 import eu.fbk.iv4xr.mbt.concretization.AplibTestConcretizer;
 import eu.fbk.iv4xr.mbt.concretization.impl.AplibConcreteTestCase;
 import eu.fbk.iv4xr.mbt.concretization.impl.LabRecruitsTestConcretizer;
 import eu.fbk.iv4xr.mbt.efsm.EFSM;
-import eu.fbk.iv4xr.mbt.efsm.EFSMState;
-import eu.fbk.iv4xr.mbt.efsm.EFSMTransition;
-import eu.fbk.iv4xr.mbt.efsm.labRecruits.LabRecruitsRandomEFSM;
-import eu.fbk.iv4xr.mbt.execution.on_sut.ConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibConcreteTestExecutor;
 import eu.fbk.iv4xr.mbt.execution.on_sut.AplibTestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
-import eu.fbk.iv4xr.mbt.testcase.Path;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
 
 /**
