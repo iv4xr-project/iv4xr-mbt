@@ -844,17 +844,13 @@ public class Main {
 	private void executeOnMinecraft(CommandLine line, Options options){
 		// setGlobalProperties (line);		
 		String sutExecutableDir = "";
-		String serverAddress = "";
+		String serverAddress = "localhost";
 		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
+		String mineflayerTestURL = line.getOptionValue("mineflayer_url", "localhost:3000");
 		String csvLevel = "";
 		String testsDir = "";
 
-		if (line.hasOption("sut_exec_dir")) {
-			sutExecutableDir = line.getOptionValue("sut_exec_dir");
-		}else {
-			System.out.println("exec_on_sut option needs sut_exec_dir parameter, but it is not provided.");
-			System.exit(2);
-		}
+		sutExecutableDir = line.getOptionValue("sut_exec_dir");
 
 		if (line.hasOption("tests_dir")) {
 			testsDir = line.getOptionValue("tests_dir");
@@ -862,6 +858,7 @@ public class Main {
 			System.err.println("exec_on_sut option needs tests_dir parameter");
 			System.exit(2);
 		}
+			
 		
 		if (line.hasOption("sut_executable")) {
 			csvLevel = line.getOptionValue("sut_executable");
@@ -882,9 +879,19 @@ public class Main {
 			System.out.println("Sut MC option needs agent parameter. Using default");
 		}
 
-		// TestExecutionHelper executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
-		TestExecutionHelper executor = new MinecraftAplibTestExecutionHelper(serverAddress, csvLevel, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);
-		executor.execute();
+		TestExecutionHelper executor;
+		try {
+			if (sutExecutableDir != null && !sutExecutableDir.isBlank()) {
+				executor = new MinecraftTestExecutionHelper(sutExecutableDir, csvLevel, serverAddress, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);				
+			} else {
+				executor = new MinecraftAplibTestExecutionHelper(mineflayerTestURL, serverAddress, csvLevel, testsDir, agent, MBTProperties.MC_X, MBTProperties.MC_Y, MBTProperties.MC_Z);				
+			}
+			executor.execute();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
 
 		// save stats
 		writeStatistics(executor.getStatsTable() , executor.getStatHeader(), MBTProperties.EXECUTIONSTATISTICS_FILE() );

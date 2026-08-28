@@ -1,5 +1,10 @@
 package eu.fbk.iv4xr.mbt.execution.on_sut.impl.mc;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +19,7 @@ import eu.fbk.iv4xr.mbt.execution.on_sut.TestCaseExecutionReport;
 import eu.fbk.iv4xr.mbt.execution.on_sut.TestSuiteExecutionReport;
 import eu.fbk.iv4xr.mbt.testcase.AbstractTestSequence;
 import eu.fbk.iv4xr.mbt.testsuite.SuiteChromosome;
+import eu.fbk.iv4xr.minecraftlib.MinecraftAgent;
 import eu.fbk.iv4xr.minecraftlib.MinecraftEnv;
 import eu.fbk.iv4xr.minecraftlib.MinecraftState;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
@@ -42,23 +48,28 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 	private TestSuiteExecutionReport reporter;
 	protected int failures = 0;
 
-	public MinecraftAplibConcreteTestExecutor(EFSM model, String mineflayerTestURL, String levelPath, String agent,
-			int x, int y, int z) {
+	public MinecraftAplibConcreteTestExecutor(EFSM model, String mineflayerTestURL, String serverURL, String levelPath, String agent,
+			int x, int y, int z) throws IOException {
 
 		this.model = model;
 		this.environment = new MinecraftEnv(mineflayerTestURL);
 		this.state = new MinecraftState();
-		this.testAgent = new TestAgent(agent, "tester");
+		this.testAgent = new MinecraftAgent(agent, serverURL);
 
 		this.dataCollector = new TestDataCollector();
 
 		testAgent.attachState(state);
 		testAgent.attachEnvironment(environment);
 		testAgent.setTestDataCollector(dataCollector);
+		
+		
+
 
 		this.testConcretizer = new MinecraftAplibConcretizer(testAgent, model);
+		
+		String levelString = Files.readString(Paths.get(levelPath), StandardCharsets.UTF_8);
 
-		environment.buildLevel(levelPath, x, y, z);
+		environment.buildLevel(testAgent.getId(), levelString, x, y, z);
 
 		this.reporter = new TestSuiteExecutionReport();
 	}
