@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>com.github.iv4xr-project</groupId>
 			<artifactId>minecraftlib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>2347545873dc27823887e8c916f15dd27dd66767</version>
 		</dependency>
 
 		<dependency>
