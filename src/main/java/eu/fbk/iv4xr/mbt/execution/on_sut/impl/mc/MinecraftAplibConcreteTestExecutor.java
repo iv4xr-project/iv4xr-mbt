@@ -80,7 +80,9 @@ public class MinecraftAplibConcreteTestExecutor implements AplibConcreteTestExec
 		// cycle over the test cases
 		for (int i = 0; i < solution.size(); i++) {
 			AbstractTestSequence testcase = (AbstractTestSequence) solution.getTestChromosome(i).getTestcase();
-			environment.resetWorker();
+			if (i != 0) {				
+				environment.resetAgent(testAgent.getId());
+			}
 			result &= executeTestCase(testcase);
 		}
 

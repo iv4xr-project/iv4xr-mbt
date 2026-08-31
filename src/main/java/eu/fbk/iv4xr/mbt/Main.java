@@ -846,7 +846,7 @@ public class Main {
 		String sutExecutableDir = "";
 		String serverAddress = "localhost";
 		String agent = MBTProperties.MC_DEFAULT_AGENT_NAME;
-		String mineflayerTestURL = line.getOptionValue("mineflayer_url", "localhost:3000");
+		String mineflayerTestURL = line.getOptionValue("mineflayer_url", "http://localhost:3000");
 		String csvLevel = "";
 		String testsDir = "";
 
